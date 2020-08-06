@@ -59,16 +59,13 @@
 
                 var notificaciones = await _context.Notificaciones
                     .Where(n => n.UsuarioId == User.GetId())
-                    .GroupBy(n => new {n.HiloId, n.Tipo})
-                    .Select(g  => new {HiloId = g.Key.HiloId, Cantidad = g.Count()})
-                    .Select(g => new { Cantidad = g.Cantidad, Noti = _context.Notificaciones.First(n => n.HiloId == g.HiloId)})
                     .Select(n => new NotificacionViewModel{
-                        Id = n.Noti.Id,
-                        HiloTitulo = _context.Hilos.First(h => h.Id == n.Noti.HiloId).Titulo,
-                        HiloImagen = _context.Medias.First(m => m.Id == _context.Hilos.First(h => h.Id == n.Noti.HiloId).MediaId).VistaPreviaCuadrado,
-                        ComentarioId = n.Noti.ComentarioId,
-                        Tipo = n.Noti.Tipo,
-                        Conteo = n.Cantidad,
+                        Id = n.Id,
+                        HiloTitulo = _context.Hilos.First(h => h.Id == n.HiloId).Titulo,
+                        HiloImagen = _context.Medias.First(m => m.Id == _context.Hilos.First(h => h.Id == n.HiloId).MediaId).VistaPreviaCuadrado,
+                        ComentarioId = n.ComentarioId,
+                        Tipo = n.Tipo,
+                        Conteo = n.Conteo,
                     })
                     .AsNoTracking()
                     .ToListAsync();
