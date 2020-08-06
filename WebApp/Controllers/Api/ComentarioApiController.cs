@@ -134,7 +134,9 @@ namespace WebApp.Controllers
 
 }
 public class ComentarioFormViewModel {
+    [Required]
     public string HiloId { get; set; }
+    [Required(ErrorMessage="El comentario no puede estar vacio padre")]
     public string Contenido { get; set; }
     public IFormFile Archivo { get; set; }
 }
