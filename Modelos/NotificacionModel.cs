@@ -12,6 +12,7 @@ namespace Modelos
         public string ComentarioId { get; set; } //Si el tipo es comentario, indica la id del comentario respondido
         public NotificacionType Tipo { get; set; }
         public DateTimeOffset Actualizacion { get; set; }
+        public int Conteo { get; set; } = 1;
 
         public ComentarioModel Comentario { get; set; }
         public HiloModel HiloModel { get; set; }
