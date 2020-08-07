@@ -83,73 +83,38 @@ namespace WebApp.Controllers
             await comentarioService.Guardar(comentario);
             await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoComentario", new ComentarioViewModel(comentario));
             
-            var users = await context.Comentarios
+            (await context.Comentarios
                 .Where( c => comentariosRespondidos.Contains(c.Id) && c.UsuarioId != User.GetId())
-                .ToDictionaryAsync(c => c.Id);
-            
-            var notisViejas = await context.Notificaciones
-                .Where(n => n.Tipo == NotificacionType.Respuesta &&
-                            comentariosRespondidos.Contains(n.ComentarioId))
-                .ToListAsync();
+                .Select(c => context.Usuarios.FirstOrDefault(u => u.Id == c.UsuarioId))
+                .Where(u => u != null)
+                .Select(s => new {Noti = context.Notificaciones.FirstOrDefault(n => n.UsuarioId == s.Id && n.HiloId == comentario.HiloId && n.Tipo == NotificacionType.Respuesta), s.Id})
+                .ToListAsync())
+                .ForEach(n => {
+                    if(n.Noti is null) 
+                    context.Notificaciones.Add(new NotificacionModel(hashService.Random(), n.Id, comentario, NotificacionType.Respuesta));
+                    else 
+                    {
+                        n.Noti.Conteo++;
+                        n.Noti.Actualizacion = DateTimeOffset.Now;
+                    }
+                });
 
-            foreach (var noti in notisViejas)
-            {
-                comentariosRespondidos.Remove(noti.ComentarioId);
-                noti.Conteo++;
-                noti.Actualizacion = DateTimeOffset.Now;
-            }
-            var nuevasNotisR = comentariosRespondidos
-            .Where(c => users.Keys.Contains(c))
-            .Select( c =>
-            {
-                NotificacionModel notificacionModel1 = new NotificacionModel
-                {
-                    UsuarioId = users[c].UsuarioId,
-                    HiloId = comentario.HiloId,
-                    ComentarioId = c,
-                    Tipo = NotificacionType.Respuesta,
-                    Conteo = 1,
-                    Actualizacion = DateTimeOffset.Now,
-                    Id = hashService.Random(),
-                };
-                NotificacionModel notificacionModel = notificacionModel1;
-                return notificacionModel;
-            }).ToList();
-            context.Notificaciones.AddRange(nuevasNotisR);
-            await context.SaveChangesAsync();
-
-
-            
-///////////////////
-            var seguidoresDeHilo = await context.HiloAcciones
+            (await context.HiloAcciones
                 .Where(ha => ha.HiloId == comentario.HiloId && ha.Seguido && ha.UsuarioId != User.GetId())
                 .Select(ha => context.Usuarios.FirstOrDefault(u => u.Id == ha.UsuarioId))
                 .Where(u => u != null)
-                .ToListAsync();
-            
-            notisViejas = await context.Notificaciones
-                .Where(n => n.Tipo == NotificacionType.Comentario &&
-                            n.HiloId == comentario.HiloId &&
-                            seguidoresDeHilo.Select(s => s.Id).Contains(n.UsuarioId))
-                .ToListAsync();
+                .Select(s => new {Noti = context.Notificaciones.FirstOrDefault(n => n.UsuarioId == s.Id && n.HiloId == comentario.HiloId && n.Tipo == NotificacionType.Comentario), s.Id})
+                .ToListAsync())
+                .ForEach(n => {
+                    if(n.Noti is null) 
+                    context.Notificaciones.Add(new NotificacionModel(hashService.Random(), n.Id, comentario));
+                    else 
+                    {
+                        n.Noti.Conteo++;
+                        n.Noti.Actualizacion = DateTimeOffset.Now;
+                    }
+                });
 
-            foreach (var noti in notisViejas)
-            {
-                seguidoresDeHilo.RemoveAll( s => s.Id == noti.UsuarioId);
-                noti.Conteo++;
-                noti.Actualizacion = DateTimeOffset.Now;
-            }
-            nuevasNotisR = seguidoresDeHilo.Select( s => new NotificacionModel {
-                        UsuarioId = s.Id,
-                        HiloId = comentario.HiloId,
-                        ComentarioId = comentario.Id,
-                        Tipo = NotificacionType.Comentario,
-                        Conteo = 1,
-                        Actualizacion =  DateTimeOffset.Now,
-                        Id = hashService.Random(),
-            }).ToList();
-
-            context.Notificaciones.AddRange(nuevasNotisR);
             await context.SaveChangesAsync();
             return new ApiResponse("Comentario creado!");
         }
@@ -168,7 +133,6 @@ namespace WebApp.Controllers
             });
         }
     }
-
 
 }
 public class ComentarioFormViewModel {

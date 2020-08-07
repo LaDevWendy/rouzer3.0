@@ -5,6 +5,22 @@ namespace Modelos
 {
     public class NotificacionModel
     {
+        public NotificacionModel()
+        {
+        }
+
+        public NotificacionModel(string id, string usuarioId, string hiloId, string comentarioId, NotificacionType tipo = NotificacionType.Comentario)
+        {
+            UsuarioId = usuarioId;
+            HiloId = hiloId;
+            ComentarioId = comentarioId;
+            Tipo = tipo;
+            Actualizacion = DateTimeOffset.Now;
+            Id = id;
+        }
+        public NotificacionModel(string id, string usuarioId, ComentarioModel comentario, NotificacionType tipo = NotificacionType.Comentario):
+            this(id, usuarioId, comentario.HiloId, comentario.Id, tipo){}
+
         [Required]
         public string Id { get; set; }
         public string UsuarioId { get; set; }
