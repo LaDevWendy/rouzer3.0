@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 
 namespace WebApp.Controllers
 {
@@ -21,6 +22,7 @@ namespace WebApp.Controllers
         private readonly IHiloService hiloService;
         private readonly IMediaService mediaService;
         private readonly HashService hashService;
+        private readonly IHubContext<RChanHub> rchanHub;
         private readonly RChanContext context;
 
         #region constructor
@@ -28,12 +30,14 @@ namespace WebApp.Controllers
             IHiloService hiloService,
             IMediaService mediaService,
             HashService hashService,
+            IHubContext<RChanHub> rchanHub,
             RChanContext context
         )
         {
             this.hiloService = hiloService;
             this.mediaService = mediaService;
             this.hashService = hashService;
+            this.rchanHub = rchanHub;
             this.context = context;
         }
         #endregion
@@ -81,6 +85,7 @@ namespace WebApp.Controllers
             });
 
             await context.SaveChangesAsync();
+            await rchanHub.Clients.Group("home").SendAsync("HiloCreado", new HiloViewModel(hilo));
 
             return Created($"/Hilo/{id}", null);
         }

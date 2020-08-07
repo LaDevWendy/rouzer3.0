@@ -25,8 +25,10 @@ namespace WebApp
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment env;
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            this.env = env;
             Configuration = configuration;
         }
 
@@ -35,8 +37,11 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLiveReload();
-
+            services.AddLiveReload(config =>
+            {
+                config.FolderToMonitor = env.ContentRootPath + "\\Views";
+            });
+            services.AddSignalR();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddMvc().AddRazorRuntimeCompilation();
 
@@ -58,16 +63,20 @@ namespace WebApp
                 .AddSignInManager()
                 .AddEntityFrameworkStores<RChanContext>();
 
-             services.AddAuthorization(options => {
-                options.AddPolicy("esAdmin", policy => {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("esAdmin", policy =>
+                {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("Role", "admin");
                 });
-                options.AddPolicy("esMod", policy => {
+                options.AddPolicy("esMod", policy =>
+                {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("Role", "admin mod".Split(" "));
                 });
-                options.AddPolicy("esJanitor", policy => {
+                options.AddPolicy("esJanitor", policy =>
+                {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("Role", "admin mod janitor".Split(" "));
                 });
@@ -107,7 +116,7 @@ namespace WebApp
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseLiveReload();
-                
+
             }
             else
             {
@@ -120,14 +129,15 @@ namespace WebApp
 
             void ConfigurarCache(StaticFileResponseContext ctx)
             {
-                if(!env.IsDevelopment()) {
-                ctx.Context.Response.Headers.Append(
-                    "Cache-Control", $"public, max-age={31536000}");
+                if (!env.IsDevelopment())
+                {
+                    ctx.Context.Response.Headers.Append(
+                        "Cache-Control", $"public, max-age={31536000}");
                 }
             }
 
             app.UseStaticFiles(
-                new StaticFileOptions {OnPrepareResponse = ConfigurarCache}
+                new StaticFileOptions { OnPrepareResponse = ConfigurarCache }
             );
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -150,30 +160,31 @@ namespace WebApp
                     name: "default",
                     pattern: "{controller=Hilo}/{action=Index}/{id?}"
                 );
+                endpoints.MapHub<RChanHub>("/hub");
             });
         }
     }
 
     public static class Extensiones
     {
-        public static bool EsAdmin(this ClaimsPrincipal user) 
+        public static bool EsAdmin(this ClaimsPrincipal user)
         {
             return user.HasClaim("Role", "admin");
         }
-        public static bool EsMod(this ClaimsPrincipal user) 
+        public static bool EsMod(this ClaimsPrincipal user)
         {
-            return  user.HasClaim("Role", "mod")
+            return user.HasClaim("Role", "mod")
                 || user.HasClaim("Role", "admin");
         }
-        public static bool EsJanitor(this ClaimsPrincipal user) 
+        public static bool EsJanitor(this ClaimsPrincipal user)
         {
-            return  user.HasClaim("Role", "mod")
+            return user.HasClaim("Role", "mod")
                 || user.HasClaim("Role", "admin")
                 || user.HasClaim("Role", "janitor");
         }
-        public static string GetId(this ClaimsPrincipal user) 
+        public static string GetId(this ClaimsPrincipal user)
         {
-            return  user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? null;
+            return user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? null;
         }
 
     }

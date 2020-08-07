@@ -10,7 +10,7 @@ namespace Modelos
             this.Contenido = comentario.Contenido;
             this.Id = comentario.Id;
             this.Creacion = comentario.Creacion;
-            this.Media = null;
+            this.Media = comentario.Media;
 
         }
         public ComentarioViewModel() {}

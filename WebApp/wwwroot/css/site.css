@@ -306,7 +306,13 @@ button:focus {
   font-size: 20px;
   padding: 4px;
   padding: 0px 8px 8px 8px;
-  background: linear-gradient(0deg, #25404591 70%, transparent);
+  background: linear-gradient(0deg, #00000073 70%, transparent);
+    grid-row: 3;
+    grid-column: 4/1;
+    color: white;
+    margin: 0;
+    font-weight: 500;
+    align-self: flex-end;
 }
 
 .infos {
@@ -372,13 +378,13 @@ button:focus {
 }
 
 h3 {
-  grid-row: 3;
-  grid-column: 4/1;
-  color: white;
-  background: #18222da9;
-  margin: 0;
-  font-weight: 500;
-  align-self: flex-end;
+  /* grid-row: 3; */
+  /* grid-column: 4/1; */
+  /* color: white; */
+  /* background: #18222da9; */
+  /* margin: 0; */
+  /* font-weight: 500; */
+  /* align-self: flex-end; */
 }
 
 
@@ -802,3 +808,7 @@ justify-content: center;
   display: block;
   margin-right:  10px;
 }
+
+/* #cargar-nuevos-comentarios {
+  background: black;
+} */

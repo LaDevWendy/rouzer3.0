@@ -309,7 +309,7 @@ class Acciones {
 Acciones.inicializar()
 
 class Respuestas {
-    static Inicializar() {
+    static inicializar() {
         let dic = {}
 
         document.querySelectorAll(".comentario")
@@ -335,4 +335,104 @@ class Respuestas {
     }
 }
 
-Respuestas.Inicializar()
+Respuestas.inicializar()
+
+class HubHome {
+    static connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
+    static hilos = []
+    static inicializar() {
+        this.connection.on("HiloCreado", this.onHiloCreado)
+        this.connection.start().then(() => {
+            console.log("Conectado");
+            return this.connection.invoke("SubscribirAHome")
+            
+        }).catch(console.error)
+    }
+
+    static onHiloCreado(hilo) {
+        console.log("Hilo Creado")
+        let listaHilos = document.querySelector(".hilo-list")
+        listaHilos.insertBefore(HubHome.hiloADOM(hilo), listaHilos.childNodes[0]);
+        console.log("Hilo insertado")
+    }
+
+    static hiloADOM(hilo) {
+        console.log(hilo);
+        
+        var dp = new DOMParser()
+        return dp.parseFromString( `
+        <li class="hilo">
+            <a class="hilo-in" href="/Hilo/${hilo.id}">
+                <img src="${hilo.media.vistaPreviaCuadrado}" alt="${hilo.titulo}" class="imghilo">
+                <div class="infos">
+                    <div class="info" style="color:">${["","ART","TEC","UFF"][hilo.categoriaId]}</div>
+                    <div class="info" style="background:#18222D">Nuevo</div>
+                </div>
+
+                <div class="infos info-hover">
+                    <div class="info">0</div>
+
+                    <div class="acciones">
+                        <span class="fe fe-eye-off"></span>
+                        <span class="fe fe-flag"></span>
+                    </div>
+                </div>
+
+                <h3>${hilo.titulo}</h3>
+            </a>
+        </li>`, 'text/html').body.children[0]
+    }
+}
+
+HubHome.inicializar();
+
+class HubHilo {
+    static connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
+    static comentarios = []
+    static hiloId
+    static inicializar(hiloId) {
+        this.hiloId = hiloId
+        this.connection.on("NuevoComentario", HubHilo.onComentarioCreado)
+        this.connection.start().then(() => {
+            console.log("Conectado");
+            return this.connection.invoke("SubscribirseAHilo", hiloId)
+            
+        }).catch(console.error)
+    }
+
+    static onComentarioCreado(comentario) {
+        console.log("Comentario Creado")
+        // let listaHilos = document.querySelector(".hilo-list")
+        // listaHilos.insertBefore(HubHilo.comentarioADom(hilo), listaHilos.childNodes[0]);
+         console.log(comentario)
+    }
+
+    static comentarioADom(hilo) {
+        console.log(hilo);
+        
+        var dp = new DOMParser()
+        return dp.parseFromString( `<div class="comentario" r-id="H85I78B6" id="H85I78B6">
+        <div class="color" style="background: red;">ANON</div>
+        <div class="header">
+            <span class="nick">Anonimo</span>
+            <span class="rol tag">anon</span>
+            <span class="id tag">H85I78B6</span>
+            <span class="tiempo">17h</span>
+            <span onclick="ComentarioMenu.mostrarMenu(event)" class=""><i class="fe fe-more-vertical relative"></i></span>
+        </div>
+        <div class="respuestas"><a href="#R8H9I8ZS" class="restag" r-id="R8H9I8ZS">&gt;&gt;R8H9I8ZS</a></div>
+            <div class="contenido">
+                <div class="texto">
+                    Hola pepe
+                </div>
+            </div>
+
+    </div>`, 'text/html').body.children[0]
+    }
+
+    static cargarNuevosComentarios() {
+
+    }
+}
+
+HubHome.inicializar();

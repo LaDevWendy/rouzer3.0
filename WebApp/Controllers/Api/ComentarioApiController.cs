@@ -15,7 +15,7 @@ using Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-
+using Microsoft.AspNetCore.SignalR;
 
 namespace WebApp.Controllers
 {
@@ -27,6 +27,7 @@ namespace WebApp.Controllers
         private readonly HtmlEncoder htmlEncoder;
         private readonly RChanContext context;
         private readonly HashService hashService;
+        private readonly IHubContext<RChanHub> rchanHub;
         private readonly IMediaService mediaService;
 
         public ComentarioApiControlelr(
@@ -35,7 +36,8 @@ namespace WebApp.Controllers
             IMediaService mediaService,
             HtmlEncoder htmlEncoder,
             RChanContext chanContext,
-            HashService hashService
+            HashService hashService,
+            IHubContext<RChanHub> rchanHub
         )
         {
             this.hiloService = hiloService;
@@ -43,6 +45,7 @@ namespace WebApp.Controllers
             this.htmlEncoder = htmlEncoder;
             this.context = chanContext;
             this.hashService = hashService;
+            this.rchanHub = rchanHub;
             this.mediaService = mediaService;
         }
 
@@ -78,6 +81,7 @@ namespace WebApp.Controllers
 
             comentario.Contenido = RemplazarTagsPorLinks(comentario.Contenido);
             await comentarioService.Guardar(comentario);
+            await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoComentario", new ComentarioViewModel(comentario));
             
             var users = await context.Comentarios
                 .Where( c => comentariosRespondidos.Contains(c.Id) && c.UsuarioId != User.GetId())

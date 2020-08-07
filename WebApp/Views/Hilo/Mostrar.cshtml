@@ -9,7 +9,7 @@
         <div class="hilo-completo" r-id="@Model.Hilo.Id">
         <div class="contenido">
             <div class="panel">
-                <a href="/">/Pepe</a>
+                <a href="/">Roxed</a>
                 @{var categoria = Constantes.Categorias.First(c =>c.Id == Model.Hilo.CategoriaId);}
                 <a href="/@categoria.NombreCorto">/@categoria.Nombre</a>
             </div>
@@ -34,7 +34,7 @@
             </div> *@
 
             <div class="cuerpo">
-                <a class="imagen" href="imagen.png" >
+                <a class="imagen" href="/@Model.Hilo.Media.Url" >
                     <img src="@Model.Hilo.Media.VistaPrevia" alt="" srcset="">
                 </a>
                 <h1>@Model.Hilo.Titulo</h1>
@@ -59,13 +59,16 @@
             </form>
 
             <div class="contador-comentarios panel">
-                <h3>Comentarios (@Model.Comentarios.Count)</h3>
+                <h3>Comentarios (@Model.Comentarios.Count) </h3>
                 <i class="fe fe-folder"></i>
                 <a href="#@Model.Comentarios.LastOrDefault()?.Id ">
                     <i class="fe fe-arrow-down" ></i>
                 </a>
             </div>
             <div class="lista-comentarios">
+                <div class="panel" style="padding:0">
+                    <button onclick="HubHilo" class="btn">Cargar (5) nuevos comentarios</button>
+                </div>
                 @foreach (var comentario in Model.Comentarios)
                 {
                     <div class="comentario" r-id="@comentario.Id" id="@comentario.Id">
@@ -130,5 +133,6 @@
     <script>
         const formComentario = new FormComentario()
         formComentario.inicializar();
+        HubHilo.inicializar("@Model.Hilo.Id")
     </script>
 }
