@@ -4,46 +4,53 @@
     ViewData["Title"] = $"RChan {Model.Hilo.Titulo}";
 }
 
+
+<script>
+    window.data = @Json.Serialize(Model)
+</script> 
 <main>
+    <div class="debug">
+        @Json.Serialize(Model)
+    </div>
     @* v2 *@
         <div class="hilo-completo" r-id="@Model.Hilo.Id">
-        <div class="contenido">
-            <div class="panel">
-                <a href="/">Roxed</a>
-                @{var categoria = Constantes.Categorias.First(c =>c.Id == Model.Hilo.CategoriaId);}
-                <a href="/@categoria.NombreCorto">/@categoria.Nombre</a>
-            </div>
-            <div class="panel acciones">
-                <div class="debug" style="bottom: 200px;height: fit-content;"> @Json.Serialize(Model.Acciones)</div>
-                @{var clase = Model.Acciones.Favorito? "naranja":"fantasma";}
-                <span class="@clase" r-accion="favoritos" r-id="@Model.Hilo.Id"> <i class="fe fe-star"></i>Favorito</span>
-
-                @{clase = Model.Acciones.Seguido? "naranja":"fantasma";}
-                <span class="@clase" r-accion="seguidos" r-id="@Model.Hilo.Id"> <i class="fe fe-eye" ></i>Seguido</span>
-
-                @{clase = Model.Acciones.Hideado? "naranja":"fantasma";}
-                <span class="@clase" r-accion="ocultos" r-id="@Model.Hilo.Id"> <i class="fe fe-eye-off" ></i>Oculto</span>
-
-                <span> <i class="fe fe-flag" ></i>Denunciar</span>
-
-                <span>@Model.Hilo.Creacion.RelativeString()</span>
-            </div>
-            @* <div class="panel encuesta">
-                <span class="opcion">Viva Peron</span>
-                <span class="opcion">Muerte al peronismo</span>
-            </div> *@
-
-            <div class="cuerpo">
-                <a class="imagen" href="/@Model.Hilo.Media.Url" >
-                    <img src="@Model.Hilo.Media.VistaPrevia" alt="" srcset="">
-                </a>
-                <h1>@Model.Hilo.Titulo</h1>
-                <div class="texto">
-                    @Model.Hilo.Contenido
+            <div class="contenido">
+                <div class="panel">
+                    <a href="/">Roxed</a>
+                    @{var categoria = Constantes.Categorias.First(c =>c.Id == Model.Hilo.CategoriaId);}
+                    <a href="/@categoria.NombreCorto">/@categoria.Nombre</a>
                 </div>
-            </div>
+                <div class="panel acciones">
+                    <div class="debug" style="bottom: 200px;height: fit-content;"> @Json.Serialize(Model.Acciones)</div>
+                    @{var clase = Model.Acciones.Favorito? "naranja":"fantasma";}
+                    <span class="@clase" r-accion="favoritos" r-id="@Model.Hilo.Id"> <i class="fe fe-star"></i>Favorito</span>
 
-        </div>
+                    @{clase = Model.Acciones.Seguido? "naranja":"fantasma";}
+                    <span class="@clase" r-accion="seguidos" r-id="@Model.Hilo.Id"> <i class="fe fe-eye" ></i>Seguido</span>
+
+                    @{clase = Model.Acciones.Hideado? "naranja":"fantasma";}
+                    <span class="@clase" r-accion="ocultos" r-id="@Model.Hilo.Id"> <i class="fe fe-eye-off" ></i>Oculto</span>
+
+                    <span> <i class="fe fe-flag" ></i>Denunciar</span>
+
+                    <span>@Model.Hilo.Creacion.RelativeString()</span>
+                </div>
+                @* <div class="panel encuesta">
+                    <span class="opcion">Viva Peron</span>
+                    <span class="opcion">Muerte al peronismo</span>
+                </div> *@
+
+                <div class="cuerpo">
+                    <a class="imagen" href="/@Model.Hilo.Media.Url" >
+                        <img src="@Model.Hilo.Media.VistaPrevia" alt="" srcset="">
+                    </a>
+                    <h1>@Model.Hilo.Titulo</h1>
+                    <div class="texto">
+                        @Model.Hilo.Contenido
+                    </div>
+                </div>
+
+            </div>
         <!--  -->
         <div class="comentarios">
             @* Formulario para crear un comentario *@
@@ -57,64 +64,23 @@
                     <button onclick="formComentario.crear(event)" class="btn">Comentar</button>
                 </div>
             </form>
-
+            <div class="panel">
+                <h3 id="jijo" 
+                x-text="`Comentarios(${noCargados.length})`" 
+                @@click="noCargados.push()" 
+                x-data="HubHilo.data()"><span onclick="HubHilo.cargarNuevosComentarios()" style="visibility: hidden;" id="cargar-nuevos">+ 5 nuevos</span></h3>
+            </div>
             <div class="contador-comentarios panel">
-                <h3>Comentarios (@Model.Comentarios.Count) </h3>
+                <h3>Comentarios (@Model.Comentarios.Count) <span onclick="HubHilo.cargarNuevosComentarios()" style="visibility: hidden;" id="cargar-nuevos">+ 5 nuevos</span></h3>
                 <i class="fe fe-folder"></i>
                 <a href="#@Model.Comentarios.LastOrDefault()?.Id ">
                     <i class="fe fe-arrow-down" ></i>
                 </a>
             </div>
             <div class="lista-comentarios">
-                <div class="panel" style="padding:0">
-                    <button onclick="HubHilo" class="btn">Cargar (5) nuevos comentarios</button>
-                </div>
                 @foreach (var comentario in Model.Comentarios)
                 {
-                    <div class="comentario" r-id="@comentario.Id" id="@comentario.Id">
-                        <div class="color" style="background: @comentario.Color;">ANON</div>
-                        <div class="header">
-                            @if(comentario.EsOp) {<span class="nick tag">OP</span>}
-                            <span class="nick">Anonimo</span>
-                            <span class="rol tag">anon</span>
-                            <span class="id tag">@comentario.Id</span>
-                            <span class="tiempo">@comentario.Creacion.RelativeString()</span>
-                            <span onclick="ComentarioMenu.mostrarMenu(event)" class=""><i class="fe fe-more-vertical relative"></i></span>
-                        </div>
-                        <div class="respuestas">
-                            
-                        </div>
-                        @if(comentario.Media != null){
-                            <div class="contenido">
-                                <div class="media">
-                                    @if(comentario.Media.Tipo == MediaType.Imagen) {
-                                        @if(comentario.Media.EsGif){
-
-                                            <a href="/@comentario.Media.Url" target="_blank">
-                                                <img src="/@comentario.Media.Url" alt="" srcset="">
-                                            </a>
-                                        }else{
-                                            <a href="/@comentario.Media.Url" target="_blank">
-                                                <img src="/@comentario.Media.VistaPrevia" alt="" srcset="">
-                                            </a>
-                                        }
-                                    }
-                                </div>
-                                <div class="texto">
-                                    @Html.Raw(comentario.Contenido)
-                                </div>
-                            </div>
-                        }
-                        else {
-                            <div class="contenido">
-                                <div class="texto">
-                                    @Html.Raw(comentario.Contenido)
-                                </div>
-                            </div>
-                        }
-
-                    </div>
-                    
+                    <partial name="_ComentarioPartial" model="comentario"></partial>
                 }
 
             </div>
@@ -133,6 +99,6 @@
     <script>
         const formComentario = new FormComentario()
         formComentario.inicializar();
-        HubHilo.inicializar("@Model.Hilo.Id")
+        @* HubHilo.inicializar("@Model.Hilo.Id") *@
     </script>
 }

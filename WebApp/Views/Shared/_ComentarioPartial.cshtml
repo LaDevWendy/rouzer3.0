@@ -1,0 +1,38 @@
+@model ComentarioViewModel
+<div class="comentario" r-id="@Model.Id" id="@Model.Id">
+    <div class="color" style="background: @Model.Color;">ANON</div>
+    <div class="header">
+        @if(Model.EsOp) {<span class="nick tag">OP</span>}
+        <span class="nick">Gordo</span>
+        <span class="rol tag">anon</span>
+        <span class="id tag">@Model.Id</span>
+        <span class="tiempo">@Model.Creacion.RelativeString()</span>
+        <span onclick="ComentarioMenu.mostrarMenu(event)" class=""><i class="fe fe-more-vertical relative"></i></span>
+    </div>
+    <div class="respuestas">
+    </div>
+        <div class="contenido">
+
+            @if(Model.Media != null){
+                <div class="media">
+                    @if(Model.Media.Tipo == MediaType.Imagen) {
+                        @if(Model.Media.EsGif)
+                        {
+                            <a href="/@Model.Media.Url" target="_blank">
+                                <img src="/@Model.Media.Url" alt="" srcset="">
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="/@Model.Media.Url" target="_blank">
+                                <img src="@Model.Media.VistaPrevia" alt="" srcset="">
+                            </a>
+                        }
+                }
+                </div>
+            }
+            <div class="texto">
+                @Html.Raw(Model.Contenido)
+            </div>
+        </div>
+</div>

@@ -161,11 +161,11 @@ namespace Data.Migrations
                     b.Property<DateTimeOffset>("Creacion")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Estado")
-                        .HasColumnType("integer");
-
                     b.Property<string>("HiloId")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("HiloModelId")
                         .HasColumnType("text");
 
                     b.Property<IPAddress>("Ip")
@@ -179,6 +179,8 @@ namespace Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HiloModelId");
 
                     b.HasIndex("MediaId");
 
@@ -329,6 +331,25 @@ namespace Data.Migrations
                     b.ToTable("Notificaciones");
                 });
 
+            modelBuilder.Entity("Modelos.Sticky", b =>
+                {
+                    b.Property<string>("HiloId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Expiracion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Global")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Importancia")
+                        .HasColumnType("integer");
+
+                    b.HasKey("HiloId");
+
+                    b.ToTable("Stickies");
+                });
+
             modelBuilder.Entity("Modelos.UsuarioModel", b =>
                 {
                     b.Property<string>("Id")
@@ -446,6 +467,10 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Modelos.ComentarioModel", b =>
                 {
+                    b.HasOne("Modelos.HiloModel", null)
+                        .WithMany("Comentarios")
+                        .HasForeignKey("HiloModelId");
+
                     b.HasOne("Modelos.MediaModel", "Media")
                         .WithMany()
                         .HasForeignKey("MediaId");

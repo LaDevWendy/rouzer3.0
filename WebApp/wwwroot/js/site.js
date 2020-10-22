@@ -243,7 +243,7 @@ class FormHilo {
     }
 }
 
-FormHilo.inicializar();
+// FormHilo.inicializar();
 ComentarioFlotante.inicializar();
 
 class Nav {
@@ -386,53 +386,54 @@ class HubHome {
 
 HubHome.inicializar();
 
+function htmlADom(html) {
+    return (new DOMParser()).parseFromString(html,'text/html').body.children[0]
+}
+
 class HubHilo {
     static connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
+    static cargarNuevos = document.getElementById("cargar-nuevos")
     static comentarios = []
     static hiloId
     static inicializar(hiloId) {
-        this.hiloId = hiloId
-        this.connection.on("NuevoComentario", HubHilo.onComentarioCreado)
-        this.connection.start().then(() => {
+        HubHilo.hiloId = hiloId
+        HubHilo.connection.on("NuevoComentario", HubHilo.onComentarioCreado)
+        HubHilo.connection.start().then(() => {
             console.log("Conectado");
-            return this.connection.invoke("SubscribirseAHilo", hiloId)
+            return HubHilo.connection.invoke("SubscribirseAHilo", hiloId)
             
         }).catch(console.error)
     }
 
     static onComentarioCreado(comentario) {
         console.log("Comentario Creado")
-        // let listaHilos = document.querySelector(".hilo-list")
-        // listaHilos.insertBefore(HubHilo.comentarioADom(hilo), listaHilos.childNodes[0]);
-         console.log(comentario)
-    }
-
-    static comentarioADom(hilo) {
-        console.log(hilo);
-        
-        var dp = new DOMParser()
-        return dp.parseFromString( `<div class="comentario" r-id="H85I78B6" id="H85I78B6">
-        <div class="color" style="background: red;">ANON</div>
-        <div class="header">
-            <span class="nick">Anonimo</span>
-            <span class="rol tag">anon</span>
-            <span class="id tag">H85I78B6</span>
-            <span class="tiempo">17h</span>
-            <span onclick="ComentarioMenu.mostrarMenu(event)" class=""><i class="fe fe-more-vertical relative"></i></span>
-        </div>
-        <div class="respuestas"><a href="#R8H9I8ZS" class="restag" r-id="R8H9I8ZS">&gt;&gt;R8H9I8ZS</a></div>
-            <div class="contenido">
-                <div class="texto">
-                    Hola pepe
-                </div>
-            </div>
-
-    </div>`, 'text/html').body.children[0]
+        HubHilo.comentarios.push(htmlADom(comentario))
+        HubHilo.cargarNuevos.style.visibility = "visible"
+        HubHilo.cargarNuevos.innerHTML = `+ ${HubHilo.comentarios.length} nuevos`
+        console.log(comentario)
+        $("#jijo").click()
     }
 
     static cargarNuevosComentarios() {
+        $(".lista-comentarios").prepend(...HubHilo.comentarios.reverse());
+        let contador = document.querySelector(".contador-comentarios h3")
 
+        let cantidadAnterior = contador.innerHTML.match(/\d+/)[0]
+        contador.innerHTML = contador.innerHTML.replace(cantidadAnterior, Number(cantidadAnterior) + HubHilo.comentarios.length)
+        HubHilo.comentarios = []
+        
+        
+        Respuestas.inicializar();
+        ComentarioFlotante.inicializar();
+        HubHilo.cargarNuevos.style.visibility = "hidden"
+ 
+    }
+    static data() {
+        return {
+            noCargados: HubHilo.comentarios
+        }
     }
 }
+
 
 HubHome.inicializar();

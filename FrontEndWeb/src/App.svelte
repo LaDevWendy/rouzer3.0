@@ -1,0 +1,89 @@
+<script>
+	import Comentarios from './components/Comentarios/Comentarios.svelte'
+	import Acciones from './components/Acciones.svelte'
+	import dataEjemplo from './data'
+	import Tiempo from './components/Tiempo.svelte'
+	import {Button,Dialog, Checkbox, Textfield} from 'svelte-mui'
+
+	import config from './config'
+	import RChanClient from './RChanClient';
+	import ErrorValidacion from './components/ErrorValidacion.svelte'
+	import globalStore from './globalStore'
+	import Dialogo from './components/Dialogo.svelte'
+
+	let data = window.data || dataEjemplo
+	let {hilo, comentarios, acciones} = data;
+
+	let dialogs =  {
+		sticky : {
+			global: true,
+			importancia: 1,
+			async accion() {
+					return await  RChanClient.añadirSticky(hilo.id, dialogs.sticky.global, dialogs.sticky.importancia )
+			}
+		},
+		categoria: {categoriaId: hilo.categoriaId}
+	}
+
+	let selected = true
+</script>
+<div class="hilo-completo" r-id={hilo.id}>
+	<div class="contenido">
+		<div class="panel">
+			<a href="/">Roxed</a>
+			<a href="/{config.getCategoriaById(hilo.categoriaId).nombreCorto}">/{config.getCategoriaById(hilo.categoriaId).nombre}</a>
+		</div>
+		<Acciones bind:hilo bind:acciones/>
+
+		{#if $globalStore.usuario.esMod}
+			<div class="acciones-mod panel">
+
+				<Dialogo textoActivador="Sticky" titulo="Configurar Sticky" accion = {dialogs.sticky.accion}>
+					<div slot="body">
+						<p>(Los stickies no globales solo aparecen en su categoria)</p>
+						<Checkbox bind:checked={dialogs.sticky.global}>
+							<span>Global</span>
+						</Checkbox>
+						<p>(Un sticky de importancia 2 sale primero que un sticky de importancia 1 )</p>
+						<Textfield
+							autocomplete="off"
+							label="Importancia"
+							type="number"
+							required
+							bind:value = {dialogs.sticky.importancia}
+							message=""
+						/>
+					</div>
+				</Dialogo>
+				
+				<Dialogo textoActivador="Categoria" titulo="Cambiar categoria" accion = {() => RChanClient.cambiarCategoria(hilo.id, dialogs.categoria.categoriaId)}>
+					<div slot="body">
+						<span asp-validation-for="CategoriaId"></span>
+						<select bind:value={dialogs.categoria.categoriaId}  name="categoria">
+							<option value="-1" selected="selected" disabled="disabled">Categoría</option>
+							{#each config.categorias as c}
+							<option value="{c.id}">{c.nombre}</option>
+							{/each}
+						</select>
+						
+					</div>
+				</Dialogo>
+				<Dialogo textoActivador="Eliminar" titulo="Eliminar hilo" accion = {() => RChanClient.borrarHilo(hilo.id)}>
+					<div slot="body">
+						¿Estas seguro de que queres domar el hilo?
+					</div>
+				</Dialogo>
+
+			</div>
+		{/if}
+
+		<div class="cuerpo">
+			<a class="imagen" href="/{hilo.media.url}">
+				<img src="{hilo.media.vistaPrevia}" alt="" srcset="" />
+			</a>
+			<h1>{hilo.titulo}</h1>
+			<div class="texto">{hilo.contenido}</div>
+		</div>
+	</div>
+	<Comentarios bind:comentarios {hilo}/>
+</div>

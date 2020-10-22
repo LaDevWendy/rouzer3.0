@@ -26,10 +26,10 @@ namespace WebApp.Controllers
         }
 
         [HttpGet("Notificacion/{id}")]
-        public async Task<IActionResult> Index(string id)
+        public async Task<IActionResult> Index(string id, string hiloId="", string comentarioId="")
         {
             var noti = await _context.Notificaciones.AsNoTracking().FirstOrDefaultAsync(n => n.Id == id);
-            if(noti is null) Redirect("/");
+            if(noti is null) return Redirect($"/Hilo/{hiloId}/#{comentarioId}");
 
             var query =  _context.Notificaciones.AsQueryable();
                 if(noti.Tipo == NotificacionType.Comentario)

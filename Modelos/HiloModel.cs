@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Modelos
 {
@@ -8,5 +9,14 @@ namespace Modelos
         public string Contenido { get; set; }
         public int CategoriaId { get; set; }
         public DateTimeOffset Bump { get; set; }
+        public List<ComentarioModel> Comentarios { get; set; }
+        public HiloEstado Estado { get; set; }
+
+    }
+
+    public enum HiloEstado {
+        Normal,
+        Archivado,
+        Eliminado,
     }
 }

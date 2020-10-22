@@ -1,18 +1,60 @@
 ﻿@inject RChanContext _context
+@using Microsoft.Extensions.DependencyInjection;
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @* <meta name="viewport" content="width=device-width, initial-scale=1.0" /> *@
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+
     <title>RChan @ViewData["Title"]</title>
     @* <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_o5hd5vvqpoqiwwmi.css"> *@
-
-    @* <link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v3.0.1/dist/mini-default.min.css"> *@
 
             <!-- ICONOS -->
     @* <link rel="stylesheet" href="https://cdn.rawgit.com/luizbills/feather-icon-font/v4.7.0/dist/feather.css"> *@
     <link rel="stylesheet" href="~/iconos/iconos.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/js/css/bundle.css" />
+
+    @{
+        if (Context.User != null)
+        {
+            // The example uses base class, IdentityUser, yours may be called 
+            // ApplicationUser if you have added any extra fields to the model
+            var userManager = Context.RequestServices
+                .GetRequiredService<UserManager<UsuarioModel>>();
+            var signInManager = Context.RequestServices
+                .GetRequiredService<SignInManager<UsuarioModel>>();
+
+            UsuarioModel user = await userManager.GetUserAsync(Context.User);
+
+            if(signInManager.IsSignedIn(Context.User))
+            {
+                await signInManager.RefreshSignInAsync(user);
+            }
+        }
+
+    }
+
+    @{
+        var globalState = new {
+            Usuario = new {
+                EstaAutenticado = User.Identity.IsAuthenticated,
+                UserName = User.Identity.Name,
+                @* Role = User.Claims.FirstOrDefault(c => c.ValueType == "Role").Value, *@
+                EsAdmin = User.EsAdmin(),
+                EsMod = User.EsMod(),
+                EsAyudante = User.EsAyudante(),
+            }
+        };
+    }
+    <script>
+        window.config = {
+            categorias: @Json.Serialize(Constantes.Categorias)
+        }
+        window.globalState = @Json.Serialize(globalState)
+    </script>
 
     <script>
         @if(User.Identity.IsAuthenticated) {
@@ -33,27 +75,8 @@
             <p>@cliam.Type: @cliam.Value</p>
         }
     </div>
-    <partial name="_HiloFormPartial" model="new CrearHiloViewModel()"></partial>
-    <partial name="_SessionForm" model="new RegistroVM()"></partial>
- 
-    <header>
-        <div class="nav-principal">
-        <a href="/"><h3>Roxed</h3></a>
-    
-        <div class="nav-botones">
 
-            @* categorias *@
-            <span class="nav-boton drop-btn">
-                <span class="fe fe-command"></span>
-                 <ul class="panel menu1 abs lista-nav drop-menu">
-                    @foreach (var c in Constantes.Categorias)
-                    {
-                        <a href="/@c.NombreCorto"><li>@c.Nombre</li></a>
-                    }           
-                </ul>
-            </span>
-
-            @* Notificaciones *@
+       @* Notificaciones *@
             @if(User.Identity.IsAuthenticated){
 
 
@@ -61,6 +84,7 @@
                     .Where(n => n.UsuarioId == User.GetId())
                     .Select(n => new NotificacionViewModel{
                         Id = n.Id,
+                        HiloId = n.HiloId,
                         HiloTitulo = _context.Hilos.First(h => h.Id == n.HiloId).Titulo,
                         HiloImagen = _context.Medias.First(m => m.Id == _context.Hilos.First(h => h.Id == n.HiloId).MediaId).VistaPreviaCuadrado,
                         ComentarioId = n.ComentarioId,
@@ -69,81 +93,16 @@
                     })
                     .AsNoTracking()
                     .ToListAsync();
+
+                <script>
+                    window.notificaciones = @Json.Serialize(notificaciones)
+                </script>
                 
                 <div class="debug notdi-debug">
                     @Json.Serialize(notificaciones)
                 </div>
-
-                <span class="nav-boton drop-btn" >
-                    <span class="fe fe-bell">
-                    </span>
-                    <div class="noti-cont">@notificaciones.Sum(n => n.Conteo)</div>
-                    <ul class="notis panel drop-menu abs lista-nav menu1" style="visibility: visible!important;">
-                        @foreach (var noti in notificaciones)
-                        {
-                            <a href="/Notificacion/@noti.Id">
-                                <li class="noti">
-                                    <img src="@noti.HiloImagen" alt="">
-                                    @if(noti.Tipo == NotificacionType.Comentario){
-                                        <span>@noti.Conteo Nuevos Comentarios en : @noti.HiloTitulo</span>
-                                    }
-                                    else{
-                                        <span>@noti.Conteo Respondieron a tu comentario : @noti.ComentarioId</span>
-                                    }
-                                </li>
-                            </a>
-                        }
-                            <a href="/Notificacion/Limpiar">
-                                <li class="noti" style="justify-content: center;">Limpiar todas</li>
-                            </a>
-                    </ul>
-                </span>
-            }
-
-            @* Usuario *@
-            <span class="nav-boton"onclick="() => desplegarPanel(3)" >
-                <span class="fe fe-user"></span>
-            </span>
-
-            @* Crear hilo *@
-            <span class="nav-boton"onclick="FormHilo.mostrar(event)" >
-                <span class="fe fe-plus-square"></span>
-            </span>
-        </div>
-
-        @* Notificaciones *@
-        @* else if(panelDesplegado == 2) {
-            <ul class="categorias lista notificaciones">
-                @foreach (var noti in notificaciones)
-                {
-                    <a class="notificacion" href="/hilo/@noti.IdHilo#@noti.IdComentario">
-                        <li>
-                            <img src="@noti.Imagen" alt="">
-                            @if (noti.Tipo == Notificacion.TipoNoti.Comentario)
-                            {
-                                <span><strong>Han comentado tu hilo</strong> @noti.Titulo</span>
-                            }
-                            else if (noti.Tipo == Notificacion.TipoNoti.Respuesta)
-                            {
-                                <span><strong>Han respondido tu comentario @noti.IdComentario</strong> @noti.Titulo</span>
-                            }
-
-                        </li>
-                    </a>
-                }
-
-            </ul>
-        } *@
-
-    </div>
-    </header>
-    <nav class="panel-hilos panel">
-        <span>Hilos: </span>
-        <a href="/Mis/Creados"><span>Creados</span></a>
-        <a href="/Mis/Favoritos"><span>Favoritos</span></a>
-        <a href="/Mis/Seguidos"><span>Seguidos</span></a>
-        <a href="/Mis/Ocultos"><span>Ocultos</h3></a>
-    </nav>
+    }
+    <div id="svelte-navbar"></div>
         @RenderBody()
     </div>
 
@@ -154,11 +113,12 @@
     </footer>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
-    <partial name="_ValidationScriptsPartial" />
+    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script> *@
+
+    @* <partial name="_ValidationScriptsPartial" /> *@
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @* <script src="~/svelte/public/build/bundle.js"></script> *@
+    <script src="~/js/bundle.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

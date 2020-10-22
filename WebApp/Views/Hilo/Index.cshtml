@@ -5,10 +5,16 @@
 }
 
 <main>
+    <script>
+        window.hiloList = @Json.Serialize(Model)
+    </script>
+    <div id="svelte-index"></div>
+
+
+@* 
     <ul class="hilo-list">
         @foreach (var hilo in Model.Hilos)
         {
-            @* V2 *@
             <li class="hilo">
                 @{ var media = hilo.Media?.VistaPreviaCuadrado ?? ""; }
 
@@ -35,5 +41,5 @@
                 </a>
             </li>
         }
-    </ul>
+    </ul> *@
 </main>

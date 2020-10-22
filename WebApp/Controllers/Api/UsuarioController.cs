@@ -71,6 +71,18 @@ namespace WebApp.Controllers
                 return BadRequest(createResult.Errors);
             }
         }
+        [HttpPost]
+        public async Task<ActionResult> Login( RegistroVM model)
+        {
+            var user = await userManager.Users.FirstOrDefaultAsync(u => u.UserName == model.Nick);
+            if(user == null) ModelState.AddModelError("Nick", "No se encontro el usuario");
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+            var result = await signInManager.PasswordSignInAsync(user, model.Contraseña, true, false);
+            ModelState.AddModelError("Contraseña","La constraseña es incorrecta");
+            if(result.Succeeded) return  Ok(new ApiResponse("Logeadito"));
+            return BadRequest(ModelState);
+        }
     }
     
     public class RegistroVM

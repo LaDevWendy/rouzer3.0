@@ -45,7 +45,7 @@ namespace Servicios
             var hilo = await _context.Hilos
                 .FirstOrDefaultAsync(h =>
                 h.Id == id &&
-                (h.Estado != CreacionEstado.Oculto || mostrarOcultos));
+                (h.Estado ==  HiloEstado.Normal || mostrarOcultos));
 
             if (hilo is null) return null;
             return new HiloViewModel(hilo);
@@ -59,7 +59,7 @@ namespace Servicios
                 .Include(h => h.Media)
                 .FirstOrDefaultAsync(h =>
                 h.Id == id &&
-                (h.Estado != CreacionEstado.Oculto || mostrarOcultos));
+                (h.Estado == HiloEstado.Normal || mostrarOcultos));
 
             if (hilo is null) return null;
 
@@ -86,15 +86,28 @@ namespace Servicios
 
         public async Task<List<HiloViewModel>> GetHilosOrdenadosPorBump(GetHilosOptions opciones)
         {
+            // Mejorar esto
             var hilos =  await _context.Hilos
                 .Where(h => opciones.CategoriasId.Contains(h.CategoriaId) && 
-                !_context.HiloAcciones.Any(a => a.HiloId ==  h.Id && a.UsuarioId == opciones.UserId && a.Hideado))
+                !_context.HiloAcciones.Any(a => a.HiloId ==  h.Id && a.UsuarioId == opciones.UserId && a.Hideado)
+                && _context.Stickies.FirstOrDefault( s => s.HiloId == h.Id) == null)
+                .Where(h => h.Estado != HiloEstado.Eliminado || opciones.MostrarBorrados)
                 .OrderByDescending(h => h.Bump)
                 .Take(opciones.Cantidad)
-                .AViewModel(_context)
-                .ToListAsync();
+                .AViewModel(_context).ToListAsync();
+            
+            if(!opciones.IncluirStickies) return hilos;
 
-            return hilos;
+            var hilosStickies = await  _context.Stickies
+                .Where(s => s.Global)
+                .Select(s => _context.Hilos.FirstOrDefault(h => h.Id == s.HiloId))
+                .AViewModel(_context).ToListAsync();
+            
+            var stickies = await _context.Stickies.ToListAsync();
+            
+            hilosStickies.ForEach(h => h.Sticky = stickies.First(s => s.HiloId == h.Id).Importancia);
+
+            return  hilosStickies.OrderByDescending(h => h.Sticky).Concat(hilos).ToList();
         }
 
         public async Task<string> GuardarHilo(HiloModel hilo)
@@ -114,12 +127,13 @@ namespace Servicios
 
     public class GetHilosOptions
     {
-        public int Cantidad { get; set; } = 100;
+        public int Cantidad { get; set; } = 32;
         public int[] CategoriasId { get; set; } = Constantes.CantegoriasVisibles
             .Select(e => e.Id).ToArray();
         public int[] IdsExcluidas { get; set; } = new int[0];
-        public bool IncluirStickis { get; set; } = false;
+        public bool IncluirStickies { get; set; } = false;
         public string UserId { get; set; }
+        public bool MostrarBorrados { get; set; } = false;
     }
 
      public static class HiloExtensions

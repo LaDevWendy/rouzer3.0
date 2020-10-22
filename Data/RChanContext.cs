@@ -28,6 +28,7 @@ namespace Data
         public DbSet<UsuarioModel> Usuarios { get; set; }
         public DbSet<NotificacionModel> Notificaciones{ get; set; }
         public DbSet<DenunciaModel> Denuncias { get; set; }
+        public DbSet<Sticky> Stickies { get; set; }
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

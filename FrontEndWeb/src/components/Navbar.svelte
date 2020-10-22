@@ -1,0 +1,125 @@
+<script>
+    import {Ripple} from 'svelte-mui'
+    import config from '../config'
+    import FormularioHilo from './Hilos/FormularioHilo.svelte'
+    import Notificaciones from './Notificaciones.svelte'
+    import MenuPrincipal from './MenuPrincipal.svelte'
+    import FormularioLogin from './FormularioLogin.svelte'
+    import globalStore from '../globalStore'
+    import MensajeRotativo from './MensajeRotativo.svelte'
+
+    export let notificaciones = window.notificaciones || []
+
+    let mostrarMenu = false
+    let mostrarFormularioHilo = false
+    let mostrarCategorias =  false
+    let mostrarNotificaciones =  false
+</script>
+<header>
+    <div class="nav-principal">
+        <span on:click={() => mostrarMenu = !mostrarMenu}>
+            <icon class="fe fe-menu"/>
+            <Ripple/>
+        </span>
+        <a href="/">
+            <h3>ROSED</h3>
+            <Ripple/>
+        </a>
+        <MensajeRotativo/>
+
+        <div class="nav-botones" style="position: relative;">
+
+            <!-- <span class="nav-boton drop-btn">
+                <span class="fe fe-command" on:click={() => mostrarCategorias = !mostrarCategorias}></span>
+                {#if mostrarCategorias}
+                    <ul class="panel menu1 abs lista-nav drop-menu" style="visibility: visible;"
+                    on:mouseleave={() => mostrarCategorias = false}
+                    >
+                        {#each config.categorias as c (c.id)}
+                        <a href="/{c.nombreCorto}">
+                            <li>{c.nombre}</li>
+                        </a>
+                        {/each}
+                    </ul>
+                {/if}
+            </span>
+
+            
+            {#if $globalStore.usuario.estaAutenticado}
+            <Notificaciones bind:notificaciones/>
+            {:else}
+            <span class="nav-boton" on:click={()=> $globalStore.mostrarLogin = true}>
+                <span class="fe fe-user"></span>
+            </span>
+            {/if}
+            
+            
+        </div> -->
+            <div class="debug notdi-debug">
+                {notificaciones}
+            </div>
+            {#if $globalStore.usuario.estaAutenticado}
+            <!-- <Notificaciones bind:notificaciones/> -->
+            {:else}
+            <span class="nav-boton" on:click={()=> $globalStore.mostrarLogin = true}>
+                <Ripple/>
+                <span class="fe fe-user">
+                </span>
+            </span>
+            {/if}
+            
+        </div>
+        <span class="nav-boton crear-hilo-boton" on:click={() => mostrarFormularioHilo = true}>
+            <span style="width:max-content; margin-right: 6px">Crear Hilo</span>
+            <span class="fe fe-plus"></span>
+            <Ripple/>
+        </span>
+        <FormularioHilo bind:mostrar ={mostrarFormularioHilo}/>
+    <MenuPrincipal bind:mostrar={mostrarMenu}/>
+    <FormularioLogin/>
+</header>
+
+<style>
+    /*NAVBAR*/
+
+.nav-principal {
+    border-top: solid var(--color5) 2px;
+    margin-bottom: 10px;
+}
+
+.nav-principal, .nav-principal a, .nav-boton {
+    display: flex;
+    align-items: center;
+}
+.nav-principal > {
+    flex: 1;
+}
+
+.nav-boton, .nav-principal a, .nav-principal icon {
+    height: 48px;
+    padding: 0 12px;
+}
+
+.nav-botones {
+  margin-left: auto;
+  align-self: center;
+  font-size: 16px;
+  display: flex;
+}
+.crear-hilo-boton{
+    background: var(--color5);
+}
+.nav-boton {
+  color: white;
+  margin-left: 16px;
+  display: inline-flex;
+  position: relative;
+}
+.nav-boton .fe:hover {
+  transform: scale(1.33);
+}
+
+.nav-boton .fe:active {
+  transform: scale(1.22);
+}
+</style>

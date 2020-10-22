@@ -23,5 +23,6 @@ namespace WebApp
     public interface IRchanHub
     {
         Task HiloCreado(HiloModel hilo);
+        Task HiloComentado(string hiloId, string comentario="");
     }
 }

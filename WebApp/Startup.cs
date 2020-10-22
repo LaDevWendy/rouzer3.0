@@ -176,11 +176,11 @@ namespace WebApp
             return user.HasClaim("Role", "mod")
                 || user.HasClaim("Role", "admin");
         }
-        public static bool EsJanitor(this ClaimsPrincipal user)
+        public static bool EsAyudante(this ClaimsPrincipal user)
         {
             return user.HasClaim("Role", "mod")
                 || user.HasClaim("Role", "admin")
-                || user.HasClaim("Role", "janitor");
+                || user.HasClaim("Role", "ayudante");
         }
         public static string GetId(this ClaimsPrincipal user)
         {

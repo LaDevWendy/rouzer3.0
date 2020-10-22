@@ -1,0 +1,11 @@
+@model HiloFullViewModel
+@inject IMediaService mediaService
+@{
+    ViewData["Title"] = $"RChan {Model.Hilo.Titulo}";
+}
+
+
+<script>
+    window.data = @Json.Serialize(Model)
+</script> 
+<div id="svelte"></div>

@@ -45,6 +45,10 @@ namespace WebApp.Controllers
         [Authorize]
         public async Task<ActionResult<ApiResponse>> Crear([FromForm] CrearHiloViewModel vm)
         {
+            bool existeLaCategoria = Constantes.Categorias.Any(c => c.Id == vm.CategoriaId);
+
+            if(!existeLaCategoria) ModelState.AddModelError("Categoria", "Ay no existe la categoria");
+
             if (!ModelState.IsValid) return BadRequest(ModelState);
             // Chequeuear si es flood
             // Chequeuear si esta Baneado

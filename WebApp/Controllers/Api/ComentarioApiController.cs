@@ -16,11 +16,12 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.SignalR;
+using WebApp.Otros;
 
 namespace WebApp.Controllers
 {
     [ApiController, Route("api/Comentario/{action}")]
-    public class ComentarioApiControlelr : ControllerBase
+    public class ComentarioApiControlelr : Controller
     {
         private readonly IHiloService hiloService;
         private readonly IComentarioService comentarioService;
@@ -81,7 +82,15 @@ namespace WebApp.Controllers
 
             comentario.Contenido = RemplazarTagsPorLinks(comentario.Contenido);
             await comentarioService.Guardar(comentario);
-            await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoComentario", new ComentarioViewModel(comentario));
+
+
+            ComentarioViewModel model = new ComentarioViewModel(comentario);
+            model.EsOp = hilo.UsuarioId == User.GetId();
+            //var html = await this.RenderViewAsync("_ComentarioPartial", model, true);
+            // await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoComentario", html);
+
+             await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoComentario", model);
+             await rchanHub.Clients.Group("home").SendAsync("HiloComentado", hilo.Id, comentario.Contenido);
             
             (await context.Comentarios
                 .Where( c => comentariosRespondidos.Contains(c.Id) && c.UsuarioId != User.GetId())

@@ -22,6 +22,7 @@ namespace Modelos
 
         public string Titulo { get; set; }
         public string Id { get; set; }
+        public int Sticky { get; set; }
         public DateTimeOffset Bump { get; set; }
         public int CategoriaId { get; set; }
         public string Contenido { get; set; }
