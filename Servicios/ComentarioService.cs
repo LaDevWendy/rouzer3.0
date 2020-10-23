@@ -46,9 +46,12 @@ namespace Servicios
             _context.Comentarios.Add(comentario);
             await _context.SaveChangesAsync();
             
-            await db.Query("Hilos")
-                .Where("Id", comentario.HiloId)
-                .UpdateAsync(new { Bump = DateTimeOffset.Now});
+            if(!comentario.Contenido.Contains("gt;hide")) 
+            {
+                await db.Query("Hilos")
+                    .Where("Id", comentario.HiloId)
+                    .UpdateAsync(new { Bump = DateTimeOffset.Now});
+            }
         }
     }
 }
