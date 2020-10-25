@@ -6,6 +6,7 @@
     import globalStore from '../../globalStore'
     import { onMount } from 'svelte';
     import VirtualList from '@sveltejs/svelte-virtual-list';
+    import DialogoReporte from '../Dialogos/DialogoReporte.svelte';
 
     export let hilo
     export let comentarios
@@ -50,6 +51,15 @@
             return connection.invoke("SubscribirseAHilo", hilo.id)
             
         }).catch(console.error)
+
+    let mostrarReporte = false
+    let comentarioIdReporte = null
+    function onMostrarReporte(e) {
+        console.log(e);
+        mostrarReporte = true
+        comentarioIdReporte = e.detail.comentarioId
+
+    }
     
 		
 </script>
@@ -76,10 +86,14 @@
         {#each comentarios as comentario (comentario.id)}
             <li transition:fly|local={{y: -50, duration:250}}>
 
-                <Comentario bind:comentario {comentarios} comentariosDic = {diccionarioComentarios}/>
+                <Comentario on:reporte={onMostrarReporte} bind:comentario {comentarios} comentariosDic = {diccionarioComentarios}/>
             </li>
             {/each}
             
         </div>
+
+    <DialogoReporte bind:visible={mostrarReporte} hiloId={hilo.id} comentarioId = {comentarioIdReporte} tipo="comentario">
+        <button slot="activador">jeje</button>
+    </DialogoReporte>
 
 </div>

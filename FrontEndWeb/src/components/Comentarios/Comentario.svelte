@@ -1,6 +1,8 @@
 <script>
     import { onMount } from 'svelte'
-    import { Menu, Menuitem, Button, Icon } from 'svelte-mui';
+    import { createEventDispatcher } from 'svelte';
+    import {Menuitem, Button, Icon, Ripple } from 'svelte-mui';
+    import Menu from '../Menu.svelte'
     import comentarioStore from './comentarioStore'
     import { fade, blur, fly } from 'svelte/transition';
     
@@ -18,6 +20,10 @@
     let windowsWidh = window.screen.width
 
     let visible = !$globalStore.comentariosOcultos.has(comentario.id)
+
+    let dispatch = createEventDispatcher()
+
+    let mostrarMenu = false
 
     onMount(() => {
 
@@ -47,6 +53,10 @@
         visible = !visible
     }
 
+    let mostrarReporte = true
+
+    if(!Array.isArray(comentario.respuestas)) comentario.respuestas = []
+
 </script>
 
 <div bind:this={el} class="comentario {windowsWidh <= 400?"comentario-movil":""}" r-id="{comentario.id}" id="{comentario.id}">
@@ -55,33 +65,29 @@
         <a href="#{r}" class="restag" r-r="{r}"
             on:mouseover={() => mostrarRespuesta(r)}
             on:mouseleave={ocultarRespuesta}
-        >>>{r}</a>
+        >&gt;&gt;{r}</a> 
         {/each}
     </div    >
     <div class="color" style="background: {comentario.color};">ANON</div>
     <div class="header">
         {#if comentario.esOp} <span class="nick tag">OP</span>{/if}
         <span class="nick">Gordo</span>
-        <span class="rol tag">anon</span>
+        <!-- <span class="rol tag">anon</span> -->
         <span class="id tag" on:click={()=>$comentarioStore+= `>>${comentario.id}\n`}>{comentario.id}</span>
         <span class="tiempo"><Tiempo date={comentario.creacion}/></span>
 
-        <Menu origin="top right">
-            <div slot="activator">
-                <span onclick="" class=""><i
-                    class="fe fe-more-vertical relative"></i></span>
-            </div>
-        
-            <Menuitem on:click={toggle} >{visible?'Ocultar':'Mostrar  '}</Menuitem>
-            <Menuitem >Reportar</Menuitem>
-            {#if $globalStore.usuario.esMod}
-                <hr>
-                <Menuitem >Eliminar</Menuitem>
-            {/if}
+        <div>
+            <Menu>
+                <span slot="activador" on:click={() => mostrarMenu = true} class=""><i class="fe fe-more-vertical relative"></i></span>
+                <li>Ocultar</li>
+                <li on:click={() =>dispatch('reporte', {comentarioId: comentario.id})}>Reportar</li>
+                {#if $globalStore.usuario.esMod}
+                    <hr>
+                    <Menuitem >Eliminar</Menuitem>
+                {/if}
+            </Menu>
+        </div>
 
-        </Menu>
-        
-        
     </div>
     <div class="respuestas">
     </div>
@@ -113,3 +119,87 @@
         </div>
     {/if}
 </div>
+
+<style>
+    .comentario {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 50px calc(100% - 60px);
+        grid-template-areas:
+            "color header"
+            "color respuestas"
+            "color cuerpo";
+        padding: 10px;
+        position: relative;
+        margin-bottom: 8px;
+        text-underline-position: under;
+    }
+
+    .comentario .contenido {
+        grid-area: cuerpo;
+    }
+
+    .comentario .texto {
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .respuestas {
+        grid-area: respuestas;
+        font-size: 0.7em;
+        flex-wrap: wrap;
+            display: flex;
+    }
+
+    .contenido .media {
+        float: left;
+        margin-right: 10px;
+        max-width: 50%;
+    }
+
+    .color {
+        width: 50px;
+        height: 50px;
+        background: orange;
+        grid-area: color;
+        display: flex;
+        align-items: center;
+        padding: 2px;
+        /* text-align: center; */
+        font-stretch: condensed;
+        /* border-radius: 10; */
+        justify-content: center;
+        font-weight: 600;
+        color: #822f0047;
+    }
+
+    .comentario .header {
+        grid-template-areas: color;
+        display: flex;
+        align-items: center;
+        margin-bottom: 0;
+        font-size: 0.9em
+    }
+
+    .comentario .header span {
+        margin-right: 10px;
+    }
+
+    .comentario .header .id {
+        cursor: pointer;
+    }
+
+    .comentario .tag {
+        background: #000000ad;
+        padding: 0 5px;
+        border-radius: 500px;
+        display: flex;
+        align-items: center;
+    }
+
+    .comentario .tiempo {
+        margin-left: auto;
+        opacity: 0.5;
+        font-size: 12px;
+    }
+</style>

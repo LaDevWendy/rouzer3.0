@@ -73,6 +73,20 @@ export default class RChanClient {
             categoriaId,
         })
     }
+
+    static ActualizarConfiguracion(config) {
+        return axios.post("/api/Administracion/ActualizarConfiguracion", config)
+    }
+
+    static Denunciar(tipo, hiloId, motivo, aclaracion, comentarioId) {
+        return axios.post("/api/Hilo/Denunciar", {
+            tipo,
+            hiloId,
+            motivo,
+            aclaracion,
+            comentarioId
+        })
+    }
     //Paginas
     static index(){
         return axios.get("/")

@@ -21,7 +21,7 @@
 
 </script>
 <span class="nav-boton drop-btn" style="display: flex; align-items: center; postition:relative; margin-right:6px">
-    <span class="fe fe-bell" style="padding: 12px;" 
+    <span class="fe fe-bell" style="padding:16px;border-radius:4px" 
         on:click={() => mostrar = !mostrar && totalNotificaciones != 0}
     >
     {#if notificaciones.length != 0}

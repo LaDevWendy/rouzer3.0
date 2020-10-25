@@ -30,6 +30,17 @@
             return
         }
     }
+    async function actualizarConfig() {
+        try {
+            let res = await RChanClient.ActualizarConfiguracion(model.config)
+            console.log(res)
+            alert(res.data.mensaje)
+        } catch (e) {
+            console.log(e.resposne)
+            error = e.response.data
+            return
+        }
+    }
 
 </script>
 <main class="administracion">
@@ -58,11 +69,35 @@
         </div>
     </section>
 
+    <section style="max-width: 400px">
+        <h3>Configuracion</h3>
+        <ErrorValidacion error={error}/>
+        <div class="menu">
+            <ul >
+                <li>LimiteBump <input bind:value={model.config.limiteBump} type="number"></li>
+                <li>TiempoEntreComentarios <input bind:value={model.config.tiempoEntreComentarios} type="number"></li>
+                <li>TiempoEntreHilos <input bind:value={model.config.tiempoEntreHilos} type="number"></li>
+                <li>RegistroAbierto <input bind:checked={model.config.registroAbierto} type="checkbox"></li>
+                <li>HilosMaximosPorCategoria <input bind:value={model.config.hilosMaximosPorCategoria} type="number"></li>
+                <li>LimiteArchivo <input bind:value={model.config.limiteArchivo} type="number"></li>
+                <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
+            </ul>
+        </div>
+    </section>
+
 </main>
 
 <style>
     main {
         margin: auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap:10px;
+        max-width: 1270px;
+        margin:auto;
+    }
+    main > section {
+        flex: 1;
     }
     .header {
         background: rgba(255, 255, 255, 0.089) !important;

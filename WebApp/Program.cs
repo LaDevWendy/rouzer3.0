@@ -30,7 +30,7 @@ namespace WebApp
                 {
                     var pepe = um.Users.FirstOrDefault(u =>u.UserName == "pepe");
                     await um.AddClaimAsync(pepe, new Claim("Role", "admin"));
-                }
+                } 
             }
 
             host.Run();
@@ -40,8 +40,12 @@ namespace WebApp
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>()
-                        .UseUrls("https://localhost:5001/","http://localhost:5000/", "https://192.168.0.4:5000/");
+                    webBuilder
+                    .ConfigureAppConfiguration(cb => {
+                        cb.AddJsonFile("appsettings.json",false, true);
+                    })
+                    .UseStartup<Startup>()
+                        .UseUrls("https://localhost:5001/","http://localhost:5000/", "http://0.0.0.0:5000/", "https://0.0.0.0:5001/");
                 });
     }
 }

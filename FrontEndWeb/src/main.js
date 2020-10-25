@@ -2,6 +2,7 @@ import App from './App.svelte';
 import Navbar from './components/Navbar.svelte';
 import HiloList from './components/Hilos/HiloList.svelte';
 import Administracion from './components/Administracion/Administracion.svelte';
+import Moderacion from './components/Paginas/Moderacion.svelte';
 
 // const app = new App({
 // 	target: document.body,
@@ -34,6 +35,14 @@ if(document.querySelector("#svelte-index")){
 if(document.querySelector("#svelte-administracion")){
 	const hiloList = new Administracion({
 		target: document.querySelector("#svelte-administracion"),
+		props: {
+			// hiloList: window.hiloList
+		}
+	})
+}
+if(document.querySelector("#svelte-moderacion")){
+	const hiloList = new Moderacion({
+		target: document.querySelector("#svelte-moderacion"),
 		props: {
 			// hiloList: window.hiloList
 		}

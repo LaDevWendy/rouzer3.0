@@ -41,14 +41,14 @@ function actualizarArchivo() {
 }
 
 function removerArchivo() {
-    archivo = null
+    archivo = nullb
     archivoBlob = null
     input.value = ''
 }
 </script>
 
 {#if mostrar}
-<div  transition:fly={{y: -50, duration:250}}  class="sombra" style="position:fixed;left:0;top:0" on:click|self={() => mostrar = false}>
+<div  transition:fly={{duration:200}}  class="sombra" style="position:fixed;left:0;top:0" on:click|self={() => mostrar = false}>
     <form  
         id="crear-hilo-form" 
         class="formulario crear-hilo panel"

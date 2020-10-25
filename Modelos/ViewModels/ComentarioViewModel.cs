@@ -34,4 +34,9 @@ namespace Modelos
         }
         
     }
+    public class ComentarioViewModelMod: ComentarioViewModel
+    {
+        public string HiloId { get; set; }
+        public string UsuarioId { get; set; }
+    }
 }

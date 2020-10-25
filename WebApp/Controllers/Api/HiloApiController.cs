@@ -142,6 +142,35 @@ namespace WebApp.Controllers
         {
             return new ApiResponse(value: hiloService.GetHilosOrdenadosPorBump());
         }
+
+        [AllowAnonymous]
+        async public Task<ActionResult<ApiResponse>> Denunciar( DenunciaModel denuncia)
+        {
+            denuncia.Id = hashService.Random();
+            if(await context.Hilos.AnyAsync(h => h.Id == denuncia.HiloId && h.Estado ==  HiloEstado.Eliminado))
+            {
+                ModelState.AddModelError("hilo", "No se encontro el hilo");
+            }
+            var yaDenuncio = await context.Denuncias
+                .AnyAsync(d => d.UsuarioId == (User.GetId()?? "Anonimo") &&
+                    d.Tipo == denuncia.Tipo && denuncia.HiloId == d.HiloId);
+
+            if(yaDenuncio) ModelState.AddModelError("hilo", "Ya denunciaste esto");
+
+            if(User != null) {
+
+                denuncia.UsuarioId = User.GetId();
+            }
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            
+            denuncia.Estado = EstadoDenuncia.NoRevisada;
+            context.Denuncias.Add(denuncia);
+            
+            await context.SaveChangesAsync();
+            return new ApiResponse("Denuncia enviada");
+        }
+
+
     }
 
     public class ApiResponse

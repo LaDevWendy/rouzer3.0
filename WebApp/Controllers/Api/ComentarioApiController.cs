@@ -130,16 +130,33 @@ namespace WebApp.Controllers
 
         private string RemplazarTagsPorLinks(string contenido)
         {
-            contenido = htmlEncoder.Encode(contenido);
-            var resultado = Regex.Replace(contenido, @"&gt;&gt;([A-Z0-9]{8})", m => {
-                var id = m.Groups[1].Value;
-                return $"<a href=\"#{id}\" class=\"restag\" data-quote=\" {id}\">&gt;&gt; {id}</a>";
-            });
+            return string.Join("\n", contenido.Split("\n").Select(t => {
+                t = htmlEncoder.Encode(t);
+                var esLink = false;
+                //Links
+                t = Regex.Replace(t, @"&gt;(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)", m => {
+                    var link = m.Value.Replace("&gt;", "");
+                    esLink = true;
+                    return $@"<a href=""{link}"" target=""_blank"">&gt{link}</a>";
+                });
+                if(esLink) return t;
+                //Respuestas
+                t =  Regex.Replace(t, @"&gt;&gt;([A-Z0-9]{8})", m => {
+                    var id = m.Groups[1].Value;
+                    return $"<a href=\"#{id}\" class=\"restag\" r-id=\" {id}\">&gt;&gt;{id}</a>";
+                });
 
-            return Regex.Replace(contenido, @"&gt;&gt;([A-Z0-9]{8})", m => {
-                var id = m.Groups[1].Value;
-                return $"<a href=\"#{id}\" class=\"restag\" r-id=\" {id}\">&gt;&gt;{id}</a>";
-            });
+                //Texto verde
+                t = Regex.Replace(t.Replace("&#xA;", "\n"),@"&gt;(?!https?).+(?:$|\n)", m => {
+                    if(m.Value.Contains("&gt;&gt;") || m.Value.Contains("href")) return m.Value;
+                    var text = m.Value.Replace("&gt;", "");
+                    return $@"<span class=""verde"">&gt;{text}</span>";
+                });
+                return t;
+            }));
+
+        
+            return contenido;
         }
     }
 

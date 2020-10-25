@@ -30,4 +30,10 @@ namespace Modelos
         public MediaModel Media { get; set; }
         public string Thumbnail { get; set; }
     }
+
+    public class HiloViewModelMod : HiloViewModel
+    {
+        public string UsuarioId { get; set; }
+        public string UserName { get; set; }
+    }
 }

@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System.IO;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Hosting;
 
 namespace WebApp.Controllers
 {
@@ -30,6 +32,7 @@ namespace WebApp.Controllers
         private readonly RChanContext context;
         private readonly UserManager<UsuarioModel> userManager;
         private readonly SignInManager<UsuarioModel> signInManager;
+        private readonly IOptions<GeneralOptions> config;
 
         public Administracion(
             IHiloService hiloService,
@@ -38,7 +41,8 @@ namespace WebApp.Controllers
             IHubContext<RChanHub> rchanHub,
             RChanContext context,
             UserManager<UsuarioModel> userManager,
-            SignInManager<UsuarioModel> signInManager
+            SignInManager<UsuarioModel> signInManager,
+            IOptionsSnapshot<GeneralOptions> config
         )
         {
             this.hiloService = hiloService;
@@ -48,18 +52,28 @@ namespace WebApp.Controllers
             this.context = context;
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.config = config;
         }
         [Route("/Administracion")]
         public async Task<ActionResult> Index()
         {
+            System.Console.WriteLine(config.Value);
             var admins = await userManager.GetUsersForClaimAsync(new Claim("Role", "admin"));
             var mods = await userManager.GetUsersForClaimAsync(new Claim("Role", "mod"));
             var vm = new AdministracionVM
             {
                 Admins = admins.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray(),
-                Mods = mods.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray()
+                Mods = mods.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray(),
+                Config = config.Value
             };
             return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ActualizarConfiguracion(GeneralOptions config, [FromServices] IWebHostEnvironment host) 
+        {
+            await config.Guardar(Path.Combine(host.ContentRootPath, "appsettings.json"));
+            return Json(new ApiResponse("Configuracion actualizada"));
         }
 
         public class RolUserVM
@@ -191,6 +205,7 @@ public class AdministracionVM
 {
     public UsuarioVM[] Admins { get; set; }
     public UsuarioVM[] Mods { get; set; }
+    public GeneralOptions Config { get; internal set; }
 }
 
 public class UsuarioVM

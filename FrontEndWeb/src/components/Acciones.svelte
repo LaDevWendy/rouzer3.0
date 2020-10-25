@@ -1,8 +1,11 @@
 <script>
     import Tiempo from './Tiempo.svelte'
     import RChanClient from '../RChanClient'
+    import DialogoReporte from '../components/Dialogos/DialogoReporte.svelte'
+
     export let hilo
     export let acciones;
+    let mostrarReporte = false
 
     async function seguir() {
         await RChanClient.agregar("seguidos", hilo.id)
@@ -32,8 +35,10 @@
         on:click={ocultar}>
         <i class="fe fe-eye-off" />Oculto</span>
 
-    <span> <i class="fe fe-flag" />Denunciar</span>
+    <span on:click={() => mostrarReporte = true}> <i class="fe fe-flag" />Denunciar</span>
 
     <span>
         <Tiempo date={hilo.creacion} /></span>
 </div>
+
+<DialogoReporte bind:visible={mostrarReporte} tipo="hilo" hiloId={hilo.id} />

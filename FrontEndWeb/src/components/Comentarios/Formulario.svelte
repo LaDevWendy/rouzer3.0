@@ -1,5 +1,6 @@
 <script>
     import { fade, blur, fly } from 'svelte/transition';
+    import { Button } from 'svelte-mui'
     import comentarioStore from './comentarioStore'
     import RChanClient from '../../RChanClient'
     import ErrorValidacion from '../ErrorValidacion.svelte';
@@ -73,6 +74,14 @@
         <button class="btn" on:click={() => input.click()}>
             <i class="fe fe-image"></i>
         </button>
-        <button on:click|preventDefault={crearComentario} class="btn">Comentar</button>
+        <!-- <button on:click|preventDefault={crearComentario} class="btn">Comentar</button> -->
+        <Button  color="primary"  class="mra" on:click={crearComentario}>Responder</Button>
     </div>
 </form>
+
+
+<style>
+    .acciones :global(.mra) {
+        margin-left: auto;
+    }
+</style>

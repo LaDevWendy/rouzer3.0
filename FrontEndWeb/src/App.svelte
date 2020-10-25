@@ -73,7 +73,6 @@
 						¿Estas seguro de que queres domar el hilo?
 					</div>
 				</Dialogo>
-
 			</div>
 		{/if}
 
@@ -87,3 +86,37 @@
 	</div>
 	<Comentarios bind:comentarios {hilo}/>
 </div>
+
+
+<style>
+.hilo-completo {
+	display: grid;
+	grid-template-columns: calc(60% - 10px) 40%;
+	gap: 10px;
+	width: 100%;
+}
+
+/* @media (max-width: 992px) {
+} */
+@media (max-width: 992px) {
+	.hilo-completo {
+		grid-template-columns: calc(40% - 10px) 60%;
+	}
+	.cuerpo .imagen {
+		width: 100%;
+		float: none
+	}
+}
+
+/* .hilo-completo {
+	grid-template-columns: calc(40% - 10px) 60%;
+} */
+
+@media (max-width: 768px) {
+	.hilo-completo {
+		grid-template-columns: 100%;
+	}
+}
+
+
+</style>

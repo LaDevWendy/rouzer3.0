@@ -110,6 +110,10 @@ namespace Servicios
             return  hilosStickies.OrderByDescending(h => h.Sticky).Concat(hilos).ToList();
         }
 
+        // public async Task<List<HiloViewModel>> GetHilosRecientes(GetHilosOptions opciones)
+        // {
+        // }
+
         public async Task<string> GuardarHilo(HiloModel hilo)
         {
             hilo.Id = hashService.Random();
@@ -148,6 +152,19 @@ namespace Servicios
                     Id = h.Id,
                     Titulo = h.Titulo,
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id).Count()
+                });
+        }
+        public static IQueryable<HiloViewModelMod> AViewModelMod(this IQueryable<HiloModel> hilos, RChanContext context) {
+            return hilos.Select(h => new HiloViewModelMod {
+                    Bump = h.Bump,
+                    CategoriaId = h.CategoriaId,
+                    Contenido = h.Contenido,
+                    Creacion = h.Creacion,
+                    Media = h.Media,
+                    Id = h.Id,
+                    Titulo = h.Titulo,
+                    CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id).Count(),
+                    UsuarioId = h.UsuarioId,
                 });
         }
     }

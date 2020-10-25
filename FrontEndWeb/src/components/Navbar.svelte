@@ -21,8 +21,8 @@
             <icon class="fe fe-menu"/>
             <Ripple/>
         </span>
-        <a href="/">
-            <h3>ROSED</h3>
+        <a href="/" style="font-family: euroFighter">
+            <h3>ROZED</h3>
             <Ripple/>
         </a>
         <MensajeRotativo/>
@@ -56,10 +56,10 @@
             
         </div> -->
             <div class="debug notdi-debug">
-                {notificaciones}
+                {JSON.stringify(notificaciones)}
             </div>
             {#if $globalStore.usuario.estaAutenticado}
-            <!-- <Notificaciones bind:notificaciones/> -->
+            <Notificaciones bind:notificaciones/>
             {:else}
             <span class="nav-boton" on:click={()=> $globalStore.mostrarLogin = true}>
                 <Ripple/>
@@ -78,13 +78,18 @@
     <MenuPrincipal bind:mostrar={mostrarMenu}/>
     <FormularioLogin/>
 </header>
+<nav class="nav-categorias">
+    {#each config.categorias as c (c.id)}
+        <a href="/{c.nombreCorto}">/{c.nombre} <Ripple/></a>
+    {/each}
 
+</nav>
 <style>
     /*NAVBAR*/
 
 .nav-principal {
     border-top: solid var(--color5) 2px;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .nav-principal, .nav-principal a, .nav-boton {
@@ -121,5 +126,16 @@
 
 .nav-boton .fe:active {
   transform: scale(1.22);
+}
+
+.nav-categorias {
+    display: inline-flex;
+    justify-content: left;
+    /* gap: 10px; */
+}
+
+.nav-categorias a {
+    color: var(--color5) !important;
+    padding: 10px;
 }
 </style>
