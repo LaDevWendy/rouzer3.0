@@ -11,6 +11,9 @@ Almacenamiento
 /UnitTests
 app.db
 
+/WebApp/wwwroot/js/bundle.js
+/WebApp/wwwroot/js/bundle.js.map
+
 # User-specific files
 *.rsuser
 *.suo

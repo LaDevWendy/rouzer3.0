@@ -154,12 +154,8 @@ namespace WebApp.Controllers
                 });
                 return t;
             }));
-
-        
-            return contenido;
         }
     }
-
 }
 public class ComentarioFormViewModel {
     [Required]

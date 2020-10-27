@@ -20625,13 +20625,13 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     function get_each_context$9(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[11] = list[i];
-    	child_ctx[12] = list;
-    	child_ctx[13] = i;
+    	child_ctx[10] = list[i];
+    	child_ctx[11] = list;
+    	child_ctx[12] = i;
     	return child_ctx;
     }
 
-    // (60:4) {#if nuevoshilos.length > 0}
+    // (59:4) {#if nuevoshilos.length > 0}
     function create_if_block$f(ctx) {
     	let div;
     	let icon;
@@ -20665,9 +20665,9 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			create_component(ripple.$$.fragment);
     			attr_dev(icon, "class", "fe fe-rotate-cw");
     			set_style(icon, "margin-right", "8px");
-    			add_location(icon, file$l, 61, 12, 2017);
+    			add_location(icon, file$l, 60, 12, 1981);
     			attr_dev(div, "class", "cargar-nuevos-hilos");
-    			add_location(div, file$l, 60, 8, 1921);
+    			add_location(div, file$l, 59, 8, 1885);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -20722,14 +20722,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_if_block$f.name,
     		type: "if",
-    		source: "(60:4) {#if nuevoshilos.length > 0}",
+    		source: "(59:4) {#if nuevoshilos.length > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (67:4) {#each hiloList.hilos as hilo (hilo.id)}
+    // (66:4) {#each hiloList.hilos as hilo (hilo.id)}
     function create_each_block$9(key_1, ctx) {
     	let first;
     	let hilopreview;
@@ -20737,13 +20737,13 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	let current;
 
     	function hilopreview_hilo_binding(value) {
-    		/*hilopreview_hilo_binding*/ ctx[5].call(null, value, /*hilo*/ ctx[11], /*each_value*/ ctx[12], /*hilo_index*/ ctx[13]);
+    		/*hilopreview_hilo_binding*/ ctx[4].call(null, value, /*hilo*/ ctx[10], /*each_value*/ ctx[11], /*hilo_index*/ ctx[12]);
     	}
 
     	let hilopreview_props = {};
 
-    	if (/*hilo*/ ctx[11] !== void 0) {
-    		hilopreview_props.hilo = /*hilo*/ ctx[11];
+    	if (/*hilo*/ ctx[10] !== void 0) {
+    		hilopreview_props.hilo = /*hilo*/ ctx[10];
     	}
 
     	hilopreview = new HiloPreview({ props: hilopreview_props, $$inline: true });
@@ -20768,7 +20768,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     			if (!updating_hilo && dirty & /*hiloList*/ 1) {
     				updating_hilo = true;
-    				hilopreview_changes.hilo = /*hilo*/ ctx[11];
+    				hilopreview_changes.hilo = /*hilo*/ ctx[10];
     				add_flush_callback(() => updating_hilo = false);
     			}
 
@@ -20793,7 +20793,38 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_each_block$9.name,
     		type: "each",
-    		source: "(67:4) {#each hiloList.hilos as hilo (hilo.id)}",
+    		source: "(66:4) {#each hiloList.hilos as hilo (hilo.id)}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (71:4) <div style="text-align:center" slot="noMore">
+    function create_noMore_slot(ctx) {
+    	let div;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			div.textContent = "No hay mas hilos padre, recargue la pagina";
+    			set_style(div, "text-align", "center");
+    			attr_dev(div, "slot", "noMore");
+    			add_location(div, file$l, 70, 4, 2345);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_noMore_slot.name,
+    		type: "slot",
+    		source: "(71:4) <div style=\\\"text-align:center\\\" slot=\\\"noMore\\\">",
     		ctx
     	});
 
@@ -20807,13 +20838,11 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	let each_1_lookup = new Map();
     	let t1;
     	let infiniteloading;
-    	let t2;
-    	let h1;
     	let current;
     	let if_block = /*nuevoshilos*/ ctx[1].length > 0 && create_if_block$f(ctx);
     	let each_value = /*hiloList*/ ctx[0].hilos;
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*hilo*/ ctx[11].id;
+    	const get_key = ctx => /*hilo*/ ctx[10].id;
     	validate_each_keys(ctx, each_value, get_each_context$9, get_key);
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -20822,7 +20851,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		each_1_lookup.set(key, each_blocks[i] = create_each_block$9(key, child_ctx));
     	}
 
-    	infiniteloading = new InfiniteLoading({ $$inline: true });
+    	infiniteloading = new InfiniteLoading({
+    			props: {
+    				$$slots: { noMore: [create_noMore_slot] },
+    				$$scope: { ctx }
+    			},
+    			$$inline: true
+    		});
+
     	infiniteloading.$on("infinite", /*cargarViejos*/ ctx[3]);
 
     	const block = {
@@ -20837,12 +20873,8 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     			t1 = space();
     			create_component(infiniteloading.$$.fragment);
-    			t2 = space();
-    			h1 = element("h1");
-    			h1.textContent = "jeje";
     			attr_dev(ul, "class", "hilo-list");
-    			add_location(ul, file$l, 58, 0, 1855);
-    			add_location(h1, file$l, 72, 0, 2381);
+    			add_location(ul, file$l, 57, 0, 1819);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -20858,8 +20890,6 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     			insert_dev(target, t1, anchor);
     			mount_component(infiniteloading, target, anchor);
-    			insert_dev(target, t2, anchor);
-    			insert_dev(target, h1, anchor);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
@@ -20894,6 +20924,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, ul, outro_and_destroy_block, create_each_block$9, null, get_each_context$9);
     				check_outros();
     			}
+
+    			const infiniteloading_changes = {};
+
+    			if (dirty & /*$$scope*/ 8192) {
+    				infiniteloading_changes.$$scope = { dirty, ctx };
+    			}
+
+    			infiniteloading.$set(infiniteloading_changes);
     		},
     		i: function intro(local) {
     			if (current) return;
@@ -20926,8 +20964,6 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     			if (detaching) detach_dev(t1);
     			destroy_component(infiniteloading, detaching);
-    			if (detaching) detach_dev(t2);
-    			if (detaching) detach_dev(h1);
     		}
     	};
 
@@ -20945,11 +20981,10 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     function instance$l($$self, $$props, $$invalidate) {
     	let $globalStore;
     	validate_store(globalStore, "globalStore");
-    	component_subscribe($$self, globalStore, $$value => $$invalidate(6, $globalStore = $$value));
+    	component_subscribe($$self, globalStore, $$value => $$invalidate(5, $globalStore = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("HiloList", slots, []);
     	let { hiloList } = $$props;
-    	let { categoriasVisibles } = $$props;
     	let nuevoshilos = [];
     	let connection = new HubConnectionBuilder().withUrl("/hub").build();
     	connection.on("HiloCreado", onHiloCreado);
@@ -20992,7 +21027,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	}
 
     	let tienaMas = true;
-    	const writable_props = ["hiloList", "categoriasVisibles"];
+    	const writable_props = ["hiloList"];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1$7.warn(`<HiloList> was created with unknown prop '${key}'`);
@@ -21005,7 +21040,6 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     	$$self.$$set = $$props => {
     		if ("hiloList" in $$props) $$invalidate(0, hiloList = $$props.hiloList);
-    		if ("categoriasVisibles" in $$props) $$invalidate(4, categoriasVisibles = $$props.categoriasVisibles);
     	};
 
     	$$self.$capture_state = () => ({
@@ -21017,7 +21051,6 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		HubConnectionBuilder,
     		RChanClient,
     		hiloList,
-    		categoriasVisibles,
     		nuevoshilos,
     		connection,
     		onHiloCreado,
@@ -21030,7 +21063,6 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     	$$self.$inject_state = $$props => {
     		if ("hiloList" in $$props) $$invalidate(0, hiloList = $$props.hiloList);
-    		if ("categoriasVisibles" in $$props) $$invalidate(4, categoriasVisibles = $$props.categoriasVisibles);
     		if ("nuevoshilos" in $$props) $$invalidate(1, nuevoshilos = $$props.nuevoshilos);
     		if ("connection" in $$props) connection = $$props.connection;
     		if ("tienaMas" in $$props) tienaMas = $$props.tienaMas;
@@ -21040,20 +21072,13 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [
-    		hiloList,
-    		nuevoshilos,
-    		cargarNuevos,
-    		cargarViejos,
-    		categoriasVisibles,
-    		hilopreview_hilo_binding
-    	];
+    	return [hiloList, nuevoshilos, cargarNuevos, cargarViejos, hilopreview_hilo_binding];
     }
 
     class HiloList extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$l, create_fragment$l, safe_not_equal, { hiloList: 0, categoriasVisibles: 4 });
+    		init(this, options, instance$l, create_fragment$l, safe_not_equal, { hiloList: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -21068,10 +21093,6 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		if (/*hiloList*/ ctx[0] === undefined && !("hiloList" in props)) {
     			console_1$7.warn("<HiloList> was created without expected prop 'hiloList'");
     		}
-
-    		if (/*categoriasVisibles*/ ctx[4] === undefined && !("categoriasVisibles" in props)) {
-    			console_1$7.warn("<HiloList> was created without expected prop 'categoriasVisibles'");
-    		}
     	}
 
     	get hiloList() {
@@ -21079,14 +21100,6 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	}
 
     	set hiloList(value) {
-    		throw new Error("<HiloList>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get categoriasVisibles() {
-    		throw new Error("<HiloList>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set categoriasVisibles(value) {
     		throw new Error("<HiloList>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }

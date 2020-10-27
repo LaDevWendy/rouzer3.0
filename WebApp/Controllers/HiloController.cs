@@ -112,7 +112,9 @@ namespace WebApp.Controllers
                 return NotFound();
             }
             coleccion = coleccion.ToLower();
-            var query = hiloService.OrdenadosPorBump();
+            var query = hiloService
+                .OrdenadosPorBump()
+                .FiltrarNoActivos();
 
             query = coleccion switch
             {
@@ -125,7 +127,7 @@ namespace WebApp.Controllers
                 "creados" => query.Where(h => h.UsuarioId == User.GetId()),
                 _ => null
             };
-            query = query.Where(h => h.Estado != HiloEstado.Eliminado);
+            
             var hilos = await query.AViewModel(context).ToListAsync();
             var vm = new HiloListViewModel { Hilos = hilos };
             return View("Index", vm);

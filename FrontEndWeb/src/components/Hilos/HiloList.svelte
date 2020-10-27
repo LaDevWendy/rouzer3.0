@@ -8,7 +8,6 @@
     import RChanClient from '../../RChanClient';
 
     export let hiloList
-    export let categoriasVisibles 
 
     let nuevoshilos = []
     let connection = new HubConnectionBuilder().withUrl("/hub").build();
@@ -68,6 +67,6 @@
         <HiloPreview bind:hilo={hilo} />
     {/each}
 </ul>
-<InfiniteLoading on:infinite={cargarViejos} />
-
-<h1>jeje</h1>
+<InfiniteLoading on:infinite={cargarViejos}>
+    <div style="text-align:center" slot="noMore">No hay mas hilos padre, recargue la pagina</div>
+</InfiniteLoading>

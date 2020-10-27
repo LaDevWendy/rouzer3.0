@@ -15,17 +15,7 @@ namespace PruebasDb
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");            
 
-            var sql = @"select 
-                            h.""Id"",
-                            h.""Titulo"",
-                            count(h.""Id"") as ""Comentarios""
-                        from ""Hilos"" h
-                        left join   ""Comentarios""  c on  h.""Id"" = c.""HiloId""
-                        group by h.""Id""
-                        order by ""Comentarios"" desc";
-            
             using (var conection = new NpgsqlConnection("Server=127.0.0.1;Port=5433;Database=RChan;User Id=postgres;Password=jejetabien;")){
                 //var hilos = conection.Query<HiloViewModel>(sql);
                 //System.Console.WriteLine(JsonSerializer.Serialize(hilos));
@@ -48,7 +38,7 @@ namespace PruebasDb
 
     class HiloViewModel: HiloModel
     {
-        public int Comentarios { get; set; }
+        new public int Comentarios { get; set; }
     }
     public class JijoContext : DbContext
     {

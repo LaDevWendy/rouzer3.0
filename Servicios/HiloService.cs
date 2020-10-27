@@ -15,7 +15,6 @@ namespace Servicios
     {
         Task<List<HiloViewModel>> GetHilosOrdenadosPorBump();
         Task<List<HiloViewModel>> GetHilosOrdenadosPorBump(GetHilosOptions opciones);
-        Task<List<HiloViewModel>> GetHilosOrdenadosPorBumpPrevios(GetHilosOptions opciones, DateTimeOffset previosA);
         Task<string> GuardarHilo(HiloModel Hilo);
         Task ActualizarHilo(HiloModel Hilo);
         Task<HiloViewModel> GetHilo(string id, bool mostrarOcultos);
@@ -91,7 +90,7 @@ namespace Servicios
             var hilos =  await _context.Hilos
                 .Where(h => opciones.CategoriasId.Contains(h.CategoriaId) && 
                 !_context.HiloAcciones.Any(a => a.HiloId ==  h.Id && a.UsuarioId == opciones.UserId && a.Hideado)
-                && _context.Stickies.FirstOrDefault( s => s.HiloId == h.Id) == null)
+                && !_context.Stickies.Any( s => s.HiloId == h.Id))
                 .Where(h => h.Estado != HiloEstado.Eliminado || opciones.MostrarBorrados)
                 .OrderByDescending(h => h.Bump)
                 .Take(opciones.Cantidad)
@@ -109,21 +108,6 @@ namespace Servicios
             hilosStickies.ForEach(h => h.Sticky = stickies.First(s => s.HiloId == h.Id).Importancia);
 
             return  hilosStickies.OrderByDescending(h => h.Sticky).Concat(hilos).ToList();
-        }
-        public async Task<List<HiloViewModel>> GetHilosOrdenadosPorBumpPrevios(GetHilosOptions opciones, DateTimeOffset previosA)
-        {
-            // Mejorar esto
-            var hilos =  await _context.Hilos
-                .Where(h => opciones.CategoriasId.Contains(h.CategoriaId) && 
-                !_context.HiloAcciones.Any(a => a.HiloId ==  h.Id && a.UsuarioId == opciones.UserId && a.Hideado)
-                && _context.Stickies.FirstOrDefault( s => s.HiloId == h.Id) == null
-                && h.Bump < previosA)
-                .Where(h => h.Estado != HiloEstado.Eliminado || opciones.MostrarBorrados)
-                .OrderByDescending(h => h.Bump)
-                .Take(opciones.Cantidad)
-                .AViewModel(_context).ToListAsync();       
-
-                return hilos;
         }
 
         // public async Task<List<HiloViewModel>> GetHilosRecientes(GetHilosOptions opciones)
@@ -183,5 +167,22 @@ namespace Servicios
                     UsuarioId = h.UsuarioId,
                 });
         }
+
+        public static IOrderedQueryable<HiloModel> OrdenadosPorBump(this IQueryable<HiloModel> hilos) {
+            return hilos.OrderByDescending(h => h.Bump);
+        }
+
+        public static IQueryable<HiloModel> FiltrarNoActivos(this IQueryable<HiloModel> hilos) {
+            return hilos.Where(h => h.Estado == HiloEstado.Normal);
+        }
+
+        public static IQueryable<HiloModel> FiltrarPorCategoria(this IQueryable<HiloModel> hilos, int[] categorias) {
+            return hilos.Where(h => categorias.Contains(h.CategoriaId));
+        }
+
+        public static IQueryable<HiloModel> FiltrarOcultosDeUsuario(this IQueryable<HiloModel> hilos, string usuarioId, RChanContext context) {
+            return hilos.Where( h => !context.HiloAcciones.Any(a => a.HiloId ==  h.Id && a.UsuarioId == usuarioId && a.Hideado));
+        }
+
     }
 }

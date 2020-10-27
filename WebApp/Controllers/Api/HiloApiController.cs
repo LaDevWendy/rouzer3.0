@@ -174,11 +174,13 @@ namespace WebApp.Controllers
         [AllowAnonymous]
         async public Task<ActionResult> CargarMas([FromQuery]DateTimeOffset ultimoBump, [FromQuery] string categorias) 
         {    
-            var hilos = await hiloService.GetHilosOrdenadosPorBumpPrevios(new GetHilosOptions
-            {
-                UserId = User.GetId(),
-                CategoriasId = categorias.Split(",").Select(c => Convert.ToInt32(c)).ToArray(),
-            }, ultimoBump);
+            var hilos = context.Hilos
+                .OrdenadosPorBump()
+                .FiltrarNoActivos()
+                .FiltrarOcultosDeUsuario(User.GetId(), context)
+                .FiltrarPorCategoria(categorias.Split(",").Select(c => Convert.ToInt32(c)).ToArray())
+                .Where(h => h.Bump < ultimoBump)
+                .AViewModel(context);
 
             return Ok(hilos);
         }

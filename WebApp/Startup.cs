@@ -65,6 +65,9 @@ namespace WebApp
                 .AddSignInManager()
                 .AddEntityFrameworkStores<RChanContext>();
 
+            services.ConfigureApplicationCookie(opt => {
+                opt.LoginPath = "/Login";
+            });
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("esAdmin", policy =>
