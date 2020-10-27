@@ -33,6 +33,12 @@
 
             UsuarioModel user = await userManager.GetUserAsync(Context.User);
 
+            if(user is null)
+            {
+                await signInManager.SignOutAsync();
+                Context.User = null;
+            }
+
             if(signInManager.IsSignedIn(Context.User))
             {
                 await signInManager.RefreshSignInAsync(user);

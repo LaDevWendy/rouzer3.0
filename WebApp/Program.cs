@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -20,16 +22,20 @@ namespace WebApp
             // CreateHostBuilder(args).Build().Run();
             var host = CreateHostBuilder(args).Build();
 
+            //Creo la carpeta almacenamiento si no existe
+            Directory.CreateDirectory("Almacenamiento");
             // //Agrego Un administrador si no existe
             using (var scope = host.Services.CreateScope())
             {
                 var um = scope.ServiceProvider.GetService<SignInManager<UsuarioModel>>().UserManager;
+                var ctx = scope.ServiceProvider.GetService<RChanContext>();
+                await ctx.Database.EnsureCreatedAsync();
                 var admin = (await um.GetUsersForClaimAsync(new Claim("Role", "admin"))).FirstOrDefault();
 
                 if(admin is null)
                 {
                     var pepe = um.Users.FirstOrDefault(u =>u.UserName == "pepe");
-                    await um.AddClaimAsync(pepe, new Claim("Role", "admin"));
+                    if(pepe != null) await um.AddClaimAsync(pepe, new Claim("Role", "admin"));
                 } 
             }
 
@@ -43,6 +49,8 @@ namespace WebApp
                     webBuilder
                     .ConfigureAppConfiguration(cb => {
                         cb.AddJsonFile("appsettings.json",false, true);
+                        cb.AddCommandLine(args);
+                        cb.AddEnvironmentVariables();
                     })
                     .UseStartup<Startup>()
                         .UseUrls("https://localhost:5001/","http://localhost:5000/", "http://0.0.0.0:5000/", "https://0.0.0.0:5001/");

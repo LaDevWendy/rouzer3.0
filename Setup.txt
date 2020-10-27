@@ -1,0 +1,20 @@
+// Paso uno: Optener acceso ssh
+
+// Instalo esta cosa para usar ifconig y poder ver  la ip local
+sudo apt-install net-tools
+
+// Instalo openssh server
+sudo apt-get update
+sudo apt-get install openssh-server
+
+// Me conecto
+ssh pepe@192.168.0.5
+
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+contraseña
+
+sudo apt-get -y update
+sudo apt-get -y install apt-transport-https
+sudo apt-get -y update
+sudo apt-get -y install dotnet-sdk-3.1

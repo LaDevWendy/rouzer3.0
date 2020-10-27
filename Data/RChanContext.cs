@@ -32,15 +32,18 @@ namespace Data
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // if (string.IsNullOrEmpty(connectionString))
-            // {
-            //     base.OnConfiguring(optionsBuilder);
-            // }
-            // else
-            // {
+            base.OnConfiguring(optionsBuilder);
+            if(!optionsBuilder.IsConfigured)
+            {
                 optionsBuilder.UseNpgsql(connectionString ?? "Server=127.0.0.1;Port=5433;Database=RChanTest;User Id=postgres;Password=jejetabien;");
-                //optionsBuilder.UseNpgsql( "Server=127.0.0.1;Port=5433;Database=RChanTest;User Id=postgres;Password=jejetabien;");
-            // }
+            }
+            if (!string.IsNullOrEmpty(connectionString))
+            {
+            }
+            else
+            {
+                // optionsBuilder.UseNpgsql( "Server=127.0.0.1;Port=5433;Database=RChanTest;User Id=postgres;Password=jejetabien;");
+            }
         }
     }
 }
