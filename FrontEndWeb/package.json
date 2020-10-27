@@ -30,6 +30,7 @@
     "axios": "^0.20.0",
     "install": "^0.13.0",
     "js-cookie": "^2.2.1",
-    "sirv-cli": "^1.0.0"
+    "sirv-cli": "^1.0.0",
+    "svelte-infinite-loading": "^1.3.2"
   }
 }

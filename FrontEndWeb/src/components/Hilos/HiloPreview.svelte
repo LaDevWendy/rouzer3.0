@@ -49,8 +49,6 @@ function onClick(e) {
     }
 }
 
-console.log(hilo)
-console.log(hilo.categoriaId)
 </script>
 
 <li class="hilo"

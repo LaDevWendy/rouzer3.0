@@ -61,7 +61,8 @@ namespace WebApp.Controllers
                     UserId = User.GetId(),
                     CategoriasId = categorias,
                     IncluirStickies = true
-                })
+                }),
+                CategoriasActivas = categorias.ToList()
             };
             return View(vm);
         }
@@ -95,8 +96,9 @@ namespace WebApp.Controllers
                 Hilos = await hiloService.GetHilosOrdenadosPorBump(new GetHilosOptions
                 {
                     UserId = User.GetId(),
-                    CategoriasId = new int[] { cate.Id }
+                    CategoriasId = new int[] { cate.Id },
                 }),
+                CategoriasActivas = new int[] { cate.Id }.ToList()
             };
             return View("Index", vm);
         }
@@ -176,4 +178,5 @@ class UsuarioVm
 public class HiloListViewModel
 {
     public List<HiloViewModel> Hilos { get; set; }
+    public List<int> CategoriasActivas { get; set; }
 }

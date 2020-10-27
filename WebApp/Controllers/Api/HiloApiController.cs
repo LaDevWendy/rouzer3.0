@@ -13,6 +13,7 @@ using Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
+using System.Text.Json;
 
 namespace WebApp.Controllers
 {
@@ -170,7 +171,17 @@ namespace WebApp.Controllers
             return new ApiResponse("Denuncia enviada");
         }
 
+        [AllowAnonymous]
+        async public Task<ActionResult> CargarMas([FromQuery]DateTimeOffset ultimoBump, [FromQuery] string categorias) 
+        {    
+            var hilos = await hiloService.GetHilosOrdenadosPorBumpPrevios(new GetHilosOptions
+            {
+                UserId = User.GetId(),
+                CategoriasId = categorias.Split(",").Select(c => Convert.ToInt32(c)).ToArray(),
+            }, ultimoBump);
 
+            return Ok(hilos);
+        }
     }
 
     public class ApiResponse

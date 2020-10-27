@@ -3,11 +3,16 @@
     import globalStore from '../../globalStore'
     import {Ripple} from 'svelte-mui/'
     import {fly} from 'svelte/transition'
+    import InfiniteLoading from 'svelte-infinite-loading';
     import {HubConnectionBuilder} from '@microsoft/signalr'
+    import RChanClient from '../../RChanClient';
+
     export let hiloList
+    export let categoriasVisibles 
 
     let nuevoshilos = []
     let connection = new HubConnectionBuilder().withUrl("/hub").build();
+
 
     connection.on("HiloCreado", onHiloCreado)
     connection.on("HiloComentado", onHiloComentado)
@@ -18,11 +23,6 @@
         
     }).catch(console.error)
 
-    // Test destello
-    // setInterval(() => {
-    //     hiloList.hilos[2].cantidadComentarios += 1
-    // }, 4000);
-    
 
     function onHiloCreado(hilo) {
         if($globalStore.categoriasActivas.includes(hilo.categoriaId)){
@@ -44,6 +44,15 @@
         nuevoshilos = []
     }
 
+    async function cargarViejos({ detail: { loaded, complete }}) {
+        let {data} = await RChanClient.cargarMasHilos(hiloList.hilos[hiloList.hilos.length -1].bump, hiloList.categoriasActivas)
+        console.log(data);
+        hiloList.hilos = [...hiloList.hilos, ...data]
+        if(data.length == 0) complete()
+        loaded()
+    }
+
+    let tienaMas = true
 
 </script>
 
@@ -59,3 +68,6 @@
         <HiloPreview bind:hilo={hilo} />
     {/each}
 </ul>
+<InfiniteLoading on:infinite={cargarViejos} />
+
+<h1>jeje</h1>

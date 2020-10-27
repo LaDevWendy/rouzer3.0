@@ -4592,6 +4592,10 @@ var app = (function () {
                 comentarioId
             })
         }
+        static cargarMasHilos(ultimoBump, categorias){
+            console.log(categorias);
+            return axios$1.get(`api/Hilo/CargarMas?ultimoBump=${ultimoBump}&categorias=${categorias}`)
+        }
         //Paginas
         static index(){
             return axios$1.get("/")
@@ -18115,7 +18119,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     const { console: console_1$5 } = globals;
     const file$i = "src\\components\\Hilos\\HiloPreview.svelte";
 
-    // (68:20) <Icon>
+    // (66:20) <Icon>
     function create_default_slot_2$2(ctx) {
     	let switch_instance;
     	let switch_instance_anchor;
@@ -18185,14 +18189,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_default_slot_2$2.name,
     		type: "slot",
-    		source: "(68:20) <Icon>",
+    		source: "(66:20) <Icon>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (67:16) <Button  icon color="white" style="margin-left: auto;"  on:click={()=> mostrarMenu = !mostrarMenu}>
+    // (65:16) <Button  icon color="white" style="margin-left: auto;"  on:click={()=> mostrarMenu = !mostrarMenu}>
     function create_default_slot_1$4(ctx) {
     	let icon;
     	let current;
@@ -18240,14 +18244,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_default_slot_1$4.name,
     		type: "slot",
-    		source: "(67:16) <Button  icon color=\\\"white\\\" style=\\\"margin-left: auto;\\\"  on:click={()=> mostrarMenu = !mostrarMenu}>",
+    		source: "(65:16) <Button  icon color=\\\"white\\\" style=\\\"margin-left: auto;\\\"  on:click={()=> mostrarMenu = !mostrarMenu}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (66:12) <span slot="activador">
+    // (64:12) <span slot="activador">
     function create_activador_slot$3(ctx) {
     	let span;
     	let button;
@@ -18271,7 +18275,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			span = element("span");
     			create_component(button.$$.fragment);
     			attr_dev(span, "slot", "activador");
-    			add_location(span, file$i, 65, 12, 1588);
+    			add_location(span, file$i, 63, 12, 1538);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -18306,14 +18310,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_activador_slot$3.name,
     		type: "slot",
-    		source: "(66:12) <span slot=\\\"activador\\\">",
+    		source: "(64:12) <span slot=\\\"activador\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (73:12) {#if $globalStore.usuario.esMod}
+    // (71:12) {#if $globalStore.usuario.esMod}
     function create_if_block_7(ctx) {
     	let li;
     	let t;
@@ -18326,7 +18330,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			li = element("li");
     			t = text("Eliminar ");
     			create_component(ripple.$$.fragment);
-    			add_location(li, file$i, 73, 16, 2029);
+    			add_location(li, file$i, 71, 16, 1979);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -18353,14 +18357,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_if_block_7.name,
     		type: "if",
-    		source: "(73:12) {#if $globalStore.usuario.esMod}",
+    		source: "(71:12) {#if $globalStore.usuario.esMod}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (65:8) <Menu>
+    // (63:8) <Menu>
     function create_default_slot$7(ctx) {
     	let t0;
     	let li0;
@@ -18395,8 +18399,8 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			t5 = space();
     			if (if_block) if_block.c();
     			if_block_anchor = empty();
-    			add_location(li0, file$i, 70, 12, 1858);
-    			add_location(li1, file$i, 71, 12, 1938);
+    			add_location(li0, file$i, 68, 12, 1808);
+    			add_location(li1, file$i, 69, 12, 1888);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, t0, anchor);
@@ -18474,14 +18478,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_default_slot$7.name,
     		type: "slot",
-    		source: "(65:8) <Menu>",
+    		source: "(63:8) <Menu>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (78:4) {#if visible}
+    // (76:4) {#if visible}
     function create_if_block$c(ctx) {
     	let a;
     	let t0;
@@ -18537,16 +18541,16 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			h3 = element("h3");
     			t10 = text(t10_value);
     			attr_dev(div0, "class", "info svelte-sxiyex");
-    			add_location(div0, file$i, 87, 16, 2899);
+    			add_location(div0, file$i, 85, 16, 2849);
     			attr_dev(div1, "class", "info svelte-sxiyex");
-    			add_location(div1, file$i, 92, 16, 3406);
+    			add_location(div1, file$i, 90, 16, 3356);
     			attr_dev(div2, "class", "infos");
-    			add_location(div2, file$i, 84, 12, 2563);
-    			add_location(h3, file$i, 96, 12, 3510);
+    			add_location(div2, file$i, 82, 12, 2513);
+    			add_location(h3, file$i, 94, 12, 3460);
     			set_style(a, "background", "url(" + /*media*/ ctx[6].vistaPreviaCuadrado + ")");
     			attr_dev(a, "href", a_href_value = "/Hilo/" + /*hilo*/ ctx[0].id);
     			attr_dev(a, "class", "hilo-in");
-    			add_location(a, file$i, 78, 8, 2133);
+    			add_location(a, file$i, 76, 8, 2083);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, a, anchor);
@@ -18669,14 +18673,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_if_block$c.name,
     		type: "if",
-    		source: "(78:4) {#if visible}",
+    		source: "(76:4) {#if visible}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (81:12) {#if destellando}
+    // (79:12) {#if destellando}
     function create_if_block_6$1(ctx) {
     	let div;
 
@@ -18684,7 +18688,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "class", "destello");
-    			add_location(div, file$i, 81, 16, 2406);
+    			add_location(div, file$i, 79, 16, 2356);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -18698,14 +18702,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_if_block_6$1.name,
     		type: "if",
-    		source: "(81:12) {#if destellando}",
+    		source: "(79:12) {#if destellando}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (86:16) {#if hilo.sticky > 0}
+    // (84:16) {#if hilo.sticky > 0}
     function create_if_block_5$1(ctx) {
     	let div;
     	let icon;
@@ -18724,7 +18728,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			div = element("div");
     			create_component(icon.$$.fragment);
     			attr_dev(div, "class", "info sticky-info svelte-sxiyex");
-    			add_location(div, file$i, 85, 38, 2622);
+    			add_location(div, file$i, 83, 38, 2572);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -18750,14 +18754,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_if_block_5$1.name,
     		type: "if",
-    		source: "(86:16) {#if hilo.sticky > 0}",
+    		source: "(84:16) {#if hilo.sticky > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (87:16) {#if hilo.nuevo}
+    // (85:16) {#if hilo.nuevo}
     function create_if_block_4$2(ctx) {
     	let div;
 
@@ -18767,7 +18771,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			div.textContent = "NUEVO";
     			attr_dev(div, "class", "info svelte-sxiyex");
     			set_style(div, "background", "#18222D");
-    			add_location(div, file$i, 86, 33, 2820);
+    			add_location(div, file$i, 84, 33, 2770);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -18781,14 +18785,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_if_block_4$2.name,
     		type: "if",
-    		source: "(87:16) {#if hilo.nuevo}",
+    		source: "(85:16) {#if hilo.nuevo}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (89:16) {#if media.tipo == MediaType.Video}
+    // (87:16) {#if media.tipo == MediaType.Video}
     function create_if_block_3$2(ctx) {
     	let div;
     	let span;
@@ -18798,10 +18802,10 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			div = element("div");
     			span = element("span");
     			attr_dev(span, "class", "fe fe-play");
-    			add_location(span, file$i, 88, 97, 3100);
+    			add_location(span, file$i, 86, 97, 3050);
     			attr_dev(div, "class", "info svelte-sxiyex");
     			set_style(div, "background", "#18222D");
-    			add_location(div, file$i, 88, 52, 3055);
+    			add_location(div, file$i, 86, 52, 3005);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -18816,14 +18820,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_if_block_3$2.name,
     		type: "if",
-    		source: "(89:16) {#if media.tipo == MediaType.Video}",
+    		source: "(87:16) {#if media.tipo == MediaType.Video}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (90:16) {#if media.tipo == MediaType.Youtube}
+    // (88:16) {#if media.tipo == MediaType.Youtube}
     function create_if_block_2$3(ctx) {
     	let div;
     	let span;
@@ -18833,10 +18837,10 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			div = element("div");
     			span = element("span");
     			attr_dev(span, "class", "fe fe-play");
-    			add_location(span, file$i, 89, 99, 3244);
+    			add_location(span, file$i, 87, 99, 3194);
     			attr_dev(div, "class", "info svelte-sxiyex");
     			set_style(div, "background", "#fa2717");
-    			add_location(div, file$i, 89, 54, 3199);
+    			add_location(div, file$i, 87, 54, 3149);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -18851,7 +18855,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_if_block_2$3.name,
     		type: "if",
-    		source: "(90:16) {#if media.tipo == MediaType.Youtube}",
+    		source: "(88:16) {#if media.tipo == MediaType.Youtube}",
     		ctx
     	});
 
@@ -18894,9 +18898,9 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			set_style(div, "display", "flex");
     			set_style(div, "flex-direction", "column");
     			set_style(div, "position", "absolute");
-    			add_location(div, file$i, 58, 4, 1420);
+    			add_location(div, file$i, 56, 4, 1370);
     			attr_dev(li, "class", "hilo");
-    			add_location(li, file$i, 55, 0, 1344);
+    			add_location(li, file$i, 53, 0, 1294);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -19020,8 +19024,6 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		}
     	}
 
-    	console.log(hilo);
-    	console.log(hilo.categoriaId);
     	const writable_props = ["hilo"];
 
     	Object.keys($$props).forEach(key => {
@@ -19131,21 +19133,1506 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	}
     }
 
+    /* node_modules\svelte-infinite-loading\src\Spinner.svelte generated by Svelte v3.29.0 */
+
+    const file$j = "node_modules\\svelte-infinite-loading\\src\\Spinner.svelte";
+
+    // (49:0) {:else}
+    function create_else_block$4(ctx) {
+    	let i;
+
+    	const block = {
+    		c: function create() {
+    			i = element("i");
+    			attr_dev(i, "class", "loading-default svelte-10h86fq");
+    			add_location(i, file$j, 51, 1, 1184);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, i, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(i);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block$4.name,
+    		type: "else",
+    		source: "(49:0) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (38:33) 
+    function create_if_block_3$3(ctx) {
+    	let span5;
+    	let span0;
+    	let t0;
+    	let span1;
+    	let t1;
+    	let span2;
+    	let t2;
+    	let span3;
+    	let t3;
+    	let span4;
+
+    	const block = {
+    		c: function create() {
+    			span5 = element("span");
+    			span0 = element("span");
+    			t0 = space();
+    			span1 = element("span");
+    			t1 = space();
+    			span2 = element("span");
+    			t2 = space();
+    			span3 = element("span");
+    			t3 = space();
+    			span4 = element("span");
+    			attr_dev(span0, "class", "wave-item svelte-10h86fq");
+    			add_location(span0, file$j, 41, 2, 978);
+    			attr_dev(span1, "class", "wave-item svelte-10h86fq");
+    			add_location(span1, file$j, 42, 2, 1012);
+    			attr_dev(span2, "class", "wave-item svelte-10h86fq");
+    			add_location(span2, file$j, 43, 2, 1046);
+    			attr_dev(span3, "class", "wave-item svelte-10h86fq");
+    			add_location(span3, file$j, 44, 2, 1080);
+    			attr_dev(span4, "class", "wave-item svelte-10h86fq");
+    			add_location(span4, file$j, 45, 2, 1114);
+    			attr_dev(span5, "class", "loading-wave-dots svelte-10h86fq");
+    			add_location(span5, file$j, 40, 1, 943);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span5, anchor);
+    			append_dev(span5, span0);
+    			append_dev(span5, t0);
+    			append_dev(span5, span1);
+    			append_dev(span5, t1);
+    			append_dev(span5, span2);
+    			append_dev(span5, t2);
+    			append_dev(span5, span3);
+    			append_dev(span5, t3);
+    			append_dev(span5, span4);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span5);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_3$3.name,
+    		type: "if",
+    		source: "(38:33) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (33:31) 
+    function create_if_block_2$4(ctx) {
+    	let i;
+
+    	const block = {
+    		c: function create() {
+    			i = element("i");
+    			attr_dev(i, "class", "loading-spiral svelte-10h86fq");
+    			add_location(i, file$j, 35, 1, 856);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, i, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(i);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2$4.name,
+    		type: "if",
+    		source: "(33:31) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (19:32) 
+    function create_if_block_1$6(ctx) {
+    	let span8;
+    	let span0;
+    	let t0;
+    	let span1;
+    	let t1;
+    	let span2;
+    	let t2;
+    	let span3;
+    	let t3;
+    	let span4;
+    	let t4;
+    	let span5;
+    	let t5;
+    	let span6;
+    	let t6;
+    	let span7;
+
+    	const block = {
+    		c: function create() {
+    			span8 = element("span");
+    			span0 = element("span");
+    			t0 = space();
+    			span1 = element("span");
+    			t1 = space();
+    			span2 = element("span");
+    			t2 = space();
+    			span3 = element("span");
+    			t3 = space();
+    			span4 = element("span");
+    			t4 = space();
+    			span5 = element("span");
+    			t5 = space();
+    			span6 = element("span");
+    			t6 = space();
+    			span7 = element("span");
+    			attr_dev(span0, "class", "circle-item svelte-10h86fq");
+    			add_location(span0, file$j, 22, 2, 509);
+    			attr_dev(span1, "class", "circle-item svelte-10h86fq");
+    			add_location(span1, file$j, 23, 2, 545);
+    			attr_dev(span2, "class", "circle-item svelte-10h86fq");
+    			add_location(span2, file$j, 24, 2, 581);
+    			attr_dev(span3, "class", "circle-item svelte-10h86fq");
+    			add_location(span3, file$j, 25, 2, 617);
+    			attr_dev(span4, "class", "circle-item svelte-10h86fq");
+    			add_location(span4, file$j, 26, 2, 653);
+    			attr_dev(span5, "class", "circle-item svelte-10h86fq");
+    			add_location(span5, file$j, 27, 2, 689);
+    			attr_dev(span6, "class", "circle-item svelte-10h86fq");
+    			add_location(span6, file$j, 28, 2, 725);
+    			attr_dev(span7, "class", "circle-item svelte-10h86fq");
+    			add_location(span7, file$j, 29, 2, 761);
+    			attr_dev(span8, "class", "loading-circles svelte-10h86fq");
+    			add_location(span8, file$j, 21, 1, 476);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span8, anchor);
+    			append_dev(span8, span0);
+    			append_dev(span8, t0);
+    			append_dev(span8, span1);
+    			append_dev(span8, t1);
+    			append_dev(span8, span2);
+    			append_dev(span8, t2);
+    			append_dev(span8, span3);
+    			append_dev(span8, t3);
+    			append_dev(span8, span4);
+    			append_dev(span8, t4);
+    			append_dev(span8, span5);
+    			append_dev(span8, t5);
+    			append_dev(span8, span6);
+    			append_dev(span8, t6);
+    			append_dev(span8, span7);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span8);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$6.name,
+    		type: "if",
+    		source: "(19:32) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (5:0) {#if spinner === 'bubbles'}
+    function create_if_block$d(ctx) {
+    	let span8;
+    	let span0;
+    	let t0;
+    	let span1;
+    	let t1;
+    	let span2;
+    	let t2;
+    	let span3;
+    	let t3;
+    	let span4;
+    	let t4;
+    	let span5;
+    	let t5;
+    	let span6;
+    	let t6;
+    	let span7;
+
+    	const block = {
+    		c: function create() {
+    			span8 = element("span");
+    			span0 = element("span");
+    			t0 = space();
+    			span1 = element("span");
+    			t1 = space();
+    			span2 = element("span");
+    			t2 = space();
+    			span3 = element("span");
+    			t3 = space();
+    			span4 = element("span");
+    			t4 = space();
+    			span5 = element("span");
+    			t5 = space();
+    			span6 = element("span");
+    			t6 = space();
+    			span7 = element("span");
+    			attr_dev(span0, "class", "bubble-item svelte-10h86fq");
+    			add_location(span0, file$j, 8, 2, 127);
+    			attr_dev(span1, "class", "bubble-item svelte-10h86fq");
+    			add_location(span1, file$j, 9, 2, 163);
+    			attr_dev(span2, "class", "bubble-item svelte-10h86fq");
+    			add_location(span2, file$j, 10, 2, 199);
+    			attr_dev(span3, "class", "bubble-item svelte-10h86fq");
+    			add_location(span3, file$j, 11, 2, 235);
+    			attr_dev(span4, "class", "bubble-item svelte-10h86fq");
+    			add_location(span4, file$j, 12, 2, 271);
+    			attr_dev(span5, "class", "bubble-item svelte-10h86fq");
+    			add_location(span5, file$j, 13, 2, 307);
+    			attr_dev(span6, "class", "bubble-item svelte-10h86fq");
+    			add_location(span6, file$j, 14, 2, 343);
+    			attr_dev(span7, "class", "bubble-item svelte-10h86fq");
+    			add_location(span7, file$j, 15, 2, 379);
+    			attr_dev(span8, "class", "loading-bubbles svelte-10h86fq");
+    			add_location(span8, file$j, 7, 1, 94);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span8, anchor);
+    			append_dev(span8, span0);
+    			append_dev(span8, t0);
+    			append_dev(span8, span1);
+    			append_dev(span8, t1);
+    			append_dev(span8, span2);
+    			append_dev(span8, t2);
+    			append_dev(span8, span3);
+    			append_dev(span8, t3);
+    			append_dev(span8, span4);
+    			append_dev(span8, t4);
+    			append_dev(span8, span5);
+    			append_dev(span8, t5);
+    			append_dev(span8, span6);
+    			append_dev(span8, t6);
+    			append_dev(span8, span7);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span8);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$d.name,
+    		type: "if",
+    		source: "(5:0) {#if spinner === 'bubbles'}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$j(ctx) {
+    	let if_block_anchor;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*spinner*/ ctx[0] === "bubbles") return create_if_block$d;
+    		if (/*spinner*/ ctx[0] === "circles") return create_if_block_1$6;
+    		if (/*spinner*/ ctx[0] === "spiral") return create_if_block_2$4;
+    		if (/*spinner*/ ctx[0] === "wavedots") return create_if_block_3$3;
+    		return create_else_block$4;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block = current_block_type(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (current_block_type !== (current_block_type = select_block_type(ctx))) {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$j.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$j($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Spinner", slots, []);
+    	let { spinner = "" } = $$props;
+    	const writable_props = ["spinner"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Spinner> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$$set = $$props => {
+    		if ("spinner" in $$props) $$invalidate(0, spinner = $$props.spinner);
+    	};
+
+    	$$self.$capture_state = () => ({ spinner });
+
+    	$$self.$inject_state = $$props => {
+    		if ("spinner" in $$props) $$invalidate(0, spinner = $$props.spinner);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [spinner];
+    }
+
+    class Spinner extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$j, create_fragment$j, safe_not_equal, { spinner: 0 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Spinner",
+    			options,
+    			id: create_fragment$j.name
+    		});
+    	}
+
+    	get spinner() {
+    		throw new Error("<Spinner>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set spinner(value) {
+    		throw new Error("<Spinner>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* node_modules\svelte-infinite-loading\src\InfiniteLoading.svelte generated by Svelte v3.29.0 */
+
+    const { Object: Object_1$1, console: console_1$6 } = globals;
+    const file$k = "node_modules\\svelte-infinite-loading\\src\\InfiniteLoading.svelte";
+    const get_error_slot_changes = dirty => ({});
+    const get_error_slot_context = ctx => ({ attemptLoad: /*attemptLoad*/ ctx[7] });
+    const get_noMore_slot_changes = dirty => ({});
+    const get_noMore_slot_context = ctx => ({});
+    const get_noResults_slot_changes = dirty => ({});
+    const get_noResults_slot_context = ctx => ({});
+    const get_spinner_slot_changes = dirty => ({ isFirstLoad: dirty & /*isFirstLoad*/ 2 });
+    const get_spinner_slot_context = ctx => ({ isFirstLoad: /*isFirstLoad*/ ctx[1] });
+
+    // (323:1) {#if showSpinner}
+    function create_if_block_3$4(ctx) {
+    	let div;
+    	let current;
+    	const spinner_slot_template = /*#slots*/ ctx[13].spinner;
+    	const spinner_slot = create_slot(spinner_slot_template, ctx, /*$$scope*/ ctx[12], get_spinner_slot_context);
+    	const spinner_slot_or_fallback = spinner_slot || fallback_block_3(ctx);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			if (spinner_slot_or_fallback) spinner_slot_or_fallback.c();
+    			attr_dev(div, "class", "infinite-status-prompt");
+    			add_location(div, file$k, 323, 2, 8082);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			if (spinner_slot_or_fallback) {
+    				spinner_slot_or_fallback.m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			if (spinner_slot) {
+    				if (spinner_slot.p && dirty & /*$$scope, isFirstLoad*/ 4098) {
+    					update_slot(spinner_slot, spinner_slot_template, ctx, /*$$scope*/ ctx[12], dirty, get_spinner_slot_changes, get_spinner_slot_context);
+    				}
+    			} else {
+    				if (spinner_slot_or_fallback && spinner_slot_or_fallback.p && dirty & /*spinner*/ 1) {
+    					spinner_slot_or_fallback.p(ctx, dirty);
+    				}
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(spinner_slot_or_fallback, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(spinner_slot_or_fallback, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			if (spinner_slot_or_fallback) spinner_slot_or_fallback.d(detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_3$4.name,
+    		type: "if",
+    		source: "(323:1) {#if showSpinner}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (325:38)      
+    function fallback_block_3(ctx) {
+    	let spinner_1;
+    	let current;
+
+    	spinner_1 = new Spinner({
+    			props: { spinner: /*spinner*/ ctx[0] },
+    			$$inline: true
+    		});
+
+    	const block = {
+    		c: function create() {
+    			create_component(spinner_1.$$.fragment);
+    		},
+    		m: function mount(target, anchor) {
+    			mount_component(spinner_1, target, anchor);
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			const spinner_1_changes = {};
+    			if (dirty & /*spinner*/ 1) spinner_1_changes.spinner = /*spinner*/ ctx[0];
+    			spinner_1.$set(spinner_1_changes);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(spinner_1.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(spinner_1.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			destroy_component(spinner_1, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: fallback_block_3.name,
+    		type: "fallback",
+    		source: "(325:38)      ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (331:1) {#if showNoResults}
+    function create_if_block_2$5(ctx) {
+    	let div;
+    	let current;
+    	const noResults_slot_template = /*#slots*/ ctx[13].noResults;
+    	const noResults_slot = create_slot(noResults_slot_template, ctx, /*$$scope*/ ctx[12], get_noResults_slot_context);
+    	const noResults_slot_or_fallback = noResults_slot || fallback_block_2(ctx);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			if (noResults_slot_or_fallback) noResults_slot_or_fallback.c();
+    			attr_dev(div, "class", "infinite-status-prompt");
+    			add_location(div, file$k, 331, 2, 8235);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			if (noResults_slot_or_fallback) {
+    				noResults_slot_or_fallback.m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			if (noResults_slot) {
+    				if (noResults_slot.p && dirty & /*$$scope*/ 4096) {
+    					update_slot(noResults_slot, noResults_slot_template, ctx, /*$$scope*/ ctx[12], dirty, get_noResults_slot_changes, get_noResults_slot_context);
+    				}
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(noResults_slot_or_fallback, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(noResults_slot_or_fallback, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			if (noResults_slot_or_fallback) noResults_slot_or_fallback.d(detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2$5.name,
+    		type: "if",
+    		source: "(331:1) {#if showNoResults}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (333:26)      No results :(    
+    function fallback_block_2(ctx) {
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			t = text("No results :(");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, t, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: fallback_block_2.name,
+    		type: "fallback",
+    		source: "(333:26)      No results :(    ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (339:1) {#if showNoMore}
+    function create_if_block_1$7(ctx) {
+    	let div;
+    	let current;
+    	const noMore_slot_template = /*#slots*/ ctx[13].noMore;
+    	const noMore_slot = create_slot(noMore_slot_template, ctx, /*$$scope*/ ctx[12], get_noMore_slot_context);
+    	const noMore_slot_or_fallback = noMore_slot || fallback_block_1$1(ctx);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			if (noMore_slot_or_fallback) noMore_slot_or_fallback.c();
+    			attr_dev(div, "class", "infinite-status-prompt");
+    			add_location(div, file$k, 339, 2, 8365);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			if (noMore_slot_or_fallback) {
+    				noMore_slot_or_fallback.m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			if (noMore_slot) {
+    				if (noMore_slot.p && dirty & /*$$scope*/ 4096) {
+    					update_slot(noMore_slot, noMore_slot_template, ctx, /*$$scope*/ ctx[12], dirty, get_noMore_slot_changes, get_noMore_slot_context);
+    				}
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(noMore_slot_or_fallback, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(noMore_slot_or_fallback, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			if (noMore_slot_or_fallback) noMore_slot_or_fallback.d(detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$7.name,
+    		type: "if",
+    		source: "(339:1) {#if showNoMore}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (341:23)      No more data :)    
+    function fallback_block_1$1(ctx) {
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			t = text("No more data :)");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, t, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: fallback_block_1$1.name,
+    		type: "fallback",
+    		source: "(341:23)      No more data :)    ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (347:1) {#if showError}
+    function create_if_block$e(ctx) {
+    	let div;
+    	let current;
+    	const error_slot_template = /*#slots*/ ctx[13].error;
+    	const error_slot = create_slot(error_slot_template, ctx, /*$$scope*/ ctx[12], get_error_slot_context);
+    	const error_slot_or_fallback = error_slot || fallback_block$1(ctx);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			if (error_slot_or_fallback) error_slot_or_fallback.c();
+    			attr_dev(div, "class", "infinite-status-prompt");
+    			add_location(div, file$k, 347, 2, 8493);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			if (error_slot_or_fallback) {
+    				error_slot_or_fallback.m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			if (error_slot) {
+    				if (error_slot.p && dirty & /*$$scope*/ 4096) {
+    					update_slot(error_slot, error_slot_template, ctx, /*$$scope*/ ctx[12], dirty, get_error_slot_changes, get_error_slot_context);
+    				}
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(error_slot_or_fallback, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(error_slot_or_fallback, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			if (error_slot_or_fallback) error_slot_or_fallback.d(detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$e.name,
+    		type: "if",
+    		source: "(347:1) {#if showError}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (349:36)      Oops, something went wrong :(     
+    function fallback_block$1(ctx) {
+    	let t0;
+    	let br;
+    	let t1;
+    	let button;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			t0 = text("Oops, something went wrong :(\n\t\t\t\t");
+    			br = element("br");
+    			t1 = space();
+    			button = element("button");
+    			button.textContent = "Retry";
+    			add_location(br, file$k, 350, 4, 8605);
+    			attr_dev(button, "class", "btn-try-infinite svelte-o3w4bf");
+    			add_location(button, file$k, 351, 4, 8614);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, t0, anchor);
+    			insert_dev(target, br, anchor);
+    			insert_dev(target, t1, anchor);
+    			insert_dev(target, button, anchor);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", /*attemptLoad*/ ctx[7], false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(br);
+    			if (detaching) detach_dev(t1);
+    			if (detaching) detach_dev(button);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: fallback_block$1.name,
+    		type: "fallback",
+    		source: "(349:36)      Oops, something went wrong :(     ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$k(ctx) {
+    	let div;
+    	let t0;
+    	let t1;
+    	let t2;
+    	let current;
+    	let if_block0 = /*showSpinner*/ ctx[3] && create_if_block_3$4(ctx);
+    	let if_block1 = /*showNoResults*/ ctx[5] && create_if_block_2$5(ctx);
+    	let if_block2 = /*showNoMore*/ ctx[6] && create_if_block_1$7(ctx);
+    	let if_block3 = /*showError*/ ctx[4] && create_if_block$e(ctx);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			if (if_block0) if_block0.c();
+    			t0 = space();
+    			if (if_block1) if_block1.c();
+    			t1 = space();
+    			if (if_block2) if_block2.c();
+    			t2 = space();
+    			if (if_block3) if_block3.c();
+    			attr_dev(div, "class", "infinite-loading-container svelte-o3w4bf");
+    			add_location(div, file$k, 321, 0, 7996);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			if (if_block0) if_block0.m(div, null);
+    			append_dev(div, t0);
+    			if (if_block1) if_block1.m(div, null);
+    			append_dev(div, t1);
+    			if (if_block2) if_block2.m(div, null);
+    			append_dev(div, t2);
+    			if (if_block3) if_block3.m(div, null);
+    			/*div_binding*/ ctx[14](div);
+    			current = true;
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (/*showSpinner*/ ctx[3]) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+
+    					if (dirty & /*showSpinner*/ 8) {
+    						transition_in(if_block0, 1);
+    					}
+    				} else {
+    					if_block0 = create_if_block_3$4(ctx);
+    					if_block0.c();
+    					transition_in(if_block0, 1);
+    					if_block0.m(div, t0);
+    				}
+    			} else if (if_block0) {
+    				group_outros();
+
+    				transition_out(if_block0, 1, 1, () => {
+    					if_block0 = null;
+    				});
+
+    				check_outros();
+    			}
+
+    			if (/*showNoResults*/ ctx[5]) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+
+    					if (dirty & /*showNoResults*/ 32) {
+    						transition_in(if_block1, 1);
+    					}
+    				} else {
+    					if_block1 = create_if_block_2$5(ctx);
+    					if_block1.c();
+    					transition_in(if_block1, 1);
+    					if_block1.m(div, t1);
+    				}
+    			} else if (if_block1) {
+    				group_outros();
+
+    				transition_out(if_block1, 1, 1, () => {
+    					if_block1 = null;
+    				});
+
+    				check_outros();
+    			}
+
+    			if (/*showNoMore*/ ctx[6]) {
+    				if (if_block2) {
+    					if_block2.p(ctx, dirty);
+
+    					if (dirty & /*showNoMore*/ 64) {
+    						transition_in(if_block2, 1);
+    					}
+    				} else {
+    					if_block2 = create_if_block_1$7(ctx);
+    					if_block2.c();
+    					transition_in(if_block2, 1);
+    					if_block2.m(div, t2);
+    				}
+    			} else if (if_block2) {
+    				group_outros();
+
+    				transition_out(if_block2, 1, 1, () => {
+    					if_block2 = null;
+    				});
+
+    				check_outros();
+    			}
+
+    			if (/*showError*/ ctx[4]) {
+    				if (if_block3) {
+    					if_block3.p(ctx, dirty);
+
+    					if (dirty & /*showError*/ 16) {
+    						transition_in(if_block3, 1);
+    					}
+    				} else {
+    					if_block3 = create_if_block$e(ctx);
+    					if_block3.c();
+    					transition_in(if_block3, 1);
+    					if_block3.m(div, null);
+    				}
+    			} else if (if_block3) {
+    				group_outros();
+
+    				transition_out(if_block3, 1, 1, () => {
+    					if_block3 = null;
+    				});
+
+    				check_outros();
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(if_block0);
+    			transition_in(if_block1);
+    			transition_in(if_block2);
+    			transition_in(if_block3);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(if_block0);
+    			transition_out(if_block1);
+    			transition_out(if_block2);
+    			transition_out(if_block3);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    			if (if_block2) if_block2.d();
+    			if (if_block3) if_block3.d();
+    			/*div_binding*/ ctx[14](null);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$k.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    const STATUS = {
+    	READY: 0,
+    	LOADING: 1,
+    	COMPLETE: 2,
+    	ERROR: 3
+    };
+
+    const THROTTLE_LIMIT = 50;
+    const LOOP_CHECK_TIMEOUT = 1000;
+    const LOOP_CHECK_MAX_CALLS = 10;
+
+    const ERROR_INFINITE_LOOP = [
+    	`executed the callback function more than ${LOOP_CHECK_MAX_CALLS} times for a short time, it looks like searched a wrong scroll wrapper that doest not has fixed height or maximum height, please check it. If you want to force to set a element as scroll wrapper rather than automatic searching, you can do this:`,
+    	"<!-- add a special attribute for the real scroll wrapper (can also be data-infinite-wrapper) -->",
+    	"<div infinite-wrapper>",
+    	"  ...",
+    	"  <!-- set forceUseInfiniteWrapper -->",
+    	"  <InfiniteLoading forceUseInfiniteWrapper>",
+    	"</div>",
+    	"or",
+    	"<div class=\"infinite-wrapper\">",
+    	"  ...",
+    	"  <!-- set forceUseInfiniteWrapper as css selector of the real scroll wrapper -->",
+    	"  <InfiniteLoading forceUseInfiniteWrapper=\".infinite-wrapper\" />",
+    	"</div>"
+    ].join("\n");
+
+    /**
+     * the third argument for event bundler
+     * @see https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
+     */
+    const thirdEventArg = (() => {
+    	let result = false;
+
+    	try {
+    		const arg = Object.defineProperty({}, "passive", {
+    			get() {
+    				result = { passive: true };
+    				return true;
+    			}
+    		});
+
+    		window.addEventListener("testpassive", arg, arg);
+    		window.remove("testpassive", arg, arg);
+    	} catch(e) {
+    		
+    	} /* */
+
+    	return result;
+    })();
+
+    const throttler = {
+    	timers: [],
+    	caches: [],
+    	throttle(fn) {
+    		if (this.caches.indexOf(fn) === -1) {
+    			// cache current handler
+    			this.caches.push(fn);
+
+    			// save timer for current handler
+    			this.timers.push(setTimeout(
+    				() => {
+    					fn();
+
+    					// empty cache and timer
+    					this.caches.splice(this.caches.indexOf(fn), 1);
+
+    					this.timers.shift();
+    				},
+    				THROTTLE_LIMIT
+    			));
+    		}
+    	},
+    	reset() {
+    		// reset all timers
+    		this.timers.forEach(timer => {
+    			clearTimeout(timer);
+    		});
+
+    		this.timers.length = 0;
+
+    		// empty caches
+    		this.caches = [];
+    	}
+    };
+
+    const loopTracker = {
+    	isChecked: false,
+    	timer: null,
+    	times: 0,
+    	track() {
+    		// record track times
+    		this.times += 1;
+
+    		// try to mark check status
+    		clearTimeout(this.timer);
+
+    		this.timer = setTimeout(
+    			() => {
+    				this.isChecked = true;
+    			},
+    			LOOP_CHECK_TIMEOUT
+    		);
+
+    		// throw warning if the times of continuous calls large than the maximum times
+    		if (this.times > LOOP_CHECK_MAX_CALLS) {
+    			console.error(ERROR_INFINITE_LOOP);
+    			this.isChecked = true;
+    		}
+    	}
+    };
+
+    const scrollBarStorage = {
+    	key: "_infiniteScrollHeight",
+    	getScrollElement(element) {
+    		return element === window ? document.documentElement : element;
+    	},
+    	save(element) {
+    		const target = this.getScrollElement(element);
+
+    		// save scroll height on the scroll parent
+    		target[this.key] = target.scrollHeight;
+    	},
+    	restore(element) {
+    		const target = this.getScrollElement(element);
+
+    		/* istanbul ignore else */
+    		if (typeof target[this.key] === "number") {
+    			target.scrollTop = target.scrollHeight - target[this.key] + target.scrollTop;
+    		}
+
+    		this.remove(target);
+    	},
+    	remove(element) {
+    		if (element[this.key] !== undefined) {
+    			// remove scroll height
+    			delete element[this.key]; // eslint-disable-line no-param-reassign
+    		}
+    	}
+    };
+
+    function isVisible(element) {
+    	return element.offsetWidth + element.offsetHeight > 0;
+    }
+
+    function instance$k($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("InfiniteLoading", slots, ['spinner','noResults','noMore','error']);
+    	const dispatch = createEventDispatcher();
+    	let { distance = 100 } = $$props;
+    	let { spinner = "" } = $$props;
+    	let { direction = "bottom" } = $$props;
+    	let { forceUseInfiniteWrapper = false } = $$props;
+    	let { identifier = +new Date() } = $$props;
+    	let isFirstLoad = true; // save the current loading whether it is the first loading
+    	let status = STATUS.READY;
+    	let mounted = false;
+    	let thisElement;
+    	let scrollParent;
+
+    	const stateChanger = {
+    		loaded: async () => {
+    			$$invalidate(1, isFirstLoad = false);
+
+    			if (direction === "top") {
+    				// wait for DOM updated
+    				await tick();
+
+    				scrollBarStorage.restore(scrollParent);
+    			}
+
+    			if (status === STATUS.LOADING) {
+    				await tick();
+    				await attemptLoad(true);
+    			}
+    		},
+    		complete: async () => {
+    			$$invalidate(15, status = STATUS.COMPLETE);
+
+    			// force re-complation computed properties to fix the problem of get slot text delay
+    			await tick();
+
+    			scrollParent.removeEventListener("scroll", scrollHandler, thirdEventArg);
+    		},
+    		reset: async () => {
+    			$$invalidate(15, status = STATUS.READY);
+    			$$invalidate(1, isFirstLoad = true);
+    			scrollBarStorage.remove(scrollParent);
+    			scrollParent.addEventListener("scroll", scrollHandler, thirdEventArg);
+
+    			// wait for list to be empty and the empty action may trigger a scroll event
+    			setTimeout(
+    				() => {
+    					throttler.reset();
+    					scrollHandler();
+    				},
+    				1
+    			);
+    		},
+    		error: () => {
+    			$$invalidate(15, status = STATUS.ERROR);
+    			throttler.reset();
+    		}
+    	};
+
+    	function scrollHandler(event) {
+    		if (status === STATUS.READY) {
+    			if (event && event.constructor === Event && isVisible(thisElement)) {
+    				throttler.throttle(attemptLoad);
+    			} else {
+    				attemptLoad();
+    			}
+    		}
+    	}
+
+    	// Attempt to trigger load
+    	async function attemptLoad(isContinuousCall) {
+    		if (status !== STATUS.COMPLETE && isVisible(thisElement) && getCurrentDistance() <= distance) {
+    			$$invalidate(15, status = STATUS.LOADING);
+
+    			if (direction === "top") {
+    				// wait for spinner display
+    				await tick();
+
+    				scrollBarStorage.save(scrollParent);
+    			}
+
+    			dispatch("infinite", stateChanger);
+
+    			if (isContinuousCall && !forceUseInfiniteWrapper && !loopTracker.isChecked) {
+    				// check this component whether be in an infinite loop if it is not checked
+    				loopTracker.track();
+    			}
+    		} else if (status === STATUS.LOADING) {
+    			$$invalidate(15, status = STATUS.READY);
+    		}
+    	}
+
+    	// Get current distance from the specified direction
+    	function getCurrentDistance() {
+    		let distance;
+
+    		if (direction === "top") {
+    			distance = typeof scrollParent.scrollTop === "number"
+    			? scrollParent.scrollTop
+    			: scrollParent.pageYOffset;
+    		} else {
+    			const infiniteElementOffsetTopFromBottom = thisElement.getBoundingClientRect().top;
+
+    			const scrollElementOffsetTopFromBottom = scrollParent === window
+    			? window.innerHeight
+    			: scrollParent.getBoundingClientRect().bottom;
+
+    			distance = infiniteElementOffsetTopFromBottom - scrollElementOffsetTopFromBottom;
+    		}
+
+    		return distance;
+    	}
+
+    	// Get the first scroll parent of an element
+    	function getScrollParent(element = thisElement) {
+    		let result;
+
+    		if (typeof forceUseInfiniteWrapper === "string") {
+    			result = document.querySelector(forceUseInfiniteWrapper);
+    		}
+
+    		if (!result) {
+    			if (element.tagName === "BODY") {
+    				result = window;
+    			} else if (!forceUseInfiniteWrapper && ["scroll", "auto"].indexOf(getComputedStyle(element).overflowY) > -1) {
+    				result = element;
+    			} else if (element.hasAttribute("infinite-wrapper") || element.hasAttribute("data-infinite-wrapper")) {
+    				result = element;
+    			}
+    		}
+
+    		return result || getScrollParent(element.parentNode);
+    	}
+
+    	function updateScrollParent() {
+    		if (mounted) scrollParent = getScrollParent();
+    	}
+
+    	function identifierUpdated() {
+    		if (mounted) stateChanger.reset();
+    	}
+
+    	onMount(async () => {
+    		$$invalidate(16, mounted = true);
+
+    		setTimeout(
+    			() => {
+    				scrollHandler();
+    				scrollParent.addEventListener("scroll", scrollHandler, thirdEventArg);
+    			},
+    			1
+    		);
+    	});
+
+    	onDestroy(() => {
+    		if (mounted && status !== STATUS.COMPLETE) {
+    			throttler.reset();
+    			scrollBarStorage.remove(scrollParent);
+    			scrollParent.removeEventListener("scroll", scrollHandler, thirdEventArg);
+    		}
+    	});
+
+    	const writable_props = ["distance", "spinner", "direction", "forceUseInfiniteWrapper", "identifier"];
+
+    	Object_1$1.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1$6.warn(`<InfiniteLoading> was created with unknown prop '${key}'`);
+    	});
+
+    	function div_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			thisElement = $$value;
+    			$$invalidate(2, thisElement);
+    		});
+    	}
+
+    	$$self.$$set = $$props => {
+    		if ("distance" in $$props) $$invalidate(8, distance = $$props.distance);
+    		if ("spinner" in $$props) $$invalidate(0, spinner = $$props.spinner);
+    		if ("direction" in $$props) $$invalidate(9, direction = $$props.direction);
+    		if ("forceUseInfiniteWrapper" in $$props) $$invalidate(10, forceUseInfiniteWrapper = $$props.forceUseInfiniteWrapper);
+    		if ("identifier" in $$props) $$invalidate(11, identifier = $$props.identifier);
+    		if ("$$scope" in $$props) $$invalidate(12, $$scope = $$props.$$scope);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		STATUS,
+    		THROTTLE_LIMIT,
+    		LOOP_CHECK_TIMEOUT,
+    		LOOP_CHECK_MAX_CALLS,
+    		ERROR_INFINITE_LOOP,
+    		thirdEventArg,
+    		throttler,
+    		loopTracker,
+    		scrollBarStorage,
+    		isVisible,
+    		onMount,
+    		onDestroy,
+    		tick,
+    		createEventDispatcher,
+    		Spinner,
+    		dispatch,
+    		distance,
+    		spinner,
+    		direction,
+    		forceUseInfiniteWrapper,
+    		identifier,
+    		isFirstLoad,
+    		status,
+    		mounted,
+    		thisElement,
+    		scrollParent,
+    		stateChanger,
+    		scrollHandler,
+    		attemptLoad,
+    		getCurrentDistance,
+    		getScrollParent,
+    		updateScrollParent,
+    		identifierUpdated,
+    		showSpinner,
+    		showError,
+    		showNoResults,
+    		showNoMore
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("distance" in $$props) $$invalidate(8, distance = $$props.distance);
+    		if ("spinner" in $$props) $$invalidate(0, spinner = $$props.spinner);
+    		if ("direction" in $$props) $$invalidate(9, direction = $$props.direction);
+    		if ("forceUseInfiniteWrapper" in $$props) $$invalidate(10, forceUseInfiniteWrapper = $$props.forceUseInfiniteWrapper);
+    		if ("identifier" in $$props) $$invalidate(11, identifier = $$props.identifier);
+    		if ("isFirstLoad" in $$props) $$invalidate(1, isFirstLoad = $$props.isFirstLoad);
+    		if ("status" in $$props) $$invalidate(15, status = $$props.status);
+    		if ("mounted" in $$props) $$invalidate(16, mounted = $$props.mounted);
+    		if ("thisElement" in $$props) $$invalidate(2, thisElement = $$props.thisElement);
+    		if ("scrollParent" in $$props) scrollParent = $$props.scrollParent;
+    		if ("showSpinner" in $$props) $$invalidate(3, showSpinner = $$props.showSpinner);
+    		if ("showError" in $$props) $$invalidate(4, showError = $$props.showError);
+    		if ("showNoResults" in $$props) $$invalidate(5, showNoResults = $$props.showNoResults);
+    		if ("showNoMore" in $$props) $$invalidate(6, showNoMore = $$props.showNoMore);
+    	};
+
+    	let showSpinner;
+    	let showError;
+    	let showNoResults;
+    	let showNoMore;
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*status*/ 32768) {
+    			 $$invalidate(3, showSpinner = status === STATUS.LOADING);
+    		}
+
+    		if ($$self.$$.dirty & /*status*/ 32768) {
+    			 $$invalidate(4, showError = status === STATUS.ERROR);
+    		}
+
+    		if ($$self.$$.dirty & /*status, isFirstLoad*/ 32770) {
+    			 $$invalidate(5, showNoResults = status === STATUS.COMPLETE && isFirstLoad);
+    		}
+
+    		if ($$self.$$.dirty & /*status, isFirstLoad*/ 32770) {
+    			 $$invalidate(6, showNoMore = status === STATUS.COMPLETE && !isFirstLoad);
+    		}
+
+    		if ($$self.$$.dirty & /*forceUseInfiniteWrapper, mounted*/ 66560) {
+    			// Watch forceUseInfiniteWrapper and mounted
+    			 (updateScrollParent());
+    		}
+
+    		if ($$self.$$.dirty & /*identifier, mounted*/ 67584) {
+    			// Watch identifier and mounted
+    			 (identifierUpdated());
+    		}
+    	};
+
+    	return [
+    		spinner,
+    		isFirstLoad,
+    		thisElement,
+    		showSpinner,
+    		showError,
+    		showNoResults,
+    		showNoMore,
+    		attemptLoad,
+    		distance,
+    		direction,
+    		forceUseInfiniteWrapper,
+    		identifier,
+    		$$scope,
+    		slots,
+    		div_binding
+    	];
+    }
+
+    class InfiniteLoading extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+
+    		init(this, options, instance$k, create_fragment$k, safe_not_equal, {
+    			distance: 8,
+    			spinner: 0,
+    			direction: 9,
+    			forceUseInfiniteWrapper: 10,
+    			identifier: 11
+    		});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "InfiniteLoading",
+    			options,
+    			id: create_fragment$k.name
+    		});
+    	}
+
+    	get distance() {
+    		throw new Error("<InfiniteLoading>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set distance(value) {
+    		throw new Error("<InfiniteLoading>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get spinner() {
+    		throw new Error("<InfiniteLoading>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set spinner(value) {
+    		throw new Error("<InfiniteLoading>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get direction() {
+    		throw new Error("<InfiniteLoading>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set direction(value) {
+    		throw new Error("<InfiniteLoading>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get forceUseInfiniteWrapper() {
+    		throw new Error("<InfiniteLoading>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set forceUseInfiniteWrapper(value) {
+    		throw new Error("<InfiniteLoading>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get identifier() {
+    		throw new Error("<InfiniteLoading>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set identifier(value) {
+    		throw new Error("<InfiniteLoading>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
     /* src\components\Hilos\HiloList.svelte generated by Svelte v3.29.0 */
 
-    const { console: console_1$6 } = globals;
-    const file$j = "src\\components\\Hilos\\HiloList.svelte";
+    const { console: console_1$7 } = globals;
+    const file$l = "src\\components\\Hilos\\HiloList.svelte";
 
     function get_each_context$9(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[8] = list[i];
-    	child_ctx[9] = list;
-    	child_ctx[10] = i;
+    	child_ctx[11] = list[i];
+    	child_ctx[12] = list;
+    	child_ctx[13] = i;
     	return child_ctx;
     }
 
-    // (51:4) {#if nuevoshilos.length > 0}
-    function create_if_block$d(ctx) {
+    // (60:4) {#if nuevoshilos.length > 0}
+    function create_if_block$f(ctx) {
     	let div;
     	let icon;
     	let t0;
@@ -19178,9 +20665,9 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			create_component(ripple.$$.fragment);
     			attr_dev(icon, "class", "fe fe-rotate-cw");
     			set_style(icon, "margin-right", "8px");
-    			add_location(icon, file$j, 52, 12, 1622);
+    			add_location(icon, file$l, 61, 12, 2017);
     			attr_dev(div, "class", "cargar-nuevos-hilos");
-    			add_location(div, file$j, 51, 8, 1526);
+    			add_location(div, file$l, 60, 8, 1921);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -19233,16 +20720,16 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$d.name,
+    		id: create_if_block$f.name,
     		type: "if",
-    		source: "(51:4) {#if nuevoshilos.length > 0}",
+    		source: "(60:4) {#if nuevoshilos.length > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (58:4) {#each hiloList.hilos as hilo (hilo.id)}
+    // (67:4) {#each hiloList.hilos as hilo (hilo.id)}
     function create_each_block$9(key_1, ctx) {
     	let first;
     	let hilopreview;
@@ -19250,13 +20737,13 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	let current;
 
     	function hilopreview_hilo_binding(value) {
-    		/*hilopreview_hilo_binding*/ ctx[3].call(null, value, /*hilo*/ ctx[8], /*each_value*/ ctx[9], /*hilo_index*/ ctx[10]);
+    		/*hilopreview_hilo_binding*/ ctx[5].call(null, value, /*hilo*/ ctx[11], /*each_value*/ ctx[12], /*hilo_index*/ ctx[13]);
     	}
 
     	let hilopreview_props = {};
 
-    	if (/*hilo*/ ctx[8] !== void 0) {
-    		hilopreview_props.hilo = /*hilo*/ ctx[8];
+    	if (/*hilo*/ ctx[11] !== void 0) {
+    		hilopreview_props.hilo = /*hilo*/ ctx[11];
     	}
 
     	hilopreview = new HiloPreview({ props: hilopreview_props, $$inline: true });
@@ -19281,7 +20768,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     			if (!updating_hilo && dirty & /*hiloList*/ 1) {
     				updating_hilo = true;
-    				hilopreview_changes.hilo = /*hilo*/ ctx[8];
+    				hilopreview_changes.hilo = /*hilo*/ ctx[11];
     				add_flush_callback(() => updating_hilo = false);
     			}
 
@@ -19306,23 +20793,27 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		block,
     		id: create_each_block$9.name,
     		type: "each",
-    		source: "(58:4) {#each hiloList.hilos as hilo (hilo.id)}",
+    		source: "(67:4) {#each hiloList.hilos as hilo (hilo.id)}",
     		ctx
     	});
 
     	return block;
     }
 
-    function create_fragment$j(ctx) {
+    function create_fragment$l(ctx) {
     	let ul;
-    	let t;
+    	let t0;
     	let each_blocks = [];
     	let each_1_lookup = new Map();
+    	let t1;
+    	let infiniteloading;
+    	let t2;
+    	let h1;
     	let current;
-    	let if_block = /*nuevoshilos*/ ctx[1].length > 0 && create_if_block$d(ctx);
+    	let if_block = /*nuevoshilos*/ ctx[1].length > 0 && create_if_block$f(ctx);
     	let each_value = /*hiloList*/ ctx[0].hilos;
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*hilo*/ ctx[8].id;
+    	const get_key = ctx => /*hilo*/ ctx[11].id;
     	validate_each_keys(ctx, each_value, get_each_context$9, get_key);
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -19331,18 +20822,27 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		each_1_lookup.set(key, each_blocks[i] = create_each_block$9(key, child_ctx));
     	}
 
+    	infiniteloading = new InfiniteLoading({ $$inline: true });
+    	infiniteloading.$on("infinite", /*cargarViejos*/ ctx[3]);
+
     	const block = {
     		c: function create() {
     			ul = element("ul");
     			if (if_block) if_block.c();
-    			t = space();
+    			t0 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
+    			t1 = space();
+    			create_component(infiniteloading.$$.fragment);
+    			t2 = space();
+    			h1 = element("h1");
+    			h1.textContent = "jeje";
     			attr_dev(ul, "class", "hilo-list");
-    			add_location(ul, file$j, 49, 0, 1460);
+    			add_location(ul, file$l, 58, 0, 1855);
+    			add_location(h1, file$l, 72, 0, 2381);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -19350,12 +20850,16 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		m: function mount(target, anchor) {
     			insert_dev(target, ul, anchor);
     			if (if_block) if_block.m(ul, null);
-    			append_dev(ul, t);
+    			append_dev(ul, t0);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(ul, null);
     			}
 
+    			insert_dev(target, t1, anchor);
+    			mount_component(infiniteloading, target, anchor);
+    			insert_dev(target, t2, anchor);
+    			insert_dev(target, h1, anchor);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
@@ -19367,10 +20871,10 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     						transition_in(if_block, 1);
     					}
     				} else {
-    					if_block = create_if_block$d(ctx);
+    					if_block = create_if_block$f(ctx);
     					if_block.c();
     					transition_in(if_block, 1);
-    					if_block.m(ul, t);
+    					if_block.m(ul, t0);
     				}
     			} else if (if_block) {
     				group_outros();
@@ -19399,6 +20903,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     				transition_in(each_blocks[i]);
     			}
 
+    			transition_in(infiniteloading.$$.fragment, local);
     			current = true;
     		},
     		o: function outro(local) {
@@ -19408,6 +20913,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     				transition_out(each_blocks[i]);
     			}
 
+    			transition_out(infiniteloading.$$.fragment, local);
     			current = false;
     		},
     		d: function destroy(detaching) {
@@ -19417,12 +20923,17 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].d();
     			}
+
+    			if (detaching) detach_dev(t1);
+    			destroy_component(infiniteloading, detaching);
+    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(h1);
     		}
     	};
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$j.name,
+    		id: create_fragment$l.name,
     		type: "component",
     		source: "",
     		ctx
@@ -19431,13 +20942,14 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	return block;
     }
 
-    function instance$j($$self, $$props, $$invalidate) {
+    function instance$l($$self, $$props, $$invalidate) {
     	let $globalStore;
     	validate_store(globalStore, "globalStore");
-    	component_subscribe($$self, globalStore, $$value => $$invalidate(4, $globalStore = $$value));
+    	component_subscribe($$self, globalStore, $$value => $$invalidate(6, $globalStore = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("HiloList", slots, []);
     	let { hiloList } = $$props;
+    	let { categoriasVisibles } = $$props;
     	let nuevoshilos = [];
     	let connection = new HubConnectionBuilder().withUrl("/hub").build();
     	connection.on("HiloCreado", onHiloCreado);
@@ -19448,10 +20960,6 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		return connection.invoke("SubscribirAHome");
     	}).catch(console.error);
 
-    	// Test destello
-    	// setInterval(() => {
-    	//     hiloList.hilos[2].cantidadComentarios += 1
-    	// }, 4000);
     	function onHiloCreado(hilo) {
     		if ($globalStore.categoriasActivas.includes(hilo.categoriaId)) {
     			$$invalidate(1, nuevoshilos = [hilo, ...nuevoshilos]);
@@ -19475,10 +20983,19 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		$$invalidate(1, nuevoshilos = []);
     	}
 
-    	const writable_props = ["hiloList"];
+    	async function cargarViejos({ detail: { loaded, complete } }) {
+    		let { data } = await RChanClient.cargarMasHilos(hiloList.hilos[hiloList.hilos.length - 1].bump, hiloList.categoriasActivas);
+    		console.log(data);
+    		$$invalidate(0, hiloList.hilos = [...hiloList.hilos, ...data], hiloList);
+    		if (data.length == 0) complete();
+    		loaded();
+    	}
+
+    	let tienaMas = true;
+    	const writable_props = ["hiloList", "categoriasVisibles"];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1$6.warn(`<HiloList> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1$7.warn(`<HiloList> was created with unknown prop '${key}'`);
     	});
 
     	function hilopreview_hilo_binding(value, hilo, each_value, hilo_index) {
@@ -19488,6 +21005,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     	$$self.$$set = $$props => {
     		if ("hiloList" in $$props) $$invalidate(0, hiloList = $$props.hiloList);
+    		if ("categoriasVisibles" in $$props) $$invalidate(4, categoriasVisibles = $$props.categoriasVisibles);
     	};
 
     	$$self.$capture_state = () => ({
@@ -19495,46 +21013,64 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     		globalStore,
     		Ripple: he,
     		fly,
+    		InfiniteLoading,
     		HubConnectionBuilder,
+    		RChanClient,
     		hiloList,
+    		categoriasVisibles,
     		nuevoshilos,
     		connection,
     		onHiloCreado,
     		onHiloComentado,
     		cargarNuevos,
+    		cargarViejos,
+    		tienaMas,
     		$globalStore
     	});
 
     	$$self.$inject_state = $$props => {
     		if ("hiloList" in $$props) $$invalidate(0, hiloList = $$props.hiloList);
+    		if ("categoriasVisibles" in $$props) $$invalidate(4, categoriasVisibles = $$props.categoriasVisibles);
     		if ("nuevoshilos" in $$props) $$invalidate(1, nuevoshilos = $$props.nuevoshilos);
     		if ("connection" in $$props) connection = $$props.connection;
+    		if ("tienaMas" in $$props) tienaMas = $$props.tienaMas;
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [hiloList, nuevoshilos, cargarNuevos, hilopreview_hilo_binding];
+    	return [
+    		hiloList,
+    		nuevoshilos,
+    		cargarNuevos,
+    		cargarViejos,
+    		categoriasVisibles,
+    		hilopreview_hilo_binding
+    	];
     }
 
     class HiloList extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$j, create_fragment$j, safe_not_equal, { hiloList: 0 });
+    		init(this, options, instance$l, create_fragment$l, safe_not_equal, { hiloList: 0, categoriasVisibles: 4 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "HiloList",
     			options,
-    			id: create_fragment$j.name
+    			id: create_fragment$l.name
     		});
 
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
     		if (/*hiloList*/ ctx[0] === undefined && !("hiloList" in props)) {
-    			console_1$6.warn("<HiloList> was created without expected prop 'hiloList'");
+    			console_1$7.warn("<HiloList> was created without expected prop 'hiloList'");
+    		}
+
+    		if (/*categoriasVisibles*/ ctx[4] === undefined && !("categoriasVisibles" in props)) {
+    			console_1$7.warn("<HiloList> was created without expected prop 'categoriasVisibles'");
     		}
     	}
 
@@ -19545,12 +21081,20 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	set hiloList(value) {
     		throw new Error("<HiloList>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
+
+    	get categoriasVisibles() {
+    		throw new Error("<HiloList>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set categoriasVisibles(value) {
+    		throw new Error("<HiloList>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
     }
 
     /* src\components\Administracion\Administracion.svelte generated by Svelte v3.29.0 */
 
-    const { console: console_1$7 } = globals;
-    const file$k = "src\\components\\Administracion\\Administracion.svelte";
+    const { console: console_1$8 } = globals;
+    const file$m = "src\\components\\Administracion\\Administracion.svelte";
 
     function get_each_context$a(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -19652,8 +21196,8 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			span = element("span");
     			create_component(button.$$.fragment);
     			attr_dev(span, "class", "sep svelte-qafgs7");
-    			add_location(span, file$k, 56, 37, 1778);
-    			add_location(li, file$k, 56, 20, 1761);
+    			add_location(span, file$m, 56, 37, 1778);
+    			add_location(li, file$m, 56, 20, 1761);
     			this.first = li;
     		},
     		m: function mount(target, anchor) {
@@ -19789,8 +21333,8 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			span = element("span");
     			create_component(button.$$.fragment);
     			attr_dev(span, "class", "sep svelte-qafgs7");
-    			add_location(span, file$k, 64, 37, 2265);
-    			add_location(li, file$k, 64, 20, 2248);
+    			add_location(span, file$m, 64, 37, 2265);
+    			add_location(li, file$m, 64, 20, 2248);
     			this.first = li;
     		},
     		m: function mount(target, anchor) {
@@ -19865,7 +21409,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	return block;
     }
 
-    function create_fragment$k(ctx) {
+    function create_fragment$m(ctx) {
     	let main;
     	let section0;
     	let h30;
@@ -20072,59 +21616,59 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			span = element("span");
     			t29 = space();
     			create_component(button2.$$.fragment);
-    			add_location(h30, file$k, 47, 8, 1306);
+    			add_location(h30, file$m, 47, 8, 1306);
     			attr_dev(li0, "class", "header svelte-qafgs7");
-    			add_location(li0, file$k, 51, 16, 1428);
+    			add_location(li0, file$m, 51, 16, 1428);
     			attr_dev(input0, "type", "text");
     			attr_dev(input0, "placeholder", "Id o nick del usuario");
-    			add_location(input0, file$k, 53, 20, 1527);
+    			add_location(input0, file$m, 53, 20, 1527);
     			attr_dev(li1, "class", "noback");
-    			add_location(li1, file$k, 52, 16, 1486);
-    			add_location(hr, file$k, 58, 16, 1917);
+    			add_location(li1, file$m, 52, 16, 1486);
+    			add_location(hr, file$m, 58, 16, 1917);
     			attr_dev(li2, "class", "header svelte-qafgs7");
-    			add_location(li2, file$k, 59, 16, 1939);
+    			add_location(li2, file$m, 59, 16, 1939);
     			attr_dev(input1, "type", "text");
     			attr_dev(input1, "placeholder", "Id o nick del usuario");
-    			add_location(input1, file$k, 61, 20, 2039);
+    			add_location(input1, file$m, 61, 20, 2039);
     			attr_dev(li3, "class", "noback");
-    			add_location(li3, file$k, 60, 16, 1998);
-    			add_location(ul0, file$k, 50, 12, 1405);
+    			add_location(li3, file$m, 60, 16, 1998);
+    			add_location(ul0, file$m, 50, 12, 1405);
     			attr_dev(div0, "class", "menu");
-    			add_location(div0, file$k, 49, 8, 1373);
+    			add_location(div0, file$m, 49, 8, 1373);
     			set_style(section0, "max-width", "400px");
     			attr_dev(section0, "class", "svelte-qafgs7");
-    			add_location(section0, file$k, 46, 4, 1262);
-    			add_location(h31, file$k, 72, 8, 2489);
+    			add_location(section0, file$m, 46, 4, 1262);
+    			add_location(h31, file$m, 72, 8, 2489);
     			attr_dev(input2, "type", "number");
-    			add_location(input2, file$k, 76, 31, 2633);
-    			add_location(li4, file$k, 76, 16, 2618);
+    			add_location(input2, file$m, 76, 31, 2633);
+    			add_location(li4, file$m, 76, 16, 2618);
     			attr_dev(input3, "type", "number");
-    			add_location(input3, file$k, 77, 43, 2741);
-    			add_location(li5, file$k, 77, 16, 2714);
+    			add_location(input3, file$m, 77, 43, 2741);
+    			add_location(li5, file$m, 77, 16, 2714);
     			attr_dev(input4, "type", "number");
-    			add_location(input4, file$k, 78, 37, 2855);
-    			add_location(li6, file$k, 78, 16, 2834);
+    			add_location(input4, file$m, 78, 37, 2855);
+    			add_location(li6, file$m, 78, 16, 2834);
     			attr_dev(input5, "type", "checkbox");
-    			add_location(input5, file$k, 79, 36, 2962);
-    			add_location(li7, file$k, 79, 16, 2942);
+    			add_location(input5, file$m, 79, 36, 2962);
+    			add_location(li7, file$m, 79, 16, 2942);
     			attr_dev(input6, "type", "number");
-    			add_location(input6, file$k, 80, 45, 3081);
-    			add_location(li8, file$k, 80, 16, 3052);
+    			add_location(input6, file$m, 80, 45, 3081);
+    			add_location(li8, file$m, 80, 16, 3052);
     			attr_dev(input7, "type", "number");
-    			add_location(input7, file$k, 81, 34, 3194);
-    			add_location(li9, file$k, 81, 16, 3176);
+    			add_location(input7, file$m, 81, 34, 3194);
+    			add_location(li9, file$m, 81, 16, 3176);
     			set_style(span, "margin-right", "auto");
-    			add_location(span, file$k, 82, 36, 3298);
+    			add_location(span, file$m, 82, 36, 3298);
     			attr_dev(li10, "class", "header svelte-qafgs7");
-    			add_location(li10, file$k, 82, 16, 3278);
-    			add_location(ul1, file$k, 75, 12, 2595);
+    			add_location(li10, file$m, 82, 16, 3278);
+    			add_location(ul1, file$m, 75, 12, 2595);
     			attr_dev(div1, "class", "menu");
-    			add_location(div1, file$k, 74, 8, 2563);
+    			add_location(div1, file$m, 74, 8, 2563);
     			set_style(section1, "max-width", "400px");
     			attr_dev(section1, "class", "svelte-qafgs7");
-    			add_location(section1, file$k, 71, 4, 2445);
+    			add_location(section1, file$m, 71, 4, 2445);
     			attr_dev(main, "class", "administracion svelte-qafgs7");
-    			add_location(main, file$k, 45, 0, 1227);
+    			add_location(main, file$m, 45, 0, 1227);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -20364,7 +21908,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$k.name,
+    		id: create_fragment$m.name,
     		type: "component",
     		source: "",
     		ctx
@@ -20373,7 +21917,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	return block;
     }
 
-    function instance$k($$self, $$props, $$invalidate) {
+    function instance$m($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Administracion", slots, []);
     	let model = window.model;
@@ -20419,7 +21963,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1$7.warn(`<Administracion> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1$8.warn(`<Administracion> was created with unknown prop '${key}'`);
     	});
 
     	function input0_input_handler() {
@@ -20508,19 +22052,19 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     class Administracion extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$k, create_fragment$k, safe_not_equal, {});
+    		init(this, options, instance$m, create_fragment$m, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Administracion",
     			options,
-    			id: create_fragment$k.name
+    			id: create_fragment$m.name
     		});
     	}
     }
 
     /* src\components\Paginas\Moderacion.svelte generated by Svelte v3.29.0 */
-    const file$l = "src\\components\\Paginas\\Moderacion.svelte";
+    const file$n = "src\\components\\Paginas\\Moderacion.svelte";
 
     function get_each_context$b(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -20541,7 +22085,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     }
 
     // (34:20) {:else}
-    function create_else_block$4(ctx) {
+    function create_else_block$5(ctx) {
     	let comentario;
     	let current;
 
@@ -20575,7 +22119,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block$4.name,
+    		id: create_else_block$5.name,
     		type: "else",
     		source: "(34:20) {:else}",
     		ctx
@@ -20585,7 +22129,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     }
 
     // (27:16) {#if d.tipo == 0}
-    function create_if_block$e(ctx) {
+    function create_if_block$g(ctx) {
     	let div;
     	let img;
     	let img_src_value;
@@ -20611,11 +22155,11 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			if (img.src !== (img_src_value = /*d*/ ctx[10].hilo.media.vistaPreviaCuadrado)) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "");
     			attr_dev(img, "class", "svelte-1a4ecfn");
-    			add_location(img, file$l, 29, 24, 944);
-    			add_location(h3, file$l, 30, 24, 1023);
-    			add_location(span, file$l, 31, 24, 1073);
+    			add_location(img, file$n, 29, 24, 944);
+    			add_location(h3, file$n, 30, 24, 1023);
+    			add_location(span, file$n, 31, 24, 1073);
     			attr_dev(div, "class", "hilo-denuncia svelte-1a4ecfn");
-    			add_location(div, file$l, 28, 20, 891);
+    			add_location(div, file$n, 28, 20, 891);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -20637,7 +22181,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$e.name,
+    		id: create_if_block$g.name,
     		type: "if",
     		source: "(27:16) {#if d.tipo == 0}",
     		ctx
@@ -20660,7 +22204,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	let if_block;
     	let t4;
     	let current;
-    	const if_block_creators = [create_if_block$e, create_else_block$4];
+    	const if_block_creators = [create_if_block$g, create_else_block$5];
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
@@ -20681,9 +22225,9 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			t3 = space();
     			if_block.c();
     			t4 = space();
-    			add_location(p, file$l, 25, 16, 735);
+    			add_location(p, file$n, 25, 16, 735);
     			attr_dev(div, "class", "denuncia");
-    			add_location(div, file$l, 24, 12, 695);
+    			add_location(div, file$n, 24, 12, 695);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -20817,7 +22361,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	return block;
     }
 
-    function create_fragment$l(ctx) {
+    function create_fragment$n(ctx) {
     	let main;
     	let ul0;
     	let h30;
@@ -20900,23 +22444,23 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     			}
 
     			set_style(h30, "height", "40px");
-    			add_location(h30, file$l, 22, 8, 603);
+    			add_location(h30, file$n, 22, 8, 603);
     			set_style(ul0, "width", "33%");
     			set_style(ul0, "background", "#711c08");
     			set_style(ul0, "font-size", "0.7em");
     			attr_dev(ul0, "class", "svelte-1a4ecfn");
-    			add_location(ul0, file$l, 21, 4, 521);
+    			add_location(ul0, file$n, 21, 4, 521);
     			set_style(h31, "height", "40px");
-    			add_location(h31, file$l, 40, 8, 1331);
+    			add_location(h31, file$n, 40, 8, 1331);
     			set_style(ul1, "width", "33%");
     			attr_dev(ul1, "class", "svelte-1a4ecfn");
-    			add_location(ul1, file$l, 39, 4, 1299);
+    			add_location(ul1, file$n, 39, 4, 1299);
     			set_style(h32, "height", "40px");
-    			add_location(h32, file$l, 46, 8, 1486);
+    			add_location(h32, file$n, 46, 8, 1486);
     			attr_dev(ul2, "class", "svelte-1a4ecfn");
-    			add_location(ul2, file$l, 45, 4, 1472);
+    			add_location(ul2, file$n, 45, 4, 1472);
     			attr_dev(main, "class", "svelte-1a4ecfn");
-    			add_location(main, file$l, 20, 0, 509);
+    			add_location(main, file$n, 20, 0, 509);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -21084,7 +22628,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$l.name,
+    		id: create_fragment$n.name,
     		type: "component",
     		source: "",
     		ctx
@@ -21093,7 +22637,7 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     	return block;
     }
 
-    function instance$l($$self, $$props, $$invalidate) {
+    function instance$n($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Moderacion", slots, []);
     	let hilos = window.model.hilos;
@@ -21137,13 +22681,13 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
     class Moderacion extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$l, create_fragment$l, safe_not_equal, {});
+    		init(this, options, instance$n, create_fragment$n, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Moderacion",
     			options,
-    			id: create_fragment$l.name
+    			id: create_fragment$n.name
     		});
     	}
     }
