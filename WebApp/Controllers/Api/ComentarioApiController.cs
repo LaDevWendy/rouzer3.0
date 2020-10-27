@@ -69,7 +69,7 @@ namespace WebApp.Controllers
             {
             } else if (comentarioForm.Archivo.ContentType.Contains("image")) 
             {
-                var media = await mediaService.GenerarDesdeImagen(comentarioForm.Archivo);
+                var media = await mediaService.GenerarMediaDesdeArchivo(comentarioForm.Archivo);
                 comentario.Media = media;
                 comentario.MediaId = media.Id;
             }

@@ -630,8 +630,8 @@ button:active {
 }
 
 .video-preview {
-  background: black;
-  border: 1px solid white;
+  background: var(--color4);
+  /* border: 1px solid white; */
   justify-content: center;
   justify-items: center;
   position: relative;

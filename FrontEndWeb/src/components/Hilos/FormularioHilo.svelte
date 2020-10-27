@@ -4,6 +4,7 @@ import { Button, Ripple} from 'svelte-mui';
 import config from "../../config";
 import RChanClient from '../../RChanClient';
 import ErrorValidacion from '../ErrorValidacion.svelte';
+import MediaType from '../../MediaType'
 
 export let mostrar = false
 
@@ -14,6 +15,7 @@ let contenido = ""
 let archivo = null
 let archivoBlob = null
 let input = null
+let mediaType = MediaType.Imagen
 
 let error = null
 
@@ -28,16 +30,31 @@ async function crear() {
        error = e.response.data
     }
 }
-function actualizarArchivo() {
+async function actualizarArchivo() {
     if (input.files && input.files[0]) {
-        var reader = new FileReader()
-        reader.onload = function (e) {
-            archivoBlob = e.target.result
-            archivo = input.files[0]
-        };
+        archivoBlob = await getBlobFromInput(input)
+        archivo = input.files[0]
 
-        reader.readAsDataURL(input.files[0])
+        if(input.files[0].type.indexOf('image') != -1) {
+            mediaType = MediaType.Imagen
+        } else if(input.files[0].type.indexOf('video') != -1) { 
+            mediaType = MediaType.Video
+        }
     }
+}
+
+async function getBlobFromInput(input) {
+    
+    return new Promise((resolve, reject) => {
+        if (!(input.files && input.files[0])) return null;
+        let blob
+        let reader = new FileReader()
+        reader.onload = function (e) {
+            blob = e.target.result
+            resolve(blob)
+        }
+        reader.readAsDataURL(input.files[0])
+    })
 }
 
 function removerArchivo() {
@@ -64,12 +81,16 @@ function removerArchivo() {
             
             >
 
-        <span asp-validation-for="Archivo"></span>
-        <div  class="video-preview" style="{ archivo?`background:url(${archivoBlob})`: ''}">
+        <div  class="video-preview" style="{ archivo&& mediaType != MediaType.Video?`background:url(${archivoBlob})`: ''};overflow:hidden;">
+
+            {#if mediaType == MediaType.Video}
+                <video src="{archivoBlob}"></video>
+            {/if}
+
             {#if !archivo}
                 <span class="descripcion"style="position: absolute">Subi una imagen o un video para crear el hilo</span>
             {/if}
-            <span on:click={() => input.click()} class="fe fe-upload ico-btn"></span>
+            <span on:click={() => input.click()} class="fe fe-upload ico-btn" style="z-index:100"></span>
         </div>
 
         <span asp-validation-for="Titulo"></span>
@@ -107,6 +128,12 @@ function removerArchivo() {
         cursor: pointer;
     }
 
+    video {
+        width: 486px;
+        height: 319px;
+        top: -10px;
+        position: absolute;
+    }
 
     
 </style>

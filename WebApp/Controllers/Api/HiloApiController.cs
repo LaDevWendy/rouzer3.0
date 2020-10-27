@@ -66,17 +66,14 @@ namespace WebApp.Controllers
 
             if (vm.Archivo != null)
             {
-                if (vm.Archivo.ContentType.Contains("image"))
+                if(!new []{"jpeg", "jpg", "gif", "mp4", "webm", "png"}.Contains(vm.Archivo.ContentType.Split("/")[1]))
                 {
-                    var media = await mediaService.GenerarDesdeImagen(vm.Archivo);
-                    hilo.Media = media;
-                    hilo.MediaId = media.Id;
-                }
-                else
-                {
-                    ModelState.AddModelError("El archivo debe ser una imagen", "");
+                    ModelState.AddModelError("El Archivo no es soportado", "");
                     return BadRequest(ModelState);
                 }
+                    var media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
+                    hilo.Media = media;
+                    hilo.MediaId = media.Id;
             }
 
             string id = await hiloService.GuardarHilo(hilo);
@@ -180,6 +177,7 @@ namespace WebApp.Controllers
                 .FiltrarOcultosDeUsuario(User.GetId(), context)
                 .FiltrarPorCategoria(categorias.Split(",").Select(c => Convert.ToInt32(c)).ToArray())
                 .Where(h => h.Bump < ultimoBump)
+                .Take(16)
                 .AViewModel(context);
 
             return Ok(hilos);
