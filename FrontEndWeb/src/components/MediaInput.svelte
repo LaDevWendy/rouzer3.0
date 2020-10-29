@@ -1,5 +1,10 @@
 <script>
     import MediaType from '../MediaType'
+    import {Button, ButtonGroup, Icon} from 'svelte-mui'
+    import { onDestroy } from 'svelte';
+
+    export let compacto = false
+
     export let archivo = null
     let archivoBlob = null
     let input = null
@@ -33,10 +38,16 @@
     }
 
     function removerArchivo() {
-        archivo = nullb
+        archivo = null
         archivoBlob = null
         input.value = ''
     }
+    
+    onDestroy(() => {
+        archivo = null
+        archivoBlob = null
+        console.log("Uy! Me muero")
+    })
 
 </script>
 <input 
@@ -48,14 +59,52 @@
     bind:this={input}
 
 >
-<div  class="video-preview" style="{ archivo&& mediaType != MediaType.Video?`background:url(${archivoBlob})`: ''};overflow:hidden;">
+<div class:compacto class="video-preview media-input" style="{ archivo&& mediaType != MediaType.Video?`background:url(${archivoBlob})`: ''};overflow:hidden;">
 
-    {#if mediaType == MediaType.Video}
+    {#if mediaType == MediaType.Video && archivo}
         <video src="{archivoBlob}"></video>
     {/if}
 
     {#if !archivo}
-        <span class="descripcion"style="position: absolute">Subi una imagen o un video para crear el hilo</span>
+        <span class="opciones">
+            Agrega un archivo:
+            <ButtonGroup>
+                <Button on:click={() => input.click()} icon outlined shaped={true} on:click={() => true}> 
+                     <icon class="fe fe-upload"></icon>
+                </Button>
+                <Button  icon outlined shaped={true} on:click={() => true}> 
+                     <icon class="fe fe-link-2"></icon>
+                </Button>
+            </ButtonGroup>
+
+            
+        </span>
+        <!-- <span class="descripcion"style="position: absolute">Subi una imagen o un video para crear el hilo</span>
+        <span class="descripcion"style="position: absolute">O tambien podes importar un link</span> -->
+    {:else}
+        <Button class="cancelar" on:click={() => archivo = null} icon outlined shaped={true} on:click={() => true}> 
+            <icon class="fe fe-x"></icon>
+        </Button>
     {/if}
-    <span on:click={() => input.click()} class="fe fe-upload ico-btn" style="z-index:100"></span>
+    <!-- <span on:click={() => input.click()} class="fe fe-upload ico-btn" style="z-index:100"></span> -->
 </div>
+
+<style>
+    .opciones {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: space-evenly;
+        height: fit-content;
+        margin-top: auto;
+    }
+    .media-input :global(.cancelar) {
+        margin-left: auto;
+    }
+
+    .compacto {
+        height: auto;
+        width: 100%;
+        margin-left: 0;
+    }
+</style>

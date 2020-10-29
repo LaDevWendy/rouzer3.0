@@ -3,6 +3,7 @@ import Navbar from './components/Navbar.svelte';
 import HiloList from './components/Hilos/HiloList.svelte';
 import Administracion from './components/Administracion/Administracion.svelte';
 import Moderacion from './components/Paginas/Moderacion.svelte';
+import Sesion from './components/Paginas/Sesion.svelte';
 
 // const app = new App({
 // 	target: document.body,
@@ -10,43 +11,24 @@ import Moderacion from './components/Paginas/Moderacion.svelte';
 // 		name: 'world'
 // 	}
 // });
-if(document.querySelector("#svelte"))
-{
-	const app1 = new App({
-		target: document.querySelector("#svelte"),
-		props: {
-		}
-	});
-}
 
-const navbar = new Navbar({
+let componentes = [
+	["#svelte", App, {}],
+	["#svelte-navbar", Navbar, {}],
+	["#svelte-index", HiloList, {hiloList: window.hiloList}],
+	["#svelte-administracion", Administracion, {}],
+	["#svelte-moderacion", Moderacion, {}],
+	["#svelte-login", Sesion, {}],
+	["#svelte-registro", Sesion, {modo:"registro"}],
+]
+
+for (const c of componentes) {
+	if(document.querySelector(c[0]))
+	{	
+		new c[1]({
+			target: document.querySelector(c[0]),
+			props: c[2]
+		});
+	}
 	
-	target: document.querySelector("#svelte-navbar")
-})
-
-if(document.querySelector("#svelte-index")){
-	const hiloList = new HiloList({
-		target: document.querySelector("#svelte-index"),
-		props: {
-			hiloList: window.hiloList
-		}
-	})
 }
-if(document.querySelector("#svelte-administracion")){
-	const hiloList = new Administracion({
-		target: document.querySelector("#svelte-administracion"),
-		props: {
-			// hiloList: window.hiloList
-		}
-	})
-}
-if(document.querySelector("#svelte-moderacion")){
-	const hiloList = new Moderacion({
-		target: document.querySelector("#svelte-moderacion"),
-		props: {
-			// hiloList: window.hiloList
-		}
-	})
-}
-
-export default app;

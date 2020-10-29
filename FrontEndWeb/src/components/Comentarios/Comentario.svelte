@@ -8,6 +8,7 @@
     
     import Tiempo from '../Tiempo.svelte'
     import globalStore from '../../globalStore';
+import Media from '../Media.svelte';
 
     export let comentario;
     export let comentariosDic = {   };
@@ -70,7 +71,7 @@
     </div    >
     <div class="color" style="background: {comentario.color};">ANON</div>
     <div class="header">
-        {#if comentario.esOp} <span class="nick tag">OP</span>{/if}
+        {#if comentario.esOp} <span class="nick tag tag-op">OP</span>{/if}
         <span class="nick">Gordo</span>
         <!-- <span class="rol tag">anon</span> -->
         <span class="id tag" on:click={()=>$comentarioStore+= `>>${comentario.id}\n`}>{comentario.id}</span>
@@ -93,21 +94,9 @@
     </div>
     {#if visible}
         <div class="contenido">
-            <div class="media">
-                {#if comentario.media}
-                    {#if comentario.media.tipo  == 1 || true}
-                        {#if comentario.media.esGif}
-                            <a href="/{comentario.media.url}" target="_blank">
-                                <img src="/{comentario.media.url}" alt="" srcset="">
-                            </a>
-                        {:else}
-                            <a href="/{comentario.media.url}" target="_blank">
-                                <img src="{comentario.media.vistaPrevia}" alt="" srcset="">
-                            </a>
-                        {/if}
-                    {/if}
-                {/if}
-            </div>
+            {#if comentario.media}
+                <Media media={comentario.media}/>
+            {/if}
             <div class="texto">
                 {@html comentario.contenido}
             </div>
@@ -170,7 +159,8 @@
         /* border-radius: 10; */
         justify-content: center;
         font-weight: 600;
-        color: #822f0047;
+        /* color: #822f0047; */
+        color: #1825338c;
     }
 
     .comentario .header {
@@ -201,5 +191,12 @@
         margin-left: auto;
         opacity: 0.5;
         font-size: 12px;
+    }
+
+    .tag-op {
+        background: var(--color5) !important;
+    }
+    .comentario:hover {
+        filter: brightness(1.2);
     }
 </style>

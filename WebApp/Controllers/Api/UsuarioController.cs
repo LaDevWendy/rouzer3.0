@@ -11,11 +11,12 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.Controllers
 {
     [ApiController, Route("api/Usuario/{action}/{id?}")]
-    public class UsuarioController : ControllerBase 
+    public class UsuarioController : Controller
     {
         private readonly UserManager<UsuarioModel> userManager;
         private readonly SignInManager<UsuarioModel> signInManager;
@@ -71,6 +72,26 @@ namespace WebApp.Controllers
                 return BadRequest(createResult.Errors);
             }
         }
+
+        [HttpGet, Route("/Login"), AllowAnonymous]
+        public async Task<ActionResult> Login() 
+        {
+            return View("Login");
+        }
+
+        [HttpGet, Route("/Registro"), AllowAnonymous]
+        public async Task<ActionResult> Registro() 
+        {
+            return View("Registro");
+        }
+        
+        [HttpPost, Route("/Logout")]
+        public async Task<ActionResult> Logout() 
+        {
+            await signInManager.SignOutAsync();
+            return Redirect("/");
+        }
+
         [HttpPost]
         public async Task<ActionResult> Login( RegistroVM model)
         {

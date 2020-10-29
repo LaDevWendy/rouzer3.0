@@ -8,5 +8,8 @@ namespace Modelos
         [Required]
         public string HiloId { get; set; }
         public string Contenido { get; set; }
+
+        public HiloModel Hilo { get; set; }
+        public UsuarioModel Usuario { get; set; }
     }
 }

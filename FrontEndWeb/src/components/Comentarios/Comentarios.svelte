@@ -47,10 +47,10 @@
     let connection = new HubConnectionBuilder().withUrl("/hub").build();
     connection.on("NuevoComentario", onComentarioCreado)
     connection.start().then(() => {
-            console.log("Conectadito");
-            return connection.invoke("SubscribirseAHilo", hilo.id)
-            
-        }).catch(console.error)
+        console.log("Conectadito");
+        return connection.invoke("SubscribirseAHilo", hilo.id)
+        
+    }).catch(console.error)
 
     let mostrarReporte = false
     let comentarioIdReporte = null

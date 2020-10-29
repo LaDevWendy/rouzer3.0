@@ -41,7 +41,9 @@ pido solucion para el monitor. como hago para que funcione bien. no es mio. y no
 .container {
     position: relative;
     width: 100%;
-    height: 20px;
+    /* height: 20px; */
+    display: flex;
+    align-items: center;
 }
 .mensaje-rotativo {
     position: absolute;

@@ -41,7 +41,7 @@ namespace WebApp
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
             services.AddLiveReload(config =>
             {
-                config.FolderToMonitor = env.ContentRootPath + "\\Views";
+                // config.FolderToMonitor = env.ContentRootPath + "\\Views";
             });
             services.AddSignalR();
             services.AddRazorPages().AddRazorRuntimeCompilation();
@@ -90,6 +90,7 @@ namespace WebApp
             services.AddMvc();
 
             services.AddScoped<IHiloService, HiloService>();
+            services.AddScoped<NotificacioensService>();
             services.AddScoped<IComentarioService, ComentarioService>();
             // services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<HashService>();

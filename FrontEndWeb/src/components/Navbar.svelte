@@ -61,7 +61,7 @@
             {#if $globalStore.usuario.estaAutenticado}
             <Notificaciones bind:notificaciones/>
             {:else}
-            <span class="nav-boton" on:click={()=> $globalStore.mostrarLogin = true}>
+            <span class="nav-boton"  style="height:100%" on:click={()=> $globalStore.mostrarLogin = true}>
                 <Ripple/>
                 <span class="fe fe-user">
                 </span>
@@ -89,6 +89,13 @@
 
 .nav-principal {
     border-top: solid var(--color5) 2px;
+    align-items: stretch !important;
+    /* margin-bottom: 10px; */
+}
+.nav-principal>* {
+    height: 48px;
+    display: flex;
+    align-items: center;
     /* margin-bottom: 10px; */
 }
 
@@ -101,7 +108,6 @@
 }
 
 .nav-boton, .nav-principal a, .nav-principal icon {
-    height: 48px;
     padding: 0 12px;
 }
 

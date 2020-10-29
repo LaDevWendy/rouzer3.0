@@ -1,7 +1,6 @@
 <script>
 	import Comentarios from './components/Comentarios/Comentarios.svelte'
 	import Acciones from './components/Acciones.svelte'
-	import dataEjemplo from './data'
 	import Tiempo from './components/Tiempo.svelte'
 	import {Button,Dialog, Checkbox, Textfield} from 'svelte-mui'
 
@@ -10,6 +9,7 @@
 	import ErrorValidacion from './components/ErrorValidacion.svelte'
 	import globalStore from './globalStore'
 	import Dialogo from './components/Dialogo.svelte'
+import Media from './components/Media.svelte'
 
 	let data = window.data || dataEjemplo
 	let {hilo, comentarios, acciones} = data;
@@ -77,9 +77,10 @@
 		{/if}
 
 		<div class="cuerpo">
-			<a class="imagen" href="/{hilo.media.url}">
+			<!-- <a class="imagen" href="/{hilo.media.url}">
 				<img src="{hilo.media.vistaPrevia}" alt="" srcset="" />
-			</a>
+			</a> -->
+			<Media media={hilo.media}/>
 			<h1>{hilo.titulo}</h1>
 			<div class="texto">{hilo.contenido}</div>
 		</div>
@@ -102,7 +103,8 @@
 	.hilo-completo {
 		grid-template-columns: calc(40% - 10px) 60%;
 	}
-	.cuerpo .imagen {
+	.cuerpo :global(.media) {
+		max-width: 100%;
 		width: 100%;
 		float: none
 	}

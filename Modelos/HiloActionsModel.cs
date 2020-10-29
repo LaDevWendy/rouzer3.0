@@ -9,5 +9,8 @@ namespace Modelos
         public bool Seguido { get; set; }
         public bool Favorito { get; set; }
         public bool Hideado { get; set; }
+
+        public HiloModel Hilo { get; set; }
+        public UsuarioModel Usuario { get; set; }
     }
 }

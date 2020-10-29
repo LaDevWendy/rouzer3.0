@@ -25,6 +25,7 @@ li {
    --label: rgb(64 130 188 /30%) !important;
    --color: white;
    --bg-popover: var(--color2) !important;
+   outline: none;
 }
 .fondo1, .hilo-completo {
   /* background: rgb(14 22 33 / 97%) ; */
@@ -638,10 +639,10 @@ button:active {
 }
 
 .video-preview .fe-play,.fe-upload {
-  font-size: 48px;
-  align-self: center;
-  color: white;
-  margin: 0 auto;
+  /* font-size: 48px; */
+  /* align-self: center; */
+  /* color: white; */
+  /* margin: 0 auto; */
 }
 
 .video-preview .descripcion {

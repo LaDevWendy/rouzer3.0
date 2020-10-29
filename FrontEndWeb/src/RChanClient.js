@@ -1,4 +1,22 @@
 import axios from 'axios'
+axios.maxRedirects = 0
+
+axios.interceptors.response.use(function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+
+    if(response.request.responseURL && response.request.responseURL.indexOf("/Login") != -1) {
+        window.location = "/Login"
+    }
+    return response;
+  }, function (error) {
+      console.log(error);
+    //   if(error.response.status = 302)
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    return Promise.reject(error);
+  });
+
 export default class RChanClient {
     // Acciones
     static crearHilo(titulo, categoria, contenido, archivo) {
@@ -30,6 +48,9 @@ export default class RChanClient {
             nick,
             contraseña
         })
+    }
+    static deslogearse() {
+        return axios.post('/logout')
     }
     static agregar(accion, id) {
         return axios.post('/api/Hilo/Agregar', {

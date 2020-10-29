@@ -57,7 +57,7 @@
 
 <ul class="hilo-list">
     {#if nuevoshilos.length > 0}
-        <div class="cargar-nuevos-hilos" on:click={cargarNuevos} transition:fly={{x:100}}>
+        <div class="cargar-nuevos-hilos" on:click={cargarNuevos} transition:fly|local={{x:100}}>
             <icon class="fe fe-rotate-cw"  style="margin-right: 8px;"/> 
             Cargar {nuevoshilos.length} {nuevoshilos.length==1? 'hilo nuevo':'hilos nuevos'}
             <Ripple/>
@@ -67,6 +67,6 @@
         <HiloPreview bind:hilo={hilo} />
     {/each}
 </ul>
-<InfiniteLoading on:infinite={cargarViejos}>
+<InfiniteLoading on:infinite={cargarViejos} distance={600}>
     <div style="text-align:center" slot="noMore">No hay mas hilos padre, recargue la pagina</div>
 </InfiniteLoading>
