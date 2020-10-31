@@ -33,6 +33,7 @@ namespace WebApp.Controllers
         private readonly UserManager<UsuarioModel> userManager;
         private readonly SignInManager<UsuarioModel> signInManager;
         private readonly IOptions<GeneralOptions> config;
+        private readonly IOptions<List<Categoria>> categoriasOpt;
 
         public Administracion(
             IHiloService hiloService,
@@ -42,7 +43,8 @@ namespace WebApp.Controllers
             RChanContext context,
             UserManager<UsuarioModel> userManager,
             SignInManager<UsuarioModel> signInManager,
-            IOptionsSnapshot<GeneralOptions> config
+            IOptionsSnapshot<GeneralOptions> config,
+            IOptions<List<Categoria>> categoriasOpt
         )
         {
             this.hiloService = hiloService;
@@ -53,6 +55,7 @@ namespace WebApp.Controllers
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.config = config;
+            this.categoriasOpt = categoriasOpt;
         }
         [Route("/Administracion")]
         public async Task<ActionResult> Index()
@@ -72,7 +75,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> ActualizarConfiguracion(GeneralOptions config, [FromServices] IWebHostEnvironment host) 
         {
-            await config.Guardar(Path.Combine(host.ContentRootPath, "appsettings.json"));
+            await config.Guardar(Path.Combine(host.ContentRootPath, "generalsettings.json"));
             return Json(new ApiResponse("Configuracion actualizada"));
         }
 
@@ -98,11 +101,6 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
 
             bool yaTieneElRol = (await userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == "Role") != null;
-
-            #region debg
-            var claims = await userManager.GetClaimsAsync(user);
-            System.Console.WriteLine(claims);
-            #endregion
 
             if (yaTieneElRol)
             {
@@ -187,7 +185,7 @@ namespace WebApp.Controllers
             var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == vm.HiloId);
             if (hilo is null) return NotFound();
 
-            if(!Constantes.Categorias.Any(c => c.Id == vm.CategoriaId))
+            if(!categoriasOpt.Value.Any(c => c.Id == vm.CategoriaId))
             {
                 ModelState.AddModelError("Categoria", "La categoria es invalida");
                 return Json(ModelState);

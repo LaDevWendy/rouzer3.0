@@ -11,6 +11,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Options;
 
 namespace WebApp.Controllers
 {
@@ -19,6 +20,7 @@ namespace WebApp.Controllers
         private readonly ILogger<HiloController> _logger;
         private readonly IHiloService hiloService;
         private readonly RChanContext context;
+        private readonly IOptions<List<Categoria>> categoriasOpts;
 
         public IMediaService MediaService { get; }
 
@@ -26,17 +28,19 @@ namespace WebApp.Controllers
             ILogger<HiloController> logger,
             IHiloService hiloService,
             RChanContext context,
+            IOptions<List<Categoria>> categoriasOpts,
             IMediaService mediaService)
         {
             _logger = logger;
             this.hiloService = hiloService;
             this.context = context;
+            this.categoriasOpts = categoriasOpts;
             MediaService = mediaService;
         }
 
         public async Task<IActionResult> IndexAsync()
         {
-            int[] categorias = Constantes.CantegoriasVisibles.Select(c => c.Id).ToArray();
+            int[] categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
 
             HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
 
@@ -85,7 +89,7 @@ namespace WebApp.Controllers
         [Route("/{categoria}")] // Ej /anm, /art, /ytb
         public async Task<IActionResult> CategoriaAsync(string categoria)
         {
-            var cate = Constantes.Categorias.FirstOrDefault(c => c.NombreCorto.ToLower() == categoria.ToLower());
+            var cate = categoriasOpts.Value.FirstOrDefault(c => c.NombreCorto.ToLower() == categoria.ToLower());
             if (cate == null)
             {
                 return NotFound();
@@ -93,11 +97,15 @@ namespace WebApp.Controllers
 
             var vm = new HiloListViewModel
             {
-                Hilos = await hiloService.GetHilosOrdenadosPorBump(new GetHilosOptions
-                {
-                    UserId = User.GetId(),
-                    CategoriasId = new int[] { cate.Id },
-                }),
+                Hilos = await context.Hilos
+                    .Where(h => h.CategoriaId == cate.Id)
+                    .AsNoTracking()
+                    .OrdenadosPorBump()
+                    .FiltrarOcultosDeUsuario(User.GetId(), context)
+                    .FiltrarNoActivos()
+                    .Take(16)
+                    .AViewModel(context)
+                    .ToListAsync(),
                 CategoriasActivas = new int[] { cate.Id }.ToList()
             };
             return View("Index", vm);

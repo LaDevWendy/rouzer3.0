@@ -86,14 +86,10 @@
         {#each comentarios as comentario (comentario.id)}
             <li transition:fly|local={{y: -50, duration:250}}>
 
-                <Comentario on:reporte={onMostrarReporte} bind:comentario {comentarios} comentariosDic = {diccionarioComentarios}/>
+                <Comentario hilo={hilo} bind:comentario {comentarios} comentariosDic = {diccionarioComentarios}/>
             </li>
             {/each}
             
         </div>
-
-    <DialogoReporte bind:visible={mostrarReporte} hiloId={hilo.id} comentarioId = {comentarioIdReporte} tipo="comentario">
-        <button slot="activador">jeje</button>
-    </DialogoReporte>
 
 </div>

@@ -39,6 +39,7 @@ namespace WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
+            services.Configure<List<Categoria>>(Configuration.GetSection("Categorias"));
             services.AddLiveReload(config =>
             {
                 // config.FolderToMonitor = env.ContentRootPath + "\\Views";

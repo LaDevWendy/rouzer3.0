@@ -1,4 +1,5 @@
-﻿@inject RChanContext _context
+﻿@inject RChanContext _context;
+@inject IOptions<List<Categoria>> categoriasOpt;
 @using Microsoft.Extensions.DependencyInjection;
 
 <!DOCTYPE html>
@@ -11,7 +12,6 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
 
     <title>ROZED @ViewData["Title"]</title>
     @* <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_o5hd5vvqpoqiwwmi.css"> *@
@@ -62,7 +62,7 @@
     }
     <script>
         window.config = {
-            categorias: @Json.Serialize(Constantes.Categorias)
+            categorias: @Json.Serialize(categoriasOpt.Value)
         }
         window.globalState = @Json.Serialize(globalState)
     </script>

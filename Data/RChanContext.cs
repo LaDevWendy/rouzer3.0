@@ -45,5 +45,12 @@ namespace Data
                 // optionsBuilder.UseNpgsql( "Server=127.0.0.1;Port=5433;Database=RChanTest;User Id=postgres;Password=jejetabien;");
             }
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<HiloModel>()
+                .HasIndex(h => h.Bump);
+        }
     }
 }

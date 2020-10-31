@@ -36,7 +36,11 @@ namespace WebApp
                 if(admin is null)
                 {
                     var pepe = um.Users.FirstOrDefault(u =>u.UserName == "pepe");
-                    if(pepe != null) await um.AddClaimAsync(pepe, new Claim("Role", "admin"));
+                    if(pepe is null) {
+                        var r = await um.CreateAsync(new UsuarioModel {UserName = "pepe"}, "contraseña");
+                    }
+                    pepe = um.Users.FirstOrDefault(u =>u.UserName == "pepe");
+                    await um.AddClaimAsync(pepe, new Claim("Role", "admin"));
                 } 
             }
 
@@ -50,6 +54,7 @@ namespace WebApp
                     webBuilder
                     .ConfigureAppConfiguration(cb => {
                         cb.AddJsonFile("appsettings.json",false, true);
+                        cb.AddJsonFile("categoriassettings.json",false, true);
                         cb.AddCommandLine(args);
                         cb.AddEnvironmentVariables();
                     })

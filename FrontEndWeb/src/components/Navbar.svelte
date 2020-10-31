@@ -7,6 +7,8 @@
     import FormularioLogin from './FormularioLogin.svelte'
     import globalStore from '../globalStore'
     import MensajeRotativo from './MensajeRotativo.svelte'
+    import Dialogos from './Dialogos/Dialogos.svelte'
+    import {abrir} from './Dialogos/Dialogos.svelte'
 
     export let notificaciones = window.notificaciones || []
 
@@ -84,6 +86,8 @@
     {/each}
 
 </nav>
+
+<Dialogos></Dialogos>
 <style>
     /*NAVBAR*/
 
@@ -135,13 +139,16 @@
 }
 
 .nav-categorias {
-    display: inline-flex;
-    justify-content: left;
-    /* gap: 10px; */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 10px;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    justify-content: center;
 }
+
 
 .nav-categorias a {
     color: var(--color5) !important;
-    padding: 10px;
 }
 </style>

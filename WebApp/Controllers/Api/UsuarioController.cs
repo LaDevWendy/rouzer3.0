@@ -59,6 +59,7 @@ namespace WebApp.Controllers
             UsuarioModel user = new UsuarioModel
             {
                 UserName = model.Nick,
+                Creacion = DateTimeOffset.Now
             };
             var createResult = await userManager.CreateAsync(user, model.Contraseña);
 
@@ -73,13 +74,13 @@ namespace WebApp.Controllers
             }
         }
 
-        [HttpGet, Route("/Login"), AllowAnonymous]
+        [HttpGet, Route("/Login")]
         public async Task<ActionResult> Login() 
         {
             return View("Login");
         }
 
-        [HttpGet, Route("/Registro"), AllowAnonymous]
+        [HttpGet, Route("/Registro")]
         public async Task<ActionResult> Registro() 
         {
             return View("Registro");

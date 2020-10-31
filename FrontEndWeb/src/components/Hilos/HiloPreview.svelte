@@ -1,5 +1,6 @@
 <script>
 import { Ripple, Button, Icon } from 'svelte-mui'
+import {abrir} from '../Dialogos/Dialogos.svelte'
 import Menu from '../Menu.svelte'
 import config from "../../config"
 import globalStore from '../../globalStore'
@@ -67,9 +68,9 @@ function onClick(e) {
                 </Button>
             </span>
             <li on:click={toggle}>{visible?'Ocultar':'Mostrar'} <Ripple/></li>
-            <li>Reportar <Ripple/></li>
+            <li on:click={() => abrir.reporte(hilo.id, "")}>Reportar <Ripple/></li>
             {#if $globalStore.usuario.esMod}
-                <li>Eliminar <Ripple/></li>
+                <li on:click={() => abrir.eliminarHilo(hilo.id, "")} >Eliminar <Ripple/></li>
             {/if}
         </Menu>
     </div>

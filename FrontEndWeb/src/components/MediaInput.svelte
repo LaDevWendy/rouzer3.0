@@ -1,7 +1,7 @@
 <script>
     import MediaType from '../MediaType'
     import {Button, ButtonGroup, Icon} from 'svelte-mui'
-    import { onDestroy } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
 
     export let compacto = false
 
@@ -9,6 +9,7 @@
     let archivoBlob = null
     let input = null
     let mediaType = MediaType.Imagen
+    let el
 
     async function actualizarArchivo() {
         if (input.files && input.files[0]) {
@@ -49,6 +50,14 @@
         console.log("Uy! Me muero")
     })
 
+    onMount(() => {
+        window.addEventListener('paste', e => {
+            console.log("An pegado");
+            input.files = e.clipboardData.files;
+            actualizarArchivo()
+        });
+    })
+
 </script>
 <input 
     name="archivo" 
@@ -59,7 +68,7 @@
     bind:this={input}
 
 >
-<div class:compacto class="video-preview media-input" style="{ archivo&& mediaType != MediaType.Video?`background:url(${archivoBlob})`: ''};overflow:hidden;">
+<div bind:this={el} class:compacto class="video-preview media-input"style="{ archivo&& mediaType != MediaType.Video?`background:url(${archivoBlob})`: ''};overflow:hidden;">
 
     {#if mediaType == MediaType.Video && archivo}
         <video src="{archivoBlob}"></video>

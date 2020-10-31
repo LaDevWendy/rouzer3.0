@@ -44,6 +44,7 @@
     }
 
     async function cargarViejos({ detail: { loaded, complete }}) {
+        if(hiloList.hilos.length == 0) complete()
         let {data} = await RChanClient.cargarMasHilos(hiloList.hilos[hiloList.hilos.length -1].bump, hiloList.categoriasActivas)
         console.log(data);
         hiloList.hilos = [...hiloList.hilos, ...data]

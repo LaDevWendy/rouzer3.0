@@ -1,0 +1,10 @@
+{
+    "General": {
+        "LimiteBump": 500,
+        "TiempoEntreComentarios": 0,
+        "TiempoEntreHilos": 0,
+        "RegistroAbierto": true,
+        "HilosMaximosPorCategoria": 100,
+        "LimiteArchivo": 100
+    }
+}

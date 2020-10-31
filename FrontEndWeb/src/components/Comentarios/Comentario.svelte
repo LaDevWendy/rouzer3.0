@@ -8,9 +8,12 @@
     
     import Tiempo from '../Tiempo.svelte'
     import globalStore from '../../globalStore';
-import Media from '../Media.svelte';
+    import Media from '../Media.svelte';
+    import {abrir} from '../Dialogos/Dialogos.svelte'
+
 
     export let comentario;
+    export let hilo;
     export let comentariosDic = {   };
     
     let el
@@ -81,7 +84,7 @@ import Media from '../Media.svelte';
             <Menu>
                 <span slot="activador" on:click={() => mostrarMenu = true} class=""><i class="fe fe-more-vertical relative"></i></span>
                 <li>Ocultar</li>
-                <li on:click={() =>dispatch('reporte', {comentarioId: comentario.id})}>Reportar</li>
+                <li on:click={() => abrir.reporte(hilo.id, comentario.id)}>Reportar</li>
                 {#if $globalStore.usuario.esMod}
                     <hr>
                     <Menuitem >Eliminar</Menuitem>
@@ -161,6 +164,7 @@ import Media from '../Media.svelte';
         font-weight: 600;
         /* color: #822f0047; */
         color: #1825338c;
+        border-radius: 4px;
     }
 
     .comentario .header {
@@ -199,4 +203,21 @@ import Media from '../Media.svelte';
     .comentario:hover {
         filter: brightness(1.2);
     }
+
+    /* .comentario-movil :glo.media {
+  max-width: 100%;
+  width: 100%;
+}
+.comentario-movil .color {
+  height: 30px;
+  position: relative;
+  top: -8px;
+  left: -8px;
+}
+.comentario-movil {
+  grid-template-areas:
+  "color header"
+  "respuestas respuestas"
+  "cuerpo cuerpo";
+} */
 </style>

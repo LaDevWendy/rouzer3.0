@@ -31,7 +31,7 @@ li {
   /* background: rgb(14 22 33 / 97%) ; */
 }
 
-.fondo2, .hilo-list, .panel, .nav-principal, hilo-completo .acciones .fe, #crear-hilo-form, .crear-hilo-form  {
+.fondo2, .panel, .nav-principal, hilo-completo .acciones .fe, #crear-hilo-form, .crear-hilo-form  {
   background: var(--color2) !important;
 }
 .fondo3, .comentario {
@@ -121,6 +121,7 @@ h4 {
   padding: 10px;
   background: #0000001c;
   color: white;
+  border-radius: 4px;
 }
 
 
@@ -868,22 +869,7 @@ justify-content: center;
     border-radius: 4px;
   }
 
-.comentario-movil .media {
-  max-width: 100%;
-  width: 100%;
-}
-.comentario-movil .color {
-  height: 30px;
-  position: relative;
-  top: -8px;
-  left: -8px;
-}
-.comentario-movil {
-  grid-template-areas:
-  "color header"
-  "respuestas respuestas"
-  "cuerpo cuerpo";
-}
+
 
 .sticky-info>* {
   transform: rotate(45deg) !important;

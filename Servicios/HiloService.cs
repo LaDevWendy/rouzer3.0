@@ -132,8 +132,7 @@ namespace Servicios
     public class GetHilosOptions
     {
         public int Cantidad { get; set; } = 32;
-        public int[] CategoriasId { get; set; } = Constantes.CantegoriasVisibles
-            .Select(e => e.Id).ToArray();
+        public int[] CategoriasId { get; set; } = new int[]{};
         public int[] IdsExcluidas { get; set; } = new int[0];
         public bool IncluirStickies { get; set; } = false;
         public string UserId { get; set; }
@@ -182,6 +181,13 @@ namespace Servicios
 
         public static IQueryable<HiloModel> FiltrarOcultosDeUsuario(this IQueryable<HiloModel> hilos, string usuarioId, RChanContext context) {
             return hilos.Where( h => !context.HiloAcciones.Any(a => a.HiloId ==  h.Id && a.UsuarioId == usuarioId && a.Hideado));
+        }
+        public static IQueryable<T> DeUsuario<T>(this IQueryable<T> creaciones, string usuarioId) where T : CreacionUsuario{
+            return creaciones.Where( h => h.UsuarioId == usuarioId);
+        }
+        public static IQueryable<T> Recientes<T> (this IQueryable<T> elemento) where T : BaseModel
+        { 
+            return elemento.OrderByDescending( h => h.Creacion);
         }
 
     }

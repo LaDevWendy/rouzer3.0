@@ -6,6 +6,7 @@
     export let comentarioId = ""
     export let hiloId = ""
     $: tipo = (comentarioId == "" || !comentarioId)? 0:1
+    $:tipoString = tipo == 0? "hilo" : "comentario"
 
     let motivo = -1
     let aclaracion = ""
@@ -15,17 +16,17 @@
 
 <Dialogo 
     bind:visible={visible} 
-    textoActivador="Reportar {tipo}" 
-    titulo="Reportar {tipo}"
+    textoActivador="Reportar {tipoString}" 
+    titulo="Reportar {tipoString}"
     accion={() => RChanClient.Denunciar(tipo, hiloId, motivo, aclaracion, comentarioId)}>
     <slot slot="activador">
 
     </slot>
     <div slot="body">
-        <p>Reportar el {tipo}</p>
+        <p>Reportar el {tipoString} {tipoString == "hilo"? hiloId : comentarioId} </p>
         <select bind:value={motivo}  name="motivo"> 
             <option value="-1" selected="selected" disabled="disabled">Motivo</option>
-            {#if tipo == "hilo"}
+            {#if tipoString == "hilo"}
                 <option value="0">1) Categoria incorrecta</option>
             {/if}
             <option value="1">2) Spam, fload</option>

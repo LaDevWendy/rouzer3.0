@@ -8,7 +8,7 @@ let data = Object.assign({
 }, window.globalState)
 
 //Categorias 
-data.categoriasActivas = config.categorias.filter(c => !c.oculta).map(c => c.id)
+data.categoriasActivas = config.categorias.filter(c => !c.nsfw).map(c => c.id)
 
 if(Cookie.getJSON('categoriasActivas'))
     data.categoriasActivas = Cookie.getJSON('categoriasActivas')

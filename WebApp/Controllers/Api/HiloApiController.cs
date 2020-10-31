@@ -14,6 +14,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 
 namespace WebApp.Controllers
 {
@@ -25,6 +26,7 @@ namespace WebApp.Controllers
         private readonly HashService hashService;
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly RChanContext context;
+        private readonly IOptions<List<Categoria>> categoriasOpt;
 
         #region constructor
         public HiloApiController(
@@ -32,7 +34,8 @@ namespace WebApp.Controllers
             IMediaService mediaService,
             HashService hashService,
             IHubContext<RChanHub> rchanHub,
-            RChanContext context
+            RChanContext context,
+            IOptions<List<Categoria>> categoriasOpt
         )
         {
             this.hiloService = hiloService;
@@ -40,13 +43,14 @@ namespace WebApp.Controllers
             this.hashService = hashService;
             this.rchanHub = rchanHub;
             this.context = context;
+            this.categoriasOpt = categoriasOpt;
         }
         #endregion
 
         [Authorize]
         public async Task<ActionResult<ApiResponse>> Crear([FromForm] CrearHiloViewModel vm)
         {
-            bool existeLaCategoria = Constantes.Categorias.Any(c => c.Id == vm.CategoriaId);
+            bool existeLaCategoria = categoriasOpt.Value.Any(c => c.Id == vm.CategoriaId);
 
             if(!existeLaCategoria) ModelState.AddModelError("Categoria", "Ay no existe la categoria");
 
@@ -144,6 +148,7 @@ namespace WebApp.Controllers
         [AllowAnonymous]
         async public Task<ActionResult<ApiResponse>> Denunciar( DenunciaModel denuncia)
         {
+            if(denuncia.ComentarioId == "") denuncia.ComentarioId = null;
             denuncia.Id = hashService.Random();
             if(await context.Hilos.AnyAsync(h => h.Id == denuncia.HiloId && h.Estado ==  HiloEstado.Eliminado))
             {

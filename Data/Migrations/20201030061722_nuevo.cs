@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Net;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Data.Migrations
 {
-    public partial class primeraMigracion : Migration
+    public partial class nuevo : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,25 +41,12 @@ namespace Data.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    Creacion = table.Column<DateTimeOffset>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Denuncias",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    Creacion = table.Column<DateTimeOffset>(nullable: false),
-                    HiloId = table.Column<string>(nullable: true),
-                    Motivo = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Denuncias", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,7 +56,6 @@ namespace Data.Migrations
                     Id = table.Column<string>(nullable: false),
                     Creacion = table.Column<DateTimeOffset>(nullable: false),
                     Url = table.Column<string>(nullable: true),
-                    VistaPreviaUrl = table.Column<string>(nullable: true),
                     Hash = table.Column<string>(nullable: true),
                     Tipo = table.Column<int>(nullable: false)
                 },
@@ -78,18 +65,17 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Usuarios",
+                name: "Stickies",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    Creacion = table.Column<DateTimeOffset>(nullable: false),
-                    Nick = table.Column<string>(nullable: true),
-                    Contraseña = table.Column<string>(nullable: true),
-                    Role = table.Column<int>(nullable: false)
+                    HiloId = table.Column<string>(nullable: false),
+                    Expiracion = table.Column<DateTimeOffset>(nullable: false),
+                    Global = table.Column<bool>(nullable: false),
+                    Importancia = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Usuarios", x => x.Id);
+                    table.PrimaryKey("PK_Stickies", x => x.HiloId);
                 });
 
             migrationBuilder.CreateTable(
@@ -199,41 +185,19 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comentarios",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    Creacion = table.Column<DateTimeOffset>(nullable: false),
-                    UsuarioId = table.Column<string>(nullable: true),
-                    MediaId = table.Column<string>(nullable: true),
-                    Estado = table.Column<int>(nullable: false),
-                    HiloId = table.Column<string>(nullable: true),
-                    Contenido = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comentarios", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comentarios_Medias_MediaId",
-                        column: x => x.MediaId,
-                        principalTable: "Medias",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Hilos",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
                     Creacion = table.Column<DateTimeOffset>(nullable: false),
-                    UsuarioId = table.Column<string>(nullable: true),
+                    UsuarioId = table.Column<string>(nullable: false),
                     MediaId = table.Column<string>(nullable: true),
-                    Estado = table.Column<int>(nullable: false),
+                    Ip = table.Column<IPAddress>(nullable: true),
                     Titulo = table.Column<string>(nullable: true),
                     Contenido = table.Column<string>(nullable: true),
                     CategoriaId = table.Column<int>(nullable: false),
-                    Bump = table.Column<DateTimeOffset>(nullable: false)
+                    Bump = table.Column<DateTimeOffset>(nullable: false),
+                    Estado = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -242,6 +206,136 @@ namespace Data.Migrations
                         name: "FK_Hilos_Medias_MediaId",
                         column: x => x.MediaId,
                         principalTable: "Medias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comentarios",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Creacion = table.Column<DateTimeOffset>(nullable: false),
+                    UsuarioId = table.Column<string>(nullable: false),
+                    MediaId = table.Column<string>(nullable: true),
+                    Ip = table.Column<IPAddress>(nullable: true),
+                    HiloId = table.Column<string>(nullable: false),
+                    Contenido = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comentarios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comentarios_Hilos_HiloId",
+                        column: x => x.HiloId,
+                        principalTable: "Hilos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comentarios_Medias_MediaId",
+                        column: x => x.MediaId,
+                        principalTable: "Medias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Comentarios_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HiloAcciones",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Creacion = table.Column<DateTimeOffset>(nullable: false),
+                    UsuarioId = table.Column<string>(nullable: true),
+                    HiloId = table.Column<string>(nullable: true),
+                    Seguido = table.Column<bool>(nullable: false),
+                    Favorito = table.Column<bool>(nullable: false),
+                    Hideado = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HiloAcciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HiloAcciones_Hilos_HiloId",
+                        column: x => x.HiloId,
+                        principalTable: "Hilos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_HiloAcciones_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Denuncias",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Creacion = table.Column<DateTimeOffset>(nullable: false),
+                    UsuarioId = table.Column<string>(nullable: true),
+                    Tipo = table.Column<int>(nullable: false),
+                    HiloId = table.Column<string>(nullable: false),
+                    ComentarioId = table.Column<string>(nullable: true),
+                    Motivo = table.Column<string>(nullable: false),
+                    Aclaracion = table.Column<string>(nullable: true),
+                    Estado = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Denuncias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Denuncias_Comentarios_ComentarioId",
+                        column: x => x.ComentarioId,
+                        principalTable: "Comentarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Denuncias_Hilos_HiloId",
+                        column: x => x.HiloId,
+                        principalTable: "Hilos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notificaciones",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    UsuarioId = table.Column<string>(nullable: true),
+                    HiloId = table.Column<string>(nullable: true),
+                    ComentarioId = table.Column<string>(nullable: true),
+                    Tipo = table.Column<int>(nullable: false),
+                    Actualizacion = table.Column<DateTimeOffset>(nullable: false),
+                    Conteo = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notificaciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notificaciones_Comentarios_ComentarioId",
+                        column: x => x.ComentarioId,
+                        principalTable: "Comentarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Notificaciones_Hilos_HiloId",
+                        column: x => x.HiloId,
+                        principalTable: "Hilos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Notificaciones_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -284,14 +378,64 @@ namespace Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comentarios_HiloId",
+                table: "Comentarios",
+                column: "HiloId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comentarios_MediaId",
                 table: "Comentarios",
                 column: "MediaId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comentarios_UsuarioId",
+                table: "Comentarios",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Denuncias_ComentarioId",
+                table: "Denuncias",
+                column: "ComentarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Denuncias_HiloId",
+                table: "Denuncias",
+                column: "HiloId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HiloAcciones_HiloId",
+                table: "HiloAcciones",
+                column: "HiloId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HiloAcciones_UsuarioId",
+                table: "HiloAcciones",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Hilos_Bump",
+                table: "Hilos",
+                column: "Bump");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Hilos_MediaId",
                 table: "Hilos",
                 column: "MediaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notificaciones_ComentarioId",
+                table: "Notificaciones",
+                column: "ComentarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notificaciones_HiloId",
+                table: "Notificaciones",
+                column: "HiloId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notificaciones_UsuarioId",
+                table: "Notificaciones",
+                column: "UsuarioId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -312,19 +456,25 @@ namespace Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Comentarios");
-
-            migrationBuilder.DropTable(
                 name: "Denuncias");
 
             migrationBuilder.DropTable(
-                name: "Hilos");
+                name: "HiloAcciones");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
+                name: "Notificaciones");
+
+            migrationBuilder.DropTable(
+                name: "Stickies");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Comentarios");
+
+            migrationBuilder.DropTable(
+                name: "Hilos");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

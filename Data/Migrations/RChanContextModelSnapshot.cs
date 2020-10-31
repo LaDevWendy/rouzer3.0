@@ -165,9 +165,6 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("HiloModelId")
-                        .HasColumnType("text");
-
                     b.Property<IPAddress>("Ip")
                         .HasColumnType("inet");
 
@@ -180,9 +177,11 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HiloModelId");
+                    b.HasIndex("HiloId");
 
                     b.HasIndex("MediaId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Comentarios");
                 });
@@ -220,6 +219,10 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ComentarioId");
+
+                    b.HasIndex("HiloId");
+
                     b.ToTable("Denuncias");
                 });
 
@@ -247,6 +250,10 @@ namespace Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HiloId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("HiloAcciones");
                 });
@@ -285,6 +292,8 @@ namespace Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Bump");
 
                     b.HasIndex("MediaId");
 
@@ -330,9 +339,6 @@ namespace Data.Migrations
                     b.Property<string>("HiloId")
                         .HasColumnType("text");
 
-                    b.Property<string>("HiloModelId")
-                        .HasColumnType("text");
-
                     b.Property<int>("Tipo")
                         .HasColumnType("integer");
 
@@ -343,7 +349,9 @@ namespace Data.Migrations
 
                     b.HasIndex("ComentarioId");
 
-                    b.HasIndex("HiloModelId");
+                    b.HasIndex("HiloId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Notificaciones");
                 });
@@ -378,6 +386,9 @@ namespace Data.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Creacion")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .HasColumnType("character varying(256)")
@@ -484,13 +495,45 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Modelos.ComentarioModel", b =>
                 {
-                    b.HasOne("Modelos.HiloModel", null)
+                    b.HasOne("Modelos.HiloModel", "Hilo")
                         .WithMany("Comentarios")
-                        .HasForeignKey("HiloModelId");
+                        .HasForeignKey("HiloId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Modelos.MediaModel", "Media")
                         .WithMany()
                         .HasForeignKey("MediaId");
+
+                    b.HasOne("Modelos.UsuarioModel", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Modelos.DenunciaModel", b =>
+                {
+                    b.HasOne("Modelos.ComentarioModel", "Comentario")
+                        .WithMany()
+                        .HasForeignKey("ComentarioId");
+
+                    b.HasOne("Modelos.HiloModel", "Hilo")
+                        .WithMany()
+                        .HasForeignKey("HiloId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Modelos.HiloAccionModel", b =>
+                {
+                    b.HasOne("Modelos.HiloModel", "Hilo")
+                        .WithMany()
+                        .HasForeignKey("HiloId");
+
+                    b.HasOne("Modelos.UsuarioModel", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
                 });
 
             modelBuilder.Entity("Modelos.HiloModel", b =>
@@ -506,9 +549,13 @@ namespace Data.Migrations
                         .WithMany()
                         .HasForeignKey("ComentarioId");
 
-                    b.HasOne("Modelos.HiloModel", "HiloModel")
+                    b.HasOne("Modelos.HiloModel", "Hilo")
                         .WithMany()
-                        .HasForeignKey("HiloModelId");
+                        .HasForeignKey("HiloId");
+
+                    b.HasOne("Modelos.UsuarioModel", null)
+                        .WithMany("Notificaciones")
+                        .HasForeignKey("UsuarioId");
                 });
 #pragma warning restore 612, 618
         }

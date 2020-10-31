@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Modelos
 {
@@ -29,9 +30,10 @@ namespace Modelos
         public NotificacionType Tipo { get; set; }
         public DateTimeOffset Actualizacion { get; set; }
         public int Conteo { get; set; } = 1;
-
+        
         public ComentarioModel Comentario { get; set; }
-        public HiloModel HiloModel { get; set; }
+
+        public HiloModel Hilo { get; set; }
     }
 
     public enum NotificacionType {

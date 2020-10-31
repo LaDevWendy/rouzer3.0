@@ -86,6 +86,28 @@ namespace WebApp.Controllers
             return View(new ModeracionIndexVm(hilos, comentarios, denuncias));
         }
 
+        
+        [HttpGet]
+        public async Task<ActionResult> HistorialDeUsuario(string id) 
+        {
+            if((await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id)) is null)
+                return NotFound();
+            return View(new {
+                Hilos = await context.Hilos
+                    .DeUsuario(id)
+                    .Recientes()
+                    .AViewModelMod(context)
+                    .ToListAsync(),
+
+                Comentarios = await context.Comentarios
+                    .Recientes()
+                    .DeUsuario(id)
+                    .Take(150)
+                    .ToListAsync()
+
+            });
+        }
+
     }
     public class ModeracionIndexVm {
         public ModeracionIndexVm(List<HiloViewModelMod> hilos, List<ComentarioViewModelMod> comentarios, List<DenunciaModel> denuncias)

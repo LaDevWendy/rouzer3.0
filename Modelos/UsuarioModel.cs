@@ -11,5 +11,6 @@ namespace Modelos
     {
         [ForeignKey("UsuarioId")]
         public ICollection<NotificacionModel> Notificaciones { get; set; }
+        public DateTimeOffset Creacion { get; set; } = DateTimeOffset.Now;
     }
 }
