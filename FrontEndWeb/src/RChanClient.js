@@ -111,9 +111,14 @@ export default class RChanClient {
             comentarioId
         })
     }
+
     static cargarMasHilos(ultimoBump, categorias){
-        console.log(categorias);
-        return axios.get(`api/Hilo/CargarMas?ultimoBump=${ultimoBump}&categorias=${categorias}`)
+        return axios.get('api/Hilo/CargarMas', {
+            params:{
+                ultimoBump,
+                categorias: categorias.join(",")
+            }
+        })
     }
     //Paginas
     static index(){
