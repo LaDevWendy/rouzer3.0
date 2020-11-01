@@ -74,12 +74,16 @@
         <ErrorValidacion error={error}/>
         <div class="menu">
             <ul >
-                <li>LimiteBump <input bind:value={model.config.limiteBump} type="number"></li>
-                <li>TiempoEntreComentarios <input bind:value={model.config.tiempoEntreComentarios} type="number"></li>
-                <li>TiempoEntreHilos <input bind:value={model.config.tiempoEntreHilos} type="number"></li>
-                <li>RegistroAbierto <input bind:checked={model.config.registroAbierto} type="checkbox"></li>
-                <li>HilosMaximosPorCategoria <input bind:value={model.config.hilosMaximosPorCategoria} type="number"></li>
-                <li>LimiteArchivo <input bind:value={model.config.limiteArchivo} type="number"></li>
+                <li>Limite bump <input bind:value={model.config.limiteBump} type="number"></li>
+                <li>Tiempo entre comentarios <input bind:value={model.config.tiempoEntreComentarios} type="number"></li>
+                <li>Tiempo entre hilos <input bind:value={model.config.tiempoEntreHilos} type="number"></li>
+                <li>Registro abierto <input bind:checked={model.config.registroAbierto} type="checkbox"></li>
+                <li>Hilos maximos por categoria <input bind:value={model.config.hilosMaximosPorCategoria} type="number"></li>
+                <li>Limite archivo <input bind:value={model.config.limiteArchivo} type="number"></li>
+                <li>Captcha registro <input bind:checked={model.config.captchaRegistro} type="checkbox"></li>
+                <li>Captcha hilo <input bind:checked={model.config.captchaHilo} type="checkbox"></li>
+                <li>Captcha comentario <input bind:checked={model.config.captchaComentario} type="checkbox"></li>
+                <li>Modo privado <input bind:checked={model.config.modoPrivado} type="checkbox"></li>
                 <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
             </ul>
         </div>

@@ -19,6 +19,8 @@ namespace Modelos
         
         [Required]
         public IFormFile Archivo { get; set; }
+        
+        public string Captcha { get; set; }
     }
 
 }

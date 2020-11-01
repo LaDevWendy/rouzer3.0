@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 
 namespace WebApp.Controllers
 {
@@ -20,15 +21,21 @@ namespace WebApp.Controllers
     {
         private readonly UserManager<UsuarioModel> userManager;
         private readonly SignInManager<UsuarioModel> signInManager;
+        private readonly CaptchaService captcha;
+        private readonly IOptionsSnapshot<GeneralOptions> generalOptions;
 
         #region constructor
         public UsuarioController(
             UserManager<UsuarioModel> userManager,
-            SignInManager<UsuarioModel> signInManager
+            SignInManager<UsuarioModel> signInManager,
+            CaptchaService captcha,
+            IOptionsSnapshot<GeneralOptions> generalOptions
         )
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.captcha = captcha;
+            this.generalOptions = generalOptions;
         }
         #endregion
 
@@ -55,6 +62,15 @@ namespace WebApp.Controllers
             {
                 ModelState.AddModelError("Nick", "El nombre de usuario ya existe");
             }
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+            var pasoElCaptcha= await captcha.Verificar(model.Captcha);
+
+            if(!pasoElCaptcha && generalOptions.Value.CaptchaRegistro)
+            {
+                ModelState.AddModelError("Captcha", "Incorrecto");
+            }
+            if(!ModelState.IsValid) return BadRequest(ModelState);
 
             UsuarioModel user = new UsuarioModel
             {
@@ -118,5 +134,6 @@ namespace WebApp.Controllers
         [Required(ErrorMessage="Contraseña requerida")]
         [MaxLength(30, ErrorMessage="para la mano")]
         public string Contraseña { get; set; }
+        public string Captcha { get; set; }
     }
 }

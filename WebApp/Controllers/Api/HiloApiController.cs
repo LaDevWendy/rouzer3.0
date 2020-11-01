@@ -27,6 +27,8 @@ namespace WebApp.Controllers
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly RChanContext context;
         private readonly IOptions<List<Categoria>> categoriasOpt;
+        private readonly IOptionsSnapshot<GeneralOptions> generalOptions;
+        private readonly CaptchaService captcha;
 
         #region constructor
         public HiloApiController(
@@ -35,7 +37,9 @@ namespace WebApp.Controllers
             HashService hashService,
             IHubContext<RChanHub> rchanHub,
             RChanContext context,
-            IOptions<List<Categoria>> categoriasOpt
+            IOptions<List<Categoria>> categoriasOpt,
+            IOptionsSnapshot<GeneralOptions> generalOptions,
+            CaptchaService captcha
         )
         {
             this.hiloService = hiloService;
@@ -44,6 +48,8 @@ namespace WebApp.Controllers
             this.rchanHub = rchanHub;
             this.context = context;
             this.categoriasOpt = categoriasOpt;
+            this.generalOptions = generalOptions;
+            this.captcha = captcha;
         }
         #endregion
 
@@ -54,6 +60,11 @@ namespace WebApp.Controllers
 
             if(!existeLaCategoria) ModelState.AddModelError("Categoria", "Ay no existe la categoria");
 
+            var pasoElCaptcha= await captcha.Verificar(vm.Captcha);
+            if(!pasoElCaptcha && generalOptions.Value.CaptchaHilo && !User.EsMod())
+            {
+                 ModelState.AddModelError("Captcha", "Incorrecto");
+            }
             if (!ModelState.IsValid) return BadRequest(ModelState);
             // Chequeuear si es flood
             // Chequeuear si esta Baneado

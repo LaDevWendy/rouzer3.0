@@ -9,7 +9,7 @@
 	import ErrorValidacion from './components/ErrorValidacion.svelte'
 	import globalStore from './globalStore'
 	import Dialogo from './components/Dialogo.svelte'
-import Media from './components/Media.svelte'
+	import Media from './components/Media.svelte'
 
 	let data = window.data || dataEjemplo
 	let {hilo, comentarios, acciones} = data;
@@ -30,7 +30,7 @@ import Media from './components/Media.svelte'
 <div class="hilo-completo" r-id={hilo.id}>
 	<div class="contenido">
 		<div class="panel">
-			<a href="/">Roxed</a>
+			<a href="/">Rozed</a>
 			<a href="/{config.getCategoriaById(hilo.categoriaId).nombreCorto}">/{config.getCategoriaById(hilo.categoriaId).nombre}</a>
 		</div>
 		<Acciones bind:hilo bind:acciones/>

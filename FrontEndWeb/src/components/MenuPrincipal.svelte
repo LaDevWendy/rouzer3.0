@@ -90,3 +90,10 @@
         </ul>
     </section>
 </Sidepanel>
+
+<style>
+    :global(.side-panel) {
+        width: auto !important;
+        min-width: 256px;
+    }
+</style>

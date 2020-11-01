@@ -150,6 +150,7 @@ namespace Servicios
                     Media = h.Media,
                     Id = h.Id,
                     Titulo = h.Titulo,
+                    Estado = h.Estado,
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id).Count()
                 });
         }
@@ -162,6 +163,7 @@ namespace Servicios
                     Media = h.Media,
                     Id = h.Id,
                     Titulo = h.Titulo,
+                    Estado = h.Estado,
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id).Count(),
                     UsuarioId = h.UsuarioId,
                 });

@@ -1,6 +1,9 @@
-﻿@inject RChanContext _context;
-@inject IOptions<List<Categoria>> categoriasOpt;
+﻿@using Microsoft.Extensions.Configuration;
 @using Microsoft.Extensions.DependencyInjection;
+@inject RChanContext _context;
+@inject IOptions<List<Categoria>> categoriasOpt;
+@inject IConfiguration config;
+@inject IOptionsSnapshot<GeneralOptions> generalOptions
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,6 +24,9 @@
     <link rel="stylesheet" href="~/iconos/iconos.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/js/css/bundle.css" />
+
+    <script src="https://hcaptcha.com/1/api.js" async defer></script>
+
 
     @{
         if (Context.User != null)
@@ -59,11 +65,16 @@
                 EsAyudante = User.EsAyudante(),
             }
         };
+
+        var configurafionPublica = new {
+            Categorias = categoriasOpt.Value,
+            HCaptchaSiteKey = config.GetValue<string>("HCaptcha:SiteKey"),
+            General =  (GeneralPublicOptions)  generalOptions.Value
+        };
     }
+    
     <script>
-        window.config = {
-            categorias: @Json.Serialize(categoriasOpt.Value)
-        }
+        window.config = @Json.Serialize(configurafionPublica)
         window.globalState = @Json.Serialize(globalState)
     </script>
 

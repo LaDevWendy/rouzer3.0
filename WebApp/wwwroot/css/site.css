@@ -878,3 +878,13 @@ justify-content: center;
 .verde {
   color: #40bc4f;
 }
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color5);
+}
+::-webkit-scrollbar-track {
+  background: var(--color4);
+}

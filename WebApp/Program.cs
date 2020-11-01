@@ -55,6 +55,7 @@ namespace WebApp
                     .ConfigureAppConfiguration(cb => {
                         cb.AddJsonFile("appsettings.json",false, true);
                         cb.AddJsonFile("categoriassettings.json",false, true);
+                        cb.AddJsonFile("generalsettings.json",false, true);
                         cb.AddCommandLine(args);
                         cb.AddEnvironmentVariables();
                     })

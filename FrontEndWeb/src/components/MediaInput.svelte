@@ -47,12 +47,10 @@
     onDestroy(() => {
         archivo = null
         archivoBlob = null
-        console.log("Uy! Me muero")
     })
 
     onMount(() => {
         window.addEventListener('paste', e => {
-            console.log("An pegado");
             input.files = e.clipboardData.files;
             actualizarArchivo()
         });
@@ -68,7 +66,10 @@
     bind:this={input}
 
 >
-<div bind:this={el} class:compacto class="video-preview media-input"style="{ archivo&& mediaType != MediaType.Video?`background:url(${archivoBlob})`: ''};overflow:hidden;">
+<div 
+    bind:this={el} 
+    class:compacto class="video-preview media-input"
+    style="{ archivo&& mediaType != MediaType.Video?`background:url(${archivoBlob})`: 'background:url(/imagenes/rose2.jpg)'};overflow:hidden;">
 
     {#if mediaType == MediaType.Video && archivo}
         <video src="{archivoBlob}"></video>

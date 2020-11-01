@@ -29,7 +29,7 @@
         "Id": 6,
         "Nombre": "Conspiraciones",
         "NombreCorto": "(())",
-        "Nsfw": true
+        "Nsfw": false
     }, {
         "Id": 7,
         "Nombre": "Desarrollo personal",
@@ -54,7 +54,7 @@
         "Id": 11,
         "Nombre": "Jumor",
         "NombreCorto": "JIJO",
-        "Nsfw": true
+        "Nsfw": false
     }, {
         "Id": 12,
         "Nombre": "Literatura",

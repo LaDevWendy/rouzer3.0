@@ -29,6 +29,7 @@ namespace Modelos
         public DateTimeOffset Creacion { get; set; }
         public MediaModel Media { get; set; }
         public string Thumbnail { get; set; }
+        public HiloEstado Estado { get; set; }
     }
 
     public class HiloViewModelMod : HiloViewModel

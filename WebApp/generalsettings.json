@@ -1,10 +1,14 @@
 {
-    "General": {
-        "LimiteBump": 500,
-        "TiempoEntreComentarios": 0,
-        "TiempoEntreHilos": 0,
-        "RegistroAbierto": true,
-        "HilosMaximosPorCategoria": 100,
-        "LimiteArchivo": 100
-    }
+  "General": {
+    "LimiteBump": 500,
+    "HilosMaximosPorCategoria": 100,
+    "ModoPrivado": false,
+    "TiempoEntreComentarios": 0,
+    "TiempoEntreHilos": 0,
+    "LimiteArchivo": 0,
+    "RegistroAbierto": true,
+    "CaptchaHilo": true,
+    "CaptchaComentario": false,
+    "CaptchaRegistro": true
+  }
 }

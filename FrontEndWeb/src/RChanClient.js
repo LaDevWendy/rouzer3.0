@@ -19,27 +19,30 @@ axios.interceptors.response.use(function (response) {
 
 export default class RChanClient {
     // Acciones
-    static crearHilo(titulo, categoria, contenido, archivo) {
+    static crearHilo(titulo, categoria, contenido, archivo, captcha="") {
         let form = new FormData()
         form.append("Titulo", titulo)
         form.append("CategoriaId", categoria)
         form.append("Contenido", contenido)
         form.append("Archivo", archivo)
+        form.append("captcha", captcha)
         return axios.post("/api/Hilo/Crear", form)
     }
 
-    static crearComentario(hiloId, contenido, archivo = null) {
+    static crearComentario(hiloId, contenido, archivo = null, captcha="") {
         let form = new FormData();
         form.append('hiloId', hiloId)
         form.append('contenido', contenido)
         form.append('archivo', archivo)
+        form.append('captcha', captcha)
         return axios.post('/api/Comentario/Crear', form)
     }
 
-    static registrase(nick, contraseña) {
+    static registrase(nick, contraseña, captcha) {
         return axios.post('/api/Usuario/Registro', {
             nick,
-            contraseña
+            contraseña,
+            captcha
         })
     }
 

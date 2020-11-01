@@ -1,20 +1,24 @@
 <script>
     import {Textfield, Button, Ripple} from "svelte-mui"
     import RChanClient from "../../RChanClient";
+    import Captcha from "../Captcha.svelte";
     import ErrorValidacion from "../ErrorValidacion.svelte";
+    import config from "../../config"
 
     let username = ""
     let password = ""
+    let captcha = ""
     let error = null
 
     export let modo = "login"
 
     $: modoRegistro = modo == "registro"
 
-    async function accion() {
+    async function accion(e) {
+        console.log(captcha);
         try {
             if(modoRegistro)
-                await RChanClient.registrase(username, password)
+                await RChanClient.registrase(username, password, captcha)
             else
                 await RChanClient.logearse(username, password)
         } catch (e) {
@@ -57,6 +61,8 @@
                 bind:value={password}
                 message="aynose1234"
             />
+
+            <Captcha visible={config.general.captchaRegistro}  bind:token={captcha}/>
             <div style="display:flex; justify-content: center;">
                 <Button >{modoRegistro?"Registrarse":"Entrar"}</Button>
             </div>
