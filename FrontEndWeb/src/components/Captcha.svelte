@@ -1,7 +1,11 @@
 <script>
     import {onMount} from "svelte"
+    import globalStore from "../globalStore"
     export let token
     export let visible = true
+
+    if($globalStore.usuario.estaAutenticado && $globalStore.usuario.esMod)
+        visible = false
 
     onMount(() => {
         if(window.hcaptcha) cargarCaptcha()
