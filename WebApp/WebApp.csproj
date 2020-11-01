@@ -23,6 +23,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.3" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-rc0003" />
     <PackageReference Include="WestWind.AspnetCore.LiveReload" Version="0.2.5" />
+    <PackageReference Include="Xabe.FFmpeg" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>

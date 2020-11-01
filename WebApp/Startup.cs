@@ -99,7 +99,7 @@ namespace WebApp
             services.AddScoped<IMediaService, MediaService>(s =>
             {
                 var env = s.GetService<IWebHostEnvironment>();
-                return new MediaService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>());
+                return new MediaService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env);
             });
 
             services.AddCors(options =>

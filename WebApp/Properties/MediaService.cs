@@ -10,8 +10,9 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Cryptography;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using FFMpegCore;
+using Xabe.FFmpeg;
 using System.Drawing.Imaging;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Servicios
 {
@@ -25,11 +26,13 @@ namespace Servicios
     {
         private string CarpetaDeAlmacenamiento { get; }
         private readonly RChanContext context;
+        private readonly IWebHostEnvironment env;
 
-        public MediaService(string carpetaDeAlmacenamiento, RChanContext context)
+        public MediaService(string carpetaDeAlmacenamiento, RChanContext context, IWebHostEnvironment env)
         {
             this.CarpetaDeAlmacenamiento = carpetaDeAlmacenamiento;
             this.context = context;
+            this.env = env;
         }
 
         public string GetThumbnail(string id)
@@ -102,25 +105,35 @@ namespace Servicios
         }
         public async Task<Stream> GenerarImagenDesdeVideo(Stream video, string filename)
         {
-            var archivoPath = "./" + Guid.NewGuid().ToString() + filename;
+            //Guardo el archivo en una carpeta temporal
+            var directoryTemporal =  Path.Join(env.ContentRootPath, "Temp");
+            Directory.CreateDirectory(directoryTemporal);
+
+            var archivoPath = Path.Join( directoryTemporal, Guid.NewGuid().ToString() + filename);
+
             video.Seek(0, SeekOrigin.Begin);
-            var ar = File.Create(archivoPath);
-            await video.CopyToAsync(ar);
-            await ar.DisposeAsync();
-            var vidInfo = await FFProbe.AnalyseAsync(archivoPath);
+            var archivoGuardado = File.Create(archivoPath);
+            await video.CopyToAsync(archivoGuardado);
+            
+            await archivoGuardado.DisposeAsync();
 
-            var width = vidInfo.PrimaryVideoStream.Width;
-            var height = vidInfo.PrimaryVideoStream.Height;
+            var archivoSalidaThumbnail = Path.Join(directoryTemporal, Guid.NewGuid() + ".jpg");
 
-            var bitmap = await FFMpeg.SnapshotAsync(vidInfo, new System.Drawing.Size(width, height), TimeSpan.FromMinutes(0));
+            var conversion = await FFmpeg.Conversions.FromSnippet.Snapshot(archivoPath,
+                    archivoSalidaThumbnail,
+                    TimeSpan.FromSeconds(0));
+
+            var result = await conversion.Start(); 
 
             var imgStream = new MemoryStream();
-            bitmap.Save(imgStream, ImageFormat.Jpeg);
+
+            var archivoTemporalImagen =  File.OpenRead(archivoSalidaThumbnail);
+            await archivoTemporalImagen.CopyToAsync(imgStream);
+
+            await archivoTemporalImagen.DisposeAsync();
             File.Delete(archivoPath);
-            
+            File.Delete(archivoSalidaThumbnail);
             return imgStream;
-
-
         }
     }
 }
