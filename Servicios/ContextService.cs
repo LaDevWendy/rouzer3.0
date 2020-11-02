@@ -13,9 +13,9 @@ namespace Servicios
 
     public abstract class ContextService
     {
-        internal readonly RChanContext _context;
-        internal readonly HashService hashService;
-        internal QueryFactory db;
+        protected readonly RChanContext _context;
+        protected readonly HashService hashService;
+        protected QueryFactory db;
 
 
         public ContextService(

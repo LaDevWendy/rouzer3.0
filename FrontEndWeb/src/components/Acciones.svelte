@@ -2,6 +2,7 @@
     import Tiempo from './Tiempo.svelte'
     import RChanClient from '../RChanClient'
     import DialogoReporte from '../components/Dialogos/DialogoReporte.svelte'
+    import {Button, ButtonGroup} from 'svelte-mui'
 
     export let hilo
     export let acciones;
@@ -23,7 +24,7 @@
 
 <div class="panel acciones">
     <!-- <div class="debug" style="bottom: 200px;height: fit-content;"> {"usuarioId":null,"hiloId":null,"seguido":false,"favorito":false,"hideado":false,"id":null,"creacion":"2020-10-15T00:59:47.7667-03:00"}</div> -->
-    <span class="{acciones.favorito? " naranja":"fantasma"}" r-accion="favoritos" r-id="{hilo.id}"
+    <!-- <span class="{acciones.favorito? " naranja":"fantasma"}" r-accion="favoritos" r-id="{hilo.id}"
         on:click={favoritear}> <i
             class="fe fe-star"></i>Favorito</span>
 
@@ -33,12 +34,18 @@
 
     <span class="{acciones.hideado? " naranja":"fantasma"}" r-accion="ocultos" r-id={hilo.id}
         on:click={ocultar}>
-        <i class="fe fe-eye-off" />Oculto</span>
+        <i class="fe fe-eye-off" />Oculto</span> -->
 
-    <span on:click={() => mostrarReporte = true}> <i class="fe fe-flag" />Denunciar</span>
+            <Button bind:active={acciones.favorito} on:click={favoritear} color={acciones.favorito?'var(--color5)':'grey'}  shaped  ><i class="fe fe-eye"></i>Seg</Button>
+            <Button bind:active={acciones.seguido} on:click={seguir} color={acciones.seguido?'var(--color5)':'grey'}  shaped  ><i class="fe fe-star"></i>Fav</Button>
+            <Button bind:active={acciones.hideado} on:click={ocultar} color={acciones.hideado?'var(--color5)':'grey'}  shaped  ><i class="fe fe-eye-off"></i>Hide</Button>
 
-    <span>
-        <Tiempo date={hilo.creacion} /></span>
+            <Button  on:click={() => mostrarReporte = true} shaped color="red" ><i class="fe fe-flag"></i>Denunciar</Button>
+            <Button  color="white"  shaped  disabled ><i class="fe fe-clock"></i><Tiempo date={hilo.creacion} /></Button>
+
+    <!-- <span on:click={() => mostrarReporte = true}> <i class="fe fe-flag" />Denunciar</span> -->
+
+    
 </div>
 
 <DialogoReporte bind:visible={mostrarReporte} tipo="hilo" hiloId={hilo.id} />

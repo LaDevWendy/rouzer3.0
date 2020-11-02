@@ -5,9 +5,10 @@
     import RChanClient from '../../RChanClient'
     import ErrorValidacion from '../ErrorValidacion.svelte';
     import MediaInput from '../MediaInput.svelte';
+    import Spinner from '../Spinner.svelte';
     export let hilo
 
-    let creando = false
+    let cargando = false
 
     $comentarioStore
     let archivo = null
@@ -16,17 +17,17 @@
     let error = null
 
     async function crearComentario() {
-        if(espera != 0 || creando) return
+        if(espera != 0 || cargando) return
 
         try {
+            cargando = true
             await RChanClient.crearComentario(hilo.id, $comentarioStore, archivo)
-            creando = true
         } catch (e) {
             error = e.response.data
             return
         }
-
-        creando = false
+        
+        cargando = false
         espera = 0
         $comentarioStore = ''
         archivo = null
@@ -42,7 +43,9 @@
     <textarea on:focus={() => error = null} bind:value={$comentarioStore} cols="30" rows="10" placeholder="Que dificil discutir con pibes..."></textarea>
 
     <div class="acciones">
-        <Button  color="primary"  class="mra" on:click={crearComentario}>Responder</Button>
+        <Button  disabled={cargando} color="primary"  class="mra" on:click={crearComentario}>
+            <Spinner {cargando}>Responder</Spinner>
+        </Button>
     </div>
 </form>
 

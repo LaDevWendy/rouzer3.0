@@ -7,6 +7,7 @@ import ErrorValidacion from '../ErrorValidacion.svelte';
 import MediaType from '../../MediaType'
 import MediaInput from '../MediaInput.svelte';
 import Captcha from '../Captcha.svelte';
+import Spinner from '../Spinner.svelte';
 
 export let mostrar = false
 
@@ -16,10 +17,13 @@ let contenido = ""
 let archivo = null
 let captcha = ""
 
+let cargando = false
+
+
 let error = null
 
 async function crear() {
-    console.log("creando");
+    cargando = true
     try {
         let r = await RChanClient.crearHilo(titulo, categoria, contenido, archivo, captcha)
         if (r.status == 201) {
@@ -28,6 +32,7 @@ async function crear() {
     } catch (e) {
        error = e.response.data
     }
+    cargando = false
 }
 
 </script>
@@ -59,7 +64,11 @@ async function crear() {
         <Captcha visible={config.general.captchaHilo}  bind:token={captcha}/>
         <div style="display:flex;     justify-content: flex-end;">
             <Button color="primary" on:click={() => mostrar = false}>Cancelar</Button>
-            <Button color="primary" on:click={crear}>Crear</Button>
+                <Button color="primary" disabled={cargando} on:click={crear} >
+                    <Spinner {cargando}>
+                        Crear
+                    </Spinner>
+                </Button>
             <input type="submit" style="display:none">
         </div>
     </form>

@@ -24,7 +24,8 @@
             <Ripple/>
         </span>
         <a href="/" style="font-family: euroFighter">
-            <h3>ROZED</h3>
+            <h3>ROZED <span class="version">Alfa 0.3</span></h3>
+            
             <Ripple/>
         </a>
         <MensajeRotativo/>
@@ -150,5 +151,13 @@
 
 .nav-categorias a {
     color: var(--color5) !important;
+}
+
+.version {
+    font-size: 10px;
+    position: absolute;
+    bottom: 1px;
+    right: 5px;
+    font-family: sans-serif;
 }
 </style>

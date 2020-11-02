@@ -147,24 +147,6 @@ h4 {
    margin-right: 10px; 
 }
 
-.btn, .hilo-completo .acciones span {
-  color: white;
-  /* font-size: 16px; */
-  border: none;
-  background: transparent;
-  padding: 10px !important;
-  transition: background 0.2s, color 0.2s;
-  cursor: pointer;
-}
-
-.btn:hover, .hilo-completo .acciones span:hover {
-  background: white;
-  color: black;
-}
-.btn:active, .hilo-completo .acciones span:active {
-  background: orange;
-  color: black;
-}
 
 
 

@@ -8,6 +8,8 @@ using SqlKata.Execution;
 using SqlKata.Compilers;
 using System.Linq;
 using Dapper;
+using Microsoft.Extensions.Options;
+using WebApp;
 
 namespace Servicios
 {
@@ -25,13 +27,16 @@ namespace Servicios
     public class HiloService : ContextService, IHiloService
     {
         private readonly IComentarioService comentarioService;
+        private readonly IOptionsSnapshot<GeneralOptions> options;
 
         public HiloService(RChanContext context,
             HashService hashService,
-            IComentarioService comentarioService)
+            IComentarioService comentarioService,
+            IOptionsSnapshot<GeneralOptions> options)
         : base(context, hashService)
         {
             this.comentarioService = comentarioService;
+            this.options = options;
         }
 
         public async Task ActualizarHilo(HiloModel Hilo)
@@ -55,11 +60,15 @@ namespace Servicios
         {
             var hiloFullView = new HiloFullViewModel();
 
-            var hilo = await _context.Hilos
-                .Include(h => h.Media)
-                .FirstOrDefaultAsync(h =>
-                h.Id == id &&
-                (h.Estado == HiloEstado.Normal || mostrarOcultos));
+            HiloModel hilo;
+            var query = _context.Hilos
+                .Include(h => h.Media);
+
+            if(!mostrarOcultos) 
+                hilo = await query.FiltrarEliminados().PorId(id);
+            else 
+                hilo = await query.PorId(id);
+            
 
             if (hilo is null) return null;
 
@@ -91,7 +100,7 @@ namespace Servicios
                 .Where(h => opciones.CategoriasId.Contains(h.CategoriaId) && 
                 !_context.HiloAcciones.Any(a => a.HiloId ==  h.Id && a.UsuarioId == opciones.UserId && a.Hideado)
                 && !_context.Stickies.Any( s => s.HiloId == h.Id))
-                .Where(h => h.Estado != HiloEstado.Eliminado || opciones.MostrarBorrados)
+                .FiltrarNoActivos()
                 .OrderByDescending(h => h.Bump)
                 .Take(opciones.Cantidad)
                 .AViewModel(_context).ToListAsync();
@@ -118,6 +127,16 @@ namespace Servicios
         {
             hilo.Id = hashService.Random();
             _context.Hilos.Add(hilo);
+            await _context.SaveChangesAsync();
+            // Ahora busco todos los hilos con estado activo
+            var hilosParaArchivar = await _context.Hilos
+                .FiltrarNoActivos()
+                .OrdenadosPorBump()
+                .FiltrarPorCategoria(hilo.CategoriaId)
+                .Skip(options.Value.HilosMaximosPorCategoria)
+                .ToListAsync();
+
+            hilosParaArchivar.ForEach(h => h.Estado = HiloEstado.Archivado);
             await _context.SaveChangesAsync();
             return hilo.Id;
         }
@@ -176,8 +195,11 @@ namespace Servicios
         public static IQueryable<HiloModel> FiltrarNoActivos(this IQueryable<HiloModel> hilos) {
             return hilos.Where(h => h.Estado == HiloEstado.Normal);
         }
+        public static IQueryable<HiloModel> FiltrarEliminados(this IQueryable<HiloModel> hilos) {
+            return hilos.Where(h => h.Estado == HiloEstado.Normal || h.Estado == HiloEstado.Archivado);
+        }
 
-        public static IQueryable<HiloModel> FiltrarPorCategoria(this IQueryable<HiloModel> hilos, int[] categorias) {
+        public static IQueryable<HiloModel> FiltrarPorCategoria(this IQueryable<HiloModel> hilos, params int[] categorias) {
             return hilos.Where(h => categorias.Contains(h.CategoriaId));
         }
 
@@ -190,6 +212,10 @@ namespace Servicios
         public static IQueryable<T> Recientes<T> (this IQueryable<T> elemento) where T : BaseModel
         { 
             return elemento.OrderByDescending( h => h.Creacion);
+        }
+        public static Task<T> PorId<T> (this IQueryable<T> elemento, string id) where T : BaseModel
+        { 
+            return elemento.FirstOrDefaultAsync(e => e.Id == id);
         }
 
     }
