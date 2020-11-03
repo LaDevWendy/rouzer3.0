@@ -38,7 +38,7 @@
     <section >
         <h1>Hola anon</h1>
         {#if !modoRegistro}
-            <h2>Para crear y responder hilos en Rozed debes iniciar una sesion</h2>
+            <h2>Para crear y responder rozes en Rozed debes iniciar una sesion</h2>
             <h3>No tenes cuenta? Enfermo!, <a on:click="{()=> modoRegistro=true}" href="#Registro"style="color:var(--color5) ">Registrate ahora mismo aca</a> </h3>
         {:else}
             <h2>Registrate con cofianza</h2>
@@ -61,8 +61,9 @@
                 bind:value={password}
                 message="aynose1234"
             />
-
-            <Captcha visible={config.general.captchaRegistro}  bind:token={captcha}/>
+            {#if modoRegistro}
+                <Captcha visible={config.general.captchaRegistro}  bind:token={captcha}/>
+             {/if}
             <div style="display:flex; justify-content: center;">
                 <Button >{modoRegistro?"Registrarse":"Entrar"}</Button>
             </div>

@@ -14,7 +14,7 @@ export let mostrar = false
 let titulo = ""
 let categoria = "-1"
 let contenido = ""
-let archivo = null
+let media
 let captcha = ""
 
 let cargando = false
@@ -25,7 +25,7 @@ let error = null
 async function crear() {
     cargando = true
     try {
-        let r = await RChanClient.crearHilo(titulo, categoria, contenido, archivo, captcha)
+        let r = await RChanClient.crearHilo(titulo, categoria, contenido, media.archivo, media.link, captcha)
         if (r.status == 201) {
                 window.location.replace(r.headers.location)
             }
@@ -45,7 +45,7 @@ async function crear() {
         on:submit|preventDefault
     >
 
-        <MediaInput bind:archivo={archivo}></MediaInput>
+        <MediaInput bind:media={media}></MediaInput>
 
         <input bind:value={titulo} name="titulo" placeholder="Titulo">
 

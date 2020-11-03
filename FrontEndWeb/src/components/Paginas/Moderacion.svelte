@@ -1,16 +1,11 @@
 <script>
     import Comentario from '../Comentarios/Comentario.svelte'
+import Denuncia from '../Denuncia.svelte'
     import HiloPreview from '../Hilos/HiloPreview.svelte'
 
     let hilos = window.model.hilos
     let comentarios = window.model.comentarios
     let denuncias = window.model.denuncias
-
-    const motivo = [ 'CategoriaIncorrecta',
-        'Spam',
-        'Avatarfageo',
-        'Doxxeo',
-        'CoentenidoIlegal']
 
     comentarios = comentarios.map (c => {
         c.respuestas = []
@@ -22,19 +17,7 @@
     <ul style="width:33%; background:#711c08;        font-size: 0.7em;    ">
         <h3 style="height:40px">Ultimas denuncias</h3>
         {#each denuncias as d}
-            <div class="denuncia">
-                <p>{motivo[d.motivo]} {d.aclaracion}</p>
-                {#if d.tipo == 0}
-                    <!-- <HiloPreview hilo={d.hilo}/> -->
-                    <div class="hilo-denuncia">
-                        <img src="{d.hilo.media.vistaPreviaCuadrado}" alt="">
-                        <h3>{d.hilo.titulo}</h3>
-                        <span>{d.hilo.contenido}</span>
-                    </div>
-                    {:else}
-                    <Comentario comentario={d.comentario}/>
-                {/if}
-            </div>
+            <Denuncia denuncia={d}/>
         {/each}
     </ul>
     <ul style="width:33%">

@@ -79,15 +79,18 @@ namespace WebApp.Controllers
                 .OrderByDescending(d => d.Creacion)
                 .Take(100)
                 .Include(d => d.Hilo)
+                .Include(d => d.Usuario)
                 .Include(d => d.Comentario)
                 .Include(d => d.Comentario.Media)
                 .Include(d => d.Hilo.Media)
+                .Include(d => d.Hilo.Usuario)
                 .ToListAsync();
             return View(new ModeracionIndexVm(hilos, comentarios, denuncias));
         }
 
         
         [HttpGet]
+         [Route("/Moderacion/HistorialDeUsuario/{id}")]
         public async Task<ActionResult> HistorialDeUsuario(string id) 
         {
             if((await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id)) is null)

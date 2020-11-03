@@ -61,11 +61,16 @@
 
     if(!Array.isArray(comentario.respuestas)) comentario.respuestas = []
 
+    function tagear(id) {
+        if(!$comentarioStore.includes(`>>${comentario.id}\n`))
+            $comentarioStore+= `>>${comentario.id}\n`
+    }
+
 </script>
 
 <div bind:this={el} class="comentario {windowsWidh <= 400?"comentario-movil":""}" r-id="{comentario.id}" id="{comentario.id}">
     <div  class="respuestas">
-        {#each comentario.respuestas as r (r)}
+        {#each comentario.respuestas as r }
         <a href="#{r}" class="restag" r-r="{r}"
             on:mouseover={() => mostrarRespuesta(r)}
             on:mouseleave={ocultarRespuesta}
@@ -77,7 +82,7 @@
         {#if comentario.esOp} <span class="nick tag tag-op">OP</span>{/if}
         <span class="nick">Gordo</span>
         <!-- <span class="rol tag">anon</span> -->
-        <span class="id tag" on:click={()=>$comentarioStore+= `>>${comentario.id}\n`}>{comentario.id}</span>
+        <span class="id tag" on:click={() => tagear(comentario.id)}>{comentario.id}</span>
         <span class="tiempo"><Tiempo date={comentario.creacion}/></span>
 
         <div>

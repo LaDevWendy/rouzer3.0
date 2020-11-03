@@ -22,6 +22,7 @@ namespace Modelos
 
         public HiloModel Hilo { get; set; }
         public ComentarioModel Comentario { get; set; }
+        public UsuarioModel Usuario { get; set; }
     }
 
     public enum MotivoDenuncia
@@ -31,6 +32,7 @@ namespace Modelos
         Avatarfageo,
         Doxxeo,
         CoentenidoIlegal,
+        MaltratoAnimal,
     }
     public enum Tipo
     {

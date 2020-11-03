@@ -37,10 +37,18 @@
     }
 
     function cargarNuevos() {
-        hiloList.hilos = [...nuevoshilos,...hiloList.hilos]
+        let stickies = []
+
+        while (hiloList.hilos.length != 0 && hiloList.hilos[0].sticky != 0) {
+            stickies.push(hiloList.hilos.shift())
+        }
+        
+        hiloList.hilos = [...stickies,...nuevoshilos,...hiloList.hilos]
+
+        nuevoshilos = []
+
         window.document.body.scrollTop = 0
         window.document.documentElement.scrollTop = 0
-        nuevoshilos = []
     }
 
     async function cargarViejos({ detail: { loaded, complete }}) {

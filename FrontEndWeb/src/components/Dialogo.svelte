@@ -1,6 +1,7 @@
 <script>
     import ErrorValidacion from "./ErrorValidacion.svelte";
     import {Dialog, Button} from 'svelte-mui'
+    import { onDestroy } from "svelte";
 
     export let titulo = "Accion"
     export let accion = () => console.log("Accionado")
@@ -17,11 +18,16 @@
             exito = true;
             setTimeout(()=> visible=false, 1000) 
         } catch (e) {
+            exito = false;
             error = e.response.data
         }
     }
     
     let error = null
+
+    onDestroy(() => {
+        respuesta = null
+    })
 </script>
 
 <span on:click={() => visible = true}>

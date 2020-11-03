@@ -86,7 +86,7 @@ function onClick(e) {
                 {#if hilo.nuevo} <div class="info" style="background:#18222D">NUEVO</div>{/if}
                 <div class="info" style="">{(categorias[hilo.categoriaId - 1]?? {nombreCorto:"??"}).nombreCorto}</div>
                 {#if media.tipo == MediaType.Video} <div class="info" style="background:#18222D"><span class="fe fe-play"></span></div>{/if}
-                {#if media.tipo == MediaType.Youtube} <div class="info" style="background:#fa2717"><span class="fe fe-play"></span></div>{/if}
+                {#if media.tipo == MediaType.Youtube} <div class="info" style="var(--color5)"><span class="fe fe-play"></span></div>{/if}
                 {#if false} <div class="info" ><span class="fe fe-bar-chart-2"></span></div>{/if}
 
                 <div class="info">{hilo.cantidadComentarios}</div>

@@ -10,6 +10,7 @@
 	import globalStore from './globalStore'
 	import Dialogo from './components/Dialogo.svelte'
 	import Media from './components/Media.svelte'
+import HiloCuerpo from './components/Hilos/HiloCuerpo.svelte'
 
 	let data = window.data || dataEjemplo
 	let {hilo, comentarios, acciones} = data;
@@ -76,14 +77,7 @@
 			</div>
 		{/if}
 
-		<div class="cuerpo">
-			<!-- <a class="imagen" href="/{hilo.media.url}">
-				<img src="{hilo.media.vistaPrevia}" alt="" srcset="" />
-			</a> -->
-			<Media media={hilo.media}/>
-			<h1>{hilo.titulo}</h1>
-			<div class="texto">{hilo.contenido}</div>
-		</div>
+	<HiloCuerpo {hilo}/>
 	</div>
 	<Comentarios bind:comentarios {hilo}/>
 </div>
@@ -103,11 +97,6 @@
 	.hilo-completo {
 		grid-template-columns: calc(40% - 10px) 60%;
 	}
-	.cuerpo :global(.media) {
-		max-width: 100%;
-		width: 100%;
-		float: none
-	}
 }
 
 /* .hilo-completo {
@@ -119,6 +108,5 @@
 		grid-template-columns: 100%;
 	}
 }
-
 
 </style>

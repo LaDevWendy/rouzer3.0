@@ -59,6 +59,8 @@ namespace WebApp.Controllers
             bool existeLaCategoria = categoriasOpt.Value.Any(c => c.Id == vm.CategoriaId);
 
             if(!existeLaCategoria) ModelState.AddModelError("Categoria", "Ay no existe la categoria");
+            if(vm.Archivo is null && string.IsNullOrWhiteSpace(vm.Link))
+                ModelState.AddModelError("adjunto", "Para crear un roz tenes que adjuntar un archivo o un link");
 
             var pasoElCaptcha= await captcha.Verificar(vm.Captcha);
             if(!pasoElCaptcha && generalOptions.Value.CaptchaHilo && !User.EsMod())
@@ -78,18 +80,29 @@ namespace WebApp.Controllers
                 //Ip = HttpContext.Connection.RemoteIpAddress,
             };
 
-
+            MediaModel media = null;
             if (vm.Archivo != null)
             {
                 if(!new []{"jpeg", "jpg", "gif", "mp4", "webm", "png"}.Contains(vm.Archivo.ContentType.Split("/")[1]))
                 {
-                    ModelState.AddModelError("El Archivo no es soportado", "");
+                    ModelState.AddModelError("Archivo invalido", "");
                     return BadRequest(ModelState);
                 }
-                    var media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
-                    hilo.Media = media;
-                    hilo.MediaId = media.Id;
+                    media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
             }
+            else  if (!string.IsNullOrWhiteSpace(vm.Link))
+            {
+                media = await mediaService.GenerarMediaDesdeLink(vm.Link);
+            }
+
+            if(media is null)
+            {
+                ModelState.AddModelError("Chocamo", "No se pudo importar el link");
+                return BadRequest(ModelState);
+            }
+
+            hilo.Media = media;
+            hilo.MediaId = media.Id;
 
             string id = await hiloService.GuardarHilo(hilo);
             

@@ -68,6 +68,7 @@ namespace WebApp.Controllers
                 Creacion = DateTimeOffset.Now
             };
 
+            MediaModel media = null;
             if(vm.Archivo != null) 
             {
                  if(!new []{"jpeg", "jpg", "gif", "mp4", "webm", "png"}.Contains(vm.Archivo.ContentType.Split("/")[1]))
@@ -75,7 +76,13 @@ namespace WebApp.Controllers
                     ModelState.AddModelError("El Archivo no es soportado", "");
                     return BadRequest(ModelState);
                 }
-                    var media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
+                    media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
+            } else  if (!string.IsNullOrWhiteSpace(vm.Link))
+            {
+                media = await mediaService.GenerarMediaDesdeLink(vm.Link);
+            }
+            if(media != null)
+            {
                     comentario.Media = media;
                     comentario.MediaId = media.Id;
             }
@@ -104,4 +111,5 @@ public class ComentarioFormViewModel {
     [Required(ErrorMessage="El comentario no puede estar vacio padre")]
     public string Contenido { get; set; }
     public IFormFile Archivo { get; set; }
+    public string Link { get; set; }
 }

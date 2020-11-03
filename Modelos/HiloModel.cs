@@ -12,6 +12,8 @@ namespace Modelos
         public List<ComentarioModel> Comentarios { get; set; }
         public HiloEstado Estado { get; set; }
 
+        public UsuarioModel Usuario { get; set; }
+
     }
 
     public enum HiloEstado {

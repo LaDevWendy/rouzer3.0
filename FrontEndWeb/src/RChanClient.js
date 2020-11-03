@@ -19,21 +19,23 @@ axios.interceptors.response.use(function (response) {
 
 export default class RChanClient {
     // Acciones
-    static crearHilo(titulo, categoria, contenido, archivo, captcha="") {
+    static crearHilo(titulo, categoria, contenido, archivo, link="", captcha="") {
         let form = new FormData()
         form.append("Titulo", titulo)
         form.append("CategoriaId", categoria)
         form.append("Contenido", contenido)
         form.append("Archivo", archivo)
+        form.append("Link", link)
         form.append("captcha", captcha)
         return axios.post("/api/Hilo/Crear", form)
     }
 
-    static crearComentario(hiloId, contenido, archivo = null, captcha="") {
+    static crearComentario(hiloId, contenido, archivo = null, link="", captcha="") {
         let form = new FormData();
         form.append('hiloId', hiloId)
         form.append('contenido', contenido)
         form.append('archivo', archivo)
+        form.append("Link", link)
         form.append('captcha', captcha)
         return axios.post('/api/Comentario/Crear', form)
     }

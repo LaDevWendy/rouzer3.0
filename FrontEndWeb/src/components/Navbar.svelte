@@ -64,16 +64,16 @@
             {#if $globalStore.usuario.estaAutenticado}
             <Notificaciones bind:notificaciones/>
             {:else}
-            <span class="nav-boton"  style="height:100%" on:click={()=> $globalStore.mostrarLogin = true}>
+            <a href="/Login"class="nav-boton"  style="height:100%">
                 <Ripple/>
                 <span class="fe fe-user">
                 </span>
-            </span>
+            </a>
             {/if}
             
         </div>
         <span class="nav-boton crear-hilo-boton" on:click={() => mostrarFormularioHilo = true}>
-            <span style="width:max-content; margin-right: 6px">Crear Hilo</span>
+            <span style="width:max-content; margin-right: 6px;cursor: pointer;">Crear Roz</span>
             <span class="fe fe-plus"></span>
             <Ripple/>
         </span>

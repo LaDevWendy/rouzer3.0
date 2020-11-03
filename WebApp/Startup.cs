@@ -89,7 +89,9 @@ namespace WebApp
                 });
             });
             //services.AddRazorPages();
-            services.AddMvc();
+            services.AddMvc().AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
 
             services.AddScoped<IHiloService, HiloService>();
             services.AddScoped<NotificacioensService>();

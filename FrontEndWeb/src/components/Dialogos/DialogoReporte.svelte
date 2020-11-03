@@ -35,7 +35,7 @@
             <option value="4">5) Contenido ilegal</option>
         </select>
 
-        <textarea placeholder="Aclaracion"></textarea>
+        <textarea placeholder="Aclaracion" bind:value={aclaracion}></textarea>
         
     </div>
 </Dialogo>

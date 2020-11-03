@@ -4,17 +4,28 @@
     import { onDestroy, onMount } from 'svelte';
 
     export let compacto = false
-
-    export let archivo = null
+    export let media = {
+        archivo: null,
+        link: ""
+    }
+    export let videoUrl = null
+    
+    let vistaPreviaYoutube = ""
+    
+    let menuLink = false
     let archivoBlob = null
     let input = null
     let mediaType = MediaType.Imagen
     let el
+    
+    let inputLink = ""
+    let estado = "vacio" // importarLink | cargado
+    const youtubeRegex = /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/
 
     async function actualizarArchivo() {
         if (input.files && input.files[0]) {
             archivoBlob = await getBlobFromInput(input)
-            archivo = input.files[0]
+            media.archivo = input.files[0]
 
             if(input.files[0].type.indexOf('image') != -1) {
                 mediaType = MediaType.Imagen
@@ -38,14 +49,34 @@
         })
     }
 
+    async function importarVideo() {
+        let id = inputLink.match(youtubeRegex)
+        console.log(id);
+        if(!id) {
+            inputLink = "Link invalido"
+            return
+        }
+        mediaType = MediaType.Youtube
+        vistaPreviaYoutube = `https://img.youtube.com/vi/${id[1]}/maxresdefault.jpg`
+        videoUrl = inputLink
+        archivoBlob = `https://img.youtube.com/vi/${id[1]}/maxresdefault.jpg`
+        media.link = videoUrl
+        estado = "cargado"
+
+    }
+
     function removerArchivo() {
-        archivo = null
+        media.archivo = null
+        media.link = ''
         archivoBlob = null
         input.value = ''
+        inputLink = ''
+        mediaType = MediaType.Imagen
+        estado = "vacio"
     }
     
     onDestroy(() => {
-        archivo = null
+        media.archivo = null
         archivoBlob = null
     })
 
@@ -69,34 +100,38 @@
 <div 
     bind:this={el} 
     class:compacto class="video-preview media-input"
-    style="{ archivo&& mediaType != MediaType.Video?`background:url(${archivoBlob})`: 'background:url(/imagenes/rose2.jpg)'};overflow:hidden;">
+    style="{ (media.archivo || media.link)&& mediaType != MediaType.Video?`background:url(${archivoBlob || media})`: 'background:url(/imagenes/rose2.jpg)'};overflow:hidden;">
 
-    {#if mediaType == MediaType.Video && archivo}
+    {#if mediaType == MediaType.Video && media.archivo}
         <video src="{archivoBlob}"></video>
     {/if}
 
-    {#if !archivo}
+    {#if estado=="importarLink"}
+    <div class="link-input">
+        <input type="text" bind:value={inputLink} placeholder="Ingrese link de iutube">
+            <Button  outlined shaped={true} on:click={importarVideo}> 
+                    <icon>OK</icon>
+            </Button>
+    </div>
+    {/if}
+    {#if !media.archivo && estado=="vacio"}
         <span class="opciones">
             Agrega un archivo:
             <ButtonGroup>
                 <Button on:click={() => input.click()} icon outlined shaped={true} on:click={() => true}> 
                      <icon class="fe fe-upload"></icon>
                 </Button>
-                <Button  icon outlined shaped={true} on:click={() => true}> 
+                <Button  icon outlined shaped={true} on:click={() => estado="importarLink"}> 
                      <icon class="fe fe-link-2"></icon>
                 </Button>
             </ButtonGroup>
-
-            
         </span>
-        <!-- <span class="descripcion"style="position: absolute">Subi una imagen o un video para crear el hilo</span>
-        <span class="descripcion"style="position: absolute">O tambien podes importar un link</span> -->
-    {:else}
-        <Button class="cancelar" on:click={() => archivo = null} icon outlined shaped={true} on:click={() => true}> 
+        {/if}
+    {#if media.archivo || media.link}
+        <Button class="cancelar" on:click={removerArchivo} icon outlined shaped={true} on:click={() => true}> 
             <icon class="fe fe-x"></icon>
         </Button>
     {/if}
-    <!-- <span on:click={() => input.click()} class="fe fe-upload ico-btn" style="z-index:100"></span> -->
 </div>
 
 <style>
@@ -110,11 +145,23 @@
     }
     .media-input :global(.cancelar) {
         margin-left: auto;
+        align-self: baseline;
+
+    }
+
+    .media-input {
+        align-items: flex-end;
     }
 
     .compacto {
         height: auto;
         width: 100%;
         margin-left: 0;
+    }
+
+    .link-input {
+        height: fit-content;
+        display: flex;
+        width: 100%;
     }
 </style>

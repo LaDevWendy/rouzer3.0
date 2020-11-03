@@ -11,7 +11,7 @@
     let cargando = false
 
     $comentarioStore
-    let archivo = null
+    let media
 
     let espera = 0
     let error = null
@@ -21,7 +21,7 @@
 
         try {
             cargando = true
-            await RChanClient.crearComentario(hilo.id, $comentarioStore, archivo)
+            await RChanClient.crearComentario(hilo.id, $comentarioStore, media.archivo, media.link)
         } catch (e) {
             error = e.response.data
             return
@@ -30,7 +30,7 @@
         cargando = false
         espera = 0
         $comentarioStore = ''
-        archivo = null
+        media.archivo = null
         error = null
     }
 
@@ -39,7 +39,7 @@
 <form on:submit|preventDefault="" id="form-comentario" class="form-comentario panel">
     <ErrorValidacion {error}/>
 
-    <MediaInput bind:archivo={archivo} compacto={true}></MediaInput>
+    <MediaInput bind:media={media} compacto={true}></MediaInput>
     <textarea on:focus={() => error = null} bind:value={$comentarioStore} cols="30" rows="10" placeholder="Que dificil discutir con pibes..."></textarea>
 
     <div class="acciones">

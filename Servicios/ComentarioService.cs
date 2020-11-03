@@ -64,6 +64,7 @@ namespace Servicios
         }
 
         private string Parsear(string contenido) {
+            var tags = new List<string>();
             return string.Join("\n", contenido.Split("\n").Select(t => {
                 t = htmlEncoder.Encode(t);
                 var esLink = false;
@@ -76,6 +77,8 @@ namespace Servicios
                 if(esLink) return t;
                 //Respuestas
                 t =  Regex.Replace(t, @"&gt;&gt;([A-Z0-9]{8})", m => {
+                    if(tags.Contains(m.Value)) return "";
+                    tags.Add(m.Value);
                     var id = m.Groups[1].Value;
                     return $"<a href=\"#{id}\" class=\"restag\" r-id=\" {id}\">&gt;&gt;{id}</a>";
                 });

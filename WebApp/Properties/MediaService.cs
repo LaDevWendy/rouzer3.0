@@ -13,6 +13,8 @@ using SixLabors.ImageSharp.Processing;
 using Xabe.FFmpeg;
 using System.Drawing.Imaging;
 using Microsoft.AspNetCore.Hosting;
+using System.Text.RegularExpressions;
+using System.Net.Http;
 
 namespace Servicios
 {
@@ -20,6 +22,7 @@ namespace Servicios
     {
         string GetThumbnail(string id);
         Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo);
+        Task<MediaModel> GenerarMediaDesdeLink(string url);
     }
 
     public class MediaService : IMediaService
@@ -134,6 +137,44 @@ namespace Servicios
             File.Delete(archivoPath);
             File.Delete(archivoSalidaThumbnail);
             return imgStream;
+        }
+
+        public async Task<MediaModel> GenerarMediaDesdeLink(string url) 
+        {
+            var match = Regex.Match(url, @"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})");
+            if(!match.Success) return null;
+
+            string id = match.Groups[1].Value;
+
+            var mediaViejo = await context.Medias.FirstOrDefaultAsync(m => m.Hash == id);
+            if(mediaViejo != null) return mediaViejo;
+
+            var vistaPrevia = await new HttpClient().GetAsync($"https://img.youtube.com/vi/{id}/maxresdefault.jpg");
+
+            if(!vistaPrevia.IsSuccessStatusCode) return null;
+
+            var media = new MediaModel {
+                Id = id,
+                Hash = id,
+                Tipo = MediaType.Youtube,
+                Url = url
+            };
+
+            using var thumbnail = await vistaPrevia.Content.ReadAsStreamAsync();
+
+            using var cuadradito = (await Image.LoadAsync(thumbnail)).Clone(e => e.Resize( new ResizeOptions {
+                Mode=ResizeMode.Crop,
+                Position = AnchorPositionMode.Center,
+                Size = new Size(300)
+            }));
+            
+            using var vistaPreviaSalida = File.Create($"{CarpetaDeAlmacenamiento}/{media.VistaPrevia}");
+            thumbnail.Seek(0, SeekOrigin.Begin);
+
+            await thumbnail.CopyToAsync(vistaPreviaSalida);
+            await cuadradito.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadrado}");
+            
+            return media;
         }
     }
 }

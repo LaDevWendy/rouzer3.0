@@ -38,5 +38,6 @@ namespace Modelos
     {
         public string HiloId { get; set; }
         public string UsuarioId { get; set; }
+        public string Username { get; set; }
     }
 }

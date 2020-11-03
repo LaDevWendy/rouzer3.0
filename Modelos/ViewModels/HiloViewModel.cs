@@ -36,5 +36,6 @@ namespace Modelos
     {
         public string UsuarioId { get; set; }
         public string UserName { get; set; }
+        public UsuarioModel Usuario { get; set; }
     }
 }

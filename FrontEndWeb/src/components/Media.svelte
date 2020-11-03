@@ -43,6 +43,21 @@
                     <i class="fe fe-play" style="position: relative;left: 2px;"></i> 
                 </Button>
             {/if}
+        {:else if media.tipo == MediaType.Youtube}
+        
+            {#if abierto}
+                <div class="youtube-container">
+                    <iframe src="https://www.youtube.com/embed/{media.id}?autoplay=1"> </iframe>
+                </div>
+                <Button on:click={() => abierto = false} class="cerrar" icon>
+                    <i class="fe fe-x"></i> 
+                </Button>
+                {:else}
+                <img on:click={abrirVideo} src="{media.vistaPrevia}" alt="" srcset="">
+                <Button on:click={abrirVideo}  color="red" class="play" icon>
+                    <i class="fe fe-youtube" style="position: relative;left: 1px;"></i> 
+                </Button>
+            {/if}
     {/if}
 </div>
 
@@ -70,4 +85,23 @@
         left:50%;
         transform: translateX(-50%) translateY(-50%) scale(2);
     }
+
+    .youtube-container {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%;
+    }
+
+    .youtube-container iframe {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        border: none;
+        border-radius: 4px;
+    }
+
+
 </style>

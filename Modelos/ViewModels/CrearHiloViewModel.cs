@@ -17,8 +17,9 @@ namespace Modelos
         [Required(ErrorMessage="Debes elegir una categoria para su hilo anon")]
         public int CategoriaId { get; set; }
         
-        [Required]
+        // [Required]
         public IFormFile Archivo { get; set; }
+        public string Link { get; set; }
         
         public string Captcha { get; set; }
     }

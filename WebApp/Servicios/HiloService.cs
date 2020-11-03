@@ -183,6 +183,7 @@ namespace Servicios
                     Id = h.Id,
                     Titulo = h.Titulo,
                     Estado = h.Estado,
+                    Usuario = h.Usuario,
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id).Count(),
                     UsuarioId = h.UsuarioId,
                 });
