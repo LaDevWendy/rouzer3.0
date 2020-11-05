@@ -10,6 +10,6 @@ namespace Modelos
         public string UsuarioId { get; set; }
         public MediaModel Media { get; set; }
         public string MediaId { get; set; }
-        public IPAddress Ip { get; set; }
+        public String Ip { get; set; }
     }
 }

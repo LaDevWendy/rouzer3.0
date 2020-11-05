@@ -6,6 +6,8 @@
     import ErrorValidacion from '../ErrorValidacion.svelte';
     import MediaInput from '../MediaInput.svelte';
     import Spinner from '../Spinner.svelte';
+    import config from '../../config';
+import globalStore from '../../globalStore';
     export let hilo
 
     let cargando = false
@@ -14,6 +16,9 @@
     let media
 
     let espera = 0
+    $: if(espera != 0) {
+        setTimeout(()=> espera--, 1000)
+    }
     let error = null
 
     async function crearComentario() {
@@ -22,13 +27,16 @@
         try {
             cargando = true
             await RChanClient.crearComentario(hilo.id, $comentarioStore, media.archivo, media.link)
+            if(!$globalStore.usuario.esMod) {
+                espera = config.general.tiempoEntreComentarios
+            }
         } catch (e) {
             error = e.response.data
+            cargando = false
             return
         }
         
         cargando = false
-        espera = 0
         $comentarioStore = ''
         media.archivo = null
         error = null
@@ -44,7 +52,7 @@
 
     <div class="acciones">
         <Button  disabled={cargando} color="primary"  class="mra" on:click={crearComentario}>
-            <Spinner {cargando}>Responder</Spinner>
+            <Spinner {cargando}>{espera == 0? 'Responder': espera}</Spinner>
         </Button>
     </div>
 </form>

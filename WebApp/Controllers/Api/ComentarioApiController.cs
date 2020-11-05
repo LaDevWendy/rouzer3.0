@@ -30,6 +30,7 @@ namespace WebApp.Controllers
         private readonly HashService hashService;
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly NotificacioensService notificacioensService;
+        private readonly AntiFloodService antiFlood;
         private readonly IMediaService mediaService;
 
         public ComentarioApiControlelr(
@@ -40,7 +41,8 @@ namespace WebApp.Controllers
             RChanContext chanContext,
             HashService hashService,
             IHubContext<RChanHub> rchanHub,
-            NotificacioensService notificacioensService
+            NotificacioensService notificacioensService,
+            AntiFloodService antiFlood
         )
         {
             this.hiloService = hiloService;
@@ -50,6 +52,7 @@ namespace WebApp.Controllers
             this.hashService = hashService;
             this.rchanHub = rchanHub;
             this.notificacioensService = notificacioensService;
+            this.antiFlood = antiFlood;
             this.mediaService = mediaService;
         }
 
@@ -57,8 +60,17 @@ namespace WebApp.Controllers
         public async Task<ActionResult<ApiResponse>> Crear([FromForm] ComentarioFormViewModel vm)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
+
             var hilo = await context.Hilos.FirstOrDefaultAsync(c => c.Id == vm.HiloId);
             if(hilo is null) return NotFound();
+
+            if(antiFlood.SegundosParaComentar(User)  != new TimeSpan(0))
+            {
+                ModelState.AddModelError("Para para", $"faltan {antiFlood.SegundosParaComentar(User).Seconds} para que pudeas comentar");
+                return BadRequest(ModelState);
+            }else {
+                antiFlood.HaComentado(User.GetId());
+            }
 
             var comentario = new ComentarioModel
             {

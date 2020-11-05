@@ -16,6 +16,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
+    <meta name="description" content="Rozed, el mejor imich board del mundo incluso de argentina">
+
     <title>ROZED @ViewData["Title"]</title>
     @* <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_o5hd5vvqpoqiwwmi.css"> *@
 
@@ -90,13 +92,13 @@
 </head>
 <body>
 
-    <div class="debug">
+    @* <div class="debug">
         <p>Esta Autenticado: @User.Identity.IsAuthenticated</p>
         @foreach (var cliam in User.Claims)
         {
             <p>@cliam.Type: @cliam.Value</p>
         }
-    </div>
+    </div> *@
 
        @* Notificaciones *@
             @if(User.Identity.IsAuthenticated){
@@ -120,9 +122,9 @@
                     window.notificaciones = @Json.Serialize(notificaciones)
                 </script>
                 
-                <div class="debug notdi-debug">
+                @* <div class="debug notdi-debug">
                     @Json.Serialize(notificaciones)
-                </div>
+                </div> *@
     }
     <div id="svelte-navbar"></div>
         @RenderBody()

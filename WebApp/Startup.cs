@@ -39,6 +39,7 @@ namespace WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<CaptchaService>();
+            services.AddScoped<AntiFloodService>();
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
             services.Configure<List<Categoria>>(Configuration.GetSection("Categorias"));
             services.AddLiveReload(config =>

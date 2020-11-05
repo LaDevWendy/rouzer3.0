@@ -29,6 +29,7 @@ namespace WebApp.Controllers
         private readonly IOptions<List<Categoria>> categoriasOpt;
         private readonly IOptionsSnapshot<GeneralOptions> generalOptions;
         private readonly CaptchaService captcha;
+        private readonly AntiFloodService antiFlood;
 
         #region constructor
         public HiloApiController(
@@ -39,7 +40,8 @@ namespace WebApp.Controllers
             RChanContext context,
             IOptions<List<Categoria>> categoriasOpt,
             IOptionsSnapshot<GeneralOptions> generalOptions,
-            CaptchaService captcha
+            CaptchaService captcha,
+            AntiFloodService antiFlood
         )
         {
             this.hiloService = hiloService;
@@ -50,6 +52,7 @@ namespace WebApp.Controllers
             this.categoriasOpt = categoriasOpt;
             this.generalOptions = generalOptions;
             this.captcha = captcha;
+            this.antiFlood = antiFlood;
         }
         #endregion
 
@@ -68,8 +71,19 @@ namespace WebApp.Controllers
                  ModelState.AddModelError("Captcha", "Incorrecto");
             }
             if (!ModelState.IsValid) return BadRequest(ModelState);
+
             // Chequeuear si es flood
+            if(antiFlood.SegundosParaHilo(User)  != new TimeSpan(0))
+            {
+                ModelState.AddModelError("Para para", $"faltan {antiFlood.SegundosParaHilo(User).Minutes} minutos para que pudeas crear otro roz");
+                return BadRequest(ModelState);
+            }else {
+                antiFlood.HaCreadoHilo(User.GetId());
+            }
+
             // Chequeuear si esta Baneado
+            var ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            System.Console.WriteLine(ip);
             var hilo = new HiloModel
             {
                 UsuarioId = User.GetId(),
@@ -77,7 +91,7 @@ namespace WebApp.Controllers
                 Contenido = vm.Contenido,
                 CategoriaId = vm.CategoriaId,
                 Bump = DateTimeOffset.Now,
-                //Ip = HttpContext.Connection.RemoteIpAddress,
+                // Ip = HttpContext.Connection.RemoteIpAddress,
             };
 
             MediaModel media = null;

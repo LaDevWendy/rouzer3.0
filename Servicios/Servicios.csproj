@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modelos\Modelos.csproj" />
-    <ProjectReference Include="..\PruebasDb\PruebasDb.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
   </ItemGroup>
 
