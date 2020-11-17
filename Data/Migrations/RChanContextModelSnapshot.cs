@@ -149,6 +149,46 @@ namespace Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Modelos.BaneoModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Aclaracion")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ComentarioId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Creacion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("Expiracion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("HiloId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Motivo")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Visto")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Bans");
+                });
+
             modelBuilder.Entity("Modelos.ComentarioModel", b =>
                 {
                     b.Property<string>("Id")
@@ -159,6 +199,9 @@ namespace Data.Migrations
 
                     b.Property<DateTimeOffset>("Creacion")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("integer");
 
                     b.Property<string>("HiloId")
                         .IsRequired()

@@ -18,6 +18,7 @@ using System.Security.Claims;
 using System.IO;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApp.Controllers
 {
@@ -111,17 +112,69 @@ namespace WebApp.Controllers
             });
         }
 
+        [HttpPost]
+        public async Task<ActionResult> Banear(BanViewModel model) 
+        {
+            // var baneado = context.Users.FirstOrDefault(u => u.Id )
+            var comentario = await context.Comentarios.FirstOrDefaultAsync(c => c.Id == model.ComentarioId);
+            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == model.HiloId);
+            var tipo = comentario is null? Tipo.Hilo : Tipo.Comentario;
+
+            CreacionUsuario elemento = comentario ?? (CreacionUsuario)hilo;
+
+            var ban = new BaneoModel{
+                Id = hashService.Random(),
+                Aclaracion = model.Aclaracion,
+                ComentarioId = model.ComentarioId,
+                Creacion = DateTimeOffset.Now,
+                Expiracion = DateTimeOffset.Now + TimeSpan.FromMinutes(model.Duracion),
+                ModId = User.GetId(),
+                Motivo = model.Motivo,
+                Tipo = tipo,
+                HiloId = model.HiloId,
+                UsuarioId = tipo == Tipo.Comentario? comentario.UsuarioId : hilo.UsuarioId,
+            };
+
+            context.Bans.Add(ban);
+            // Si se marco la opcion para eliminar elemento, borro el hilo o el comentario
+
+            if(comentario != null)
+            {
+                comentario.Estado = ComentarioEstado.Eliminado;
+            } 
+            else if(hilo != null)
+            {
+                hilo.Estado = HiloEstado.Eliminado;
+            }
+            await context.SaveChangesAsync();
+            return Json(new ApiResponse("Usuario Baneado"));
+        }
+
     }
     public class ModeracionIndexVm {
         public ModeracionIndexVm(List<HiloViewModelMod> hilos, List<ComentarioViewModelMod> comentarios, List<DenunciaModel> denuncias)
         {
-            this.hilos = hilos;
-            this.comentarios = comentarios;
-            this.denuncias = denuncias;
+            this.Hilos = hilos;
+            this.Comentarios = comentarios;
+            this.Denuncias = denuncias;
         }
 
-        public List<HiloViewModelMod> hilos { get; set; }
-        public List<ComentarioViewModelMod> comentarios { get; set; }
-        public List<DenunciaModel> denuncias { get; set; }
+        public List<HiloViewModelMod> Hilos { get; set; }
+        public List<ComentarioViewModelMod> Comentarios { get; set; }
+        public List<DenunciaModel> Denuncias { get; set; }
+    }
+
+    public class BanViewModel
+    {
+        public string UsuarioId { get; set; }
+        public string HiloId { get; set; }
+        [Required]
+        public MotivoDenuncia Motivo { get; set; }
+        public string Aclaracion { get; set; }
+        public string ComentarioId { get; set; }
+        [Required]
+        public int Duracion { get; set; }
+        public bool EliminarElemento { get; set; }
+        public bool EliminarAdjunto { get; set; }
     }
 }

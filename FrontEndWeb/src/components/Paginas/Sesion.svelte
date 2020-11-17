@@ -19,8 +19,11 @@
         try {
             if(modoRegistro)
                 await RChanClient.registrase(username, password, captcha)
-            else
-                await RChanClient.logearse(username, password)
+            else {
+                let res = await RChanClient.logearse(username, password)
+                return;
+
+            }
         } catch (e) {
             error = e.response.data
             return

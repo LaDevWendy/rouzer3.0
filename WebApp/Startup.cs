@@ -169,6 +169,10 @@ namespace WebApp
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseBanMiddleware();
+
+            //Domo a los baneados
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

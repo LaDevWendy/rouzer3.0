@@ -69,6 +69,7 @@ li {
   scroll-behavior: smooth;
   box-sizing: border-box;
   /* background: url(/imagenes/logo.png); */
+  background: u;
 }
 body {
   padding: 0;

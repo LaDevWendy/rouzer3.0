@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore;
-using Microsoft.Extensions.Logging;
 using Servicios;
 using System.Collections.Generic;
 using Modelos;
@@ -13,6 +11,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
+using Data;
 
 namespace WebApp.Controllers
 {
@@ -22,6 +21,7 @@ namespace WebApp.Controllers
         private readonly UserManager<UsuarioModel> userManager;
         private readonly SignInManager<UsuarioModel> signInManager;
         private readonly CaptchaService captcha;
+        private readonly RChanContext context;
         private readonly IOptionsSnapshot<GeneralOptions> generalOptions;
 
         #region constructor
@@ -29,12 +29,14 @@ namespace WebApp.Controllers
             UserManager<UsuarioModel> userManager,
             SignInManager<UsuarioModel> signInManager,
             CaptchaService captcha,
-            IOptionsSnapshot<GeneralOptions> generalOptions
+            IOptionsSnapshot<GeneralOptions> generalOptions,
+            RChanContext context
         )
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.captcha = captcha;
+            this.context = context;
             this.generalOptions = generalOptions;
         }
         #endregion
@@ -91,15 +93,50 @@ namespace WebApp.Controllers
         }
 
         [HttpGet, Route("/Login")]
-        public async Task<ActionResult> Login() 
+        public  ActionResult Login() 
         {
             return View("Login");
         }
 
         [HttpGet, Route("/Registro")]
-        public async Task<ActionResult> Registro() 
+        public  ActionResult Registro() 
         {
             return View("Registro");
+        }
+        [HttpGet, Route("/Domado/{id?}")]
+        public  async Task<ActionResult> Domado(string id) 
+        {
+            var ban = await context.Bans
+                .OrderByDescending(b => b.Expiracion)
+                .Where(b => !b.Visto)
+                .Include(b => b.Hilo)
+                .Include(b => b.Comentario)
+                .FirstOrDefaultAsync(b => b.UsuarioId == User.GetId());
+
+            if(ban is null && !string.IsNullOrWhiteSpace(id)) 
+            {
+                ban = await context.Bans
+                    .Include(b => b.Hilo)
+                    .FirstOrDefaultAsync(b => b.Id == id);
+            }
+
+            if(ban is null) return Redirect("/");
+            
+            ban.Visto = true;
+            await context.SaveChangesAsync();
+
+            // await signInManager.SignOutAsync();
+            
+            return View("Ban", new {Ban = new {
+                Hilo = ban?.Hilo?.Titulo ?? " ",
+                ban.Id,
+                ban.Tipo,
+                ban.Creacion,
+                ban.Expiracion,
+                ban.Duracion,
+                Motivo = ban.Motivo.ToString("g"),
+                ban.Aclaracion,
+            }});
         }
         
         [HttpPost, Route("/Logout")]
@@ -116,9 +153,21 @@ namespace WebApp.Controllers
             if(user == null) ModelState.AddModelError("Nick", "No se encontro el usuario");
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await signInManager.PasswordSignInAsync(user, model.Contraseña, true, false);
+            var contraseñaIncorrecta= (await signInManager.CheckPasswordSignInAsync(user, model.Contraseña, false)).IsNotAllowed;
             ModelState.AddModelError("Contraseña","La constraseña es incorrecta");
-            if(result.Succeeded) return  Ok(new ApiResponse("Logeadito"));
+            if(!ModelState.IsValid) BadRequest(ModelState);
+
+            //Checkeo ban
+            var ban =  (await context.Bans
+                .Where(b => b.UsuarioId == user.Id)
+                .ToListAsync())
+                .FirstOrDefault(b => b.Expiracion > DateTimeOffset.Now);
+
+            if(ban != null) return this.RedirectJson($"/Domado/{ban.Id}");
+
+            var result = await signInManager.PasswordSignInAsync(user, model.Contraseña, true, false);
+            if(result.Succeeded) this.RedirectJson("/");
+        
             return BadRequest(ModelState);
         }
     }
@@ -135,5 +184,15 @@ namespace WebApp.Controllers
         [MaxLength(30, ErrorMessage="para la mano")]
         public string Contraseña { get; set; }
         public string Captcha { get; set; }
+    }
+
+    public static class  ControllerExtensions 
+    {
+        public static ActionResult RedirectJson(this Controller controller, string path)
+        {
+            return controller.Json(new {
+                Redirect = path
+            });
+        }
     }
 }

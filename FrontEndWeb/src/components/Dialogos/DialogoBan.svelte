@@ -1,0 +1,72 @@
+<script>
+    import RChanClient from "../../RChanClient";
+
+    import Dialogo from "../Dialogo.svelte"
+    import {Checkbox} from 'svelte-mui'
+
+    
+    let motivo
+    let duracion
+    let aclaracion
+    let eliminarElemento = true
+    let eliminarAdjunto = false
+    $: tipo = (comentarioId == "" || !comentarioId)? 0:1
+
+    export let hiloId
+    export let comentarioId
+    export let usuarioId
+    export let visible = false
+
+    function banear() {
+        return RChanClient.banear(motivo, aclaracion, duracion, usuarioId, hiloId, comentarioId, eliminarElemento, eliminarAdjunto)
+    }
+</script>
+
+<Dialogo 
+    bind:visible={visible} 
+    textoActivador="Banear" 
+    titulo="Banear"
+    accion={banear}>
+    <slot slot="activador">
+
+    </slot>
+    <div slot="body">
+        <div class="">
+            {#if hiloId}
+                Banear al usuario {usuarioId} 
+                por {hiloId}#{comentarioId}
+            {/if}
+        </div>
+        <select bind:value={motivo}  name="motivo"> 
+            <option value="-1" selected="selected" disabled="disabled">Motivo</option>
+            <option value="0">1) Categoria incorrecta</option>
+            <option value="1">2) Spam, fload</option>
+            <option value="2">3) Avatarfageo</option>
+            <option value="3">4) Contiene datos personales</option>
+            <option value="4">5) Contenido ilegal</option>
+            <option value="5">Otro(aclarar)</option>
+        </select>
+        
+        <textarea placeholder="Aclaracion, mensaje" bind:value={aclaracion}></textarea>
+        
+        <select bind:value={duracion}  name="duracion"> 
+            <option value="-1" selected="selected" disabled="disabled">Duracion</option>
+            <option value="0">0 min (Advertencia)</option>
+            <option value="5">5 min</option>
+            <option value="30">30 min</option>
+            <option value="60">1 hora</option>
+            <option value="1440">1 dia</option>
+            <option value="10080">1 semana</option>
+            <option value="40320">1 mes</option>
+            <option value="9999999999">Permanente</option>
+        </select>
+               
+        {#if comentarioId || hiloId}
+            <Checkbox style="padding: 0 8px" bind:checked={eliminarElemento} right> Eliminar elemento(hilo/comentario)</Checkbox>
+            <Checkbox style="padding: 0 8px" bind:checked={eliminarAdjunto} right> Eliminar adjunto(imagen/video)</Checkbox>
+            {/if}
+
+    </div>
+
+</Dialogo>
+

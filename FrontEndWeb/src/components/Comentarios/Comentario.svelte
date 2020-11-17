@@ -93,6 +93,7 @@
                 {#if $globalStore.usuario.esMod}
                     <hr>
                     <Menuitem >Eliminar</Menuitem>
+                    <Menuitem on:click={() => abrir.ban(hilo.id, comentario.id)} >Banear</Menuitem>
                 {/if}
             </Menu>
         </div>
@@ -206,7 +207,7 @@
         background: var(--color5) !important;
     }
     .comentario:hover {
-        filter: brightness(1.2);
+        background: var(--color4);
     }
 
     /* .comentario-movil :glo.media {

@@ -18,7 +18,7 @@
 @media (max-width: 992px) {
 	.cuerpo :global(.media) {
 		max-width: 100%;
-		width: 100%;
+		width: 100% !important;
 		float: none
 	}
 }

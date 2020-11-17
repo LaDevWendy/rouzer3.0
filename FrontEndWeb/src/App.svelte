@@ -10,7 +10,8 @@
 	import globalStore from './globalStore'
 	import Dialogo from './components/Dialogo.svelte'
 	import Media from './components/Media.svelte'
-import HiloCuerpo from './components/Hilos/HiloCuerpo.svelte'
+	import HiloCuerpo from './components/Hilos/HiloCuerpo.svelte'
+import DialogoBan from './components/Dialogos/DialogoBan.svelte'
 
 	let data = window.data || dataEjemplo
 	let {hilo, comentarios, acciones} = data;
@@ -74,6 +75,9 @@ import HiloCuerpo from './components/Hilos/HiloCuerpo.svelte'
 						¿Estas seguro de que queres domar el hilo?
 					</div>
 				</Dialogo>
+
+				<Button>Banear</Button>
+				<DialogoBan></DialogoBan>
 			</div>
 		{/if}
 

@@ -5,9 +5,18 @@ axios.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
 
-    if(response.request.responseURL && response.request.responseURL.indexOf("/Login") != -1) {
-        window.location = "/Login"
+    if(response.request.responseURL && response.request.responseURL.indexOf("/Domad") != -1) {
+        window.location = response.request.responseURL
     }
+    console.log(response.request.responseURL);
+    if(response.request.responseURL && response.request.responseURL == "/") {
+        window.location = response.request.responseURL
+    }
+
+    if(response.data.redirect) window.location = response.data.redirect;
+    // if(response.request.responseURL && response.request.responseURL.indexOf("/Login") != -1) {
+    //     window.location = "/Login"
+    // }
     return response;
   }, function (error) {
       console.log(error);
@@ -110,6 +119,17 @@ export default class RChanClient {
             hiloId,
             motivo,
             aclaracion,
+            comentarioId
+        })
+    }
+    static banear(motivo, aclaracion, duracion, usuarioId, hiloId="", comentarioId="", eliminarElemento=true, eliminarAdjunto=false) {
+        return axios.post("/api/Moderacion/Banear", {
+            motivo,
+            aclaracion,
+            duracion,
+            eliminarElemento,
+            eliminarAdjunto,
+            hiloId,
             comentarioId
         })
     }

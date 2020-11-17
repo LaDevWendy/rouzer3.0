@@ -24,7 +24,7 @@
             <Ripple/>
         </span>
         <a href="/" style="font-family: euroFighter">
-            <h3>ROZED <span class="version">Alfa 0.3</span></h3>
+            <h3>ROZED <span class="version"> La red del amor (Alfa 0.4)</span></h3>
             
             <Ripple/>
         </a>
@@ -159,5 +159,6 @@
     bottom: 1px;
     right: 5px;
     font-family: sans-serif;
+    width: max-content;
 }
 </style>
