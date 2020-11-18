@@ -24,25 +24,27 @@ namespace WebApp
         public async Task Invoke(HttpContext ctx,  RChanContext context, 
             SignInManager<UsuarioModel> sm)
         {
-            if(Regex.IsMatch(ctx.Request.Path, @"^/Domado")
-) 
+            if(Regex.IsMatch(ctx.Request.Path, @"^/Domado")) 
             {
                 await next(ctx);
                 return;
             }
+
             if(ctx.User != null)
             {
+                string ip = ctx.Connection.RemoteIpAddress.MapToIPv4().ToString();
+
                 var banNoVisto = await context.Bans
                     .OrderByDescending(b => b.Expiracion)
                     .Where(b => !b.Visto)
-                    .FirstOrDefaultAsync(b => b.UsuarioId == ctx.User.GetId());
+                    .FirstOrDefaultAsync(b => b.UsuarioId == ctx.User.GetId() || b.Ip == ip);
 
                 var ahora = DateTime.Now;
                 var banActivo = await context.Bans
                     .OrderByDescending(b => b.Expiracion)
                     .Where(b => b.Visto)
                     .Where(b => b.Expiracion > ahora)
-                    .FirstOrDefaultAsync(b => b.UsuarioId == ctx.User.GetId());
+                    .FirstOrDefaultAsync(b => b.UsuarioId == ctx.User.GetId() || b.Ip == ip);
 
                 if(banNoVisto != null)
                 {

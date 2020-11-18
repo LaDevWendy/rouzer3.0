@@ -36,7 +36,7 @@
 </script>
 <div class="fondo"></div>
 <main>
-    <video src="623eb91fd792a152481ebe7cecc2ce9f.mp4" loop autoplay muted></video>
+    <!-- <video src="623eb91fd792a152481ebe7cecc2ce9f.mp4" loop autoplay muted></video> -->
 
     <section >
         <h1>Hola anon</h1>

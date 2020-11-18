@@ -4,26 +4,29 @@ axios.maxRedirects = 0
 axios.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
-
     if(response.request.responseURL && response.request.responseURL.indexOf("/Domad") != -1) {
         window.location = response.request.responseURL
     }
     console.log(response.request.responseURL);
+    console.log(response);
+    if(response.data.redirect) window.location = response.data.redirect;
+    return response
     if(response.request.responseURL && response.request.responseURL == "/") {
         window.location = response.request.responseURL
     }
 
-    if(response.data.redirect) window.location = response.data.redirect;
-    // if(response.request.responseURL && response.request.responseURL.indexOf("/Login") != -1) {
-    //     window.location = "/Login"
-    // }
-    return response;
+    if(response.request.responseURL && response.request.responseURL.indexOf("/Login") != -1) {
+        window.location = "/Login"
+    }
+    return Promise.resolve(response);
   }, function (error) {
-      console.log(error);
-    //   if(error.response.status = 302)
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(error);
+      
+        if(error.response.data.redirect){
+            console.log(JSON.stringify(error.response))
+            window.location = error.response.data.redirect
+            return Promise.resolve();
+        }
+        return Promise.reject(error);
   });
 
 export default class RChanClient {
@@ -151,5 +154,16 @@ export default class RChanClient {
     }
     static favoritos(id){
         return axios.get(`/Hilo/Favoritos`)
+    }
+
+    //Denuncias
+    static rechazarDenuncia(denunciaId)
+    {
+        return axios.post(`/api/Moderacion/RechazarDenuncia/${denunciaId}`)
+    }
+
+    static eliminarComentarios(ids)
+    {
+        return axios.post(`/api/Moderacion/EliminarComentarios`, ids)
     }
 }

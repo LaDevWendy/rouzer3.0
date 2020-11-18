@@ -33,7 +33,12 @@ namespace WebApp
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration) 
+        {
+            this.Configuration = configuration;
+               
+        }
+                public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -70,6 +75,10 @@ namespace WebApp
 
             services.ConfigureApplicationCookie(opt => {
                 opt.LoginPath = "/Login";
+                opt.Events.OnRedirectToLogin = async (c) => {
+                    c.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await c.Response.WriteAsync("{\"redirect\":\"/Login\"}");
+                };
             });
             services.AddAuthorization(options =>
             {

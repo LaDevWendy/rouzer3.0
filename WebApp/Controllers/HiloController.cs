@@ -75,7 +75,7 @@ namespace WebApp.Controllers
         public async Task<IActionResult> MostrarAsync(string id)
         {
             // var hilo = await hiloService.GetHiloFull(id, User.GetId());
-             var hilo = await hiloService.GetHiloFull(id, User.GetId());
+             var hilo = await hiloService.GetHiloFull(id, User.GetId(), User.EsMod());
             if (hilo is null) return NotFound();
             // return Json(new {
             //     hilo.Hilo,

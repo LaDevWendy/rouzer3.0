@@ -11,7 +11,8 @@
 	import Dialogo from './components/Dialogo.svelte'
 	import Media from './components/Media.svelte'
 	import HiloCuerpo from './components/Hilos/HiloCuerpo.svelte'
-import DialogoBan from './components/Dialogos/DialogoBan.svelte'
+	import {abrir} from './components/Dialogos/Dialogos.svelte'
+
 
 	let data = window.data || dataEjemplo
 	let {hilo, comentarios, acciones} = data;
@@ -29,15 +30,20 @@ import DialogoBan from './components/Dialogos/DialogoBan.svelte'
 
 	let selected = true
 </script>
+
 <div class="hilo-completo" r-id={hilo.id}>
 	<div class="contenido">
 		<div class="panel">
 			<a href="/">Rozed</a>
 			<a href="/{config.getCategoriaById(hilo.categoriaId).nombreCorto}">/{config.getCategoriaById(hilo.categoriaId).nombre}</a>
 		</div>
-		<Acciones bind:hilo bind:acciones/>
 
+		<Acciones bind:hilo bind:acciones/>
+		
 		{#if $globalStore.usuario.esMod}
+		{#if hilo.estado == 2 }
+			<span style="color:red">Este roz esta eliminado y pronto sera borrado</span>
+		{/if}
 			<div class="acciones-mod panel">
 
 				<Dialogo textoActivador="Sticky" titulo="Configurar Sticky" accion = {dialogs.sticky.accion}>
@@ -76,8 +82,7 @@ import DialogoBan from './components/Dialogos/DialogoBan.svelte'
 					</div>
 				</Dialogo>
 
-				<Button>Banear</Button>
-				<DialogoBan></DialogoBan>
+				<Button on:click={() => abrir.ban(hilo.id)}>Banear</Button>
 			</div>
 		{/if}
 

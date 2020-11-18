@@ -91,7 +91,7 @@ namespace WebApp.Controllers
                 Contenido = vm.Contenido,
                 CategoriaId = vm.CategoriaId,
                 Bump = DateTimeOffset.Now,
-                // Ip = HttpContext.Connection.RemoteIpAddress,
+                Ip = ip,
             };
 
             MediaModel media = null;

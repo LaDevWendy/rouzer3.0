@@ -75,9 +75,29 @@
         };
     }
     
+    @{
+        List<DenunciaModel> denuncias = null;
+        if (User?.EsMod() ?? false) {
+            denuncias =  await _context.Denuncias
+            .Where(d => d.Estado == EstadoDenuncia.NoRevisada)
+            .OrderByDescending(d => d.Creacion)
+            .Take(100)
+            .Include(d => d.Hilo)
+            .Include(d => d.Usuario)
+            .Include(d => d.Comentario)
+            .Include(d => d.Comentario.Media)
+            .Include(d => d.Comentario.Usuario)
+            .Include(d => d.Hilo.Media)
+            .Include(d => d.Hilo.Usuario)
+            .ToListAsync();
+        }
+    }
     <script>
         window.config = @Json.Serialize(configurafionPublica)
         window.globalState = @Json.Serialize(globalState)
+
+        window.denuncias = @Json.Serialize(denuncias);
+        
     </script>
 
     <script>
@@ -92,6 +112,7 @@
 </head>
 <body>
 
+    
     @* <div class="debug">
         <p>Esta Autenticado: @User.Identity.IsAuthenticated</p>
         @foreach (var cliam in User.Claims)

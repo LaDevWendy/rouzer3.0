@@ -58,7 +58,7 @@
             <option value="1440">1 dia</option>
             <option value="10080">1 semana</option>
             <option value="40320">1 mes</option>
-            <option value="9999999999">Permanente</option>
+            <option value="99999999">Permanente</option>
         </select>
                
         {#if comentarioId || hiloId}

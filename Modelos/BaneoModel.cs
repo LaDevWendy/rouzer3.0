@@ -27,6 +27,8 @@ namespace Modelos
 
         public HiloModel Hilo { get; set; }
         public ComentarioModel Comentario { get; set; }
+
+        public string Ip { get; set; }
     }
     
 }

@@ -72,6 +72,11 @@ namespace WebApp.Controllers
             {
                 ModelState.AddModelError("Captcha", "Incorrecto");
             }
+
+            if(!generalOptions.Value.RegistroAbierto)
+            {
+                ModelState.AddModelError("Chan!", "El registro se encuentra cerrado por el momento");
+            }
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
             UsuarioModel user = new UsuarioModel
@@ -153,20 +158,25 @@ namespace WebApp.Controllers
             if(user == null) ModelState.AddModelError("Nick", "No se encontro el usuario");
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
-            var contraseñaIncorrecta= (await signInManager.CheckPasswordSignInAsync(user, model.Contraseña, false)).IsNotAllowed;
-            ModelState.AddModelError("Contraseña","La constraseña es incorrecta");
-            if(!ModelState.IsValid) BadRequest(ModelState);
+            var contraseñaCorrecta= (await signInManager.CheckPasswordSignInAsync(user, model.Contraseña, false)).Succeeded;
+
+            if(!contraseñaCorrecta) 
+            { 
+                ModelState.AddModelError("Contraseña","La constraseña es incorrecta");
+                return BadRequest(ModelState);
+            }
 
             //Checkeo ban
+            string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             var ban =  (await context.Bans
-                .Where(b => b.UsuarioId == user.Id)
+                .Where(b => b.UsuarioId == user.Id || b.Ip == ip)
                 .ToListAsync())
                 .FirstOrDefault(b => b.Expiracion > DateTimeOffset.Now);
 
             if(ban != null) return this.RedirectJson($"/Domado/{ban.Id}");
 
             var result = await signInManager.PasswordSignInAsync(user, model.Contraseña, true, false);
-            if(result.Succeeded) this.RedirectJson("/");
+            if(result.Succeeded) return this.RedirectJson("/");
         
             return BadRequest(ModelState);
         }
@@ -184,6 +194,8 @@ namespace WebApp.Controllers
         [MaxLength(30, ErrorMessage="para la mano")]
         public string Contraseña { get; set; }
         public string Captcha { get; set; }
+
+        public string Codigo { get; set; }
     }
 
     public static class  ControllerExtensions 

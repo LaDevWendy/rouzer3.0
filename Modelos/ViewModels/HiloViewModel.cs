@@ -15,6 +15,7 @@ namespace Modelos
             this.Bump = hilo.Bump;
             this.Titulo = hilo.Titulo;
             this.Id = hilo.Id;
+            this.Estado = hilo.Estado;
         }
 
         public int CantidadComentarios { get; set; }

@@ -72,12 +72,15 @@ namespace WebApp.Controllers
                 antiFlood.HaComentado(User.GetId());
             }
 
+            var ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+
             var comentario = new ComentarioModel
             {
                 UsuarioId = User.GetId(),
                 HiloId = vm.HiloId,
                 Contenido = vm.Contenido,
-                Creacion = DateTimeOffset.Now
+                Creacion = DateTimeOffset.Now,
+                Ip = ip,
             };
 
             MediaModel media = null;

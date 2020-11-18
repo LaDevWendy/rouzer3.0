@@ -1,12 +1,12 @@
 {
   "General": {
     "LimiteBump": 500,
-    "HilosMaximosPorCategoria": 5,
+    "HilosMaximosPorCategoria": 50,
     "ModoPrivado": false,
     "TiempoEntreComentarios": 5,
     "TiempoEntreHilos": 300,
     "LimiteArchivo": 0,
-    "RegistroAbierto": true,
+    "RegistroAbierto": false,
     "CaptchaHilo": true,
     "CaptchaComentario": false,
     "CaptchaRegistro": true

@@ -52,6 +52,9 @@ namespace Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<HiloModel>()
                 .HasIndex(h => h.Bump);
+            // modelBuilder.Entity<BaneoModel>()
+            //     .HasOne(b => b.Comentario)
+            //     .WithOne(c => c.)
         }
     }
 }

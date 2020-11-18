@@ -9,6 +9,8 @@
     import MensajeRotativo from './MensajeRotativo.svelte'
     import Dialogos from './Dialogos/Dialogos.svelte'
     import {abrir} from './Dialogos/Dialogos.svelte'
+    import Denuncia from './Denuncia.svelte';
+import DenunciasNav from './Moderacion/DenunciasNav.svelte'
 
     export let notificaciones = window.notificaciones || []
 
@@ -28,47 +30,26 @@
             
             <Ripple/>
         </a>
-        <MensajeRotativo/>
+        <!-- <MensajeRotativo/> -->
 
         <div class="nav-botones" style="position: relative;">
 
-            <!-- <span class="nav-boton drop-btn">
-                <span class="fe fe-command" on:click={() => mostrarCategorias = !mostrarCategorias}></span>
-                {#if mostrarCategorias}
-                    <ul class="panel menu1 abs lista-nav drop-menu" style="visibility: visible;"
-                    on:mouseleave={() => mostrarCategorias = false}
-                    >
-                        {#each config.categorias as c (c.id)}
-                        <a href="/{c.nombreCorto}">
-                            <li>{c.nombre}</li>
-                        </a>
-                        {/each}
-                    </ul>
-                {/if}
-            </span>
-
-            
-            {#if $globalStore.usuario.estaAutenticado}
-            <Notificaciones bind:notificaciones/>
-            {:else}
-            <span class="nav-boton" on:click={()=> $globalStore.mostrarLogin = true}>
-                <span class="fe fe-user"></span>
-            </span>
+            {#if $globalStore.debug}
+                <div class="debug notdi-debug">
+                    {JSON.stringify(notificaciones)}
+                </div>
             {/if}
-            
-            
-        </div> -->
-            <div class="debug notdi-debug">
-                {JSON.stringify(notificaciones)}
-            </div>
+
+            <DenunciasNav/>
+
             {#if $globalStore.usuario.estaAutenticado}
-            <Notificaciones bind:notificaciones/>
+                <Notificaciones bind:notificaciones/>
             {:else}
-            <a href="/Login"class="nav-boton"  style="height:100%">
-                <Ripple/>
-                <span class="fe fe-user">
-                </span>
-            </a>
+                <a href="/Login"class="nav-boton"  style="height:100%">
+                    <Ripple/>
+                    <span class="fe fe-user">
+                    </span>
+                </a>
             {/if}
             
         </div>
@@ -104,7 +85,7 @@
     /* margin-bottom: 10px; */
 }
 
-.nav-principal, .nav-principal a, .nav-boton {
+.nav-principal, .nav-principal a, :global(.nav-boton) {
     display: flex;
     align-items: center;
 }
@@ -112,7 +93,7 @@
     flex: 1;
 }
 
-.nav-boton, .nav-principal a, .nav-principal icon {
+:global(.nav-boton), .nav-principal a, .nav-principal icon {
     padding: 0 12px;
 }
 
@@ -125,17 +106,17 @@
 .crear-hilo-boton{
     background: var(--color5);
 }
-.nav-boton {
+:global(.nav-boton) {
   color: white;
   margin-left: 16px;
   display: inline-flex;
   position: relative;
 }
-.nav-boton .fe:hover {
+:global(.nav-boton) .fe:hover {
   transform: scale(1.33);
 }
 
-.nav-boton .fe:active {
+:global(.nav-boton) .fe:active {
   transform: scale(1.22);
 }
 
@@ -160,5 +141,13 @@
     right: 5px;
     font-family: sans-serif;
     width: max-content;
+}
+
+:global(.noti-cont) {
+    position: absolute;
+    left: 19px;
+    width: 18px;
+    top: 10px;
+    font-family: helvetica;
 }
 </style>

@@ -5,6 +5,7 @@ import Cookie from 'js-cookie'
 let data = Object.assign({
     mostrarLogin: false,
     mostrarRegistro: false,
+    debug: true,
 }, window.globalState)
 
 //Categorias 

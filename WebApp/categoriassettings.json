@@ -81,6 +81,11 @@
         "NombreCorto": "DEP",
         "Nsfw": false
     }, {
+        "Id": 27,
+        "Nombre": "Politica",
+        "NombreCorto": "POL",
+        "Nsfw": false
+    },{
         "Id": 17,
         "Nombre": "Preguntas",
         "NombreCorto": "PRGS",
@@ -96,6 +101,11 @@
         "NombreCorto": "RS",
         "Nsfw": false
     }, {
+        "Id": 28,
+        "Nombre": "Redes",
+        "NombreCorto": "RDS",
+        "Nsfw": false
+    },{
         "Id": 20,
         "Nombre": "ROZED",
         "NombreCorto": "RZD",
@@ -124,6 +134,12 @@
         "Id": 25,
         "Nombre": "Borno",
         "NombreCorto": "BAJA",
+        "Nsfw": true
+    }
+    , {
+        "Id": 26,
+        "Nombre": "Hentai",
+        "NombreCorto": "HEN",
         "Nsfw": true
     }]
 }

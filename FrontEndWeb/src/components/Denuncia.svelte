@@ -4,6 +4,10 @@
     import {Button} from "svelte-mui"
     import Tiempo from "./Tiempo.svelte"
     import Comentario from "./Comentarios/Comentario.svelte"
+    import RChanClient from "../RChanClient";
+    import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher()
 
     export let denuncia
     let {hilo, comentario, usuario}  = denuncia
@@ -18,6 +22,16 @@
         'Doxxeo',
         'Contenido ilegal',
         'Maltrato animal']
+
+    async function rechazar() {
+        try {
+            let res = await RChanClient.rechazarDenuncia(denuncia.id)
+            dispatch("rechazar", denuncia.id)
+            
+        } catch (error) {
+            
+        }
+    }
 </script>
 
 <div class="denuncia">
@@ -40,6 +54,7 @@
         <a href="/Hilo/{hilo.id}#{comentario?.id}">
             <Button >Ir</Button>
         </a>
+        <Button on:click={rechazar}>Rechazar</Button>
         {#if denuncia.tipo == 0}
             <HiloPreview {hilo}/>
         {:else}

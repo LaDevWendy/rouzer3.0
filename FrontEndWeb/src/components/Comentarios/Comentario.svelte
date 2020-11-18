@@ -92,7 +92,7 @@
                 <li on:click={() => abrir.reporte(hilo.id, comentario.id)}>Reportar</li>
                 {#if $globalStore.usuario.esMod}
                     <hr>
-                    <Menuitem >Eliminar</Menuitem>
+                    <Menuitem on:click={() => abrir.eliminarComentarios([comentario.id])}>Eliminar</Menuitem>
                     <Menuitem on:click={() => abrir.ban(hilo.id, comentario.id)} >Banear</Menuitem>
                 {/if}
             </Menu>

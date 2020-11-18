@@ -56,19 +56,4 @@ import Denuncia from '../Denuncia.svelte'
         height: fit-content;
     }
 
-    .hilo-denuncia {
-        padding: 10px;
-        font-size: 1em;
-        background: var(--color2);
-        min-height: 110px;
-
-    }
-    .hilo-denuncia img{
-        width: 100px;
-        float: left;
-        padding-right: 10px;
-    }
-    .hilo-denuncia img::after{
-        content: "";
-    }
 </style>

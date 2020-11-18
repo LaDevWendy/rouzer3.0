@@ -28,9 +28,22 @@ namespace WebApp
             // //Agrego Un administrador si no existe
             using (var scope = host.Services.CreateScope())
             {
-                var um = scope.ServiceProvider.GetService<SignInManager<UsuarioModel>>().UserManager;
+                var logger = scope.ServiceProvider.GetService<ILogger<Program>>();
                 var ctx = scope.ServiceProvider.GetService<RChanContext>();
                 await ctx.Database.EnsureCreatedAsync();
+
+                var migs = await ctx.Database.GetPendingMigrationsAsync();
+
+                if(migs.Count() != 0) 
+                {
+                    logger.LogInformation("Applicando migraciones pendientes");
+                    await ctx.Database.MigrateAsync();
+
+                }
+                
+
+                var um = scope.ServiceProvider.GetService<SignInManager<UsuarioModel>>().UserManager;
+                
                 var admin = (await um.GetUsersForClaimAsync(new Claim("Role", "admin"))).FirstOrDefault();
 
                 if(admin is null)
@@ -60,7 +73,7 @@ namespace WebApp
                         cb.AddEnvironmentVariables();
                     })
                     .UseStartup<Startup>()
-                        .UseUrls("https://localhost:5001/","http://localhost:5000/", "http://0.0.0.0:5000/", "https://0.0.0.0:5001/");
+                        .UseUrls("https://localhost:5001/","http://localhost:5000/", "http://0.0.0.0:5000/", "https://0.0.0.0:5001/", "https:// 192.168.0.4:5001/");
                 });
     }
 }

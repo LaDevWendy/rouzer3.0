@@ -92,5 +92,7 @@ async function crear() {
     }
     form {
         border-top: 2px solid var(--color5);
+        max-height: 80vh !important;
+        overflow-y: auto;
     }
 </style>

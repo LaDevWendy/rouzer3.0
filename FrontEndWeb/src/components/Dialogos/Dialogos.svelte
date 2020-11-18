@@ -2,18 +2,19 @@
     import {writable} from 'svelte/store'
     import RChanClient from '../../RChanClient';
     import Dialogo from '../Dialogo.svelte'
-import DialogoBan from './DialogoBan.svelte';
+    import DialogoBan from './DialogoBan.svelte';
     import DialogoReporte from './DialogoReporte.svelte'
 
     const dialogosStore = writable({
         dialogoAbierto: "ninguno",
         hiloId: "",
         comentarioId: "",
+        comentariosIds: [],
         usuarioId: "",
     })
     
 
-    function abrirReporte(hiloId, comentarioId="") {
+    function abrirReporte(hiloId, comentarioId=null) {
         dialogosStore.update(s => {
             s.dialogoAbierto = "reporte"
             s.hiloId = hiloId
@@ -22,7 +23,7 @@ import DialogoBan from './DialogoBan.svelte';
         })
     }
 
-    function abrirEliminarhilo(hiloId, comentarioId="") {
+    function abrirEliminarhilo(hiloId, comentarioId=null) {
         dialogosStore.update(s => {
             s.dialogoAbierto = "eliminarHilo"
             s.hiloId = hiloId
@@ -30,7 +31,15 @@ import DialogoBan from './DialogoBan.svelte';
             return s
         })
     }
-    function abrirBan(hiloId, comentarioId="", usuarioId ="",) {
+
+    function abrirEliminarComentarios(ids) {
+        dialogosStore.update(s => {
+            s.dialogoAbierto = "eliminarComentarios"
+            s.comentariosIds = ids
+            return s
+        })
+    }
+    function abrirBan(hiloId, comentarioId=null, usuarioId =null,) {
         dialogosStore.update(s => {
             s.dialogoAbierto = "ban"
             s.hiloId = hiloId
@@ -44,7 +53,8 @@ import DialogoBan from './DialogoBan.svelte';
         //  sticky : abrirDialogo("sticky"),
          ban : abrirBan,
          reporte : abrirReporte,
-         eliminarHilo: abrirEliminarhilo
+         eliminarHilo: abrirEliminarhilo,
+         eliminarComentarios: abrirEliminarComentarios
         //  categoria : abrirDialogo("categoria"),
         //  eliminar : abrirDialogo("eliminar"),
     }
@@ -67,6 +77,18 @@ import DialogoBan from './DialogoBan.svelte';
         ¿Estas seguro de que queres domar el hilo?
     </div>
 </Dialogo>
+
+<Dialogo visible={$dialogosStore.dialogoAbierto == "eliminarComentarios"} 
+    textoActivador="Eliminar" 
+    titulo="Eliminar hilo" 
+    accion = {() => RChanClient.eliminarComentarios($dialogosStore.comentariosIds)}
+    >
+    <span slot="activador"></span>
+    <div slot="body">
+        ¿Estas seguro de que queres borrar los comentarios {$dialogosStore.comentariosIds}
+    </div>
+</Dialogo>
+
 <DialogoBan visible={$dialogosStore.dialogoAbierto == "ban"} 
     hiloId = {$dialogosStore.hiloId} 
     usuarioId = {$dialogosStore.usuarioId} 
