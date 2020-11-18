@@ -37,7 +37,15 @@ namespace WebApp
                 if(migs.Count() != 0) 
                 {
                     logger.LogInformation("Applicando migraciones pendientes");
-                    await ctx.Database.MigrateAsync();
+                    try
+                    {
+                        await ctx.Database.MigrateAsync();
+                    }
+                    catch (System.Exception)
+                    {
+                        
+                        logger.LogError("Error al applicar las migraciones");
+                    }
 
                 }
                 
