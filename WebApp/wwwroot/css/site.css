@@ -20,6 +20,7 @@ li {
    --color3 : rgb(24 37 51);
    --color4 : rgb(36 47 61);
    --color5: rgb(228 4 4);
+   --color6: #fc9208;
    --primary:  var(--color5);
    --bg-panel: var(--color2) !important;
    --label: rgb(64 130 188 /30%) !important;

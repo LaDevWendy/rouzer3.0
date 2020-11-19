@@ -43,6 +43,7 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddSingleton<CaptchaService>();
             services.AddScoped<AntiFloodService>();
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
@@ -100,7 +101,13 @@ namespace WebApp
             });
             //services.AddRazorPages();
             services.AddMvc().AddNewtonsoftJson(options =>
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                    {
+                        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                        if(env.IsDevelopment())
+                        {
+                            options.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+                        }
+                    }
                 );
 
             services.AddScoped<IHiloService, HiloService>();
@@ -166,6 +173,7 @@ namespace WebApp
             );
             app.UseStaticFiles(new StaticFileOptions
             {
+                // RequestPath = "/Media",
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "Almacenamiento")
                 ),

@@ -21,6 +21,7 @@ namespace Servicios
         Task ActualizarHilo(HiloModel Hilo);
         Task<HiloViewModel> GetHilo(string id, bool mostrarOcultos);
         Task<HiloFullViewModel> GetHiloFull(string id, string userId = null, bool mostrarOcultos = false);
+        Task<HiloFullViewModelMod> GetHiloFullMod(string id, string userId = null, bool mostrarOcultos = false);
         IQueryable<HiloModel> OrdenadosPorBump();
     }
 
@@ -75,6 +76,53 @@ namespace Servicios
             hiloFullView.Hilo = new HiloViewModel(hilo);
 
             hiloFullView.Comentarios = await comentarioService.DeHilo(id, hilo.UsuarioId);
+
+             if (!string.IsNullOrEmpty(userId))
+             {
+                 hiloFullView.Acciones = await _context.HiloAcciones
+                    .FirstOrDefaultAsync(a => a.UsuarioId == userId && a.HiloId == id);
+             }
+             
+             hiloFullView.Acciones ??= new HiloAccionModel();
+
+            return hiloFullView;
+
+        }
+        public async Task<HiloFullViewModelMod> GetHiloFullMod(string id, string userId = null, bool mostrarOcultos = false)
+        {
+            var hiloFullView = new HiloFullViewModelMod();
+
+
+            HiloModel hilo;
+            var query = _context.Hilos
+                .Include(h => h.Media);
+
+            if(!mostrarOcultos) 
+                hilo = await query.FiltrarEliminados().PorId(id);
+            else 
+                hilo = await query.PorId(id);
+            
+
+            if (hilo is null) return null;
+
+            hiloFullView.Usuario =  await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == hilo.UsuarioId);
+            hiloFullView.Hilo = new HiloViewModel(hilo);
+
+            hiloFullView.Comentarios = await _context.Comentarios
+                .Where(c => c.HiloId == id)
+                .Where(c => c.Estado != ComentarioEstado.Eliminado)
+                .OrderByDescending(c => c.Creacion)
+                .Include(c => c.Media)
+                .Select(c => new ComentarioViewModelMod {
+                    UsuarioId = c.UsuarioId,
+                    Username = c.Usuario.UserName,
+                    Contenido = c.Contenido,
+                    Id = c.Id,
+                    Creacion = c.Creacion,
+                    EsOp = c.UsuarioId == hilo.UsuarioId,
+                    Media = c.Media
+                })
+                .ToListAsync();
 
              if (!string.IsNullOrEmpty(userId))
              {

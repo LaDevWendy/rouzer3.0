@@ -30,7 +30,7 @@
                 <option value="0">1) Categoria incorrecta</option>
             {/if}
             <option value="1">2) Spam, fload</option>
-            <option value="2">3) Avatarfageo</option>
+            <option value="2">3) MaltratoAnimal</option>
             <option value="3">4) Contiene datos personales</option>
             <option value="4">5) Contenido ilegal</option>
         </select>

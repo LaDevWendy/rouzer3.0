@@ -6,7 +6,7 @@
     "TiempoEntreComentarios": 5,
     "TiempoEntreHilos": 300,
     "LimiteArchivo": 0,
-    "RegistroAbierto": false,
+    "RegistroAbierto": true,
     "CaptchaHilo": true,
     "CaptchaComentario": false,
     "CaptchaRegistro": true

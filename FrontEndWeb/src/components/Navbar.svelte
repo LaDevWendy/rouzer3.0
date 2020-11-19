@@ -10,7 +10,7 @@
     import Dialogos from './Dialogos/Dialogos.svelte'
     import {abrir} from './Dialogos/Dialogos.svelte'
     import Denuncia from './Denuncia.svelte';
-import DenunciasNav from './Moderacion/DenunciasNav.svelte'
+    import DenunciasNav from './Moderacion/DenunciasNav.svelte'
 
     export let notificaciones = window.notificaciones || []
 
@@ -26,7 +26,7 @@ import DenunciasNav from './Moderacion/DenunciasNav.svelte'
             <Ripple/>
         </span>
         <a href="/" style="font-family: euroFighter">
-            <h3>ROZED <span class="version"> La red del amor (Alfa 0.4)</span></h3>
+            <h3>ROZED <span class="version"> La red nini (Alfa 0.5)</span></h3>
             
             <Ripple/>
         </a>
@@ -38,6 +38,15 @@ import DenunciasNav from './Moderacion/DenunciasNav.svelte'
                 <div class="debug notdi-debug">
                     {JSON.stringify(notificaciones)}
                 </div>
+            {/if}
+
+            {#if $globalStore?.usuario?.esMod}
+                <a href="/Moderacion">
+                    <span style="height: 48px;display: flex;align-items: center;">
+                        <icon class="fe fe-triangle"/>
+                        <Ripple/>
+                    </span>
+                </a>
             {/if}
 
             <DenunciasNav/>
@@ -78,7 +87,7 @@ import DenunciasNav from './Moderacion/DenunciasNav.svelte'
     align-items: stretch !important;
     /* margin-bottom: 10px; */
 }
-.nav-principal>* {
+.nav-principal>*, .nav-principal nav-botones  span{
     height: 48px;
     display: flex;
     align-items: center;
@@ -94,7 +103,7 @@ import DenunciasNav from './Moderacion/DenunciasNav.svelte'
 }
 
 :global(.nav-boton), .nav-principal a, .nav-principal icon {
-    padding: 0 12px;
+    padding: 0 8px;
 }
 
 .nav-botones {
@@ -108,7 +117,6 @@ import DenunciasNav from './Moderacion/DenunciasNav.svelte'
 }
 :global(.nav-boton) {
   color: white;
-  margin-left: 16px;
   display: inline-flex;
   position: relative;
 }
@@ -127,6 +135,9 @@ import DenunciasNav from './Moderacion/DenunciasNav.svelte'
     margin-bottom: 8px;
     font-size: 0.8rem;
     justify-content: center;
+    background: var(--color1);
+    margin-top: 10px;
+    padding: 8px;
 }
 
 
@@ -138,7 +149,7 @@ import DenunciasNav from './Moderacion/DenunciasNav.svelte'
     font-size: 10px;
     position: absolute;
     bottom: 1px;
-    right: 5px;
+    left:4px;
     font-family: sans-serif;
     width: max-content;
 }

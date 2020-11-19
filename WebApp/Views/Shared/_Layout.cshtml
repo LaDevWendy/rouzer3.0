@@ -1,9 +1,12 @@
 ﻿@using Microsoft.Extensions.Configuration;
 @using Microsoft.Extensions.DependencyInjection;
+@using Microsoft.AspNetCore.Hosting;
+@using Microsoft.Extensions.Hosting
 @inject RChanContext _context;
 @inject IOptions<List<Categoria>> categoriasOpt;
 @inject IConfiguration config;
 @inject IOptionsSnapshot<GeneralOptions> generalOptions
+@inject IWebHostEnvironment env
 
 <!DOCTYPE html>
 <html lang="en">
@@ -112,7 +115,9 @@
 </head>
 <body>
 
-    
+    <environment names="Development">
+        <strong>Modo desarrollo</strong>
+    </environment>
     @* <div class="debug">
         <p>Esta Autenticado: @User.Identity.IsAuthenticated</p>
         @foreach (var cliam in User.Claims)

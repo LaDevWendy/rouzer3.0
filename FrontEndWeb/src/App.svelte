@@ -15,7 +15,7 @@
 
 
 	let data = window.data || dataEjemplo
-	let {hilo, comentarios, acciones} = data;
+	let {hilo, comentarios, acciones, usuario} = data;
 
 	let dialogs =  {
 		sticky : {
@@ -83,6 +83,9 @@
 				</Dialogo>
 
 				<Button on:click={() => abrir.ban(hilo.id)}>Banear</Button>
+				<a href="/Moderacion/HistorialDeUsuario/{usuario.id}">
+					<Button>Op</Button>
+				</a>
 			</div>
 		{/if}
 

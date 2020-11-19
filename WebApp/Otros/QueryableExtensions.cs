@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-
+using Modelos;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApp
 {
@@ -35,6 +36,19 @@ namespace WebApp
 
         private static object Private(this object obj, string privateField) => obj?.GetType().GetField(privateField, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj);
         private static T Private<T>(this object obj, string privateField) => (T)obj?.GetType().GetField(privateField, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj);
+
+         public static IQueryable<DenunciaModel> UltimasNoRevisadas(this IQueryable<DenunciaModel> denuncias) {
+            return denuncias
+                .Where(d => d.Estado == EstadoDenuncia.NoRevisada)
+                .OrderByDescending(d => d.Creacion)
+                .Include(d => d.Hilo)
+                .Include(d => d.Usuario)
+                .Include(d => d.Comentario)
+                .Include(d => d.Comentario.Media)
+                .Include(d => d.Comentario.Usuario)
+                .Include(d => d.Hilo.Media)
+                .Include(d => d.Hilo.Usuario);
+        }
     }
     
 }

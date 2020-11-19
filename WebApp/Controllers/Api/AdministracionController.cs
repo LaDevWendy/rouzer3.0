@@ -111,7 +111,6 @@ namespace WebApp.Controllers
             var result = await userManager.AddClaimAsync(user, new Claim("Role", role));
             if (result.Succeeded)
             {
-                await signInManager.RefreshSignInAsync(user);
                 return Json(new ApiResponse($"{user.UserName} ahora es {role}"));
             }
             else

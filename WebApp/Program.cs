@@ -81,7 +81,7 @@ namespace WebApp
                         cb.AddEnvironmentVariables();
                     })
                     .UseStartup<Startup>()
-                        .UseUrls("https://localhost:5001/","http://localhost:5000/", "http://0.0.0.0:5000/", "https://0.0.0.0:5001/", "https:// 192.168.0.4:5001/");
+                        .UseUrls("http://0.0.0.0:5000/");
                 });
     }
 }

@@ -81,6 +81,11 @@
     <div class="header">
         {#if comentario.esOp} <span class="nick tag tag-op">OP</span>{/if}
         <span class="nick">Gordo</span>
+        {#if comentario.usuarioId}
+        <a href="/Moderacion/HistorialDeUsuario/{comentario.usuarioId}" style="color:var(--color6) !important">
+            <span class="nick">{comentario.usuarioId.split("-")[0]}</span>
+        </a>
+        {/if}
         <!-- <span class="rol tag">anon</span> -->
         <span class="id tag" on:click={() => tagear(comentario.id)}>{comentario.id}</span>
         <span class="tiempo"><Tiempo date={comentario.creacion}/></span>

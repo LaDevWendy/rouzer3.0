@@ -112,6 +112,9 @@
             <Button  outlined shaped={true} on:click={importarVideo}> 
                     <icon>OK</icon>
             </Button>
+            <Button  outlined shaped={true} on:click={() => estado = "vacio" }> 
+                    <icon>x</icon>
+            </Button>
     </div>
     {/if}
     {#if !media.archivo && estado=="vacio"}
@@ -122,7 +125,7 @@
                      <icon class="fe fe-upload"></icon>
                 </Button>
                 <Button  icon outlined shaped={true} on:click={() => estado="importarLink"}> 
-                     <icon class="fe fe-link-2"></icon>
+                     <icon class="fe fe-youtube"></icon>
                 </Button>
             </ButtonGroup>
         </span>

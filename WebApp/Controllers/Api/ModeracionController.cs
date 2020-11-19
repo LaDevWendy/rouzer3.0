@@ -85,6 +85,7 @@ namespace WebApp.Controllers
                 .Include(d => d.Comentario.Media)
                 .Include(d => d.Hilo.Media)
                 .Include(d => d.Hilo.Usuario)
+                .Include(d => d.Comentario.Usuario)
                 .ToListAsync();
             return View(new ModeracionIndexVm(hilos, comentarios, denuncias));
         }
@@ -94,9 +95,19 @@ namespace WebApp.Controllers
          [Route("/Moderacion/HistorialDeUsuario/{id}")]
         public async Task<ActionResult> HistorialDeUsuario(string id) 
         {
-            if((await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id)) is null)
+            var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+            if(usuario is null)
                 return NotFound();
             return View(new {
+                Usuario =  await context.Usuarios.Select(u => new {
+                    u.Id,
+                    u.Creacion,
+                    u.UserName,
+                    Rozs = context.Hilos.DeUsuario(id).Count(),
+                    Comentarios = context.Comentarios.DeUsuario(id).Count(),
+
+                }).FirstOrDefaultAsync(u => u.Id == id),
+
                 Hilos = await context.Hilos
                     .DeUsuario(id)
                     .Recientes()

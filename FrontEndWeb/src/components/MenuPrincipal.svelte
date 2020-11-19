@@ -86,7 +86,7 @@
                 </a>
             {/if}
             <hr>
-            <li> <icon class="fe fe-settings"/> Ajustes  <Ripple/></li>
+            <!-- <li> <icon class="fe fe-settings"/> Ajustes  <Ripple/></li> -->
         </ul>
     </section>
 </Sidepanel>
