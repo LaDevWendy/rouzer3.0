@@ -22,14 +22,14 @@ namespace Servicios
 
     public class ComentarioService : ContextService, IComentarioService
     {
-        private readonly HtmlEncoder htmlEncoder;
+        private readonly FormateadorService formateador;
 
-        public ComentarioService(RChanContext context,                     
-            HtmlEncoder htmlEncoder,
+        public ComentarioService(RChanContext context,       
+            FormateadorService formateador,              
             HashService hashService)
             : base(context, hashService)
         {
-            this.htmlEncoder = htmlEncoder;
+            this.formateador = formateador;
         }
 
         public async Task<List<ComentarioViewModel>> DeHilo(string hiloId, string creadorId)
@@ -51,7 +51,7 @@ namespace Servicios
 
         public async Task Guardar(ComentarioModel comentario, bool bumpearHilo = true)
         {
-            comentario.Contenido = Parsear(comentario.Contenido);
+            comentario.Contenido = formateador.Parsear(comentario.Contenido);
             comentario.Id = hashService.Random(8).ToUpper();
             _context.Comentarios.Add(comentario);
             await _context.SaveChangesAsync();
@@ -62,36 +62,6 @@ namespace Servicios
                     .Where("Id", comentario.HiloId)
                     .UpdateAsync(new { Bump = DateTimeOffset.Now});
             }
-        }
-
-        private string Parsear(string contenido) {
-            var tags = new List<string>();
-            return string.Join("\n", contenido.Split("\n").Select(t => {
-                t = htmlEncoder.Encode(t);
-                var esLink = false;
-                //Links
-                t = Regex.Replace(t, @"&gt;(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)", m => {
-                    var link = m.Value.Replace("&gt;", "");
-                    esLink = true;
-                    return $@"<a href=""{link}"" target=""_blank"">&gt{link}</a>";
-                });
-                if(esLink) return t;
-                //Respuestas
-                t =  Regex.Replace(t, @"&gt;&gt;([A-Z0-9]{8})", m => {
-                    if(tags.Contains(m.Value)) return "";
-                    tags.Add(m.Value);
-                    var id = m.Groups[1].Value;
-                    return $"<a href=\"#{id}\" class=\"restag\" r-id=\" {id}\">&gt;&gt;{id}</a>";
-                });
-
-                //Texto verde
-                t = Regex.Replace(t.Replace("&#xA;", "\n"),@"&gt;(?!https?).+(?:$|\n)", m => {
-                    if(m.Value.Contains("&gt;&gt;") || m.Value.Contains("href")) return m.Value;
-                    var text = m.Value.Replace("&gt;", "");
-                    return $@"<span class=""verde"">&gt;{text}</span>";
-                });
-                return t;
-            }));
         }
     }
 }

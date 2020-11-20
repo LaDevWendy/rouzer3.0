@@ -52,13 +52,22 @@
         
     }).catch(console.error)
 
-    let mostrarReporte = false
-    let comentarioIdReporte = null
-    function onMostrarReporte(e) {
-        console.log(e);
-        mostrarReporte = true
-        comentarioIdReporte = e.detail.comentarioId
-
+    let resaltando = false;
+    function resaltarComentariosDeUsuario(usuarioId) {
+        if(!$globalStore.usuario.esMod) return;
+        if(resaltando) {
+            comentarios.forEach(c => c.resaltado = false)
+            comentarios = comentarios   
+            resaltando = false
+            return;
+        }
+        comentarios.forEach(c => {
+            if(c.usuarioId == c.usuarioId) {
+                resaltando = true;
+            }
+            c.resaltado = usuarioId == c.usuarioId
+        })
+        comentarios = comentarios
     }
     
 		
@@ -86,7 +95,7 @@
         {#each comentarios as comentario (comentario.id)}
             <li transition:fly|local={{y: -50, duration:250}}>
 
-                <Comentario hilo={hilo} bind:comentario {comentarios} comentariosDic = {diccionarioComentarios}/>
+                <Comentario on:colorClick={(e) => resaltarComentariosDeUsuario(e.detail.usuarioId || '') } hilo={hilo} bind:comentario {comentarios} comentariosDic = {diccionarioComentarios}/>
             </li>
             {/each}
             

@@ -36,8 +36,8 @@
         on:click={ocultar}>
         <i class="fe fe-eye-off" />Oculto</span> -->
 
-            <Button bind:active={acciones.favorito} on:click={favoritear} color={acciones.favorito?'var(--color5)':'grey'}  shaped  ><i class="fe fe-eye"></i>Seg</Button>
-            <Button bind:active={acciones.seguido} on:click={seguir} color={acciones.seguido?'var(--color5)':'grey'}  shaped  ><i class="fe fe-star"></i>Fav</Button>
+            <Button bind:active={acciones.seguido} on:click={seguir} color={acciones.seguido?'var(--color5)':'grey'}  shaped  ><i class="fe fe-eye"></i>Seg</Button>
+            <Button bind:active={acciones.favorito} on:click={favoritear} color={acciones.favorito?'var(--color5)':'grey'}  shaped  ><i class="fe fe-star"></i>Fav</Button>
             <Button bind:active={acciones.hideado} on:click={ocultar} color={acciones.hideado?'var(--color5)':'grey'}  shaped  ><i class="fe fe-eye-off"></i>Hide</Button>
 
             <Button  on:click={() => mostrarReporte = true} shaped color="red" ><i class="fe fe-flag"></i>Denunciar</Button>

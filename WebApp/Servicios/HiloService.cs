@@ -29,15 +29,18 @@ namespace Servicios
     {
         private readonly IComentarioService comentarioService;
         private readonly IOptionsSnapshot<GeneralOptions> options;
+        private readonly FormateadorService formateador;
 
         public HiloService(RChanContext context,
             HashService hashService,
             IComentarioService comentarioService,
-            IOptionsSnapshot<GeneralOptions> options)
+            IOptionsSnapshot<GeneralOptions> options,
+            FormateadorService formateador)
         : base(context, hashService)
         {
             this.comentarioService = comentarioService;
             this.options = options;
+            this.formateador = formateador;
         }
 
         public async Task ActualizarHilo(HiloModel Hilo)
@@ -185,6 +188,8 @@ namespace Servicios
                 .ToListAsync();
 
             hilosParaArchivar.ForEach(h => h.Estado = HiloEstado.Archivado);
+
+            hilo.Contenido = formateador.Parsear(hilo.Contenido);
             await _context.SaveChangesAsync();
             return hilo.Id;
         }

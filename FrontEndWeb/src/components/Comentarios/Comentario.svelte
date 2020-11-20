@@ -15,19 +15,21 @@
     export let comentario;
     export let hilo;
     export let comentariosDic = {   };
+    export let resaltado = false
     
     let el
     let respuestas
     let mostrandoRespuesta = false
     let respuestaMostrada
-
+    
     let windowsWidh = window.screen.width
 
     let visible = !$globalStore.comentariosOcultos.has(comentario.id)
-
+    
     let dispatch = createEventDispatcher()
-
+    
     let mostrarMenu = false
+    
 
     onMount(() => {
 
@@ -68,7 +70,7 @@
 
 </script>
 
-<div bind:this={el} class="comentario {windowsWidh <= 400?"comentario-movil":""}" r-id="{comentario.id}" id="{comentario.id}">
+<div bind:this={el} class:resaltado={comentario.resaltado} class="comentario {windowsWidh <= 400?"comentario-movil":""}" r-id="{comentario.id}" id="{comentario.id}">
     <div  class="respuestas">
         {#each comentario.respuestas as r }
         <a href="#{r}" class="restag" r-r="{r}"
@@ -77,7 +79,7 @@
         >&gt;&gt;{r}</a> 
         {/each}
     </div    >
-    <div class="color" style="background: {comentario.color};">ANON</div>
+    <div on:click={() => dispatch("colorClick", comentario)} class="color" style="background: {comentario.color};">ANON</div>
     <div class="header">
         {#if comentario.esOp} <span class="nick tag tag-op">OP</span>{/if}
         <span class="nick">Gordo</span>
@@ -93,7 +95,7 @@
         <div>
             <Menu>
                 <span slot="activador" on:click={() => mostrarMenu = true} class=""><i class="fe fe-more-vertical relative"></i></span>
-                <li>Ocultar</li>
+                <li on:click={() => toggle()}>{visible?'Ocultar':'Mostrar'}</li>
                 <li on:click={() => abrir.reporte(hilo.id, comentario.id)}>Reportar</li>
                 {#if $globalStore.usuario.esMod}
                     <hr>
@@ -213,6 +215,10 @@
     }
     .comentario:hover {
         background: var(--color4);
+    }
+
+    .resaltado {
+        background: var(--color7)!important;
     }
 
     /* .comentario-movil :glo.media {

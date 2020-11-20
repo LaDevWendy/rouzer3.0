@@ -1,5 +1,5 @@
 export default class config {
-    static categorias =  window.config.categorias
+    static categorias =  window.config.categorias.sort((a, b) => a.id - b.id)
 
     static general = window.config.general
 

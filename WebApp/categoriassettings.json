@@ -77,67 +77,67 @@
         "Nsfw": false
     },{
         "Id": 16,
-        "Nombre": "Pedotita",
+        "Nombre": "DaPedotita",
         "NombreCorto": "DEP",
         "Nsfw": false
     }, {
-        "Id": 27,
+        "Id": 17,
         "Nombre": "Politica",
         "NombreCorto": "POL",
         "Nsfw": false
     },{
-        "Id": 17,
+        "Id": 18,
         "Nombre": "Preguntas",
         "NombreCorto": "PRGS",
         "Nsfw": false
     }, {
-        "Id": 18,
+        "Id": 19,
         "Nombre": "Putaku",
         "NombreCorto": "PTKU",
         "Nsfw": false
     }, {
-        "Id": 19,
+        "Id": 20,
         "Nombre": "Reinas",
         "NombreCorto": "RS",
         "Nsfw": false
     }, {
-        "Id": 28,
+        "Id": 21,
         "Nombre": "Redes",
         "NombreCorto": "RDS",
         "Nsfw": false
     },{
-        "Id": 20,
+        "Id": 22,
         "Nombre": "ROZED",
         "NombreCorto": "RZD",
         "Nsfw": false
     }, {
-        "Id": 21,
+        "Id": 23,
         "Nombre": "Tecnologia",
         "NombreCorto": "TEC",
         "Nsfw": false
     }, {
-        "Id": 22,
+        "Id": 24,
         "Nombre": "Videos",
         "NombreCorto": "VID",
         "Nsfw": false
     }, {
-        "Id": 23,
+        "Id": 25,
         "Nombre": "Virgo historias",
         "NombreCorto": "VHIS",
         "Nsfw": false
     },{
-        "Id": 24,
+        "Id": 26,
         "Nombre": "Umitas",
         "NombreCorto": "UMA",
         "Nsfw": false
     }, {
-        "Id": 25,
+        "Id": 27,
         "Nombre": "Borno",
         "NombreCorto": "BAJA",
         "Nsfw": true
     }
     , {
-        "Id": 26,
+        "Id": 28,
         "Nombre": "Hentai",
         "NombreCorto": "HEN",
         "Nsfw": true

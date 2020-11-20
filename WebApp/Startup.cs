@@ -120,6 +120,7 @@ namespace WebApp
                 var env = s.GetService<IWebHostEnvironment>();
                 return new MediaService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env);
             });
+            services.AddSingleton<FormateadorService>();
 
             services.AddCors(options =>
             {

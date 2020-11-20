@@ -21,6 +21,7 @@ li {
    --color4 : rgb(36 47 61);
    --color5: rgb(228 4 4);
    --color6: #fc9208;
+   --color7:  rgb(53 78 103);
    --primary:  var(--color5);
    --bg-panel: var(--color2) !important;
    --label: rgb(64 130 188 /30%) !important;
@@ -45,7 +46,7 @@ li {
 .fondo5, .noti-cont, .badge, .info, .cargar-nuevos-hilos {
   background: var(--color5);
 }
-.comentario a {
+.comentario a, .hilo-completo .contenido a {
   color: var(--color5) !important;
 }
 
