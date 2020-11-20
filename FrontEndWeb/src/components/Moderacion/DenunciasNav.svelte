@@ -23,7 +23,7 @@
         <div class="denuncias-nav">
             <ul>
                 {#each denuncias as d}
-                    <Denuncia denuncia={d} />
+                    <Denuncia bind:denuncia={d} />
                 {/each}
             </ul>
         </div>

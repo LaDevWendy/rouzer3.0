@@ -6,21 +6,23 @@
     import InfiniteLoading from 'svelte-infinite-loading';
     import {HubConnectionBuilder} from '@microsoft/signalr'
     import RChanClient from '../../RChanClient';
+    import Signal from '../../signal';
+
 
     export let hiloList
 
     let nuevoshilos = []
-    let connection = new HubConnectionBuilder().withUrl("/hub").build();
+    // let connection = new HubConnectionBuilder().withUrl("/hub").build();
 
+    Signal.subscribirAHome()
+    Signal.coneccion.on("HiloCreado", onHiloCreado)
+    Signal.coneccion.on("HiloComentado", onHiloComentado)
 
-    connection.on("HiloCreado", onHiloCreado)
-    connection.on("HiloComentado", onHiloComentado)
-
-    connection.start().then(() => {
-        console.log("Conectado");
-        return connection.invoke("SubscribirAHome")
+    // connection.start().then(() => {
+    //     console.log("Conectado");
+    //     return connection.invoke("SubscribirAHome")
         
-    }).catch(console.error)
+    // }).catch(console.error)
 
 
     function onHiloCreado(hilo) {

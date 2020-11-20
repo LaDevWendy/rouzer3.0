@@ -90,6 +90,22 @@ namespace WebApp.Controllers
             return View(new ModeracionIndexVm(hilos, comentarios, denuncias));
         }
 
+        [Route("/Moderacion/ListaDeUsuarios")]
+        public async Task<ActionResult> ListaDeUsuarios()
+        {
+            var ultimosRegistros = await context.Users
+                .OrderByDescending(u => u.Creacion)
+                .Take(100)
+                .ToListAsync();
+
+            var ultimosBaneos = await context.Bans
+                .OrderByDescending(u => u.Creacion)
+                .Include(b => b.Usuario)
+                .Where(b => b.Expiracion > DateTime.Now)
+                .ToListAsync();
+                return View(new {ultimosRegistros, ultimosBaneos});
+        }
+
         
         [HttpGet]
          [Route("/Moderacion/HistorialDeUsuario/{id}")]
@@ -129,7 +145,7 @@ namespace WebApp.Controllers
             // var baneado = context.Users.FirstOrDefault(u => u.Id )
             var comentario = await context.Comentarios.FirstOrDefaultAsync(c => c.Id == model.ComentarioId);
             var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == model.HiloId);
-            var tipo = comentario is null? Tipo.Hilo : Tipo.Comentario;
+            var tipo = comentario is null? TipoElemento.Hilo : TipoElemento.Comentario;
 
             CreacionUsuario elemento = comentario ?? (CreacionUsuario)hilo;
 
@@ -144,7 +160,7 @@ namespace WebApp.Controllers
                 Tipo = tipo,
                 HiloId = model.HiloId,
                 Ip = elemento.Ip,
-                UsuarioId = tipo == Tipo.Comentario? comentario.UsuarioId : hilo.UsuarioId,
+                UsuarioId = tipo == TipoElemento.Comentario? comentario.UsuarioId : hilo.UsuarioId,
             };
 
             context.Bans.Add(ban);
@@ -160,6 +176,18 @@ namespace WebApp.Controllers
             }
             await context.SaveChangesAsync();
             return Json(new ApiResponse("Usuario Baneado"));
+        }
+
+        [HttpPost] 
+        public async Task<ActionResult> RemoverBan(string id) 
+        {
+            var ban = context.Bans.FirstOrDefault(b => b.Id == id);
+            if(ban != null) 
+            {
+                ban.Expiracion = DateTime.Now;
+                await context.SaveChangesAsync();
+            }
+            return Json(new ApiResponse("Usuario Desbaneado"));
         }
 
         [HttpPost]

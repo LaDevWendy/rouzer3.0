@@ -10,7 +10,7 @@ namespace Modelos
         public DateTimeOffset Creacion { get; set; } = DateTimeOffset.Now;
         public string UsuarioId { get; set; } = "Anonimo";
         [Required]
-        public Tipo Tipo { get; set; }
+        public TipoElemento Tipo { get; set; }
         [Required]
         public string HiloId { get; set; }
         public string ComentarioId { get; set; }
@@ -34,7 +34,7 @@ namespace Modelos
         CoentenidoIlegal,
         MaltratoAnimal,
     }
-    public enum Tipo
+    public enum TipoElemento
     {
         Hilo,
         Comentario

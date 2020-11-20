@@ -166,4 +166,9 @@ export default class RChanClient {
     {
         return axios.post(`/api/Moderacion/EliminarComentarios`, ids)
     }
+
+    static removerBan(id)
+    {
+        return axios.post(`/api/Moderacion/RemoverBan/${id}`)
+    }
 }

@@ -7,14 +7,13 @@ namespace Modelos
     {
         public string UsuarioId { get; set; }
 
-
         public string ModId { get; set; }
         [Required]
         public DateTimeOffset Expiracion { get; set; }
         public TimeSpan Duracion => Expiracion - Creacion;
 
         [Required]
-        public Tipo Tipo { get; set; }
+        public TipoElemento Tipo { get; set; }
 
         public string HiloId { get; set; }
         public string ComentarioId { get; set; }
@@ -29,6 +28,8 @@ namespace Modelos
         public ComentarioModel Comentario { get; set; }
 
         public string Ip { get; set; }
+
+        public UsuarioModel Usuario { get; set; }
     }
     
 }

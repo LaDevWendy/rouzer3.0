@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApp.Controllers
 {
@@ -184,8 +185,16 @@ namespace WebApp.Controllers
         }
 
         [AllowAnonymous]
-        async public Task<ActionResult<ApiResponse>> Denunciar( DenunciaModel denuncia)
+        async public Task<ActionResult<ApiResponse>> Denunciar( DenunciaVM vm)
         {
+            var denuncia = new DenunciaModel
+            {
+                Tipo = vm.Tipo,
+                HiloId = vm.HiloId,
+                ComentarioId = vm.ComentarioId,
+                Motivo = vm.Motivo,
+                Aclaracion = vm.Aclaracion,
+            };
             if(denuncia.ComentarioId == "") denuncia.ComentarioId = null;
             denuncia.Id = hashService.Random();
             if(await context.Hilos.AnyAsync(h => h.Id == denuncia.HiloId && h.Estado ==  HiloEstado.Eliminado))
@@ -194,7 +203,7 @@ namespace WebApp.Controllers
             }
             var yaDenuncio = await context.Denuncias
                 .AnyAsync(d => d.UsuarioId == (User.GetId()?? "Anonimo") &&
-                    d.Tipo == denuncia.Tipo && denuncia.HiloId == d.HiloId);
+                    d.Tipo == denuncia.Tipo && denuncia.HiloId == d.HiloId && d.ComentarioId == denuncia.ComentarioId);
 
             if(yaDenuncio) ModelState.AddModelError("hilo", "Ya denunciaste esto");
 
@@ -247,6 +256,18 @@ namespace WebApp.Controllers
     {
         public string HiloId { get; set; }
         public string Accion { get; set; }
+    }
+
+    public class DenunciaVM 
+    {
+        [Required]
+        public TipoElemento Tipo { get; set; }
+        [Required]
+        public string HiloId { get; set; }
+        public string ComentarioId { get; set; }
+        [Required]
+        public string Motivo { get; set; }
+        public string Aclaracion { get; set; } = "";
     }
 
 }

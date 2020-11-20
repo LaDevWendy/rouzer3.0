@@ -47,7 +47,7 @@
         
             {#if abierto}
                 <div class="youtube-container">
-                    <iframe src="https://www.youtube.com/embed/{media.id}?autoplay=1"> </iframe>
+                    <iframe title="youtube" allowfullscreen src="https://www.youtube.com/embed/{media.id}?autoplay=1"> </iframe>
                 </div>
                 <Button on:click={() => abierto = false} class="cerrar" icon>
                     <i class="fe fe-x"></i> 
@@ -57,7 +57,8 @@
                 <Button on:click={abrirVideo}  color="red" class="play" icon>
                     <i class="fe fe-youtube" style="position: relative;left: 1px;"></i> 
                 </Button>
-            {/if}
+                {/if}
+                <!-- <a class="medialink" target="_blanck" href="https://www.youtube.com/watch/{media.id}">https://www.youtube.com/watch/{media.id}</a> -->
     {/if}
 </div>
 
@@ -103,5 +104,9 @@
         border-radius: 4px;
     }
 
+    .medialink{
+        background: var(--color4);
+        width: 100%;
+    }
 
 </style>

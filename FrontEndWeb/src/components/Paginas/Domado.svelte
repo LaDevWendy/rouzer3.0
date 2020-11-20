@@ -1,10 +1,8 @@
 <script>
     import {Button} from 'svelte-mui'
+    import {formatearTiempo, formatearTimeSpan} from '../../helper'
     const ban = window.model.ban
 
-    function formatearTiempo(tiempo) {
-        return new Date(Date.parse(tiempo)).toLocaleString()
-    }
 </script>
 <div class="fondo">
     <div class="ban">
@@ -13,7 +11,7 @@
         <h3>Detalles</h3>
         <p>Motivo: {ban.motivo}</p>
         <p>Fecha: {formatearTiempo(ban.creacion)}</p>
-        <p>Duracion: {ban.duracion}</p>
+        <p>Duracion: {formatearTimeSpan(ban.duracion)}</p>
         <p>Expira el: {formatearTiempo(ban.expiracion)}</p>
         <p>Id del ban: {ban.id}</p>
         

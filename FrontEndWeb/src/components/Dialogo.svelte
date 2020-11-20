@@ -27,7 +27,12 @@
 
     onDestroy(() => {
         respuesta = null
+        error = null
     })
+    $: if(visible == false ) {
+        respuesta = null
+        error = null
+    }
 </script>
 
 <span on:click={() => visible = true}>

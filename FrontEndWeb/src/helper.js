@@ -35,3 +35,25 @@ function relativeTime(date) {
     }
 
 }
+
+export function formatearTiempo(tiempo) {
+    return new Date(Date.parse(tiempo)).toLocaleString()
+}
+
+export function formatearTimeSpan(timespan)
+{
+    // 69444.10:39:00.0000010
+    //"00:05:00.0000010",
+    let minutos = Array.from(timespan.matchAll(/(\d\d):/g))[1][1]
+    let horas = Array.from(timespan.matchAll(/(\d\d):/g))[0][1]
+    let dias = timespan.split(".")[0]
+
+    minutos = minutos[0] == "0" ?minutos[1] : minutos
+    horas = horas[0] == "0" ?horas[1] : horas
+    
+    let ret = ""
+    if(dias > 0) ret += `${dias}D `
+    if(horas > 0) ret += `${horas}H `
+    if(minutos > 0) ret += `${minutos}M `
+    return ret
+}

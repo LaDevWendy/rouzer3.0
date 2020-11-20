@@ -26,7 +26,7 @@
             <Ripple/>
         </span>
         <a href="/" style="font-family: euroFighter">
-            <h3>ROZED <span class="version"> La red nini (Alfa 0.5)</span></h3>
+            <h3>ROZED <span class="version"> La red nini (Alfa 0.6)</span></h3>
             
             <Ripple/>
         </a>
@@ -34,11 +34,6 @@
 
         <div class="nav-botones" style="position: relative;">
 
-            {#if $globalStore.debug}
-                <div class="debug notdi-debug">
-                    {JSON.stringify(notificaciones)}
-                </div>
-            {/if}
 
             {#if $globalStore?.usuario?.esMod}
                 <a href="/Moderacion">

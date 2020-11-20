@@ -1,6 +1,6 @@
 <script>
     import Comentario from '../Comentarios/Comentario.svelte'
-import Denuncia from '../Denuncia.svelte'
+    import Denuncia from '../Denuncia.svelte'
     import HiloPreview from '../Hilos/HiloPreview.svelte'
 
     let hilos = window.model.hilos
@@ -12,7 +12,9 @@ import Denuncia from '../Denuncia.svelte'
         return c
     })
 </script>
-
+<nav>
+    <a style="color:var(--color5)" href="/Moderacion/ListaDeUsuarios">Usuarios y baneos</a>
+</nav>
 <main>
     <ul style="width:33%; background:#711c08;        font-size: 0.7em;    ">
         <h3 style="height:40px">Ultimas denuncias</h3>

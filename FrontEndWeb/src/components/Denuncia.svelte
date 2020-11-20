@@ -28,7 +28,8 @@
         try {
             let res = await RChanClient.rechazarDenuncia(denuncia.id)
             dispatch("rechazar", denuncia.id)
-            estado = 1;
+            denuncia.estado = 1;
+            
             
         } catch (error) {
             

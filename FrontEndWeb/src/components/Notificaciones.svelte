@@ -5,6 +5,7 @@
     import RozedSignal from '../RozedSignal';
     import {HubConnectionBuilder} from '@microsoft/signalr'
     import { each } from 'svelte/internal';
+    import Signal from '../signal';
 
     export let notificaciones
 
@@ -23,8 +24,7 @@
         mostrar = false
     }
 
-    let connection = new HubConnectionBuilder().withUrl("/hub").build();
-    connection.on("NuevaNotificacion", noti => {
+    Signal.coneccion.on("NuevaNotificacion", noti => {
         nuevasNotificaciones = [noti, ...nuevasNotificaciones]
         setTimeout(() => {
             nuevasNotificaciones.pop()
@@ -54,11 +54,11 @@
             notificaciones = [notiVieja, ...notificaciones]
         }
     })
-    connection.start().then(() => {
-        console.log("Conectadito");
-        return connection.invoke("SubscribirseAHilo", hilo.id)
+    // signal.coneccion.start().then(() => {
+    //     console.log("Conectadito");
+    //     return connection.invoke("SubscribirseAHilo", hilo.id)
         
-    }).catch(console.error)
+    // }).catch(console.error)
 
 </script>
 <span class="nav-boton drop-btn" style="display: flex; align-items: center; postition:relative; margin-right:6px">

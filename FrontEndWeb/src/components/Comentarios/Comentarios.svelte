@@ -7,6 +7,7 @@
     import { onMount } from 'svelte';
     import VirtualList from '@sveltejs/svelte-virtual-list';
     import DialogoReporte from '../Dialogos/DialogoReporte.svelte';
+    import Signal from '../../signal'
 
     export let hilo
     export let comentarios
@@ -44,13 +45,8 @@
         nuevosComentarios = [comentario, ...nuevosComentarios]
     }
 
-    let connection = new HubConnectionBuilder().withUrl("/hub").build();
-    connection.on("NuevoComentario", onComentarioCreado)
-    connection.start().then(() => {
-        console.log("Conectadito");
-        return connection.invoke("SubscribirseAHilo", hilo.id)
-        
-    }).catch(console.error)
+     Signal.coneccion.on("NuevoComentario", onComentarioCreado)
+     Signal.subscribirseAHilo(hilo.id)
 
     let resaltando = false;
     function resaltarComentariosDeUsuario(usuarioId) {

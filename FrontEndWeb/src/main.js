@@ -6,6 +6,7 @@ import Moderacion from './components/Paginas/Moderacion.svelte';
 import Sesion from './components/Paginas/Sesion.svelte';
 import HistorialUsuario from './components/Paginas/HistorialUsuario.svelte';
 import Domado from './components/Paginas/Domado.svelte';
+import ListaDeUsuarios from './components/Paginas/ListaDeUsuarios.svelte';
 
 // const app = new App({
 // 	target: document.body,
@@ -24,6 +25,7 @@ let componentes = [
 	["#svelte-historialDeUsuario", HistorialUsuario, {}],
 	["#svelte-registro", Sesion, {modo:"registro"}],
 	["#svelte-domado", Domado, {}],
+	["#svelte-listaDeUsuarios", ListaDeUsuarios, {}],
 ]
 
 for (const c of componentes) {
