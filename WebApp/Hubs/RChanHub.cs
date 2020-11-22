@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using Modelos;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp
 {
@@ -16,6 +17,12 @@ namespace WebApp
         public async Task SubscribirAHome()
         {
            await Groups.AddToGroupAsync(Context.ConnectionId, "home");
+        }
+
+        [Authorize("esMod")]
+        public async Task SubscribirAModeracion()
+        {
+           await Groups.AddToGroupAsync(Context.ConnectionId, "moderacion");
         }
 
     }

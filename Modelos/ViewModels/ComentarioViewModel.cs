@@ -21,13 +21,24 @@ namespace Modelos
         public MediaModel Media { get; set; }
         public string Color   {
             get {
-                var r = new Random(Creacion.Millisecond );
-                return r.Next(5) switch {
-                    1 => "blue",
-                    2 => "orange",
-                    3 => "red",
-                    4 => "green",
-                    0 => "yellow",
+                var r = new Random(Creacion.Millisecond + Creacion.Second);
+
+                if(r.Next(200) == 2) 
+                {
+                    return r.Next(2) switch {
+                        0 => "marron",
+                        1 => "rosa",
+                        _ => "",};
+                }
+
+                if(r.Next(20) == 10) return "multi";
+
+
+                return r.Next(4) switch {
+                    0 => "amarillo",
+                    1 => "azul",
+                    2 => "rojo",
+                    3 => "verde",
                     _ => "",
                 };
             }
@@ -40,4 +51,4 @@ namespace Modelos
         public string UsuarioId { get; set; }
         public string Username { get; set; }
     }
-}
+}   

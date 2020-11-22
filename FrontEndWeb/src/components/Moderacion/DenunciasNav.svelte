@@ -1,12 +1,23 @@
 <script>
     import { Ripple } from "svelte-mui";
     import globalStore from "../../globalStore";
+    import Signal from "../../signal";
     import Denuncia from "../Denuncia.svelte";
 
     let denuncias = window.denuncias || [];
 
     let mostrar = false;
+
+    if($globalStore.usuario.esMod) {
+        Signal.subscribirAModeracion();
+    }
+
+    Signal.coneccion.on("nuevaDenuncia", (denuncia) => {
+        denuncias = [denuncia, ...denuncias]
+        mostrar = true;
+    })
 </script>
+
 
 {#if $globalStore.usuario?.esMod}
     <span on:click={() => mostrar = !mostrar } class="nav-boton" style="height:100%;position:relative">

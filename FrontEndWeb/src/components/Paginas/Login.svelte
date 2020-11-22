@@ -9,22 +9,11 @@
     let password = ""
     let captcha = ""
     let error = null
-    let codigo = window.model?.codigoDeInvitacion || ""
-
-    export let modo = "login"
-
-    $: modoRegistro = modo == "registro"
 
     async function accion(e) {
         console.log(captcha);
         try {
-            if(modoRegistro)
-                await RChanClient.registrase(username, password, captcha, codigo)
-            else {
-                let res = await RChanClient.logearse(username, password)
-                return;
-
-            }
+            let res = await RChanClient.logearse(username, password)
         } catch (e) {
             console.log(e);
             error = e.response.data
@@ -37,21 +26,15 @@
 
 </script>
 <div class="fondo"></div>
+
 <main>
     <!-- <video src="623eb91fd792a152481ebe7cecc2ce9f.mp4" loop autoplay muted></video> -->
 
     <section >
-        {#if !config.general.registroAbierto && !codigo &&  modoRegistro}
-        <h1>Hola anon</h1>
-        <h1>El registro esta desactivado</h1>
-        {:else if !modoRegistro}
-            <h2>Para crear y responder rozes en Rozed debes iniciar una sesion</h2>
-            <h3>No tenes cuenta? Enfermo!, <a on:click="{()=> modoRegistro=true}" href="#Registro"style="color:var(--color5) ">Registrate ahora mismo aca</a> </h3>
-        {:else}
-            <h2>Para crear y responder rozes en Rozed debes iniciar una sesion</h2>
-            <h2>Registrate con cofianza</h2>
-            <h4>Tu ip esta a salvo, desde ya que si</h4>
-        {/if}
+        <h1>Hola anon!</h1>
+        <h2>Para crear y responder rozes en Rozed debes iniciar una sesion</h2>
+        <h3>No tenes cuenta? Enfermo!, <a href="/Registro"style="color:var(--color5) ">Registrate ahora mismo aca</a> </h3>
+
         <ErrorValidacion {error}/>
         <form on:submit|preventDefault={accion}>
             <Textfield
@@ -69,19 +52,16 @@
                 bind:value={password}
                 message="aynose1234"
             />
-            {#if modoRegistro}
-                <Captcha visible={config.general.captchaRegistro}  bind:token={captcha}/>
-             {/if}
+
             <div style="display:flex; justify-content: center;">
-                <Button >{modoRegistro?"Registrarse":"Entrar"}</Button>
+                <Button >Entrar</Button>
             </div>
-
-
         </form>
     </section>
 </main>
 
 <style>
+
     main {
         margin:auto;
         height: auto;
@@ -125,8 +105,9 @@
         left:0;
         width: 100vw;
         height: 100vh;
-        background: var(--color1);
         z-index: -100;
+        background: url('/imagenes/rosed.png');
+        background-size: cover !important;
     }
 
     :global(.label) {

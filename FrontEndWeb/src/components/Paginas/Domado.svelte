@@ -7,8 +7,8 @@
 <div class="fondo">
     <div class="ban">
         <h1>Has sido domado!</h1>
-        <h2>Fuiste baneado por romper las reglas de Rozed {ban.tipo== 0? `en el roz "${ban.hilo}"`:`en un comentario en el roz "${ban.hilo}"`}</h2>
-        <h3>Detalles</h3>
+        <h2 style="margin-bottom:10px">Fuiste baneado por romper las reglas de Rozed {ban.tipo== 0? `en el roz "${ban.hilo}"`:`en un comentario en el roz "${ban.hilo}"`}</h2>
+        <h3>Aclaracion {ban.aclaracion}</h3>
         <p>Motivo: {ban.motivo}</p>
         <p>Fecha: {formatearTiempo(ban.creacion)}</p>
         <p>Duracion: {formatearTimeSpan(ban.duracion)}</p>
@@ -27,7 +27,7 @@
         text-align: center;
         border-radius: 8px;
         position: absolute;
-        font-size: 0.6rem;
+        font-size: 0.8rem;
         right: calc(7vw - 100px);
         top: calc(22vw - 50px);
         max-width: 400px;

@@ -9,8 +9,7 @@ using Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-
-
+using Microsoft.AspNetCore.SignalR;
 
 namespace WebApp.Controllers
 {
@@ -18,11 +17,15 @@ namespace WebApp.Controllers
     public class NotificacionController : Controller
     {
         private readonly RChanContext _context;
+        private readonly IHubContext<RChanHub> rchanHub;
+
         public NotificacionController(
-            RChanContext _context
+            RChanContext _context,
+            IHubContext<RChanHub> rchanHub
         )
         {
             this._context = _context;
+            this.rchanHub = rchanHub;
         }
 
         [HttpGet("Notificacion/{id}")]
@@ -50,19 +53,6 @@ namespace WebApp.Controllers
             await _context.SaveChangesAsync();
 
             return Redirect($"/Hilo/{noti.HiloId}");
-        }
-
-        public async Task<IActionResult> Limpiar()
-        {
-            var notisABorrar = await _context.Notificaciones
-                .Where(n => n.UsuarioId == User.GetId())
-                 .Select(n => new NotificacionModel {Id = n.Id})
-                .ToListAsync();
-
-            _context.RemoveRange(notisABorrar);
-            await _context.SaveChangesAsync();
-
-            return Redirect("/");
         }
     }
 }

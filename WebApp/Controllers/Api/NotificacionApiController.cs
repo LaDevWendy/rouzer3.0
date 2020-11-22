@@ -9,8 +9,7 @@ using Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-
-
+using Microsoft.AspNetCore.SignalR;
 
 namespace WebApp.Controllers
 {    
@@ -20,11 +19,16 @@ namespace WebApp.Controllers
     public class NotificacionApiController : Controller
     {
         private readonly RChanContext _context;
+        private readonly IHubContext<RChanHub> rchanHub;
+
         public NotificacionApiController(
-            RChanContext _context
+            RChanContext _context ,
+            IHubContext<RChanHub> rchanHub
+
         )
         {
             this._context = _context;
+            this.rchanHub = rchanHub;
         }
 
         [HttpPost]
@@ -37,6 +41,8 @@ namespace WebApp.Controllers
 
             _context.RemoveRange(notisABorrar);
             await _context.SaveChangesAsync();
+            await rchanHub.Clients.Users(User.GetId())
+                .SendAsync("notificacionesLimpeadas");
 
             return new ApiResponse("Notificaciones limpiadas");
         }

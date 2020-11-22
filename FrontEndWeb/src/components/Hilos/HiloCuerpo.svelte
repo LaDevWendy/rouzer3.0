@@ -11,10 +11,13 @@
 
 <style>
     :global(.media) {
-    float: left;
-    margin-right: 10px;
-    max-width: 50%;
-}
+        float: left;
+        margin-right: 10px;
+        max-width: 50%;
+    }
+    .cuerpo {
+        padding: 0 10px;
+    }
     @media (max-width: 992px) {
 	.cuerpo :global(.media) {
 		max-width: 100%;

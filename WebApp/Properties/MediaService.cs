@@ -23,6 +23,7 @@ namespace Servicios
         string GetThumbnail(string id);
         Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo);
         Task<MediaModel> GenerarMediaDesdeLink(string url);
+        Task<bool> Eliminar(string id) ;
     }
 
     public class MediaService : IMediaService
@@ -175,6 +176,31 @@ namespace Servicios
             await cuadradito.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadrado}");
             
             return media;
+        }
+
+        public async Task<bool> Eliminar(string id) 
+        {
+            var intentos = 50;
+            var media = await context.Medias.FirstOrDefaultAsync(m => m.Id == id);
+            var archivosAEliminar = new List<string> (new[]{
+                $"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadrado}",
+                $"{CarpetaDeAlmacenamiento}/{media.VistaPrevia}",
+                $"{CarpetaDeAlmacenamiento}/{media.Url}",
+            });
+
+            while (archivosAEliminar.Count() != 0 || intentos == 0)
+            {
+                try
+                {
+                    File.Delete(archivosAEliminar.First());
+                    archivosAEliminar.Remove(archivosAEliminar.First());
+                }
+                catch (Exception) { }
+            
+                await Task.Delay(200);
+                intentos--;
+            }
+            return intentos == 0;
         }
     }
 }

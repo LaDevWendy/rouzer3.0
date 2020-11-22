@@ -8,10 +8,13 @@
 @inject IOptionsSnapshot<GeneralOptions> generalOptions
 @inject IWebHostEnvironment env
 
+@{
+    var version = generalOptions.Value.Version;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script defer src="~/js/bundle.js"></script>
+    <script defer src="~/js/bundle.js?v=@version"></script>
     <meta charset="utf-8" />
     @* <meta name="viewport" content="width=device-width, initial-scale=1.0" /> *@
     <meta name="viewport" content="width=device-width, user-scalable=no">
@@ -27,8 +30,8 @@
             <!-- ICONOS -->
     @* <link rel="stylesheet" href="https://cdn.rawgit.com/luizbills/feather-icon-font/v4.7.0/dist/feather.css"> *@
     <link rel="stylesheet" href="~/iconos/iconos.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/js/css/bundle.css" />
+    <link rel="stylesheet" href="~/css/site.css?v=@version" />
+    <link rel="stylesheet" href="~/js/css/bundle.css?v=@version" />
 
     <script src="https://hcaptcha.com/1/api.js" async defer></script>
 
@@ -71,10 +74,21 @@
             }
         };
 
+        var gnrlOpt = (GeneralPublicOptions)  generalOptions.Value;
         var configurafionPublica = new {
             Categorias = categoriasOpt.Value,
             HCaptchaSiteKey = config.GetValue<string>("HCaptcha:SiteKey"),
-            General =  (GeneralPublicOptions)  generalOptions.Value
+            General =  new {
+                gnrlOpt.TiempoEntreComentarios,
+                gnrlOpt.TiempoEntreHilos,
+                gnrlOpt.LimiteArchivo,
+                gnrlOpt.RegistroAbierto,
+                gnrlOpt.CaptchaHilo,
+                gnrlOpt.CaptchaComentario,
+                gnrlOpt.CaptchaRegistro,
+                gnrlOpt.Version,
+
+            } 
         };
     }
     

@@ -26,8 +26,8 @@
             <Ripple/>
         </span>
         <a href="/" style="font-family: euroFighter">
-            <h3>ROZED <span class="version"> La red nini (Alfa 0.6)</span></h3>
-            
+            <h3>ROZED <span class="version"> La red nini (Alfa 0.7)</span></h3>
+
             <Ripple/>
         </a>
         <!-- <MensajeRotativo/> -->
@@ -38,7 +38,11 @@
             {#if $globalStore?.usuario?.esMod}
                 <a href="/Moderacion">
                     <span style="height: 48px;display: flex;align-items: center;">
-                        <icon class="fe fe-triangle"/>
+                        <!-- <icon class="fe fe-triangle"/>
+                         -->
+                         <span style="top: -1px;
+                         font-size: 24px;
+                         padding: 0 4px;">✡</span>
                         <Ripple/>
                     </span>
                 </a>
@@ -55,7 +59,7 @@
                     </span>
                 </a>
             {/if}
-            
+
         </div>
         <span class="nav-boton crear-hilo-boton" on:click={() => mostrarFormularioHilo = true}>
             <span style="width:max-content; margin-right: 6px;cursor: pointer;">Crear Roz</span>
@@ -68,9 +72,9 @@
 </header>
 <nav class="nav-categorias">
     {#each config.categorias as c (c.id)}
-        <a href="/{c.nombreCorto}">/{c.nombre} <Ripple/></a>
+        <a href="/{c.nombreCorto}" title={c.nombre}>/{c.nombreCorto}</a>
     {/each}
-
+    <Ripple color="var(--color5)"/>
 </nav>
 
 <Dialogos></Dialogos>
@@ -128,7 +132,6 @@
     flex-wrap: wrap;
     gap: 5px 10px;
     margin-bottom: 8px;
-    font-size: 0.8rem;
     justify-content: center;
     background: var(--color1);
     margin-top: 10px;
@@ -138,6 +141,8 @@
 
 .nav-categorias a {
     color: var(--color5) !important;
+    font-size: 1rem;
+
 }
 
 .version {
@@ -152,7 +157,7 @@
 :global(.noti-cont) {
     position: absolute;
     left: 19px;
-    width: 18px;
+    width: auto;
     top: 10px;
     font-family: helvetica;
 }

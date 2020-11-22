@@ -72,12 +72,28 @@ namespace WebApp.Controllers
             {
                 ModelState.AddModelError("Captcha", "Incorrecto");
             }
+            if(!ModelState.IsValid) return BadRequest(ModelState);
 
             if(!generalOptions.Value.RegistroAbierto)
             {
-                ModelState.AddModelError("Chan!", "El registro se encuentra cerrado por el momento");
+                if(string.IsNullOrWhiteSpace(model.Codigo))
+                {
+                    ModelState.AddModelError("Uy!", "El registro se encuentra cerrado por el momento");
+                }
+                else if (model.Codigo != generalOptions.Value.LinkDeInvitacion)
+                {
+                    ModelState.AddModelError("Uy!", "Codigo invalido");
+                }
             }
+
             if(!ModelState.IsValid) return BadRequest(ModelState);
+
+            string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            if(await context.Bans.EstaBaneado(User.GetId(), ip))
+            {
+                ModelState.AddModelError("Chan!", "Esta ip esta baneada, no te podes registrar");
+                if(!ModelState.IsValid) return BadRequest(ModelState);
+            }
 
             UsuarioModel user = new UsuarioModel
             {
@@ -104,9 +120,9 @@ namespace WebApp.Controllers
         }
 
         [HttpGet, Route("/Registro")]
-        public  ActionResult Registro() 
+        public  ActionResult Registro(string codigoDeInvitacion) 
         {
-            return View("Registro");
+            return View("Registro", new {codigoDeInvitacion});
         }
         [HttpGet, Route("/Domado/{id?}")]
         public  async Task<ActionResult> Domado(string id) 

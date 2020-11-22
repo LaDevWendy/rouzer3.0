@@ -79,7 +79,7 @@
         >&gt;&gt;{r}</a> 
         {/each}
     </div    >
-    <div on:click={() => dispatch("colorClick", comentario)} class="color" style="background: {comentario.color};">ANON</div>
+    <div on:click={() => dispatch("colorClick", comentario)} class="color color-{comentario.color}">ANON</div>
     <div class="header">
         {#if comentario.esOp} <span class="nick tag tag-op">OP</span>{/if}
         <span class="nick">Gordo</span>
@@ -176,7 +176,7 @@
         justify-content: center;
         font-weight: 600;
         /* color: #822f0047; */
-        color: #1825338c;
+        color: #ffffffe3;
         border-radius: 4px;
     }
 
@@ -219,6 +219,31 @@
 
     .resaltado {
         background: var(--color7)!important;
+    }
+
+    .color-rojo {background: #dd3226;}
+
+    .color-verde {background: #53a538;}
+
+    .color-amarillo {background: #ffc400;}
+
+    .color-azul {background: #00408a;}
+
+    .color-rosa {background: #ff74c1;}
+
+    .color-negro {background: #000000;}
+
+
+    .color-multi {
+        background: linear-gradient(#ffc400    25%, #00408a  25%, #00408a  50%, #53a538   50%, #53a538   75%, #dd3226  75%, #dd3226  100%);
+        animation: multi .3s infinite;
+    }
+    
+    @keyframes multi {
+        20%  { background: linear-gradient(#dd3226 25%, #ffc400 25%, #ffc400 50%, #00408a 50%, #00408a 75%, #53a538 75%, #53a538 100%);}
+        60%  { background: linear-gradient(#53a538 25%, #dd3226 25%, #dd3226 50%, #ffc400 50%, #ffc400 75%, #00408a 75%, #00408a 100%);}
+        80%  { background: linear-gradient(#00408a 25%, #53a538 25%, #53a538 50%, #dd3226 50%, #dd3226 75%, #ffc400 75%, #ffc400 100%);}
+        100% { background: linear-gradient(#ffc400 25%, #00408a 25%, #00408a 50%, #53a538 50%, #53a538 75%, #dd3226 75%, #dd3226 100%);}
     }
 
     /* .comentario-movil :glo.media {

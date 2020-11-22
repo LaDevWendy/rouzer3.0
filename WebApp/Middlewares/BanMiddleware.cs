@@ -24,7 +24,7 @@ namespace WebApp
         public async Task Invoke(HttpContext ctx,  RChanContext context, 
             SignInManager<UsuarioModel> sm)
         {
-            if(Regex.IsMatch(ctx.Request.Path, @"^/Domado")) 
+            if(Regex.IsMatch(ctx.Request.Path, @"^/Domado") || ctx.Request.Path.Value.Contains("omado"))  
             {
                 await next(ctx);
                 return;

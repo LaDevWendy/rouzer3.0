@@ -6,6 +6,7 @@ let data = Object.assign({
     mostrarLogin: false,
     mostrarRegistro: false,
     debug: true,
+    fondo: 'url(/imagenes/rosed.png)'
 }, window.globalState)
 
 //Categorias 

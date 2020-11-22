@@ -60,7 +60,6 @@ namespace WebApp.Controllers
         [Route("/Administracion")]
         public async Task<ActionResult> Index()
         {
-            System.Console.WriteLine(config.Value);
             var admins = await userManager.GetUsersForClaimAsync(new Claim("Role", "admin"));
             var mods = await userManager.GetUsersForClaimAsync(new Claim("Role", "mod"));
             var vm = new AdministracionVM
@@ -77,6 +76,15 @@ namespace WebApp.Controllers
         {
             await config.Guardar(Path.Combine(host.ContentRootPath, "generalsettings.json"));
             return Json(new ApiResponse("Configuracion actualizada"));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> GenerarNuevoLinkDeInvitacion([FromServices]  IWebHostEnvironment host)
+        {
+            string link = hashService.Random(8);
+            config.Value.LinkDeInvitacion = link;
+            await config.Value.Guardar(Path.Combine(host.ContentRootPath, "generalsettings.json"));
+            return Json(new {Link = link});
         }
 
         public class RolUserVM
@@ -140,60 +148,6 @@ namespace WebApp.Controllers
             }
             else
                 return BadRequest(result.Errors);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> AñadirSticky(Sticky sticky)
-        {
-            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == sticky.HiloId);
-            if (hilo is null) ModelState.AddModelError("Hilo", "El hilo no existe");
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            context.Stickies.RemoveRange(context.Stickies.Where(s => s.HiloId == sticky.HiloId));
-            await context.SaveChangesAsync();
-
-            if (sticky.Importancia == 0) return Json(new ApiResponse("Sticky removido"));
-
-            context.Add(sticky);
-            await context.SaveChangesAsync();
-            return Json(new ApiResponse("Hilo stickeado"));
-        }
-
-        public class BorrarHiloVm
-        {
-            public string HiloId { get; set; }
-        }
-        public async Task<ActionResult> BorrarHilo(BorrarHiloVm vm)
-        {
-            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == vm.HiloId);
-            if (hilo is null) return NotFound();
-
-            hilo.Estado = HiloEstado.Eliminado;
-
-            await context.SaveChangesAsync();
-            return Json(new ApiResponse("Hilo borrado"));
-        }
-
-        public class CambiarCategoriaVm
-        {
-            public string HiloId { get; set; }
-            public int CategoriaId { get; set; }
-        }
-        public async Task<ActionResult> CambiarCategoria(CambiarCategoriaVm vm)
-        {
-            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == vm.HiloId);
-            if (hilo is null) return NotFound();
-
-            if(!categoriasOpt.Value.Any(c => c.Id == vm.CategoriaId))
-            {
-                ModelState.AddModelError("Categoria", "La categoria es invalida");
-                return Json(ModelState);
-            }
-
-            hilo.CategoriaId = vm.CategoriaId;
-
-            await context.SaveChangesAsync();
-            return Json(new ApiResponse("Categoria cambiada!"));
         }
     }
 }

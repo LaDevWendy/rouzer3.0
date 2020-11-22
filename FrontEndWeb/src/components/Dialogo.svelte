@@ -32,6 +32,7 @@
     $: if(visible == false ) {
         respuesta = null
         error = null
+        exito = false
     }
 </script>
 

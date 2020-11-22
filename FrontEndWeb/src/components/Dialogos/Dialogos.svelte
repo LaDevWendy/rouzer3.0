@@ -31,6 +31,13 @@
             return s
         })
     }
+    function abrirRestaurarHilo(hiloId, comentarioId=null) {
+        dialogosStore.update(s => {
+            s.dialogoAbierto = "restaurarHilo"
+            s.hiloId = hiloId
+            return s
+        })
+    }
 
     function abrirEliminarComentarios(ids) {
         dialogosStore.update(s => {
@@ -54,7 +61,8 @@
          ban : abrirBan,
          reporte : abrirReporte,
          eliminarHilo: abrirEliminarhilo,
-         eliminarComentarios: abrirEliminarComentarios
+         eliminarComentarios: abrirEliminarComentarios,
+         restaurarHilo: abrirRestaurarHilo,
         //  categoria : abrirDialogo("categoria"),
         //  eliminar : abrirDialogo("eliminar"),
     }
@@ -69,12 +77,23 @@
 
 <Dialogo visible={$dialogosStore.dialogoAbierto == "eliminarHilo"} 
     textoActivador="Eliminar" 
-    titulo="Eliminar hilo" 
+    titulo="Eliminar roz" 
     accion = {() => RChanClient.borrarHilo($dialogosStore.hiloId)}
     >
     <span slot="activador"></span>
     <div slot="body">
-        ¿Estas seguro de que queres domar el hilo?
+        ¿Estas seguro de que queres domar el roz?
+    </div>
+</Dialogo>
+
+<Dialogo visible={$dialogosStore.dialogoAbierto == "restaurarHilo"} 
+    textoActivador="Restaurar" 
+    titulo="Restaurar el roz" 
+    accion = {() => RChanClient.restaurarRoz($dialogosStore.hiloId)}
+    >
+    <span slot="activador"></span>
+    <div slot="body">
+        ¿Estas seguro de que queres restaurar el roz?
     </div>
 </Dialogo>
 

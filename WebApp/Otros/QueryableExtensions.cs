@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Modelos;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace WebApp
 {
@@ -48,6 +50,21 @@ namespace WebApp
                 .Include(d => d.Comentario.Usuario)
                 .Include(d => d.Hilo.Media)
                 .Include(d => d.Hilo.Usuario);
+        }
+
+         public static IQueryable<BaneoModel> BansActivos(this IQueryable<BaneoModel> baneos, string usuarioId, string ip) {
+            var ahora = DateTimeOffset.Now;
+            return baneos
+                    .OrderByDescending(b => b.Expiracion)
+                    .Where(b => b.Visto)
+                    .Where(b => b.Expiracion > ahora)
+                    .Where(b => b.UsuarioId == usuarioId || b.Ip == ip);
+        }
+
+         public static async Task<bool> EstaBaneado(this IQueryable<BaneoModel> baneos, string usuarioId, string ip) {
+            return (await baneos
+                .BansActivos(usuarioId, ip)
+                .FirstOrDefaultAsync()) != null;
         }
     }
     

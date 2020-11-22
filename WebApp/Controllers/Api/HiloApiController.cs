@@ -217,6 +217,21 @@ namespace WebApp.Controllers
             context.Denuncias.Add(denuncia);
             
             await context.SaveChangesAsync();
+
+            //Mandar denuncia a los medz
+            denuncia = await context.Denuncias
+                .Include(d => d.Hilo)
+                .Include(d => d.Usuario)
+                .Include(d => d.Comentario)
+                .Include(d => d.Comentario.Media)
+                .Include(d => d.Comentario.Usuario)
+                .Include(d => d.Hilo.Media)
+                .Include(d => d.Hilo.Usuario)
+                .SingleAsync(d => d.Id == denuncia.Id);
+
+            await rchanHub.Clients.Group("moderacion").SendAsync("nuevaDenuncia", denuncia);
+
+            
             return new ApiResponse("Denuncia enviada");
         }
 

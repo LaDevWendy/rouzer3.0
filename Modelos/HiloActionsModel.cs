@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace Modelos
 {
@@ -10,7 +11,9 @@ namespace Modelos
         public bool Favorito { get; set; }
         public bool Hideado { get; set; }
 
+        [JsonIgnore]
         public HiloModel Hilo { get; set; }
+        [JsonIgnore]
         public UsuarioModel Usuario { get; set; }
     }
 }

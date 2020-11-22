@@ -29,10 +29,13 @@ namespace WebApp
         public int LimiteArchivo { get; set; }
 
         public bool RegistroAbierto { get; set; }
+        public string LinkDeInvitacion { get; set; }
 
         public bool CaptchaHilo { get; set; }
         public bool CaptchaComentario { get; set; }
         public bool CaptchaRegistro { get; set; }
+        
+        public string Version { get; set; }
 
     }
 

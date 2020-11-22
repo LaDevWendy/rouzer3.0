@@ -2,12 +2,11 @@
     import RChanClient from '../RChanClient'
     import { fade, blur, fly } from 'svelte/transition';
     import {Ripple} from 'svelte-mui'
-    import RozedSignal from '../RozedSignal';
-    import {HubConnectionBuilder} from '@microsoft/signalr'
-    import { each } from 'svelte/internal';
     import Signal from '../signal';
 
     export let notificaciones
+
+    const titulo = document.title
 
     $: totalNotificaciones = notificaciones.map(n => n.conteo).reduce((c, n) => c+=n, 0)
     let mostrar =  false
@@ -29,7 +28,7 @@
         setTimeout(() => {
             nuevasNotificaciones.pop()
             nuevasNotificaciones = nuevasNotificaciones
-        }, 5000)
+        }, 3000 + nuevasNotificaciones.length * 1000)
         let yaExisteUnaNotiDeEseTipo = false
         let notiVieja = null
         for (const n of notificaciones) {
@@ -54,6 +53,10 @@
             notificaciones = [notiVieja, ...notificaciones]
         }
     })
+
+    Signal.coneccion.on("notificacionesLimpeadas", () => {
+        notificaciones = []
+    })
     // signal.coneccion.start().then(() => {
     //     console.log("Conectadito");
     //     return connection.invoke("SubscribirseAHilo", hilo.id)
@@ -61,6 +64,11 @@
     // }).catch(console.error)
 
 </script>
+
+<svelte:head>
+	<title>{totalNotificaciones != 0?`(${totalNotificaciones})`:''} {titulo}</title>
+</svelte:head>
+
 <span class="nav-boton drop-btn" style="display: flex; align-items: center; postition:relative; margin-right:6px">
     <span class="fe fe-bell" style="padding:16px;border-radius:4px" 
         on:click={() => mostrar = !mostrar && totalNotificaciones != 0}

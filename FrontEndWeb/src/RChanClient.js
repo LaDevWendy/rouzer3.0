@@ -7,8 +7,6 @@ axios.interceptors.response.use(function (response) {
     if(response.request.responseURL && response.request.responseURL.indexOf("/Domad") != -1) {
         window.location = response.request.responseURL
     }
-    console.log(response.request.responseURL);
-    console.log(response);
     if(response.data.redirect) window.location = response.data.redirect;
     return response
     if(response.request.responseURL && response.request.responseURL == "/") {
@@ -52,11 +50,12 @@ export default class RChanClient {
         return axios.post('/api/Comentario/Crear', form)
     }
 
-    static registrase(nick, contraseña, captcha) {
+    static registrase(nick, contraseña, captcha, codigoDeInvitacion="") {
         return axios.post('/api/Usuario/Registro', {
             nick,
             contraseña,
-            captcha
+            captcha,
+            codigo: codigoDeInvitacion,
         })
     }
 
@@ -94,19 +93,19 @@ export default class RChanClient {
     }
 
     static añadirSticky(hiloId, global, importancia) {
-        return axios.post("/api/Administracion/AñadirSticky", {
+        return axios.post("/api/Moderacion/AñadirSticky", {
             hiloId,
             global,
             importancia: Number(importancia),
         })
     }
     static borrarHilo(hiloId) {
-        return axios.post("/api/Administracion/BorrarHilo", {
+        return axios.post("/api/Moderacion/BorrarHilo", {
             hiloId,
         })
     }
     static cambiarCategoria(hiloId, categoriaId) {
-        return axios.post("/api/Administracion/CambiarCategoria", {
+        return axios.post("/api/Moderacion/CambiarCategoria", {
             hiloId,
             categoriaId,
         })
@@ -171,4 +170,14 @@ export default class RChanClient {
     {
         return axios.post(`/api/Moderacion/RemoverBan/${id}`)
     }
+    
+    static restaurarRoz(id)
+    {
+        return axios.post(`/api/Moderacion/RestaurarHilo/${id}`)
+    }
+    static generarNuevoLinkDeInvitacion()
+    {
+        return axios.post(`/api/Administracion/GenerarNuevoLinkDeInvitacion`)
+    }
+
 }

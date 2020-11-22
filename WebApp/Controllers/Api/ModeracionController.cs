@@ -34,6 +34,7 @@ namespace WebApp.Controllers
         private readonly UserManager<UsuarioModel> userManager;
         private readonly SignInManager<UsuarioModel> signInManager;
         private readonly IOptions<GeneralOptions> config;
+        private readonly IOptions<List<Categoria>> categoriasOpt;
 
         public Moderacion(
             IHiloService hiloService,
@@ -43,7 +44,8 @@ namespace WebApp.Controllers
             RChanContext context,
             UserManager<UsuarioModel> userManager,
             SignInManager<UsuarioModel> signInManager,
-            IOptionsSnapshot<GeneralOptions> config
+            IOptionsSnapshot<GeneralOptions> config,
+            IOptions<List<Categoria>> categoriasOpt
         )
         {
             this.hiloService = hiloService;
@@ -54,20 +56,24 @@ namespace WebApp.Controllers
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.config = config;
+            this.categoriasOpt = categoriasOpt;
         }
 
         [Route("/Moderacion")]
         public async Task<ActionResult> Index()
         {
             var hilos = await context.Hilos.OrderByDescending(h => h.Creacion)
+                .AsNoTracking()
                 .Take(100)
                 .AViewModelMod(context)
                 .ToListAsync();
 
             var comentarios = await context.Comentarios.OrderByDescending(c => c.Creacion)
+                .AsNoTracking()
                 .Take(100)
                 .Include(c => c.Media)
-                .Select(c => new ComentarioViewModelMod {
+                .Select(c => new ComentarioViewModelMod
+                {
                     HiloId = c.HiloId,
                     UsuarioId = c.UsuarioId,
                     Contenido = c.Contenido,
@@ -77,6 +83,7 @@ namespace WebApp.Controllers
                 }).ToListAsync();
 
             var denuncias = await context.Denuncias
+                .AsNoTracking()
                 .OrderByDescending(d => d.Creacion)
                 .Take(100)
                 .Include(d => d.Hilo)
@@ -87,7 +94,24 @@ namespace WebApp.Controllers
                 .Include(d => d.Hilo.Usuario)
                 .Include(d => d.Comentario.Usuario)
                 .ToListAsync();
-            return View(new ModeracionIndexVm(hilos, comentarios, denuncias));
+
+            var medias = await context.Comentarios
+                .AsNoTracking()
+                .OrderByDescending(d => d.Creacion)
+                .Where(c => c.MediaId != null)
+                .Include(c => c.Media)
+                .Take(50)
+                .Select(c => new ComentarioViewModelMod
+                {
+                    HiloId = c.HiloId,
+                    UsuarioId = c.UsuarioId,
+                    Contenido = c.Contenido,
+                    Id = c.Id,
+                    Creacion = c.Creacion,
+                    Media = c.Media
+                }).ToListAsync();
+
+            return View(new {hilos, comentarios, denuncias, medias});
         }
 
         [Route("/Moderacion/ListaDeUsuarios")]
@@ -103,19 +127,21 @@ namespace WebApp.Controllers
                 .Include(b => b.Usuario)
                 .Where(b => b.Expiracion > DateTime.Now)
                 .ToListAsync();
-                return View(new {ultimosRegistros, ultimosBaneos});
+            return View(new { ultimosRegistros, ultimosBaneos });
         }
 
-        
+
         [HttpGet]
-         [Route("/Moderacion/HistorialDeUsuario/{id}")]
-        public async Task<ActionResult> HistorialDeUsuario(string id) 
+        [Route("/Moderacion/HistorialDeUsuario/{id}")]
+        public async Task<ActionResult> HistorialDeUsuario(string id)
         {
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
-            if(usuario is null)
+            if (usuario is null)
                 return NotFound();
-            return View(new {
-                Usuario =  await context.Usuarios.Select(u => new {
+            return View(new
+            {
+                Usuario = await context.Usuarios.Select(u => new
+                {
                     u.Id,
                     u.Creacion,
                     u.UserName,
@@ -139,17 +165,37 @@ namespace WebApp.Controllers
             });
         }
 
+        [Route("/Moderacion/EliminadosYDesactivados")]
+        public async Task<ActionResult> EliminadosYDesactivados()
+        {
+            var hilos = await context.Hilos
+                    .Where(h => h.Estado == HiloEstado.Eliminado)
+                    .Recientes()
+                    .Take(100)
+                    .AViewModelMod(context)
+                    .ToListAsync();
+
+            var comentarios = await context.Comentarios
+                    .Recientes()
+                    .Where(h => h.Estado == ComentarioEstado.Eliminado)
+                    .Take(150)
+                    .ToListAsync();
+
+            return View(new { hilos, comentarios });
+        }
+
         [HttpPost]
-        public async Task<ActionResult> Banear(BanViewModel model) 
+        public async Task<ActionResult> Banear(BanViewModel model)
         {
             // var baneado = context.Users.FirstOrDefault(u => u.Id )
             var comentario = await context.Comentarios.FirstOrDefaultAsync(c => c.Id == model.ComentarioId);
             var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == model.HiloId);
-            var tipo = comentario is null? TipoElemento.Hilo : TipoElemento.Comentario;
+            var tipo = comentario is null ? TipoElemento.Hilo : TipoElemento.Comentario;
 
             CreacionUsuario elemento = comentario ?? (CreacionUsuario)hilo;
 
-            var ban = new BaneoModel{
+            var ban = new BaneoModel
+            {
                 Id = hashService.Random(),
                 Aclaracion = model.Aclaracion,
                 ComentarioId = model.ComentarioId,
@@ -160,29 +206,36 @@ namespace WebApp.Controllers
                 Tipo = tipo,
                 HiloId = model.HiloId,
                 Ip = elemento.Ip,
-                UsuarioId = tipo == TipoElemento.Comentario? comentario.UsuarioId : hilo.UsuarioId,
+                UsuarioId = tipo == TipoElemento.Comentario ? comentario.UsuarioId : hilo.UsuarioId,
             };
 
             context.Bans.Add(ban);
             // Si se marco la opcion para eliminar elemento, borro el hilo o el comentario
 
-            if(comentario != null)
+            if (comentario != null && model.EliminarElemento)
             {
                 comentario.Estado = ComentarioEstado.Eliminado;
-            } 
-            else if(hilo != null)
+            }
+            else if (hilo != null && model.EliminarElemento)
             {
                 hilo.Estado = HiloEstado.Eliminado;
             }
+
+            bool mediaEliminado = false;
+            if(model.EliminarAdjunto)
+            {
+                mediaEliminado =  await mediaService.Eliminar(elemento.MediaId);
+            }
+            
             await context.SaveChangesAsync();
-            return Json(new ApiResponse("Usuario Baneado"));
+            return Json(new ApiResponse($"Usuario Baneado {(mediaEliminado?"; imagen/video eliminado":"")}"));
         }
 
-        [HttpPost] 
-        public async Task<ActionResult> RemoverBan(string id) 
+        [HttpPost]
+        public async Task<ActionResult> RemoverBan(string id)
         {
             var ban = context.Bans.FirstOrDefault(b => b.Id == id);
-            if(ban != null) 
+            if (ban != null)
             {
                 ban.Expiracion = DateTime.Now;
                 await context.SaveChangesAsync();
@@ -191,11 +244,11 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> RechazarDenuncia(string id) 
+        public async Task<ActionResult> RechazarDenuncia(string id)
         {
             var denuncia = await context.Denuncias.FirstOrDefaultAsync(d => d.Id == id);
-            
-            if(denuncia is null) 
+
+            if (denuncia is null)
             {
                 ModelState.AddModelError("Denuncia", "No se encontro la denuncia");
                 return BadRequest(ModelState);
@@ -207,21 +260,91 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> EliminarComentarios(string[] ids) 
+        public async Task<ActionResult> EliminarComentarios(string[] ids)
         {
             var comentarios = await context.Comentarios
                 .Where(c => ids.Contains(c.Id))
                 .Where(c => c.Estado != ComentarioEstado.Eliminado)
                 .ToListAsync();
 
-             comentarios.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
+            comentarios.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
 
             int eliminados = await context.SaveChangesAsync();
             return Json(new ApiResponse($"{eliminados} comentarios eliminados"));
         }
 
+        [HttpPost]
+        public async Task<ActionResult> RestaurarHilo(string id)
+        {
+            var hilo = await context.Hilos.PorId(id);
+            if (hilo is null) return Json(new ApiResponse($"No se eoncontro el roz", false));
+
+            hilo.Estado = HiloEstado.Normal;
+            await context.SaveChangesAsync();
+            return Json(new ApiResponse($"Roz restaurado"));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AñadirSticky(Sticky sticky)
+        {
+            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == sticky.HiloId);
+            if (hilo is null) ModelState.AddModelError("Hilo", "El hilo no existe");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            context.Stickies.RemoveRange(context.Stickies.Where(s => s.HiloId == sticky.HiloId));
+            await context.SaveChangesAsync();
+
+            if (sticky.Importancia == 0) return Json(new ApiResponse("Sticky removido"));
+
+            context.Add(sticky);
+            await context.SaveChangesAsync();
+            return Json(new ApiResponse("Hilo stickeado"));
+        }
+
+        public class BorrarHiloVm
+        {
+            public string HiloId { get; set; }
+        }
+        [HttpPost]
+        public async Task<ActionResult> BorrarHilo(BorrarHiloVm vm)
+        {
+            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == vm.HiloId);
+            if (hilo is null) return NotFound();
+
+            hilo.Estado = HiloEstado.Eliminado;
+
+            await context.SaveChangesAsync();
+            return Json(new ApiResponse("Hilo borrado"));
+        }
+
+        public class CambiarCategoriaVm
+        {
+            public string HiloId { get; set; }
+            public int CategoriaId { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CambiarCategoria(CambiarCategoriaVm vm)
+        {
+            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == vm.HiloId);
+            if (hilo is null) return NotFound();
+
+            if (!categoriasOpt.Value.Any(c => c.Id == vm.CategoriaId))
+            {
+                ModelState.AddModelError("Categoria", "La categoria es invalida");
+                return Json(ModelState);
+            }
+
+            hilo.CategoriaId = vm.CategoriaId;
+
+            await context.SaveChangesAsync();
+            return Json(new ApiResponse("Categoria cambiada!"));
+        }
     }
-    public class ModeracionIndexVm {
+
+
+    public class ModeracionIndexVm
+    {
         public ModeracionIndexVm(List<HiloViewModelMod> hilos, List<ComentarioViewModelMod> comentarios, List<DenunciaModel> denuncias)
         {
             this.Hilos = hilos;

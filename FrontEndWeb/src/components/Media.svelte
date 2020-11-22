@@ -6,6 +6,7 @@
     export let media
 
     let abierto = false 
+    let oculto = false
     let vid
 
 
@@ -20,7 +21,16 @@
 </script>
 
 <div class="media" class:abierto>
-    {#if media.tipo  == MediaType.Imagen}
+    {#if !abierto}
+        <div class="ocultar">
+            <Button on:click={() => oculto = !oculto} class="cerrar" icon>
+                <i class="fe fe-eye{!oculto?'-off':''}"></i> 
+            </Button>
+        </div>
+    {/if}
+    {#if oculto}
+        <div style="height:64px;"></div>
+    {:else if media.tipo  == MediaType.Imagen}
         {#if media.esGif}
             <a href="/{media.url}" target="_blank">
                 <img src="/{media.url}" alt="" srcset="">

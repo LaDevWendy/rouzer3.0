@@ -1,5 +1,6 @@
 <script>
-    import {Button} from 'svelte-mui'
+    import {Button, Checkbox} from 'svelte-mui'
+    import config from '../../config'
     import RChanClient from '../../RChanClient'
     import ErrorValidacion from '../ErrorValidacion.svelte'
 
@@ -42,6 +43,16 @@
         }
     }
 
+    async function generarLink() {
+        try {
+            const res = await RChanClient.generarNuevoLinkDeInvitacion()
+            model.config.linkDeInvitacion = res.data.link
+            alert("Nuevo link generado")
+        } catch (error) {
+            
+        }
+    }
+
 </script>
 <main class="administracion">
     <section style="max-width: 400px">
@@ -77,13 +88,32 @@
                 <li>Limite bump <input bind:value={model.config.limiteBump} type="number"></li>
                 <li>Tiempo entre comentarios <input bind:value={model.config.tiempoEntreComentarios} type="number"></li>
                 <li>Tiempo entre hilos <input bind:value={model.config.tiempoEntreHilos} type="number"></li>
-                <li>Registro abierto <input bind:checked={model.config.registroAbierto} type="checkbox"></li>
                 <li>Hilos maximos por categoria <input bind:value={model.config.hilosMaximosPorCategoria} type="number"></li>
                 <li>Limite archivo <input bind:value={model.config.limiteArchivo} type="number"></li>
                 <li>Captcha registro <input bind:checked={model.config.captchaRegistro} type="checkbox"></li>
                 <li>Captcha hilo <input bind:checked={model.config.captchaHilo} type="checkbox"></li>
                 <li>Captcha comentario <input bind:checked={model.config.captchaComentario} type="checkbox"></li>
                 <li>Modo privado <input bind:checked={model.config.modoPrivado} type="checkbox"></li>
+                <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
+            </ul>
+        </div>
+    </section>
+    <section style="max-width: 400px">
+        <h3>Registro</h3>
+        <ErrorValidacion error={error}/>
+        <div class="menu">
+            <ul >
+                <li>Registro publico <input bind:checked={model.config.registroAbierto} type="checkbox"></li>
+                {#if !model.config.registroAbierto}
+                    <li>
+                            <h4>Link de invitacion</h4>
+                    </li>
+                    <li>
+                        <a style="color:var(--color5)" href="/Registro?codigoDeInvitacion={model.config.linkDeInvitacion}">/Registro?codigoDeInvitacion={model.config.linkDeInvitacion}</a>
+
+                    </li>
+                    <Button on:click={generarLink}>Nuevo link</Button>
+                {/if}
                 <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
             </ul>
         </div>

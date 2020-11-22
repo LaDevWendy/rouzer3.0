@@ -38,7 +38,7 @@ async function crear() {
 </script>
 
 {#if mostrar}
-<div  transition:fly={{duration:200}}  class="sombra" style="position:fixed;left:0;top:0" on:click|self={() => mostrar = false}>
+<div  transition:fly={{duration:200}}  class="sombra" style="position:fixed;left:0;top:0">
     <form  
         id="crear-hilo-form" 
         class="formulario crear-hilo panel"

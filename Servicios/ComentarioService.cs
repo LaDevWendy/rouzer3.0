@@ -36,7 +36,7 @@ namespace Servicios
         {
             return await _context.Comentarios
                 .Where(c => c.HiloId == hiloId)
-                .Where(c => c.Estado != ComentarioEstado.Eliminado)
+                .Where(c => c.Estado == ComentarioEstado.Normal)
                 .OrderByDescending(c => c.Creacion)
                 .Include(c => c.Media)
                 .Select(c => new ComentarioViewModel {
