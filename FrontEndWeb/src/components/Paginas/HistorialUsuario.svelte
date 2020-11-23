@@ -1,6 +1,6 @@
 <script>
-    import Comentario from '../Comentarios/Comentario.svelte'
-    import HiloPreview from '../Hilos/HiloPreview.svelte'
+    import ComentarioMod from '../Moderacion/ComentarioMod.svelte';
+    import HiloPreviewMod from '../Moderacion/HiloPreviewMod.svelte';
 
     let hilos = window.model.hilos
     let comentarios = window.model.comentarios
@@ -34,13 +34,13 @@
         <ul style="min-width:300px">
             <h3 style="height:40px">Ultimos hilos</h3>
             {#each hilos as h}
-                <HiloPreview hilo={h}/>
+                <HiloPreviewMod hilo={h}/>
             {/each}
         </ul>
         <ul>
             <h3 style="height:40px">Ultimos comentarios</h3>
             {#each comentarios as c}
-                <Comentario comentario={c}/>
+                <ComentarioMod comentario={c}/>
             {/each}
         </ul>
     </div>

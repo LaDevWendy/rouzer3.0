@@ -51,6 +51,7 @@ namespace WebApp.Controllers
 
             _context.Notificaciones.RemoveRange(notisABorrar);
             await _context.SaveChangesAsync();
+            
 
             return Redirect($"/Hilo/{noti.HiloId}");
         }

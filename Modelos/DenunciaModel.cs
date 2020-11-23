@@ -29,9 +29,9 @@ namespace Modelos
     {
         CategoriaIncorrecta,
         Spam,
-        Avatarfageo,
         Doxxeo,
         CoentenidoIlegal,
+        Gore,
         MaltratoAnimal,
     }
     public enum TipoElemento

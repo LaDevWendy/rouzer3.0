@@ -35,6 +35,8 @@
             <ul>
                 {#each denuncias as d}
                     <Denuncia bind:denuncia={d} />
+                {:else}
+                    <h3 style="text-align:center">No hay denuncias</h3>
                 {/each}
             </ul>
         </div>
@@ -52,7 +54,7 @@
         min-width: 400px;
         width: fit-content;
         z-index: 10;
-        background:var(--color5);
+        background: #9c1010;
         font-size: 0.7em;
         max-height: 90vh;
         overflow-x: scroll;

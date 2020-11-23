@@ -1,11 +1,11 @@
 <script>
     import HiloCuerpo from "./Hilos/HiloCuerpo.svelte"
-    import HiloPreview from "./Hilos/HiloPreview.svelte"
     import {Button} from "svelte-mui"
     import Tiempo from "./Tiempo.svelte"
     import Comentario from "./Comentarios/Comentario.svelte"
     import RChanClient from "../RChanClient";
     import { createEventDispatcher } from 'svelte';
+    import HiloPreviewMod from "./Moderacion/HiloPreviewMod.svelte";
 
 	const dispatch = createEventDispatcher()
 
@@ -59,7 +59,7 @@
         </a>
         <Button on:click={rechazar}>Rechazar</Button>
         {#if denuncia.tipo == 0}
-            <HiloPreview {hilo}/>
+            <HiloPreviewMod {hilo}/>
         {:else}
             <Comentario comentario={comentario}/>
         {/if}

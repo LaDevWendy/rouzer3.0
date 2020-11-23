@@ -1,5 +1,6 @@
 <script>
     import RChanClient from "../../RChanClient";
+    import {MotivoDenuncia} from "../../enums"
 
     import Dialogo from "../Dialogo.svelte"
     import {Checkbox} from 'svelte-mui'
@@ -39,12 +40,9 @@
         </div>
         <select bind:value={motivo}  name="motivo"> 
             <option value="-1" selected="selected" disabled="disabled">Motivo</option>
-            <option value="0">1) Categoria incorrecta</option>
-            <option value="1">2) Spam, fload</option>
-            <option value="2">3) Avatarfageo</option>
-            <option value="3">4) Contiene datos personales</option>
-            <option value="4">5) Contenido ilegal</option>
-            <option value="5">Otro(aclarar)</option>
+            {#each Object.keys(MotivoDenuncia) as k, i}
+                <option value={MotivoDenuncia[k]}>{k}</option>
+            {/each}
         </select>
         
         <textarea placeholder="Aclaracion, mensaje" bind:value={aclaracion}></textarea>
@@ -63,8 +61,8 @@
                
         {#if comentarioId || hiloId}
             <Checkbox style="padding: 0 8px" bind:checked={eliminarElemento} right> Eliminar elemento(hilo/comentario)</Checkbox>
-            <Checkbox style="padding: 0 8px" bind:checked={eliminarAdjunto} right> Eliminar adjunto(imagen/video)</Checkbox>
-            {/if}
+            <Checkbox style="padding: 0 8px" title="Borra la imagen del servidor, usar en caso de cp" bind:checked={eliminarAdjunto} right> Eliminar adjunto(imagen/video)</Checkbox>
+        {/if}
 
     </div>
 

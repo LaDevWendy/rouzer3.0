@@ -1,5 +1,5 @@
 <script>
-    import Comentario from '../Comentarios/Comentario.svelte'
+    import ComentarioMod from '../Moderacion/ComentarioMod.svelte'
     import HiloPreview from '../Hilos/HiloPreview.svelte'
     import {abrir} from '../Dialogos/Dialogos.svelte'
     import {Button} from 'svelte-mui'
@@ -26,7 +26,7 @@
     <ul>
         <h3 style="height:40px">Comentarios eliminados</h3>
         {#each comentarios as c}
-            <Comentario comentario={c}/>
+            <ComentarioMod comentario={c}/>
         {/each}
     </ul>
 </main>

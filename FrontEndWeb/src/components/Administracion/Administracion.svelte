@@ -1,5 +1,5 @@
 <script>
-    import {Button, Checkbox} from 'svelte-mui'
+    import {Button, Checkbox,Radio} from 'svelte-mui'
     import config from '../../config'
     import RChanClient from '../../RChanClient'
     import ErrorValidacion from '../ErrorValidacion.svelte'
@@ -7,6 +7,8 @@
     let model = window.model
     let error = null
     let nick = ""
+
+    let restAcc = 0;
 
     async function eliminar(nick, rol) {
         try {
@@ -53,6 +55,14 @@
         }
     }
 
+    let restriccionDeAcesso = 2;
+    let restriccionesDeAcesso = {
+        Libre: 0,
+        Registrados: 1,
+        Administradores:2,
+
+    };
+
 </script>
 <main class="administracion">
     <section style="max-width: 400px">
@@ -86,14 +96,13 @@
         <div class="menu">
             <ul >
                 <li>Limite bump <input bind:value={model.config.limiteBump} type="number"></li>
-                <li>Tiempo entre comentarios <input bind:value={model.config.tiempoEntreComentarios} type="number"></li>
-                <li>Tiempo entre hilos <input bind:value={model.config.tiempoEntreHilos} type="number"></li>
-                <li>Hilos maximos por categoria <input bind:value={model.config.hilosMaximosPorCategoria} type="number"></li>
-                <li>Limite archivo <input bind:value={model.config.limiteArchivo} type="number"></li>
-                <li>Captcha registro <input bind:checked={model.config.captchaRegistro} type="checkbox"></li>
-                <li>Captcha hilo <input bind:checked={model.config.captchaHilo} type="checkbox"></li>
-                <li>Captcha comentario <input bind:checked={model.config.captchaComentario} type="checkbox"></li>
-                <li>Modo privado <input bind:checked={model.config.modoPrivado} type="checkbox"></li>
+                <li>Tiempo entre comentario <input bind:value={model.config.tiempoEntreComentarios} type="number"></li>
+                <li>Tiempo entre hilos<input bind:value={model.config.tiempoEntreHilos} type="number"></li>
+                <li>Hilos maximos por categoria<input bind:value={model.config.hilosMaximosPorCategoria} type="number"></li>
+                <li>Limite archivo<input bind:value={model.config.limiteArchivo} type="number"></li>
+                <li>Captcha registro <Checkbox bind:checked={model.config.captchaRegistro} right></Checkbox></li>
+                <li>Captcha hilo <Checkbox bind:checked={model.config.captchaHilo} right></Checkbox></li>
+                <li>Captcha comentario <Checkbox bind:checked={model.config.captchaComentario} right></Checkbox></li>
                 <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
             </ul>
         </div>
@@ -103,7 +112,8 @@
         <ErrorValidacion error={error}/>
         <div class="menu">
             <ul >
-                <li>Registro publico <input bind:checked={model.config.registroAbierto} type="checkbox"></li>
+                <li>Registro publico <Checkbox bind:checked={model.config.registroAbierto} right></Checkbox></li>
+                
                 {#if !model.config.registroAbierto}
                     <li>
                             <h4>Link de invitacion</h4>
@@ -114,6 +124,22 @@
                     </li>
                     <Button on:click={generarLink}>Nuevo link</Button>
                 {/if}
+                <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
+            </ul>
+        </div>
+    </section>
+    <section style="max-width: 400px">
+        <h3>Acceso</h3>
+        <ErrorValidacion error={error}/>
+        <div class="menu">
+            <ul >
+                {#each Object.keys(restriccionesDeAcesso) as key}
+                <li>
+                    <Radio right bind:group={model.config.restriccionDeAcceso} value={restriccionesDeAcesso[key]}>
+                        <span>{key}</span>
+                    </Radio>
+                </li>
+                {/each}
                 <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
             </ul>
         </div>

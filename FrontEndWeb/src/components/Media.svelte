@@ -79,6 +79,8 @@
     .media {
         position: relative;
         width: 50%;
+        max-height: 80vh;
+        display: flex;
     }
     video, .abierto {
         width:100%;
@@ -117,6 +119,16 @@
     .medialink{
         background: var(--color4);
         width: 100%;
+    }
+    a {
+        width: 100%;
+    }
+
+    .media .ocultar {
+        display: none;
+    }
+    .media:hover .ocultar {
+        display: block  ;
     }
 
 </style>

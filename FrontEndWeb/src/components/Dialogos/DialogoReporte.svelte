@@ -2,6 +2,7 @@
     import Dialogo from '../Dialogo.svelte'
     import globalStore from '../../globalStore'
     import RChanClient from '../../RChanClient';
+    import {MotivoDenuncia} from '../../enums'
 
     export let comentarioId = ""
     export let hiloId = ""
@@ -26,13 +27,12 @@
         <p>Reportar el {tipoString} {tipoString == "hilo"? hiloId : comentarioId} </p>
         <select bind:value={motivo}  name="motivo"> 
             <option value="-1" selected="selected" disabled="disabled">Motivo</option>
-            {#if tipoString == "hilo"}
+            <!-- {#if tipoString == "hilo"}
                 <option value="0">1) Categoria incorrecta</option>
-            {/if}
-            <option value="1">2) Spam, fload</option>
-            <option value="2">3) MaltratoAnimal</option>
-            <option value="3">4) Contiene datos personales</option>
-            <option value="4">5) Contenido ilegal</option>
+            {/if} -->
+            {#each Object.keys(MotivoDenuncia) as k, i}
+                <option value={MotivoDenuncia[k]}>{k}</option>
+            {/each}
         </select>
 
         <textarea placeholder="Aclaracion" bind:value={aclaracion}></textarea>

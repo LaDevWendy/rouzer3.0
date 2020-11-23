@@ -66,6 +66,11 @@ namespace WebApp
         {
             return builder.UseMiddleware<BanMiddleware>();
         }
+        public static IApplicationBuilder RestriccionDeAccesoMiddleware(
+            this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<RestriccionDeAccesoMiddleware>();
+        }
     }
     
 }

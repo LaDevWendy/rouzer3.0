@@ -8,9 +8,10 @@
     "LimiteArchivo": 0,
     "RegistroAbierto": false,
     "LinkDeInvitacion": "B193UL4W",
+    "RestriccionDeAcceso": 0,
     "CaptchaHilo": true,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
-    "Version": "0.7"
+    "Version": "0.8"
   }
 }

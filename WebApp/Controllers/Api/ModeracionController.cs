@@ -72,15 +72,8 @@ namespace WebApp.Controllers
                 .AsNoTracking()
                 .Take(100)
                 .Include(c => c.Media)
-                .Select(c => new ComentarioViewModelMod
-                {
-                    HiloId = c.HiloId,
-                    UsuarioId = c.UsuarioId,
-                    Contenido = c.Contenido,
-                    Id = c.Id,
-                    Creacion = c.Creacion,
-                    Media = c.Media
-                }).ToListAsync();
+                .AViewModelMod()
+                .ToListAsync();
 
             var denuncias = await context.Denuncias
                 .AsNoTracking()
@@ -160,6 +153,7 @@ namespace WebApp.Controllers
                     .Recientes()
                     .DeUsuario(id)
                     .Take(150)
+                    .AViewModelMod()
                     .ToListAsync()
 
             });
@@ -179,6 +173,7 @@ namespace WebApp.Controllers
                     .Recientes()
                     .Where(h => h.Estado == ComentarioEstado.Eliminado)
                     .Take(150)
+                    .AViewModelMod()
                     .ToListAsync();
 
             return View(new { hilos, comentarios });

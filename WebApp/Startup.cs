@@ -187,6 +187,7 @@ namespace WebApp
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.RestriccionDeAccesoMiddleware();
             app.UseBanMiddleware();
 
             //Domo a los baneados

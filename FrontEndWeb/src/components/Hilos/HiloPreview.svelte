@@ -71,6 +71,7 @@ function onClick(e) {
             <li on:click={() => abrir.reporte(hilo.id, "")}>Reportar <Ripple/></li>
             {#if $globalStore.usuario.esMod}
                 <li on:click={() => abrir.eliminarHilo(hilo.id, "")} >Eliminar <Ripple/></li>
+                <li on:click={() => abrir.ban(hilo.id)} >Banear <Ripple/></li>
             {/if}
         </Menu>
     </div>
@@ -114,6 +115,13 @@ function onClick(e) {
     }
     .sticky-info {
         background: var(--color1)
+    }
+
+    .hilo:hover :global(button) {
+        background: rgb(23 33 43 / 22%) !important;
+    }
+    .hilo :global(button) {
+        border-radius:  50% 0% 0% 50%;
     }
 
 </style>

@@ -154,17 +154,30 @@
 
     .media-input {
         align-items: flex-end;
+        min-height: 64px;
     }
 
     .compacto {
         height: auto;
         width: 100%;
         margin-left: 0;
+        max-height: 300px;
     }
 
     .link-input {
         height: fit-content;
         display: flex;
         width: 100%;
+    }
+
+    video {
+        max-height: 600px;
+        max-width: 600px;
+    }
+
+    .media-input :global(.cancelar ){
+        position: absolute;
+        right: 16px;
+        top: 16px;
     }
 </style>

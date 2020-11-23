@@ -96,11 +96,16 @@
             <Menu>
                 <span slot="activador" on:click={() => mostrarMenu = true} class=""><i class="fe fe-more-vertical relative"></i></span>
                 <li on:click={() => toggle()}>{visible?'Ocultar':'Mostrar'}</li>
-                <li on:click={() => abrir.reporte(hilo.id, comentario.id)}>Reportar</li>
+                <li on:click={() => abrir.reporte(hilo?.id || comentario.hiloId, comentario.id)}>Reportar</li>
                 {#if $globalStore.usuario.esMod}
                     <hr>
+                    {#if comentario.hiloId}
+                        <a href="/Hilo/{comentario.hiloId}#{comentario.id}" style="color:white!important">
+                            <Menuitem>Ir</Menuitem>
+                        </a>
+                    {/if}
                     <Menuitem on:click={() => abrir.eliminarComentarios([comentario.id])}>Eliminar</Menuitem>
-                    <Menuitem on:click={() => abrir.ban(hilo.id, comentario.id)} >Banear</Menuitem>
+                    <Menuitem on:click={() => abrir.ban(hilo?.id || comentario.hiloId, comentario.id)} >Banear</Menuitem>
                 {/if}
             </Menu>
         </div>

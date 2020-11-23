@@ -9,15 +9,23 @@
     import MensajeRotativo from './MensajeRotativo.svelte'
     import Dialogos from './Dialogos/Dialogos.svelte'
     import {abrir} from './Dialogos/Dialogos.svelte'
-    import Denuncia from './Denuncia.svelte';
     import DenunciasNav from './Moderacion/DenunciasNav.svelte'
+    import {fade} from 'svelte/transition'
+    import Signal from '../signal'
 
     export let notificaciones = window.notificaciones || []
 
     let mostrarMenu = false
     let mostrarFormularioHilo = false
-    let mostrarCategorias =  false
-    let mostrarNotificaciones =  false
+    let computadorasConectadas = window.estadisticas.computadorasConectadas
+
+    let mostrarComputadorasConectadas = false
+
+    Signal.coneccion.on("estadisticas", e => {
+        computadorasConectadas = e
+        mostrarComputadorasConectadas = true;
+    })
+
 </script>
 <header>
     <div class="nav-principal">
@@ -26,11 +34,18 @@
             <Ripple/>
         </span>
         <a href="/" style="font-family: euroFighter">
-            <h3>ROZED <span class="version"> La red nini (Alfa 0.7)</span></h3>
+            <h3>ROZED <span class="version"> La red nini (Alfa 0.8)</span></h3>
 
             <Ripple/>
         </a>
         <!-- <MensajeRotativo/> -->
+        <div class="estadisticas">
+            {#if mostrarComputadorasConectadas}
+                <span transition:fade={{duration: 5000 }}   on:introend="{() => mostrarComputadorasConectadas = false}">
+                    {computadorasConectadas} computadora{computadorasConectadas!=1?'s':''} conectada{computadorasConectadas!=1?'s':''}
+                </span>
+            {/if}
+        </div>
 
         <div class="nav-botones" style="position: relative;">
 
@@ -161,4 +176,27 @@
     top: 10px;
     font-family: helvetica;
 }
+
+.estadisticas {
+    text-transform: uppercase;
+    font-size: 12px;
+    text-align: center;
+    color: #334d67;
+    justify-self: center;
+    margin: auto;
+    overflow: hidden;
+}
+
+/* .estadisticas span {
+    animation: baja 5s infinite linear;
+}
+
+@keyframes baja {
+    0% {
+        transform: translateY(-40px);
+    }
+    100% {
+        transform: translateY(40px);
+    }
+} */
 </style>

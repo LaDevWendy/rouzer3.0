@@ -99,7 +99,7 @@
 
 <Dialogo visible={$dialogosStore.dialogoAbierto == "eliminarComentarios"} 
     textoActivador="Eliminar" 
-    titulo="Eliminar hilo" 
+    titulo="Eliminar comentario" 
     accion = {() => RChanClient.eliminarComentarios($dialogosStore.comentariosIds)}
     >
     <span slot="activador"></span>

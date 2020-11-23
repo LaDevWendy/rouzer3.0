@@ -23,33 +23,24 @@ namespace WebApp.Controllers
     [ApiController, Route("api/Comentario/{action}")]
     public class ComentarioApiControlelr : Controller
     {
-        private readonly IHiloService hiloService;
         private readonly IComentarioService comentarioService;
-        private readonly HtmlEncoder htmlEncoder;
         private readonly RChanContext context;
-        private readonly HashService hashService;
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly NotificacioensService notificacioensService;
         private readonly AntiFloodService antiFlood;
         private readonly IMediaService mediaService;
 
         public ComentarioApiControlelr(
-            IHiloService hiloService,
             IComentarioService comentarioService,
             IMediaService mediaService,
-            HtmlEncoder htmlEncoder,
             RChanContext chanContext,
-            HashService hashService,
             IHubContext<RChanHub> rchanHub,
             NotificacioensService notificacioensService,
             AntiFloodService antiFlood
         )
         {
-            this.hiloService = hiloService;
             this.comentarioService = comentarioService;
-            this.htmlEncoder = htmlEncoder;
             this.context = chanContext;
-            this.hashService = hashService;
             this.rchanHub = rchanHub;
             this.notificacioensService = notificacioensService;
             this.antiFlood = antiFlood;
@@ -59,6 +50,9 @@ namespace WebApp.Controllers
         [HttpPost, Authorize]
         public async Task<ActionResult<ApiResponse>> Crear([FromForm] ComentarioFormViewModel vm)
         {
+            if(vm.Contenido is null) vm.Contenido = "";
+            if(string.IsNullOrWhiteSpace(vm.Contenido) && vm.Archivo is null && string.IsNullOrWhiteSpace(vm.Link))
+                ModelState.AddModelError("uy!", "El comentario no puede estar vacio padre");
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
             var hilo = await context.Hilos.FirstOrDefaultAsync(c => c.Id == vm.HiloId);
@@ -123,8 +117,8 @@ namespace WebApp.Controllers
 public class ComentarioFormViewModel {
     [Required]
     public string HiloId { get; set; }
-    [Required(ErrorMessage="El comentario no puede estar vacio padre")]
-    public string Contenido { get; set; }
+    [MaxLength(1500, ErrorMessage="Pero este comentario es muy largo padre")]
+    public string Contenido { get; set; } = "";
     public IFormFile Archivo { get; set; }
     public string Link { get; set; }
 }

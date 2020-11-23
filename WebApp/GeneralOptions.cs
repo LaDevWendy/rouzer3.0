@@ -30,6 +30,8 @@ namespace WebApp
 
         public bool RegistroAbierto { get; set; }
         public string LinkDeInvitacion { get; set; }
+        
+        public RestriccionDeAcceso RestriccionDeAcceso { get; set; } 
 
         public bool CaptchaHilo { get; set; }
         public bool CaptchaComentario { get; set; }
@@ -37,6 +39,13 @@ namespace WebApp
         
         public string Version { get; set; }
 
+    }
+
+    public enum RestriccionDeAcceso
+    {
+        Publico,
+        Registrados,
+        Administradores
     }
 
 }

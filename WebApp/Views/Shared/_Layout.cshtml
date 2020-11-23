@@ -2,6 +2,8 @@
 @using Microsoft.Extensions.DependencyInjection;
 @using Microsoft.AspNetCore.Hosting;
 @using Microsoft.Extensions.Hosting
+@using Microsoft.AspNetCore.SignalR;
+
 @inject RChanContext _context;
 @inject IOptions<List<Categoria>> categoriasOpt;
 @inject IConfiguration config;
@@ -90,6 +92,10 @@
 
             } 
         };
+
+        var estadisticas = new {
+            computadorasConectadas = RChanHub.NumeroDeUsuariosConectados
+        };
     }
     
     @{
@@ -114,6 +120,7 @@
         window.globalState = @Json.Serialize(globalState)
 
         window.denuncias = @Json.Serialize(denuncias);
+        window.estadisticas = @Json.Serialize(estadisticas);
         
     </script>
 

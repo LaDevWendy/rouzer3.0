@@ -3,6 +3,8 @@
     import Comentario from '../Comentarios/Comentario.svelte'
     import Denuncia from '../Denuncia.svelte'
     import HiloPreview from '../Hilos/HiloPreview.svelte'
+    import ComentarioMod from '../Moderacion/ComentarioMod.svelte';
+    import HiloPreviewMod from '../Moderacion/HiloPreviewMod.svelte';
 
     let hilos = window.model.hilos
     let comentarios = window.model.comentarios
@@ -40,16 +42,13 @@
         <ul style="width:33%">
             <h3 style="height:40px">Ultimos hilos</h3>
             {#each hilos as h}
-                <HiloPreview hilo={h}/>
+                <HiloPreviewMod hilo={h}/>
             {/each}
         </ul>
         <ul>
             <h3 style="height:40px">Ultimos comentarios</h3>
             {#each comentarios as c}
-                <div style="display:flex;">
-                    <a start="color: var(--color5) !important" href="/Hilo/{c.hiloId}#{c.id}">Ir</a>
-                    <Comentario comentario={c}/>
-                </div>
+                <ComentarioMod comentario={c}/>
             {/each}
         </ul>
     </div>
@@ -75,15 +74,6 @@
         max-width: 500px;
         background: var(--color2);
         padding: 10px
-    }
-    .seccion2 ul :global(.hilo) 
-    {
-        width: 100%;
-        height: 100px !important
-    }
-   .seccion2  ul :global(.hilo img) 
-    {
-        height: fit-content;
     }
 
     .ultimos-medias ul {
