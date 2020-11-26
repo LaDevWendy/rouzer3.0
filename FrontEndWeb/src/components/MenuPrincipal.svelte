@@ -62,19 +62,21 @@
                 </div>
             {/if}
             <hr>
-            <a href="/Mis/Creados">
-                <li> <icon class="fe fe-target"/> Creados  <Ripple/></li>
-            </a>
-            <a href="/Mis/Favoritos">
-                <li> <icon class="fe fe-star"/> Favoritos  <Ripple/></li>
-            </a>
-            <a href="/Mis/Seguidos">
-                <li> <icon class="fe fe-eye"/> Seguidos  <Ripple/></li>
-            </a>
-            <a href="/Mis/Ocultos">
-                <li> <icon class="fe fe-eye-off"/> Ocultos  <Ripple/></li>
-            </a>
-            <hr>
+            {#if $globalStore.usuario.estaAutenticado}
+                <a href="/Mis/Creados">
+                    <li> <icon class="fe fe-target"/> Creados  <Ripple/></li>
+                </a>
+                <a href="/Mis/Favoritos">
+                    <li> <icon class="fe fe-star"/> Favoritos  <Ripple/></li>
+                </a>
+                <a href="/Mis/Seguidos">
+                    <li> <icon class="fe fe-eye"/> Seguidos  <Ripple/></li>
+                </a>
+                <a href="/Mis/Ocultos">
+                    <li> <icon class="fe fe-eye-off"/> Ocultos  <Ripple/></li>
+                </a>
+                <hr>
+            {/if}
             {#if $globalStore.usuario.esMod}
                 <a href="/Moderacion">
                     <li> <icon class="fe fe-triangle"/> Moderacion  <Ripple/></li>

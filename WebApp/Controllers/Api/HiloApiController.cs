@@ -32,6 +32,8 @@ namespace WebApp.Controllers
         private readonly CaptchaService captcha;
         private readonly AntiFloodService antiFlood;
 
+        private static readonly HashSet<string> denunciasIp = new HashSet<string>();
+
         #region constructor
         public HiloApiController(
             IHiloService hiloService,
@@ -194,6 +196,11 @@ namespace WebApp.Controllers
         [AllowAnonymous]
         async public Task<ActionResult<ApiResponse>> Denunciar( DenunciaVM vm)
         {
+            if(generalOptions.Value.RestriccionDeAcceso != RestriccionDeAcceso.Publico && !User.Identity.IsAuthenticated)
+            {
+                ModelState.AddModelError("Error", "Error al denuciar");
+                return BadRequest(ModelState);
+            }
             var denuncia = new DenunciaModel
             {
                 Tipo = vm.Tipo,
@@ -208,9 +215,12 @@ namespace WebApp.Controllers
             {
                 ModelState.AddModelError("hilo", "No se encontro el hilo");
             }
-            var yaDenuncio = await context.Denuncias
+            bool yaDenuncio = await context.Denuncias
                 .AnyAsync(d => d.UsuarioId == (User.GetId()?? "Anonimo") &&
                     d.Tipo == denuncia.Tipo && denuncia.HiloId == d.HiloId && d.ComentarioId == denuncia.ComentarioId);
+            
+            string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            yaDenuncio = yaDenuncio || denunciasIp.Contains(vm.HiloId + vm.ComentarioId?? "" + ip);
 
             if(yaDenuncio) ModelState.AddModelError("hilo", "Ya denunciaste esto");
 
@@ -224,6 +234,8 @@ namespace WebApp.Controllers
             context.Denuncias.Add(denuncia);
             
             await context.SaveChangesAsync();
+
+            denunciasIp.Add(vm.HiloId + vm.ComentarioId?? "" + ip);
 
             //Mandar denuncia a los medz
             denuncia = await context.Denuncias
