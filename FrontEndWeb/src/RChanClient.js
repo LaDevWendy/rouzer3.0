@@ -9,14 +9,6 @@ axios.interceptors.response.use(function (response) {
     }
     if(response.data.redirect) window.location = response.data.redirect;
     return response
-    if(response.request.responseURL && response.request.responseURL == "/") {
-        window.location = response.request.responseURL
-    }
-
-    if(response.request.responseURL && response.request.responseURL.indexOf("/Login") != -1) {
-        window.location = "/Login"
-    }
-    return Promise.resolve(response);
   }, function (error) {
       
         if(error.response.data.redirect){
@@ -27,9 +19,18 @@ axios.interceptors.response.use(function (response) {
         return Promise.reject(error);
   });
 
+  axios.interceptors.request.use(function (config) {
+    // Do something before request is sent
+    config.headers["RequestVerificationToken"] = window.token
+    return config;
+  }, function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  });
+
 export default class RChanClient {
     // Acciones
-    static crearHilo(titulo, categoria, contenido, archivo, link="", captcha="") {
+    static crearHilo(titulo, categoria, contenido, archivo, link="", captcha="", mostrarNombre=false, mostrarRango=false) {
         let form = new FormData()
         form.append("Titulo", titulo)
         form.append("CategoriaId", categoria)
@@ -37,16 +38,25 @@ export default class RChanClient {
         form.append("Archivo", archivo)
         form.append("Link", link)
         form.append("captcha", captcha)
+        if(mostrarNombre || mostrarRango) {
+            form.append('mostrarNombre', mostrarNombre)
+            form.append('mostrarRango', mostrarRango)
+        }
         return axios.post("/api/Hilo/Crear", form)
     }
 
-    static crearComentario(hiloId, contenido, archivo = null, link="", captcha="") {
+    static crearComentario(hiloId, contenido, archivo = null, link="", captcha="", mostrarNombre=false, mostrarRango=false) {
         let form = new FormData();
         form.append('hiloId', hiloId)
         form.append('contenido', contenido)
         form.append('archivo', archivo)
         form.append("Link", link)
         form.append('captcha', captcha)
+
+        if(mostrarNombre || mostrarRango) {
+            form.append('mostrarNombre', mostrarNombre)
+            form.append('mostrarRango', mostrarRango)
+        }
         return axios.post('/api/Comentario/Crear', form)
     }
 
@@ -124,7 +134,7 @@ export default class RChanClient {
             comentarioId
         })
     }
-    static banear(motivo, aclaracion, duracion, usuarioId, hiloId="", comentarioId="", eliminarElemento=true, eliminarAdjunto=false) {
+    static banear(motivo, aclaracion, duracion, usuarioId, hiloId="", comentarioId="", eliminarElemento=true, eliminarAdjunto=false, desaparecer=false) {
         return axios.post("/api/Moderacion/Banear", {
             motivo,
             aclaracion,
@@ -132,7 +142,8 @@ export default class RChanClient {
             eliminarElemento,
             eliminarAdjunto,
             hiloId,
-            comentarioId
+            comentarioId,
+            desaparecer,
         })
     }
 
@@ -175,9 +186,20 @@ export default class RChanClient {
     {
         return axios.post(`/api/Moderacion/RestaurarHilo/${id}`)
     }
+    static restaurarComentario(id)
+    {
+        return axios.post(`/api/Moderacion/RestaurarComentario/${id}`)
+    }
     static generarNuevoLinkDeInvitacion()
     {
         return axios.post(`/api/Administracion/GenerarNuevoLinkDeInvitacion`)
+    }
+    static eliminarMedia(mediaId, eliminarElementos=true)
+    {
+        return axios.post(`/api/Moderacion/EliminarMedia`, {
+            mediaId,
+            eliminarElementos,
+        })
     }
 
 }

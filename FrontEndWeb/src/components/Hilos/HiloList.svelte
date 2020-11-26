@@ -80,4 +80,5 @@
 </ul>
 <InfiniteLoading on:infinite={cargarViejos} distance={600}>
     <div style="text-align:center" slot="noMore">No hay mas hilos padre, recargue la pagina</div>
+    <div style="text-align:center" slot="noResults">No hay rozes</div>
 </InfiniteLoading>

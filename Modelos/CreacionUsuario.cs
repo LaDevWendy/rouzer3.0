@@ -10,8 +10,18 @@ namespace Modelos
         [Required]
         public string UsuarioId { get; set; }
         public MediaModel Media { get; set; }
+        public string Nombre{ get; set; } = "";
+        public CreacionRango Rango{ get; set; } = CreacionRango.Anon;
         public string MediaId { get; set; }
         [JsonIgnore]
-        public String Ip { get; set; }
+        public string Ip { get; set; }
+    }
+    
+    public enum CreacionRango
+    {
+        Anon,
+        Janitor,
+        Mod,
+        Admin,
     }
 }

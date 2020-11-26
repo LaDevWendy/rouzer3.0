@@ -1,17 +1,16 @@
 <script>
+    import BarraModeracion from '../Moderacion/BarraModeracion.svelte';
+
     import ComentarioMod from '../Moderacion/ComentarioMod.svelte';
     import HiloPreviewMod from '../Moderacion/HiloPreviewMod.svelte';
+    import { MotivoDenuncia } from '../../enums'
 
     let hilos = window.model.hilos
     let comentarios = window.model.comentarios
     let usuario = window.model.usuario
     // let denuncias = window.model.denuncias
 
-    const motivo = [ 'CategoriaIncorrecta',
-        'Spam',
-        'Avatarfageo',
-        'Doxxeo',
-        'CoentenidoIlegal']
+    const motivo = Object.keys( MotivoDenuncia)
 
     comentarios = comentarios.map (c => {
         c.respuestas = []
@@ -19,6 +18,7 @@
     })
 </script>
 
+<BarraModeracion/>
 <main>
     <div class="panel" style="background:var(--color6) !important;color:black; padding:8px 16px;">
         <h1 style>{usuario.userName}</h1>

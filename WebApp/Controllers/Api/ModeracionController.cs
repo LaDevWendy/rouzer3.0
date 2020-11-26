@@ -114,13 +114,15 @@ namespace WebApp.Controllers
                 .OrderByDescending(u => u.Creacion)
                 .Take(100)
                 .ToListAsync();
+            
+            var cantidadDeUsuarios = await context.Users.CountAsync();
 
             var ultimosBaneos = await context.Bans
                 .OrderByDescending(u => u.Creacion)
                 .Include(b => b.Usuario)
                 .Where(b => b.Expiracion > DateTime.Now)
                 .ToListAsync();
-            return View(new { ultimosRegistros, ultimosBaneos });
+            return View(new { ultimosRegistros, ultimosBaneos, cantidadDeUsuarios });
         }
 
 
@@ -207,23 +209,41 @@ namespace WebApp.Controllers
             context.Bans.Add(ban);
             // Si se marco la opcion para eliminar elemento, borro el hilo o el comentario
 
+            var denuncias = new List<DenunciaModel>();
             if (comentario != null && model.EliminarElemento)
             {
                 comentario.Estado = ComentarioEstado.Eliminado;
+                denuncias = await context.Denuncias
+                    .Where(d => d.HiloId == hilo.Id && d.ComentarioId == comentario.Id)
+                    .ToListAsync();
             }
             else if (hilo != null && model.EliminarElemento)
             {
+                denuncias = await context.Denuncias
+                    .Where(d => d.HiloId == hilo.Id)
+                    .ToListAsync();
                 hilo.Estado = HiloEstado.Eliminado;
             }
+            denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
 
             bool mediaEliminado = false;
             if(model.EliminarAdjunto)
             {
                 mediaEliminado =  await mediaService.Eliminar(elemento.MediaId);
             }
-            
+
+            //Borro todos los hilos y comentarios del usuario
+            if(model.Desaparecer)
+            {
+                var hilos = await context.Hilos.DeUsuario(elemento.UsuarioId).ToListAsync();
+                var comentarios = await context.Comentarios.DeUsuario(elemento.UsuarioId).ToListAsync();
+
+                hilos.ForEach(h => h.Estado = HiloEstado.Eliminado);
+                comentarios.ForEach(h => h.Estado =  ComentarioEstado.Eliminado);
+            }
+
             await context.SaveChangesAsync();
-            return Json(new ApiResponse($"Usuario Baneado {(mediaEliminado?"; imagen/video eliminado":"")}"));
+            return Json(new ApiResponse($"Usuario Baneado {(mediaEliminado?"; imagen/video eliminado":"")} {(model.Desaparecer?"; Usuario desaparecido":"")}"));
         }
 
         [HttpPost]
@@ -264,8 +284,13 @@ namespace WebApp.Controllers
 
             comentarios.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
 
+            var  denuncias = await context.Denuncias
+                .Where(d => ids.Contains(d.ComentarioId))
+                .ToListAsync();
+            denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
+        
             int eliminados = await context.SaveChangesAsync();
-            return Json(new ApiResponse($"{eliminados} comentarios eliminados"));
+            return Json(new ApiResponse($"comentarios domados!"));
         }
 
         [HttpPost]
@@ -277,6 +302,16 @@ namespace WebApp.Controllers
             hilo.Estado = HiloEstado.Normal;
             await context.SaveChangesAsync();
             return Json(new ApiResponse($"Roz restaurado"));
+        }
+
+        public async Task<ActionResult> RestaurarComentario(string id)
+        {
+            var comentario = await context.Comentarios.PorId(id);
+            if (comentario is null) return Json(new ApiResponse($"No se eoncontro el comentario", false));
+
+            comentario.Estado = ComentarioEstado.Normal;
+            await context.SaveChangesAsync();
+            return Json(new ApiResponse($"comentario restaurado"));
         }
 
         [HttpPost]
@@ -308,6 +343,10 @@ namespace WebApp.Controllers
 
             hilo.Estado = HiloEstado.Eliminado;
 
+            //Limpiar denuncias
+            var denuncias = await context.Denuncias.Where(d => d.HiloId == hilo.Id).ToListAsync();
+            denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
+
             await context.SaveChangesAsync();
             return Json(new ApiResponse("Hilo borrado"));
         }
@@ -335,8 +374,53 @@ namespace WebApp.Controllers
             await context.SaveChangesAsync();
             return Json(new ApiResponse("Categoria cambiada!"));
         }
-    }
 
+        [Route("/Moderacion/Media")]
+        public async Task<ActionResult> Media()
+        {
+            var medias = await context.Medias
+                .AsNoTracking()
+                .OrderByDescending(m => m.Creacion)
+                .Take(100)
+                .ToListAsync();
+
+            return View(new {
+                medias
+            });
+        }
+
+        public class EliminarMediaVm
+        {
+            public string MediaId { get; set; }
+            public bool EliminarElementos { get; set; }
+        }
+        [HttpPost]
+        public async Task<ActionResult> EliminarMedia(EliminarMediaVm model)
+        {
+            var media = await context.Medias.PorId(model.MediaId);
+            if(media is null) 
+            {
+                ModelState.AddModelError("Error", "No se encontro el archivo");
+                return Json(ModelState);
+            }
+            await mediaService.Eliminar(media.Id);
+
+            if(model.EliminarElementos)
+            {
+                var comentarios = await  context.Comentarios
+                    .Where(c => c.MediaId == media.Id).ToListAsync();
+                var hilos = await  context.Hilos
+                    .Where(c => c.MediaId == media.Id).ToListAsync();
+                
+                comentarios.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
+                hilos.ForEach(c => c.Estado = HiloEstado.Eliminado);
+            }
+
+            await context.SaveChangesAsync();
+
+            return Json(new ApiResponse("Archivos Eliminados"));
+        }
+    }
 
     public class ModeracionIndexVm
     {
@@ -356,7 +440,7 @@ namespace WebApp.Controllers
     {
         public string UsuarioId { get; set; }
         public string HiloId { get; set; }
-        [Required]
+        [Required, Range(0,10, ErrorMessage="Motivo Invalido")]
         public MotivoDenuncia Motivo { get; set; }
         public string Aclaracion { get; set; }
         public string ComentarioId { get; set; }
@@ -365,5 +449,6 @@ namespace WebApp.Controllers
         public int Duracion { get; set; }
         public bool EliminarElemento { get; set; }
         public bool EliminarAdjunto { get; set; }
+        public bool Desaparecer { get; set; }
     }
 }

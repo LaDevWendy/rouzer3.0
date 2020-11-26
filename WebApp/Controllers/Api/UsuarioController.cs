@@ -91,14 +91,23 @@ namespace WebApp.Controllers
             string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             if(await context.Bans.EstaBaneado(User.GetId(), ip))
             {
-                ModelState.AddModelError("Chan!", "Esta ip esta baneada, no te podes registrar");
+                ModelState.AddModelError("Uff", "Esta ip esta baneada, no te podes registrar");
+                if(!ModelState.IsValid) return BadRequest(ModelState);
+            }
+
+            // Checkear cuentas creadas desde esa ip
+            int registrosPrevios = await context.Usuarios.CountAsync(u => u.Ip == ip);
+            if(registrosPrevios >= generalOptions.Value.NumeroMaximoDeCuentasPorIp)
+            {
+                ModelState.AddModelError("Jijo de buta", "Llegaste al numero maximo de cuentas por ip");
                 if(!ModelState.IsValid) return BadRequest(ModelState);
             }
 
             UsuarioModel user = new UsuarioModel
             {
                 UserName = model.Nick,
-                Creacion = DateTimeOffset.Now
+                Creacion = DateTimeOffset.Now,
+                Ip = ip,
             };
             var createResult = await userManager.CreateAsync(user, model.Contraseña);
 
@@ -127,12 +136,13 @@ namespace WebApp.Controllers
         [HttpGet, Route("/Domado/{id?}")]
         public  async Task<ActionResult> Domado(string id) 
         {
+            string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             var ban = await context.Bans
                 .OrderByDescending(b => b.Expiracion)
                 .Where(b => !b.Visto)
                 .Include(b => b.Hilo)
                 .Include(b => b.Comentario)
-                .FirstOrDefaultAsync(b => b.UsuarioId == User.GetId());
+                .FirstOrDefaultAsync(b => b.UsuarioId == User.GetId() || b.Ip == ip);
 
             if(ban is null && !string.IsNullOrWhiteSpace(id)) 
             {

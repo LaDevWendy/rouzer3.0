@@ -34,17 +34,17 @@
             <Ripple/>
         </span>
         <a href="/" style="font-family: euroFighter">
-            <h3>ROZED <span class="version"> La red nini (Alfa 0.8)</span></h3>
+            <h3>ROZED <span class="version"> La red nini (Alfa 0.9)</span></h3>
 
             <Ripple/>
         </a>
         <!-- <MensajeRotativo/> -->
         <div class="estadisticas">
-            {#if mostrarComputadorasConectadas}
+            <!-- {#if mostrarComputadorasConectadas}
                 <span transition:fade={{duration: 5000 }}   on:introend="{() => mostrarComputadorasConectadas = false}">
                     {computadorasConectadas} computadora{computadorasConectadas!=1?'s':''} conectada{computadorasConectadas!=1?'s':''}
                 </span>
-            {/if}
+            {/if} -->
         </div>
 
         <div class="nav-botones" style="position: relative;">

@@ -11,6 +11,7 @@
     let aclaracion
     let eliminarElemento = true
     let eliminarAdjunto = false
+    let desaparecer = false
     $: tipo = (comentarioId == "" || !comentarioId)? 0:1
 
     export let hiloId
@@ -19,7 +20,7 @@
     export let visible = false
 
     function banear() {
-        return RChanClient.banear(motivo, aclaracion, duracion, usuarioId, hiloId, comentarioId, eliminarElemento, eliminarAdjunto)
+        return RChanClient.banear(motivo, aclaracion, duracion, usuarioId, hiloId, comentarioId, eliminarElemento, eliminarAdjunto, desaparecer)
     }
 </script>
 
@@ -59,9 +60,16 @@
             <option value="99999999">Permanente</option>
         </select>
                
+        
         {#if comentarioId || hiloId}
             <Checkbox style="padding: 0 8px" bind:checked={eliminarElemento} right> Eliminar elemento(hilo/comentario)</Checkbox>
             <Checkbox style="padding: 0 8px" title="Borra la imagen del servidor, usar en caso de cp" bind:checked={eliminarAdjunto} right> Eliminar adjunto(imagen/video)</Checkbox>
+        {/if}
+        {#if duracion > 5000 }
+            <Checkbox 
+                style="padding: 0 8px" 
+                title="Borra todos los rozes y comentarios del usuario"
+                 bind:checked={desaparecer} right> Desaparecer</Checkbox>
         {/if}
 
     </div>

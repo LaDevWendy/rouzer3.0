@@ -193,6 +193,8 @@ namespace Data.Migrations
 
                     b.HasIndex("HiloId");
 
+                    b.HasIndex("UsuarioId");
+
                     b.ToTable("Bans");
                 });
 
@@ -219,6 +221,12 @@ namespace Data.Migrations
 
                     b.Property<string>("MediaId")
                         .HasColumnType("text");
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Rango")
+                        .HasColumnType("integer");
 
                     b.Property<string>("UsuarioId")
                         .IsRequired()
@@ -256,9 +264,8 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Motivo")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Motivo")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Tipo")
                         .HasColumnType("integer");
@@ -334,6 +341,12 @@ namespace Data.Migrations
 
                     b.Property<string>("MediaId")
                         .HasColumnType("text");
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Rango")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Titulo")
                         .HasColumnType("text");
@@ -450,6 +463,9 @@ namespace Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Ip")
+                        .HasColumnType("text");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
 
@@ -555,6 +571,10 @@ namespace Data.Migrations
                     b.HasOne("Modelos.HiloModel", "Hilo")
                         .WithMany()
                         .HasForeignKey("HiloId");
+
+                    b.HasOne("Modelos.UsuarioModel", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
                 });
 
             modelBuilder.Entity("Modelos.ComentarioModel", b =>

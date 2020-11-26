@@ -15,6 +15,8 @@ namespace Modelos
         public HiloViewModel Hilo { get; set; }
         public List<ComentarioViewModel> Comentarios { get; set; }
         public HiloAccionModel Acciones { get; set; }
+        public CreacionRango Rango { get; set; }
+        public string Nombre { get; set; }
     }
     public class HiloFullViewModelMod :HiloFullViewModel
     {

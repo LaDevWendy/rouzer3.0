@@ -58,7 +58,7 @@
     }, {
         "Id": 12,
         "Nombre": "Literatura",
-        "NombreCorto": "MUS",
+        "NombreCorto": "LIT",
         "Nsfw": false
     }, {
         "Id": 13,

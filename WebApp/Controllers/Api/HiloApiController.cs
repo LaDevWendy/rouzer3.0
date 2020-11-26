@@ -129,6 +129,13 @@ namespace WebApp.Controllers
                 HiloId = id,
             });
 
+            //Agrego rango y nombre
+            if(User.EsMod())
+            {
+                if(vm.MostrarNombre) hilo.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
+                if(vm.MostrarRango) hilo.Rango = CreacionRango.Mod;
+            }
+
             await context.SaveChangesAsync();
             await rchanHub.Clients.Group("home").SendAsync("HiloCreado", new HiloViewModel(hilo));
 
@@ -238,14 +245,17 @@ namespace WebApp.Controllers
         [AllowAnonymous]
         async public Task<ActionResult> CargarMas([FromQuery]DateTimeOffset ultimoBump, [FromQuery] string categorias) 
         {    
-            var hilos = context.Hilos
+            var hilos = await context.Hilos
+                .AsNoTracking()
                 .OrdenadosPorBump()
                 .FiltrarNoActivos()
                 .FiltrarOcultosDeUsuario(User.GetId(), context)
                 .FiltrarPorCategoria(categorias.Split(",").Select(c => Convert.ToInt32(c)).ToArray())
+                .Where(h => !context.Stickies.Any(s => s.HiloId == h.Id && !s.Global))
                 .Where(h => h.Bump < ultimoBump)
                 .Take(16)
-                .AViewModel(context);
+                .AViewModel(context)
+                .ToListAsync();
 
             return Ok(hilos);
         }
@@ -280,9 +290,10 @@ namespace WebApp.Controllers
         [Required]
         public string HiloId { get; set; }
         public string ComentarioId { get; set; }
-        [Required]
-        public string Motivo { get; set; }
+        [Required, Range(0, 10, ErrorMessage="Seleccione un motivo padre")]
+        public MotivoDenuncia Motivo { get; set; }
         public string Aclaracion { get; set; } = "";
+        public string Captcha { get; set; } = "";
     }
 
 }

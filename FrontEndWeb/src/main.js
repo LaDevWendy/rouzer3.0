@@ -9,6 +9,7 @@ import HistorialUsuario from './components/Paginas/HistorialUsuario.svelte';
 import Domado from './components/Paginas/Domado.svelte';
 import ListaDeUsuarios from './components/Paginas/ListaDeUsuarios.svelte';
 import EliminadosYDesactivados from './components/Paginas/EliminadosYDesactivados.svelte';
+import MediaHome from './components/Paginas/MediaHome.svelte';
 
 // const app = new App({
 // 	target: document.body,
@@ -29,6 +30,7 @@ let componentes = [
 	["#svelte-domado", Domado, {}],
 	["#svelte-listaDeUsuarios", ListaDeUsuarios, {}],
 	["#svelte-eliminadosYDesactivados", EliminadosYDesactivados, {}],
+	["#svelte-media-home", MediaHome, {}],
 ]
 
 for (const c of componentes) {

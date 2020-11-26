@@ -29,6 +29,7 @@ namespace WebApp
         public int LimiteArchivo { get; set; }
 
         public bool RegistroAbierto { get; set; }
+        public int NumeroMaximoDeCuentasPorIp { get; set; }
         public string LinkDeInvitacion { get; set; }
         
         public RestriccionDeAcceso RestriccionDeAcceso { get; set; } 

@@ -23,6 +23,7 @@ namespace Servicios
         Task<HiloFullViewModel> GetHiloFull(string id, string userId = null, bool mostrarOcultos = false);
         Task<HiloFullViewModelMod> GetHiloFullMod(string id, string userId = null, bool mostrarOcultos = false);
         IQueryable<HiloModel> OrdenadosPorBump();
+        Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId="", int cantidad = 16);
     }
 
     public class HiloService : ContextService, IHiloService
@@ -112,14 +113,18 @@ namespace Servicios
             hiloFullView.Hilo = new HiloViewModel(hilo);
 
             hiloFullView.Comentarios = await _context.Comentarios
+                .AsNoTracking()
                 .Where(c => c.HiloId == id)
-                .Where(c => c.Estado != ComentarioEstado.Eliminado)
+                .Where(c => c.Estado != ComentarioEstado.Eliminado || mostrarOcultos)
                 .OrderByDescending(c => c.Creacion)
                 .Include(c => c.Media)
                 .Select(c => new ComentarioViewModelMod {
                     UsuarioId = c.UsuarioId,
                     Username = c.Usuario.UserName,
+                    Estado = c.Estado,
                     Contenido = c.Contenido,
+                    Rango =  c.Rango,
+                    Nombre = c.Nombre,
                     Id = c.Id,
                     Creacion = c.Creacion,
                     EsOp = c.UsuarioId == hilo.UsuarioId,
@@ -147,23 +152,79 @@ namespace Servicios
         public async Task<List<HiloViewModel>> GetHilosOrdenadosPorBump(GetHilosOptions opciones)
         {
             // Mejorar esto
-            var hilos =  await _context.Hilos
+            var query = _context.Hilos
+                .AsNoTracking()
                 .Where(h => opciones.CategoriasId.Contains(h.CategoriaId) && 
-                !_context.HiloAcciones.Any(a => a.HiloId ==  h.Id && a.UsuarioId == opciones.UserId && a.Hideado)
-                && !_context.Stickies.Any( s => s.HiloId == h.Id))
-                .FiltrarNoActivos()
+                !_context.HiloAcciones.Any(a => a.HiloId ==  h.Id && a.UsuarioId == opciones.UserId && a.Hideado));
+
+            if(opciones.CategoriasId.Length != 1) 
+            {
+                query = query.Where( h => !_context.Stickies.Any( s => s.HiloId == h.Id && s.Global ) );
+            }
+
+            var hilos = await query.FiltrarNoActivos()
+                .Where( h => !_context.Stickies.Any( s => s.HiloId == h.Id && !s.Global))
                 .OrderByDescending(h => h.Bump)
                 .Take(opciones.Cantidad)
                 .AViewModel(_context).ToListAsync();
             
-            if(!opciones.IncluirStickies) return hilos;
 
-            var hilosStickies = await  _context.Stickies
-                .Where(s => s.Global)
-                .Select(s => _context.Hilos.FirstOrDefault(h => h.Id == s.HiloId))
-                .AViewModel(_context).ToListAsync();
+            List<HiloViewModel> hilosStickies = null;
+            if(opciones.CategoriasId.Length > 1)
+            {
+                hilosStickies = await  _context.Stickies
+                    .AsNoTracking()
+                    .Where(s => s.Global)
+                    .Select(s => _context.Hilos.FirstOrDefault(h => h.Id == s.HiloId))
+                    .AViewModel(_context).ToListAsync();
+            }
+            else 
+            {
+                hilosStickies = await  _context.Stickies
+                    .AsNoTracking()
+                    .Where(s => !s.Global)
+                    .Select(s => _context.Hilos.FirstOrDefault(h => h.Id == s.HiloId))
+                    .Where(h => h.CategoriaId == opciones.CategoriasId[0])
+                    .AViewModel(_context).ToListAsync();
+            }
             
             var stickies = await _context.Stickies.ToListAsync();
+            
+            hilosStickies.ForEach(h => h.Sticky = stickies.First(s => s.HiloId == h.Id).Importancia);
+
+            return  hilosStickies.OrderByDescending(h => h.Sticky).Concat(hilos).ToList();
+        }
+
+        public async Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId="", int cantidad = 16)
+        {
+            // Mejorar esto
+            var query = _context.Hilos
+                .AsNoTracking()
+                .FiltrarNoActivos()
+                .FiltrarOcultosDeUsuario(usuarioId, _context)
+                .Where(h => h.CategoriaId == categoria);
+
+            var hilos = await query.FiltrarNoActivos()
+                .Where( h => !_context.Stickies.Any( s => s.HiloId == h.Id && !s.Global))
+                .OrdenadosPorBump()
+                .Take(cantidad)
+                .AViewModel(_context).ToListAsync();
+            
+
+            List<HiloViewModel> hilosStickies = null;
+
+            hilosStickies = await  _context.Stickies
+                .AsNoTracking()
+                .Where(s => !s.Global)
+                .Select(s => _context.Hilos.FirstOrDefault(h => h.Id == s.HiloId))
+                .FiltrarNoActivos()
+                .FiltrarOcultosDeUsuario(usuarioId, _context)
+                .Where(h => h.CategoriaId == categoria)
+                .AViewModel(_context)
+                .ToListAsync();
+           
+            
+            var stickies = await _context.Stickies.Where(s => !s.Global).ToListAsync();
             
             hilosStickies.ForEach(h => h.Sticky = stickies.First(s => s.HiloId == h.Id).Importancia);
 

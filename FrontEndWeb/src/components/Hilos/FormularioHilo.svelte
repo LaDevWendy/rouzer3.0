@@ -1,6 +1,6 @@
 <script>
 import { fade, blur, fly } from 'svelte/transition';
-import { Button, Ripple} from 'svelte-mui';
+import { Button, Ripple, Checkbox} from 'svelte-mui';
 import config from "../../config";
 import RChanClient from '../../RChanClient';
 import ErrorValidacion from '../ErrorValidacion.svelte';
@@ -8,6 +8,7 @@ import MediaType from '../../MediaType'
 import MediaInput from '../MediaInput.svelte';
 import Captcha from '../Captcha.svelte';
 import Spinner from '../Spinner.svelte';
+import globalStore from '../../globalStore';
 
 export let mostrar = false
 
@@ -17,6 +18,9 @@ let contenido = ""
 let media
 let captcha = ""
 
+let mostrarRango = false
+let mostrarNombre = false
+
 let cargando = false
 
 
@@ -25,7 +29,12 @@ let error = null
 async function crear() {
     cargando = true
     try {
-        let r = await RChanClient.crearHilo(titulo, categoria, contenido, media.archivo, media.link, captcha)
+        let r = null 
+        if(!$globalStore.usuario.esMod){
+                r = await  await RChanClient.crearHilo(titulo, categoria, contenido, media.archivo, media.link, captcha)
+            } else {
+                r = await  await RChanClient.crearHilo(titulo, categoria, contenido, media.archivo, media.link, captcha, mostrarNombre, mostrarRango)
+            }
         if (r.status == 201) {
                 window.location.replace(r.headers.location)
             }
@@ -60,7 +69,12 @@ async function crear() {
 
         <ErrorValidacion {error}/>
 
-        <!-- <button class="btn" type="submit">Crear</button> -->
+        {#if $globalStore.usuario.esMod}
+        <div style=" flex-direction:row; display:flex">
+            <Checkbox bind:checked={mostrarRango} right>Tag_Mod</Checkbox>
+            <Checkbox bind:checked={mostrarNombre} right>Nombre</Checkbox>
+        </div>
+    {/if}
         <Captcha visible={config.general.captchaHilo}  bind:token={captcha}/>
         <div style="display:flex;     justify-content: flex-end;">
             <Button color="primary" on:click={() => mostrar = false}>Cancelar</Button>

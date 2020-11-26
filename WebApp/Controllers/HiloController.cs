@@ -46,12 +46,12 @@ namespace WebApp.Controllers
 
             if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
             
-            var hilos = await hiloService.GetHilosOrdenadosPorBump(new GetHilosOptions
-            {
-                UserId = User.GetId(),
-                CategoriasId = categorias,
-                IncluirStickies = true
-            });
+            // var hilos = await hiloService.GetHilosOrdenadosPorBump(new GetHilosOptions
+            // {
+            //     UserId = User.GetId(),
+            //     CategoriasId = categorias,
+            //     IncluirStickies = true
+            // });
             
             // return Json(new {
             //     Hilos = hilos,
@@ -78,10 +78,10 @@ namespace WebApp.Controllers
              IHiloFullView hilo;
              if(User.EsMod())
              {
-                 hilo =  await hiloService.GetHiloFullMod(id, User.GetId(), User.EsMod());
+                 hilo =  await hiloService.GetHiloFullMod(id, User.GetId(), true);
              }
              else {
-                 hilo =  await hiloService.GetHiloFull(id, User.GetId(), User.EsMod());
+                 hilo =  await hiloService.GetHiloFull(id, User.GetId());
              }
             if (hilo is null) return NotFound();
             // return Json(new {
@@ -105,15 +105,17 @@ namespace WebApp.Controllers
 
             var vm = new HiloListViewModel
             {
-                Hilos = await context.Hilos
-                    .Where(h => h.CategoriaId == cate.Id)
-                    .AsNoTracking()
-                    .OrdenadosPorBump()
-                    .FiltrarOcultosDeUsuario(User.GetId(), context)
-                    .FiltrarNoActivos()
-                    .Take(16)
-                    .AViewModel(context)
-                    .ToListAsync(),
+                
+                // Hilos = await context.Hilos
+                //     .Where(h => h.CategoriaId == cate.Id)
+                //     .AsNoTracking()
+                //     .OrdenadosPorBump()
+                //     .FiltrarOcultosDeUsuario(User.GetId(), context)
+                //     .FiltrarNoActivos()
+                //     .Take(16)
+                //     .AViewModel(context)
+                //     .ToListAsync(),
+                Hilos = await hiloService.GetCategoria(cate.Id, User.GetId()),
                 CategoriasActivas = new int[] { cate.Id }.ToList()
             };
             return View("Index", vm);

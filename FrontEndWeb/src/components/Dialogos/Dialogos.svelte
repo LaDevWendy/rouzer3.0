@@ -4,6 +4,7 @@
     import Dialogo from '../Dialogo.svelte'
     import DialogoBan from './DialogoBan.svelte';
     import DialogoReporte from './DialogoReporte.svelte'
+    import {Checkbox} from 'svelte-mui'
 
     const dialogosStore = writable({
         dialogoAbierto: "ninguno",
@@ -11,6 +12,8 @@
         comentarioId: "",
         comentariosIds: [],
         usuarioId: "",
+        mediaId:"",
+        mediaEliminarDependientes: true
     })
     
 
@@ -38,6 +41,14 @@
             return s
         })
     }
+    function abrirRestaurarComentario(hiloId, comentarioId=null) {
+        dialogosStore.update(s => {
+            s.dialogoAbierto = "restaurarComentario"
+            s.hiloId = hiloId
+            s.comentarioId = comentarioId
+            return s
+        })
+    }
 
     function abrirEliminarComentarios(ids) {
         dialogosStore.update(s => {
@@ -55,6 +66,13 @@
             return s
         })
     }
+    function abrirEliminarMedia(mediaId) {
+        dialogosStore.update(s => {
+            s.dialogoAbierto = "eliminarMedia"
+            s.mediaId = mediaId
+            return s
+        })
+    }
 
     export const abrir = {
         //  sticky : abrirDialogo("sticky"),
@@ -63,6 +81,8 @@
          eliminarHilo: abrirEliminarhilo,
          eliminarComentarios: abrirEliminarComentarios,
          restaurarHilo: abrirRestaurarHilo,
+         restaurarComentario: abrirRestaurarComentario,
+         eliminarMedia: abrirEliminarMedia,
         //  categoria : abrirDialogo("categoria"),
         //  eliminar : abrirDialogo("eliminar"),
     }
@@ -96,6 +116,16 @@
         ¿Estas seguro de que queres restaurar el roz?
     </div>
 </Dialogo>
+<Dialogo visible={$dialogosStore.dialogoAbierto == "restaurarComentario"} 
+    textoActivador="Restaurar" 
+    titulo="Restaurar el comentario" 
+    accion = {() => RChanClient.restaurarComentario($dialogosStore.hiloId, $dialogosStore.comentarioId)}
+    >
+    <span slot="activador"></span>
+    <div slot="body">
+        ¿Estas seguro de que queres restaurar el comentario {$dialogosStore.comentarioId}?
+    </div>
+</Dialogo>
 
 <Dialogo visible={$dialogosStore.dialogoAbierto == "eliminarComentarios"} 
     textoActivador="Eliminar" 
@@ -112,3 +142,14 @@
     hiloId = {$dialogosStore.hiloId} 
     usuarioId = {$dialogosStore.usuarioId} 
     comentarioId = {$dialogosStore.comentarioId}/>
+
+<Dialogo visible={$dialogosStore.dialogoAbierto == "eliminarMedia"} 
+    textoActivador="Eliminar" 
+    titulo="Eliminar la imagen/video" 
+    accion = {() => RChanClient.eliminarMedia($dialogosStore.mediaId)}
+    >
+    <span slot="activador"></span>
+    <div slot="body">
+        <Checkbox bind:checked={$dialogosStore.mediaEliminarDependientes} right>Eliminar todos los elementos con este archivo?</Checkbox>
+    </div>
+</Dialogo>

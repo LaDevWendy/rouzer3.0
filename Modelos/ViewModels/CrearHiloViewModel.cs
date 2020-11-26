@@ -20,6 +20,8 @@ namespace Modelos
         // [Required]
         public IFormFile Archivo { get; set; }
         public string Link { get; set; }
+        public bool MostrarRango { get; set; } = false;
+        public bool MostrarNombre { get; set; } = false;
         
         public string Captcha { get; set; }
     }

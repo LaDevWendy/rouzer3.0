@@ -47,7 +47,7 @@ namespace WebApp.Controllers
             this.mediaService = mediaService;
         }
 
-        [HttpPost, Authorize]
+        [HttpPost, Authorize, ValidateAntiForgeryToken]
         public async Task<ActionResult<ApiResponse>> Crear([FromForm] ComentarioFormViewModel vm)
         {
             if(vm.Contenido is null) vm.Contenido = "";
@@ -96,6 +96,13 @@ namespace WebApp.Controllers
                     comentario.MediaId = media.Id;
             }
 
+            //Agrego rango y nombre
+            if(User.EsMod())
+            {
+                if(vm.MostrarNombre) comentario.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
+                if(vm.MostrarRango) comentario.Rango = CreacionRango.Mod;
+            }
+
             await comentarioService.Guardar(comentario);
 
 
@@ -121,4 +128,6 @@ public class ComentarioFormViewModel {
     public string Contenido { get; set; } = "";
     public IFormFile Archivo { get; set; }
     public string Link { get; set; }
+    public bool MostrarRango { get; set; } = false;
+    public bool MostrarNombre { get; set; } = false;
 }

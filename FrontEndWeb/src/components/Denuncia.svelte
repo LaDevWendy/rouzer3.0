@@ -6,23 +6,20 @@
     import RChanClient from "../RChanClient";
     import { createEventDispatcher } from 'svelte';
     import HiloPreviewMod from "./Moderacion/HiloPreviewMod.svelte";
+    import {EstadoDenuncia, MotivoDenuncia} from "../enums"
 
 	const dispatch = createEventDispatcher()
 
     export let denuncia
     let {hilo, comentario, usuario}  = denuncia
-    $: rechazada = denuncia.estado == 1
+    $: rechazada = denuncia.estado == EstadoDenuncia.Rechazada
+    $: aceptada = denuncia.estado == EstadoDenuncia.Aceptada
 
     hilo.cantidadComentarios = ""
 
     let mostrarVistaPrevia = false
 
-    const motivos = [ 'CategoriaIncorrecta',
-        'Spam',
-        'Avatarfageo',
-        'Doxxeo',
-        'Contenido ilegal',
-        'Maltrato animal']
+    const motivos = Object.keys(MotivoDenuncia)
 
     async function rechazar() {
         try {
@@ -37,7 +34,7 @@
     }
 </script>
 
-<div class="denuncia" class:rechazada>
+<div class="denuncia" class:rechazada  class:aceptada>
     <div class="header">
         <span style="background:var(--color2); padding:2px; border-radius: 4px">
             <Tiempo date={denuncia.creacion}/>
@@ -53,11 +50,11 @@
     </div>
 
     <div class="body">
-        <Button on:click={() => mostrarVistaPrevia = !mostrarVistaPrevia}>Ver Hilo</Button>
+        <Button  dense on:click={() => mostrarVistaPrevia = !mostrarVistaPrevia}>Previsualizar</Button>
         <a href="/Hilo/{hilo.id}#{comentario?.id}">
-            <Button >Ir</Button>
+            <Button dense  >Ir</Button>
         </a>
-        <Button on:click={rechazar}>Rechazar</Button>
+        <Button dense  on:click={rechazar}>Rechazar</Button>
         {#if denuncia.tipo == 0}
             <HiloPreviewMod {hilo}/>
         {:else}
@@ -102,5 +99,8 @@
 
     .rechazada {
         background: grey;
+    }
+    .aceptada {
+        background: rgb(54, 153, 45);
     }
 </style>

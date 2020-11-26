@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using System.Security.Claims;
 using Westwind.AspNetCore.LiveReload;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp
 {
@@ -100,7 +101,10 @@ namespace WebApp
                 });
             });
             //services.AddRazorPages();
-            services.AddMvc().AddNewtonsoftJson(options =>
+            services.AddMvc(options => {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            })
+                .AddNewtonsoftJson(options =>
                     {
                         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                         if(env.IsDevelopment())
@@ -133,6 +137,12 @@ namespace WebApp
                 });
             });
 
+            services.AddAntiforgery(options => 
+            {
+                // Set Cookie properties using CookieBuilder properties†.
+                // options.HeaderName = "X-CSRF-TOKEN-ROZED";
+                options.SuppressXFrameOptionsHeader = false;
+            });
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -142,6 +152,16 @@ namespace WebApp
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+                context.Response.Headers.Add("X-Xss-Protection", "1; mode=block");
+                context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+                context.Response.Headers.Add("Referrer-Policy", "no-referrer");
+                context.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", "none");
+                await next();
             });
 
             if (env.IsDevelopment())

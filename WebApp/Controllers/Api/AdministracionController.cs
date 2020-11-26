@@ -149,6 +149,27 @@ namespace WebApp.Controllers
             else
                 return BadRequest(result.Errors);
         }
+
+        [Route("/Administracion/CambiarContraseña")]
+        public async Task<ActionResult> CambiarContraseña () {
+            return View();
+        }
+
+        [Route("/Administracion/CambiarContraseña"), HttpPost]
+        public async Task<ActionResult> CambiarContraseña ([FromForm] string contraseñaVieja, [FromForm] string contraseñaNueva) 
+        {
+            var user = await userManager.GetUserAsync(User);
+            var result = await userManager.ChangePasswordAsync(user, contraseñaVieja, contraseñaNueva);
+
+            if(result.Succeeded)
+            {
+                return Redirect("/");
+            }
+            else
+            {
+                return View();
+            }
+        }
     }
 }
 

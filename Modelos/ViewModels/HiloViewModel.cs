@@ -16,6 +16,8 @@ namespace Modelos
             this.Titulo = hilo.Titulo;
             this.Id = hilo.Id;
             this.Estado = hilo.Estado;
+            this.Rango = hilo.Rango;
+            this.Nombre = hilo.Nombre;
         }
 
         public int CantidadComentarios { get; set; }
@@ -31,6 +33,8 @@ namespace Modelos
         public MediaModel Media { get; set; }
         public string Thumbnail { get; set; }
         public HiloEstado Estado { get; set; }
+        public CreacionRango Rango { get; set; }
+        public string Nombre { get; set; }
     }
 
     public class HiloViewModelMod : HiloViewModel

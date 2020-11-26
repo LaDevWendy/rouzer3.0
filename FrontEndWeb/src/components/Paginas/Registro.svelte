@@ -1,5 +1,5 @@
 <script>
-    import {Textfield, Button, Ripple} from "svelte-mui"
+    import {Textfield, Button, Ripple, Checkbox} from "svelte-mui"
     import RChanClient from "../../RChanClient";
     import Captcha from "../Captcha.svelte";
     import ErrorValidacion from "../ErrorValidacion.svelte";
@@ -7,6 +7,7 @@
 
     let username = ""
     let password = ""
+    let terminos = false
     let captcha = ""
     let error = null
     let codigo = window.model?.codigoDeInvitacion || ""
@@ -49,12 +50,14 @@
                     type="password"
                     required
                     bind:value={password}
-                    message="aynose1234"
+                    message="Si te la olvidas, domado"
                 />
+                <a style="color:var(--color5); text-align:center; display:block" target="_blanck" href="/reglas.html">Ver reglas</a>
+                <Checkbox right bind:checked={terminos}><div style="white-space: normal; text-align: center;">Yo Anon juro solemnemente seguir las reglas de Rozed </div></Checkbox>
                 <Captcha visible={config.general.captchaRegistro}  bind:token={captcha}/>
 
-                <div style="display:flex; justify-content: center;">
-                    <Button >Registrarse</Button>
+                <div style="display:flex; justify-content: center; margin-top: 8px">
+                    <Button disabled={!terminos}>Registrarse</Button>
                 </div>
 
             </form>

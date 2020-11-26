@@ -10,6 +10,8 @@
     import globalStore from '../../globalStore';
     import Media from '../Media.svelte';
     import {abrir} from '../Dialogos/Dialogos.svelte'
+    import { ComentarioEstado, CreacionRango } from '../../enums';
+    import ComentarioMod from '../Moderacion/ComentarioMod.svelte';
 
 
     export let comentario;
@@ -67,10 +69,14 @@
         if(!$comentarioStore.includes(`>>${comentario.id}\n`))
             $comentarioStore+= `>>${comentario.id}\n`
     }
-
 </script>
 
-<div bind:this={el} class:resaltado={comentario.resaltado} class="comentario {windowsWidh <= 400?"comentario-movil":""}" r-id="{comentario.id}" id="{comentario.id}">
+<div bind:this={el}
+    class:resaltado={comentario.resaltado} 
+    class="comentario {windowsWidh <= 400?"comentario-movil":""}" 
+    class:eliminado = {comentario?.estado  || 0 == ComentarioEstado.eliminado}
+    class:comentarioMod = {comentario.rango > CreacionRango.Anon}
+    r-id="{comentario.id}" id="{comentario.id}">
     <div  class="respuestas">
         {#each comentario.respuestas as r }
         <a href="#{r}" class="restag" r-r="{r}"
@@ -79,10 +85,11 @@
         >&gt;&gt;{r}</a> 
         {/each}
     </div    >
-    <div on:click={() => dispatch("colorClick", comentario)} class="color color-{comentario.color}">ANON</div>
+    <div on:click={() => dispatch("colorClick", comentario)} 
+        class="color color-{comentario.color}">{CreacionRango.aString(comentario.rango).toUpperCase()}</div>
     <div class="header">
         {#if comentario.esOp} <span class="nick tag tag-op">OP</span>{/if}
-        <span class="nick">Gordo</span>
+        <span class:nombreResaltado = {comentario.nombre} class="nick nombre">{comentario.nombre ||'Gordo'}</span>
         {#if comentario.usuarioId}
         <a href="/Moderacion/HistorialDeUsuario/{comentario.usuarioId}" style="color:var(--color6) !important">
             <span class="nick">{comentario.usuarioId.split("-")[0]}</span>
@@ -104,8 +111,12 @@
                             <Menuitem>Ir</Menuitem>
                         </a>
                     {/if}
-                    <Menuitem on:click={() => abrir.eliminarComentarios([comentario.id])}>Eliminar</Menuitem>
                     <Menuitem on:click={() => abrir.ban(hilo?.id || comentario.hiloId, comentario.id)} >Banear</Menuitem>
+                    {#if comentario.estado == ComentarioEstado.normal}
+                    <Menuitem on:click={() => abrir.eliminarComentarios([comentario.id])}>Eliminar</Menuitem>
+                    {:else}
+                        <Menuitem on:click={() => abrir.restaurarComentario(comentario.id)} >Restaurar</Menuitem>
+                    {/if}
                 {/if}
             </Menu>
         </div>
@@ -225,6 +236,9 @@
     .resaltado {
         background: var(--color7)!important;
     }
+    .eliminado {
+        border-left: solid 2px red !important;
+    }
 
     .color-rojo {background: #dd3226;}
 
@@ -249,6 +263,36 @@
         60%  { background: linear-gradient(#53a538 25%, #dd3226 25%, #dd3226 50%, #ffc400 50%, #ffc400 75%, #00408a 75%, #00408a 100%);}
         80%  { background: linear-gradient(#00408a 25%, #53a538 25%, #53a538 50%, #dd3226 50%, #dd3226 75%, #ffc400 75%, #ffc400 100%);}
         100% { background: linear-gradient(#ffc400 25%, #00408a 25%, #00408a 50%, #53a538 50%, #53a538 75%, #dd3226 75%, #dd3226 100%);}
+    }
+
+    .comentarioMod  {
+        border-top: solid 2px;
+        animation: borde-luz 0.3s infinite alternate-reverse;
+    }
+    .nombreResaltado {
+        color: var(--color6);
+        font-weight: bold;
+    }
+
+    .comentarioMod .color {
+        animation: luces 0.3s infinite alternate-reverse;
+    }
+
+    @keyframes borde-luz {
+        0% {border-color: red;}
+        100% {border-color: blue;}
+    }
+    @keyframes luces {
+        0% {
+            background: red;
+            border-color: red;
+
+        }
+        100% {
+            background: blue;
+            border-color: blue;
+
+        }
     }
 
     /* .comentario-movil :glo.media {

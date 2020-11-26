@@ -36,5 +36,7 @@ namespace Modelos
         public override bool LockoutEnabled { get; set; }
         [JsonIgnore, System.Text.Json.Serialization.JsonIgnore]
         public override int AccessFailedCount { get; set; }
+        [JsonIgnore, System.Text.Json.Serialization.JsonIgnore]
+        public string Ip { get; set; }
     }
 }

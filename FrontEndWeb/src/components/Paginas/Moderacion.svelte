@@ -3,6 +3,7 @@
     import Comentario from '../Comentarios/Comentario.svelte'
     import Denuncia from '../Denuncia.svelte'
     import HiloPreview from '../Hilos/HiloPreview.svelte'
+    import BarraModeracion from '../Moderacion/BarraModeracion.svelte';
     import ComentarioMod from '../Moderacion/ComentarioMod.svelte';
     import HiloPreviewMod from '../Moderacion/HiloPreviewMod.svelte';
 
@@ -17,10 +18,7 @@
     })
 </script>
 <main>
-    <nav>
-        <a style="color:var(--color5)" href="/Moderacion/ListaDeUsuarios">Usuarios y baneos</a>
-        <a style="color:var(--color5)" href="/Moderacion/EliminadosYDesactivados">Eliminados y desactivados</a>
-    </nav>
+    <BarraModeracion/>
     <div class="ultimos-medias">
         <ul>
             {#each comentariosMedia as c}
@@ -65,6 +63,8 @@
     }
 
     .seccion2 {
+        width: 100%;
+        max-width: 1800px;
         display: flex;
         gap: 10px;
         margin:auto;

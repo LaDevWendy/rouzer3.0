@@ -6,12 +6,13 @@
     "TiempoEntreComentarios": 5,
     "TiempoEntreHilos": 300,
     "LimiteArchivo": 0,
-    "RegistroAbierto": false,
+    "RegistroAbierto": true,
+    "NumeroMaximoDeCuentasPorIp": 2,
     "LinkDeInvitacion": "B193UL4W",
     "RestriccionDeAcceso": 0,
     "CaptchaHilo": true,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
-    "Version": "0.8"
+    "Version": "0.9"
   }
 }

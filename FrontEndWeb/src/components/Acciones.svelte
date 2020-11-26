@@ -3,6 +3,7 @@
     import RChanClient from '../RChanClient'
     import DialogoReporte from '../components/Dialogos/DialogoReporte.svelte'
     import {Button, ButtonGroup} from 'svelte-mui'
+    import { CreacionRango } from '../enums'
 
     export let hilo
     export let acciones;
@@ -23,29 +24,44 @@
 </script>
 
 <div class="panel acciones">
-    <!-- <div class="debug" style="bottom: 200px;height: fit-content;"> {"usuarioId":null,"hiloId":null,"seguido":false,"favorito":false,"hideado":false,"id":null,"creacion":"2020-10-15T00:59:47.7667-03:00"}</div> -->
-    <!-- <span class="{acciones.favorito? " naranja":"fantasma"}" r-accion="favoritos" r-id="{hilo.id}"
-        on:click={favoritear}> <i
-            class="fe fe-star"></i>Favorito</span>
+    <Button bind:active={acciones.seguido} on:click={seguir} color={acciones.seguido?'var(--color5)':'grey'}  shaped  ><i class="fe fe-eye"></i>Seg</Button>
+    <Button bind:active={acciones.favorito} on:click={favoritear} color={acciones.favorito?'var(--color5)':'grey'}  shaped  ><i class="fe fe-star"></i>Fav</Button>
+    <Button bind:active={acciones.hideado} on:click={ocultar} color={acciones.hideado?'var(--color5)':'grey'}  shaped  ><i class="fe fe-eye-off"></i>Hide</Button>
 
-    <span class="{acciones.seguido? " naranja":"fantasma"}" r-accion="seguidos"
-        on:click={seguir}>
-        <i class="fe fe-eye" />Seguido</span>
+    <Button  on:click={() => mostrarReporte = true} shaped color="red" ><i class="fe fe-flag"></i>Denunciar</Button>
+    <Button  color="white"  shaped  disabled ><i class="fe fe-clock"></i><Tiempo date={hilo.creacion} /></Button>
 
-    <span class="{acciones.hideado? " naranja":"fantasma"}" r-accion="ocultos" r-id={hilo.id}
-        on:click={ocultar}>
-        <i class="fe fe-eye-off" />Oculto</span> -->
+    {#if hilo.rango > CreacionRango.Anon || hilo.nombre}
+        <span class="mod">
+            {#if hilo.rango > CreacionRango.Anon}
+                {CreacionRango.aString(hilo.rango).toUpperCase()}
+            {/if}
 
-            <Button bind:active={acciones.seguido} on:click={seguir} color={acciones.seguido?'var(--color5)':'grey'}  shaped  ><i class="fe fe-eye"></i>Seg</Button>
-            <Button bind:active={acciones.favorito} on:click={favoritear} color={acciones.favorito?'var(--color5)':'grey'}  shaped  ><i class="fe fe-star"></i>Fav</Button>
-            <Button bind:active={acciones.hideado} on:click={ocultar} color={acciones.hideado?'var(--color5)':'grey'}  shaped  ><i class="fe fe-eye-off"></i>Hide</Button>
-
-            <Button  on:click={() => mostrarReporte = true} shaped color="red" ><i class="fe fe-flag"></i>Denunciar</Button>
-            <Button  color="white"  shaped  disabled ><i class="fe fe-clock"></i><Tiempo date={hilo.creacion} /></Button>
-
-    <!-- <span on:click={() => mostrarReporte = true}> <i class="fe fe-flag" />Denunciar</span> -->
-
-    
+            {#if hilo.nombre}
+                {hilo.nombre}
+            {/if}
+        </span>
+    {/if}
 </div>
 
 <DialogoReporte bind:visible={mostrarReporte} tipo="hilo" hiloId={hilo.id} />
+
+<style>
+    .acciones {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .mod {
+        color: white;
+        text-transform: uppercase;
+        font-family: sans-serif;
+        font-weight: bold;
+        background: var(--color4);
+        margin-left: auto;
+        padding: 6px;
+        border-radius: 4px;
+        border-top: 2px red solid;
+    }
+</style>

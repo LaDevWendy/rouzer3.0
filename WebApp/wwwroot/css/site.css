@@ -15,11 +15,11 @@ li {
 
 /* <Comunes */
 * {
-   --color1 : rgb(23 33 43);
+   --color1: rgb(23 33 43);
    --color2 : rgb(23 33 43);
    --color3 : rgb(24 37 51);
    --color4 : rgb(36 47 61);
-   --color5: rgb(204 29 29);;
+   --color5: rgb(204 29 29);
    --color6: #fc9208;
    --color7:  rgb(53 78 103);
    --primary:  var(--color5);
@@ -83,6 +83,7 @@ body {
   font-weight: 200;
   color: white;
   background-size: 130%;
+  margin: 0;
   overflow-x: hidden;
   backdrop-filter: none;
   background-attachment: fixed;
@@ -828,7 +829,9 @@ justify-content: center;
 
 .menu-principal-header{
   padding: 16px 0;
-  background: url("/imagenes/rosed.png");
+  background: url(/imagenes/rose2.jpg);
+  background-position-y: -100px;
+  
   background-size: cover;
 }
 .menu-principal hr, .menu hr{

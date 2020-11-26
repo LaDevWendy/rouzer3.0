@@ -1,19 +1,22 @@
 <script>
     import { fade, blur, fly } from 'svelte/transition';
-    import { Button } from 'svelte-mui'
+    import { Button, Checkbox} from 'svelte-mui'
     import comentarioStore from './comentarioStore'
     import RChanClient from '../../RChanClient'
     import ErrorValidacion from '../ErrorValidacion.svelte';
     import MediaInput from '../MediaInput.svelte';
     import Spinner from '../Spinner.svelte';
     import config from '../../config';
-import globalStore from '../../globalStore';
+    import globalStore from '../../globalStore';
     export let hilo
 
     let cargando = false
 
     $comentarioStore
     let media
+
+    let mostrarRango = false
+    let mostrarNombre = false
 
     let espera = 0
     $: if(espera != 0) {
@@ -26,7 +29,11 @@ import globalStore from '../../globalStore';
 
         try {
             cargando = true
-            await RChanClient.crearComentario(hilo.id, $comentarioStore, media.archivo, media.link)
+            if(!$globalStore.usuario.esMod){
+                await RChanClient.crearComentario(hilo.id, $comentarioStore, media.archivo, media.link)
+            } else {
+                await RChanClient.crearComentario(hilo.id, $comentarioStore, media.archivo, media.link, "", mostrarNombre, mostrarRango)
+            }
             if(!$globalStore.usuario.esMod) {
                 espera = config.general.tiempoEntreComentarios
             }
@@ -51,6 +58,12 @@ import globalStore from '../../globalStore';
     <textarea on:focus={() => error = null} bind:value={$comentarioStore} cols="30" rows="10" placeholder="Que dificil discutir con pibes..."></textarea>
 
     <div class="acciones">
+        {#if $globalStore.usuario.esMod}
+            <div style=" flex-direction:row; display:flex">
+                <Checkbox bind:checked={mostrarRango} right>Tag_Mod</Checkbox>
+                <Checkbox bind:checked={mostrarNombre} right>Nombre</Checkbox>
+            </div>
+        {/if}
         <Button  disabled={cargando} color="primary"  class="mra" on:click={crearComentario}>
             <Spinner {cargando}>{espera == 0? 'Responder': espera}</Spinner>
         </Button>
@@ -61,6 +74,9 @@ import globalStore from '../../globalStore';
 <style>
     .acciones :global(.mra) {
         margin-left: auto;
+    }
+    .acciones :global(i) {
+        margin: 0 !important;
     }
     .form-comentario :global(.media-input) {
         margin-left: 0;

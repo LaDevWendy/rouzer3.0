@@ -11,7 +11,7 @@
     </div>
 
 <style>
-    .eliminado {
+    /* .eliminado {
         border-left: solid 2px red;
-    }
+    } */
 </style>

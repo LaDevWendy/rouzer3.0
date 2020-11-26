@@ -39,13 +39,7 @@ namespace Servicios
                 .Where(c => c.Estado == ComentarioEstado.Normal)
                 .OrderByDescending(c => c.Creacion)
                 .Include(c => c.Media)
-                .Select(c => new ComentarioViewModel {
-                    Contenido = c.Contenido,
-                    Id = c.Id,
-                    Creacion = c.Creacion,
-                    EsOp = c.UsuarioId == creadorId,
-                    Media = c.Media
-                })
+                .Select(c => new ComentarioViewModel(c))
                 .ToListAsync();
         }
 

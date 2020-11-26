@@ -11,6 +11,9 @@ namespace Modelos
             this.Id = comentario.Id;
             this.Creacion = comentario.Creacion;
             this.Media = comentario.Media;
+            this.Nombre = comentario?.Nombre ?? "";
+            this.Rango = comentario.Rango;
+
 
         }
         public ComentarioViewModel() {}
@@ -19,6 +22,8 @@ namespace Modelos
         public DateTimeOffset Creacion { get; set; }
         public bool EsOp { get; set; }
         public MediaModel Media { get; set; }
+        public string Nombre { get; set; }
+        public CreacionRango Rango { get; set; }
         public string Color   {
             get {
                 var r = new Random(Creacion.Millisecond + Creacion.Second);
@@ -47,6 +52,11 @@ namespace Modelos
     }
     public class ComentarioViewModelMod: ComentarioViewModel
     {
+        public ComentarioViewModelMod() {}
+        public ComentarioViewModelMod(ComentarioModel comentario):base(comentario)
+        {
+
+        }
         public string HiloId { get; set; }
         public string UsuarioId { get; set; }
         public ComentarioEstado Estado { get; set; }

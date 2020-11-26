@@ -3,6 +3,7 @@
     import HiloPreview from '../Hilos/HiloPreview.svelte'
     import {abrir} from '../Dialogos/Dialogos.svelte'
     import {Button} from 'svelte-mui'
+    import BarraModeracion from '../Moderacion/BarraModeracion.svelte';
 
     let hilos = window.model.hilos
     let comentarios = window.model.comentarios
@@ -12,10 +13,7 @@
         return c
     })
 </script>
-<nav>
-    <a style="color:var(--color5)" href="/Moderacion/ListaDeUsuarios">Usuarios y baneos</a>
-    <a style="color:var(--color5)" href="/Moderacion/EliminadosYDesactivados">Eliminados y desactivados</a>
-</nav>
+<BarraModeracion/>
 <main>
     <ul style="width:33%">
         <h3 style="height:40px">Rozs eliminados</h3>

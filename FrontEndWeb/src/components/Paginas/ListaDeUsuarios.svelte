@@ -3,10 +3,13 @@
     import Tiempo from '../Tiempo.svelte'
     import Dialogo from '../Dialogo.svelte'
     import RChanClient from '../../RChanClient'
+    import BarraModeracion from '../Moderacion/BarraModeracion.svelte';
     let ultimosRegistros = window.model.ultimosRegistros
     let ultimosBaneos = window.model.ultimosBaneos
+    let cantidadDeUsuarios = window.model.cantidadDeUsuarios
 </script>
 
+<BarraModeracion/>
 <main>
     <div class="lista-baneos panel">
         <h2>Baneos activos</h2>
@@ -32,6 +35,8 @@
         </div>
     <div class="lista-usuarios panel">
         <h2>Ultimos 100 usuarios registrados</h2>
+        <h4>Hay un total de {cantidadDeUsuarios} usuarios registrados</h4>
+        <br>
         <ul>
             {#each ultimosRegistros as u}    
                 <li style="padding:4px 8px">Se registro 

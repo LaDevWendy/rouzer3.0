@@ -24,3 +24,21 @@ export class EstadoDenuncia
     static Rechazada = 1
     static NoRevisada = 2
 }
+
+export class CreacionRango 
+{
+    static Anon = 0
+    static Janitor = 1
+    static Mod = 2
+    static Admin = 3
+
+    static aString(rango) 
+    {
+        let keys = Object.keys(CreacionRango)
+        let string = ""
+        keys.forEach(k => {
+            if(CreacionRango[k] == rango) string = k;
+        });
+        return  string
+    }
+}

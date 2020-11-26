@@ -4,6 +4,9 @@
     import {Icon, Button} from "svelte-mui"
 
     export let media
+    export let modoCuadrado = false
+
+    $: vistaPrevia = modoCuadrado? media.vistaPreviaCuadrado : media.vistaPrevia
 
     let abierto = false 
     let oculto = false
@@ -37,7 +40,7 @@
             </a>
         {:else}
             <a href="/{media.url}" target="_blank">
-                <img src="{media.vistaPrevia}" alt="" srcset="">
+                <img src="{vistaPrevia}" alt="" srcset="">
             </a>
         {/if}
         {:else if media.tipo == MediaType.Video}
@@ -48,7 +51,7 @@
                     <i class="fe fe-x"></i> 
                 </Button>
                 {:else}
-                <img on:click={abrirVideo} src="{media.vistaPrevia}" alt="" srcset="">
+                <img on:click={abrirVideo} src="{vistaPrevia}" alt="" srcset="">
                 <Button on:click={abrirVideo}  color="red" class="play" icon>
                     <i class="fe fe-play" style="position: relative;left: 2px;"></i> 
                 </Button>
@@ -63,7 +66,7 @@
                     <i class="fe fe-x"></i> 
                 </Button>
                 {:else}
-                <img on:click={abrirVideo} src="{media.vistaPrevia}" alt="" srcset="">
+                <img on:click={abrirVideo} src="{vistaPrevia}" alt="" srcset="">
                 <Button on:click={abrirVideo}  color="red" class="play" icon>
                     <i class="fe fe-youtube" style="position: relative;left: 1px;"></i> 
                 </Button>

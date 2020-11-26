@@ -75,7 +75,9 @@ namespace WebApp
                     Id = c.Id,
                     Creacion = c.Creacion,
                     Media = c.Media,
-                    Estado = c.Estado
+                    Estado = c.Estado,
+                    Rango = c.Rango,
+                    Nombre = c.Nombre,
                 });
         }
 

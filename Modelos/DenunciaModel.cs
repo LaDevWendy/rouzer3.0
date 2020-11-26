@@ -15,7 +15,7 @@ namespace Modelos
         public string HiloId { get; set; }
         public string ComentarioId { get; set; }
         [Required]
-        public string Motivo { get; set; }
+        public MotivoDenuncia Motivo { get; set; }
         public string Aclaracion { get; set; } = "";
 
         public EstadoDenuncia  Estado { get; set; } = EstadoDenuncia.NoRevisada;

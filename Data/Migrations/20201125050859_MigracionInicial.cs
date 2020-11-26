@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Net;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Data.Migrations
 {
-    public partial class nuevo : Migration
+    public partial class MigracionInicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,19 +29,20 @@ namespace Data.Migrations
                     Id = table.Column<string>(nullable: false),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    Creacion = table.Column<DateTimeOffset>(nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    Creacion = table.Column<DateTimeOffset>(nullable: false)
+                    Ip = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -191,8 +191,10 @@ namespace Data.Migrations
                     Id = table.Column<string>(nullable: false),
                     Creacion = table.Column<DateTimeOffset>(nullable: false),
                     UsuarioId = table.Column<string>(nullable: false),
+                    Nombre = table.Column<string>(nullable: true),
+                    Rango = table.Column<int>(nullable: false),
                     MediaId = table.Column<string>(nullable: true),
-                    Ip = table.Column<IPAddress>(nullable: true),
+                    Ip = table.Column<string>(nullable: true),
                     Titulo = table.Column<string>(nullable: true),
                     Contenido = table.Column<string>(nullable: true),
                     CategoriaId = table.Column<int>(nullable: false),
@@ -208,6 +210,12 @@ namespace Data.Migrations
                         principalTable: "Medias",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Hilos_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -217,10 +225,13 @@ namespace Data.Migrations
                     Id = table.Column<string>(nullable: false),
                     Creacion = table.Column<DateTimeOffset>(nullable: false),
                     UsuarioId = table.Column<string>(nullable: false),
+                    Nombre = table.Column<string>(nullable: true),
+                    Rango = table.Column<int>(nullable: false),
                     MediaId = table.Column<string>(nullable: true),
-                    Ip = table.Column<IPAddress>(nullable: true),
+                    Ip = table.Column<string>(nullable: true),
                     HiloId = table.Column<string>(nullable: false),
-                    Contenido = table.Column<string>(nullable: true)
+                    Contenido = table.Column<string>(nullable: true),
+                    Estado = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -275,6 +286,46 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Bans",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Creacion = table.Column<DateTimeOffset>(nullable: false),
+                    UsuarioId = table.Column<string>(nullable: true),
+                    ModId = table.Column<string>(nullable: true),
+                    Expiracion = table.Column<DateTimeOffset>(nullable: false),
+                    Tipo = table.Column<int>(nullable: false),
+                    HiloId = table.Column<string>(nullable: true),
+                    ComentarioId = table.Column<string>(nullable: true),
+                    Motivo = table.Column<int>(nullable: false),
+                    Aclaracion = table.Column<string>(nullable: true),
+                    Visto = table.Column<bool>(nullable: false),
+                    Ip = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bans", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bans_Comentarios_ComentarioId",
+                        column: x => x.ComentarioId,
+                        principalTable: "Comentarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Bans_Hilos_HiloId",
+                        column: x => x.HiloId,
+                        principalTable: "Hilos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Bans_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Denuncias",
                 columns: table => new
                 {
@@ -284,7 +335,7 @@ namespace Data.Migrations
                     Tipo = table.Column<int>(nullable: false),
                     HiloId = table.Column<string>(nullable: false),
                     ComentarioId = table.Column<string>(nullable: true),
-                    Motivo = table.Column<string>(nullable: false),
+                    Motivo = table.Column<int>(nullable: false),
                     Aclaracion = table.Column<string>(nullable: true),
                     Estado = table.Column<int>(nullable: false)
                 },
@@ -303,6 +354,12 @@ namespace Data.Migrations
                         principalTable: "Hilos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Denuncias_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -378,6 +435,21 @@ namespace Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bans_ComentarioId",
+                table: "Bans",
+                column: "ComentarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bans_HiloId",
+                table: "Bans",
+                column: "HiloId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bans_UsuarioId",
+                table: "Bans",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comentarios_HiloId",
                 table: "Comentarios",
                 column: "HiloId");
@@ -403,6 +475,11 @@ namespace Data.Migrations
                 column: "HiloId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Denuncias_UsuarioId",
+                table: "Denuncias",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_HiloAcciones_HiloId",
                 table: "HiloAcciones",
                 column: "HiloId");
@@ -421,6 +498,11 @@ namespace Data.Migrations
                 name: "IX_Hilos_MediaId",
                 table: "Hilos",
                 column: "MediaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Hilos_UsuarioId",
+                table: "Hilos",
+                column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notificaciones_ComentarioId",
@@ -456,6 +538,9 @@ namespace Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Bans");
+
+            migrationBuilder.DropTable(
                 name: "Denuncias");
 
             migrationBuilder.DropTable(
@@ -477,10 +562,10 @@ namespace Data.Migrations
                 name: "Hilos");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Medias");
 
             migrationBuilder.DropTable(
-                name: "Medias");
+                name: "AspNetUsers");
         }
     }
 }

@@ -6,7 +6,8 @@
 
     let model = window.model
     let error = null
-    let nick = ""
+    let nickAdmin = ""
+    let nickMod = ""
 
     let restAcc = 0;
 
@@ -72,7 +73,7 @@
             <ul >
                 <li class="header">Admninistradores</li>
                 <li class="noback">
-                    <input bind:value = {nick}  type="text" placeholder="Id o nick del usuario"> <Button on:click={() => añadir(nick, "admin")}>Añadir</Button>
+                    <input bind:value = {nickAdmin}  type="text" placeholder="Id o nick del usuario"> <Button on:click={() => añadir(nickAdmin, "admin")}>Añadir</Button>
                 </li>
                 {#each model.admins as a (a.id)}
                     <li>{a.userName} <span class="sep"></span><Button on:click={() => eliminar(a.id, "admin")}>Eliminar</Button></li>
@@ -80,7 +81,7 @@
                 <hr>
                 <li class="header">Moderadores(medz)</li>
                 <li class="noback">
-                    <input type="text" placeholder="Id o nick del usuario"> <Button on:click={() => añadir(nick, "mod")}>Añadir</Button>
+                    <input bind:value = {nickMod}  type="text" placeholder="Id o nick del usuario"> <Button on:click={() => añadir(nickMod, "mod")}>Añadir</Button>
                 </li>
                 {#each model.mods as m (m.id)}
                     <li>{m.userName} <span class="sep"></span><Button on:click={() => eliminar(m.id, "mod")}>Eliminar</Button></li>
@@ -112,8 +113,9 @@
         <ErrorValidacion error={error}/>
         <div class="menu">
             <ul >
+                <li>Registros maximos por ip<input bind:value={model.config.numeroMaximoDeCuentasPorIp} type="number"></li>
                 <li>Registro publico <Checkbox bind:checked={model.config.registroAbierto} right></Checkbox></li>
-                
+             
                 {#if !model.config.registroAbierto}
                     <li>
                             <h4>Link de invitacion</h4>

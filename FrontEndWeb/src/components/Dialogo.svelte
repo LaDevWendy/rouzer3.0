@@ -64,4 +64,8 @@
     .exito {
         color: greenyellow;
     }
+
+    :global(label .label-text) {
+        white-space: break-spaces !important;
+    }
 </style>
