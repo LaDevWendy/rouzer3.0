@@ -8,10 +8,10 @@
     import globalStore from '../globalStore'
     import MensajeRotativo from './MensajeRotativo.svelte'
     import Dialogos from './Dialogos/Dialogos.svelte'
-    import {abrir} from './Dialogos/Dialogos.svelte'
     import DenunciasNav from './Moderacion/DenunciasNav.svelte'
-    import {fade} from 'svelte/transition'
     import Signal from '../signal'
+    import SelectorDeComentarios from './Moderacion/SelectorDeComentarios.svelte';
+    
 
     export let notificaciones = window.notificaciones || []
 
@@ -93,6 +93,7 @@
 </nav>
 
 <Dialogos></Dialogos>
+<SelectorDeComentarios/>
 <style>
     /*NAVBAR*/
 

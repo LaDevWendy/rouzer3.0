@@ -284,7 +284,7 @@ namespace Servicios
                     Id = h.Id,
                     Titulo = h.Titulo,
                     Estado = h.Estado,
-                    CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id).Count()
+                    CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count()
                 });
         }
         public static IQueryable<HiloViewModelMod> AViewModelMod(this IQueryable<HiloModel> hilos, RChanContext context) {
@@ -298,7 +298,7 @@ namespace Servicios
                     Titulo = h.Titulo,
                     Estado = h.Estado,
                     Usuario = h.Usuario,
-                    CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id).Count(),
+                    CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                     UsuarioId = h.UsuarioId,
                 });
         }

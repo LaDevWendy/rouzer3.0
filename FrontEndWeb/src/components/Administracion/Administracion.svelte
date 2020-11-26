@@ -142,6 +142,8 @@
                     </Radio>
                 </li>
                 {/each}
+                <li>Mensaje pagina de choque</li>
+                <textarea bind:value={model.config.mensajePaginaDeChoque} cols="30" rows="10"></textarea>
                 <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
             </ul>
         </div>
@@ -168,4 +170,8 @@
         margin-left: auto;
     }
     
+    textarea {
+        padding: 0 16px;
+        background: var(--color1);
+    }
 </style>

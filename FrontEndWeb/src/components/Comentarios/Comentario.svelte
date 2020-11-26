@@ -4,15 +4,14 @@
     import {Menuitem, Button, Icon, Ripple } from 'svelte-mui';
     import Menu from '../Menu.svelte'
     import comentarioStore from './comentarioStore'
-    import { fade, blur, fly } from 'svelte/transition';
+    import { fly } from 'svelte/transition';
     
     import Tiempo from '../Tiempo.svelte'
     import globalStore from '../../globalStore';
     import Media from '../Media.svelte';
     import {abrir} from '../Dialogos/Dialogos.svelte'
     import { ComentarioEstado, CreacionRango } from '../../enums';
-    import ComentarioMod from '../Moderacion/ComentarioMod.svelte';
-
+    import selectorStore from '../Moderacion/selectorStore'
 
     export let comentario;
     export let hilo;
@@ -72,7 +71,7 @@
 </script>
 
 <div bind:this={el}
-    class:resaltado={comentario.resaltado} 
+    class:resaltado={comentario.resaltado || $selectorStore.seleccionados.has(comentario.id)} 
     class="comentario {windowsWidh <= 400?"comentario-movil":""}" 
     class:eliminado = {comentario?.estado  || 0 == ComentarioEstado.eliminado}
     class:comentarioMod = {comentario.rango > CreacionRango.Anon}
@@ -89,7 +88,10 @@
         class="color color-{comentario.color}">{CreacionRango.aString(comentario.rango).toUpperCase()}</div>
     <div class="header">
         {#if comentario.esOp} <span class="nick tag tag-op">OP</span>{/if}
-        <span class:nombreResaltado = {comentario.nombre} class="nick nombre">{comentario.nombre ||'Gordo'}</span>
+        <span 
+            on:click={() => selectorStore.selecionar(comentario.id)}
+            class:nombreResaltado = {comentario.nombre} 
+            class="nick nombre cptr">{comentario.nombre ||'Gordo'}</span>
         {#if comentario.usuarioId}
         <a href="/Moderacion/HistorialDeUsuario/{comentario.usuarioId}" style="color:var(--color6) !important">
             <span class="nick">{comentario.usuarioId.split("-")[0]}</span>
@@ -293,6 +295,10 @@
             border-color: blue;
 
         }
+    }
+
+    .cptr {
+        cursor: pointer;
     }
 
     /* .comentario-movil :glo.media {

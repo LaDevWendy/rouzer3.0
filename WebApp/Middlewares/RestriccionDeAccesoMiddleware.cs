@@ -50,7 +50,7 @@ namespace WebApp
                 }
                 else 
                 {
-                    ctx.Response.Redirect("/chocamo.html");
+                    ctx.Response.Redirect("/chocamo");
                     await next(ctx);
                 }
 

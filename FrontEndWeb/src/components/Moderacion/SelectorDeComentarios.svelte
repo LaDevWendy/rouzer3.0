@@ -1,30 +1,29 @@
-<script context="module">
-    import {writable} from 'svelte/store'
 
-    export const selectorDeComentarios = writable({
-        activado: true,
-        comentariosSeleccionados: []
-    })
-    
-
-</script>
 <script>
+    import selectorStore from './selectorStore'
+    import { Button } from 'svelte-mui'
+    import { abrir } from '../Dialogos/Dialogos.svelte';
+
+    function eliminarComentariosSeleccionados() {
+        abrir.eliminarComentarios(Array.from($selectorStore.seleccionados))
+        $selectorStore.seleccionados = new Set([])
+    }
 
 </script>
 
-<div class="selector-comentarios">
-    {#each $selectorDeComentarios.comentariosSeleccionados as  comentarioId}
-        {comentarioId}
-    {/each}
-</div>
+{#if $selectorStore.seleccionados.size != 0}
+    <div class="selector-comentarios">
+        <Button on:click={eliminarComentariosSeleccionados} color="var(--color5)" raised>Eliminar {$selectorStore.seleccionados.size} Comentario/s </Button>
+    </div>
+{/if}
 
 <style>
     .selector-comentarios {
         position: fixed;
-        left: 10px;
+        right: 10px;
         bottom: 60px;
-        background: black;
-        color: white;
+
+        z-index: 10;
     }
 </style>
 

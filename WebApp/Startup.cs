@@ -100,7 +100,7 @@ namespace WebApp
                     policy.RequireClaim("Role", "admin mod janitor".Split(" "));
                 });
             });
-            //services.AddRazorPages();
+            services.AddRazorPages();
             services.AddMvc(options => {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             })

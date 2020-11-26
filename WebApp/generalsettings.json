@@ -10,6 +10,7 @@
     "NumeroMaximoDeCuentasPorIp": 2,
     "LinkDeInvitacion": "B193UL4W",
     "RestriccionDeAcceso": 0,
+    "MensajePaginaDeChoque": "Los mods estan durmiendo",
     "CaptchaHilo": true,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
