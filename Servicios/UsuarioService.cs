@@ -21,18 +21,15 @@ namespace Servicios
 
     public class UsuarioService : ContextService, IUsuarioService
     {
-        private readonly IComentarioService comentarioService;
         private readonly UserManager<UsuarioModel> userManager;
         private readonly SignInManager<UsuarioModel> signInManager;
 
         public UsuarioService(RChanContext context,
             HashService hashService,
-            IComentarioService comentarioService,
             UserManager<UsuarioModel> userManager,
             SignInManager<UsuarioModel> signInManager)
         : base(context, hashService)
         {
-            this.comentarioService = comentarioService;
             this.userManager = userManager;
             this.signInManager = signInManager;
         }

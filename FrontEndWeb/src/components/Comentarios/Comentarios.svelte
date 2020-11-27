@@ -47,6 +47,10 @@
 
      Signal.coneccion.on("NuevoComentario", onComentarioCreado)
      Signal.subscribirseAHilo(hilo.id)
+     Signal.coneccion.on("ComentariosEliminados", ids => {
+        comentarios = comentarios.filter(c => ! ids.includes(c.id))
+        nuevosComentarios = nuevosComentarios.filter(c => ! ids.includes(c.id))
+     })
 
     let resaltando = false;
     function resaltarComentariosDeUsuario(usuarioId) {

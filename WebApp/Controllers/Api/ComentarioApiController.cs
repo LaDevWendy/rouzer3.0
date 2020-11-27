@@ -92,8 +92,8 @@ namespace WebApp.Controllers
             }
             if(media != null)
             {
-                    comentario.Media = media;
-                    comentario.MediaId = media.Id;
+                comentario.Media = media;
+                comentario.MediaId = media.Id;
             }
 
             //Agrego rango y nombre

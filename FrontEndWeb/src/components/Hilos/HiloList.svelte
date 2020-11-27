@@ -17,6 +17,12 @@
     Signal.subscribirAHome()
     Signal.coneccion.on("HiloCreado", onHiloCreado)
     Signal.coneccion.on("HiloComentado", onHiloComentado)
+    Signal.coneccion.on("HilosEliminados", (ids) => {
+        console.log("Hilos eliminados ");
+        console.log(ids);
+        hiloList.hilos = hiloList.hilos.filter(h => !ids.includes(h.id))
+        nuevoshilos = nuevoshilos.filter(h => !ids.includes(h.id))
+    })
 
     // connection.start().then(() => {
     //     console.log("Conectado");

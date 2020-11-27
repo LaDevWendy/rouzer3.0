@@ -10,6 +10,7 @@ using System.Linq;
 using Dapper;
 using Microsoft.Extensions.Options;
 using WebApp;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Servicios
 {
@@ -24,6 +25,7 @@ namespace Servicios
         Task<HiloFullViewModelMod> GetHiloFullMod(string id, string userId = null, bool mostrarOcultos = false);
         IQueryable<HiloModel> OrdenadosPorBump();
         Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId="", int cantidad = 16);
+        Task EliminarHilos(params string[] ids);
     }
 
     public class HiloService : ContextService, IHiloService
@@ -31,17 +33,21 @@ namespace Servicios
         private readonly IComentarioService comentarioService;
         private readonly IOptionsSnapshot<GeneralOptions> options;
         private readonly FormateadorService formateador;
+        private readonly IHubContext<RChanHub> rchanHub;
 
         public HiloService(RChanContext context,
             HashService hashService,
             IComentarioService comentarioService,
             IOptionsSnapshot<GeneralOptions> options,
-            FormateadorService formateador)
+            FormateadorService formateador,
+            IHubContext<RChanHub> rchanHub
+            )
         : base(context, hashService)
         {
             this.comentarioService = comentarioService;
             this.options = options;
             this.formateador = formateador;
+            this.rchanHub = rchanHub;
         }
 
         public async Task ActualizarHilo(HiloModel Hilo)
@@ -259,6 +265,20 @@ namespace Servicios
             return _context.Hilos
                 .Include(h => h.Media)
                 .OrderByDescending(h => h.Bump);
+        }
+
+        public async Task EliminarHilos(params string[] ids) 
+        {
+            var hilos = await _context.Hilos.Where(h => ids.Contains(h.Id)).ToListAsync();
+            hilos.ForEach(h => h.Estado = HiloEstado.Eliminado);
+
+            //Limpiar denuncias
+            var denuncias = await _context.Denuncias.Where(d => ids.Contains(d.HiloId)).ToListAsync();
+            denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
+
+            await _context.SaveChangesAsync();
+            await rchanHub.Clients.All.SendAsync("HilosEliminados", ids);
+
         }
     }
 

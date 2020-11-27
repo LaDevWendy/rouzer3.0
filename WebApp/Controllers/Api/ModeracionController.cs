@@ -27,6 +27,7 @@ namespace WebApp.Controllers
     public class Moderacion : Controller
     {
         private readonly IHiloService hiloService;
+        private readonly IComentarioService comentarioService;
         private readonly IMediaService mediaService;
         private readonly HashService hashService;
         private readonly IHubContext<RChanHub> rchanHub;
@@ -38,6 +39,7 @@ namespace WebApp.Controllers
 
         public Moderacion(
             IHiloService hiloService,
+            IComentarioService comentarioService,
             IMediaService mediaService,
             HashService hashService,
             IHubContext<RChanHub> rchanHub,
@@ -49,6 +51,7 @@ namespace WebApp.Controllers
         )
         {
             this.hiloService = hiloService;
+            this.comentarioService = comentarioService;
             this.mediaService = mediaService;
             this.hashService = hashService;
             this.rchanHub = rchanHub;
@@ -93,6 +96,7 @@ namespace WebApp.Controllers
                 .OrderByDescending(d => d.Creacion)
                 .Where(c => c.MediaId != null)
                 .Include(c => c.Media)
+                .Where(c => c.Media.Tipo != MediaType.Eliminado)
                 .Take(50)
                 .Select(c => new ComentarioViewModelMod
                 {
@@ -212,17 +216,11 @@ namespace WebApp.Controllers
             var denuncias = new List<DenunciaModel>();
             if (comentario != null && model.EliminarElemento)
             {
-                comentario.Estado = ComentarioEstado.Eliminado;
-                denuncias = await context.Denuncias
-                    .Where(d => d.HiloId == hilo.Id && d.ComentarioId == comentario.Id)
-                    .ToListAsync();
+                await comentarioService.Eliminar(comentario.Id);
             }
             else if (hilo != null && model.EliminarElemento)
             {
-                denuncias = await context.Denuncias
-                    .Where(d => d.HiloId == hilo.Id)
-                    .ToListAsync();
-                hilo.Estado = HiloEstado.Eliminado;
+                await hiloService.EliminarHilos(hilo.Id);
             }
             denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
 
@@ -235,11 +233,13 @@ namespace WebApp.Controllers
             //Borro todos los hilos y comentarios del usuario
             if (model.Desaparecer)
             {
-                var hilos = await context.Hilos.DeUsuario(elemento.UsuarioId).ToListAsync();
-                var comentarios = await context.Comentarios.DeUsuario(elemento.UsuarioId).ToListAsync();
+                var hilos = await context.Hilos
+                    .DeUsuario(elemento.UsuarioId).Select(e => e.Id).ToListAsync();
+                var comentarios = await context.Comentarios
+                    .DeUsuario(elemento.UsuarioId).Select(e => e.Id).ToListAsync();
 
-                hilos.ForEach(h => h.Estado = HiloEstado.Eliminado);
-                comentarios.ForEach(h => h.Estado = ComentarioEstado.Eliminado);
+                await comentarioService.Eliminar(comentarios.ToArray());
+                await hiloService.EliminarHilos(hilos.ToArray());
             }
 
             await context.SaveChangesAsync();
@@ -277,19 +277,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> EliminarComentarios(string[] ids)
         {
-            var comentarios = await context.Comentarios
-                .Where(c => ids.Contains(c.Id))
-                .Where(c => c.Estado != ComentarioEstado.Eliminado)
-                .ToListAsync();
-
-            comentarios.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
-
-            var denuncias = await context.Denuncias
-                .Where(d => ids.Contains(d.ComentarioId))
-                .ToListAsync();
-            denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
-
-            int eliminados = await context.SaveChangesAsync();
+            await comentarioService.Eliminar(ids);
             return Json(new ApiResponse($"comentarios domados!"));
         }
 
@@ -338,16 +326,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> BorrarHilo(BorrarHiloVm vm)
         {
-            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == vm.HiloId);
-            if (hilo is null) return NotFound();
-
-            hilo.Estado = HiloEstado.Eliminado;
-
-            //Limpiar denuncias
-            var denuncias = await context.Denuncias.Where(d => d.HiloId == hilo.Id).ToListAsync();
-            denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
-
-            await context.SaveChangesAsync();
+            await hiloService.EliminarHilos(vm.HiloId);
             return Json(new ApiResponse("Hilo borrado"));
         }
 
