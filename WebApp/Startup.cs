@@ -49,13 +49,17 @@ namespace WebApp
             services.AddScoped<AntiFloodService>();
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
             services.Configure<List<Categoria>>(Configuration.GetSection("Categorias"));
-            services.AddLiveReload(config =>
-            {
-                // config.FolderToMonitor = env.ContentRootPath + "\\Views";
-            });
+            // services.AddLiveReload(config =>
+            // {
+            //     // config.FolderToMonitor = env.ContentRootPath + "\\Views";
+            // });
             services.AddSignalR();
-            services.AddRazorPages().AddRazorRuntimeCompilation();
-            services.AddMvc().AddRazorRuntimeCompilation();
+            services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
+            services.AddMvc(opts => {
+                opts.Filters.Add<RestriccionDeAccesoAction>();
+                opts.Filters.Add<BanFilter>();
+            }).AddRazorRuntimeCompilation();
 
             services.AddDbContext<RChanContext>(options =>
                 options.UseNpgsql(
@@ -168,17 +172,17 @@ namespace WebApp
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-                app.UseLiveReload();
+                // app.UseLiveReload();
 
             }
             else
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                // app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             void ConfigurarCache(StaticFileResponseContext ctx)
             {
@@ -207,8 +211,8 @@ namespace WebApp
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.RestriccionDeAccesoMiddleware();
-            app.UseBanMiddleware();
+            // app.RestriccionDeAccesoMiddleware();
+            // app.UseBanMiddleware();
 
             //Domo a los baneados
 

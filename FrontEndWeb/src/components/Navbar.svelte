@@ -34,7 +34,7 @@
             <Ripple/>
         </span>
         <a href="/" style="font-family: euroFighter">
-            <h3>ROZED <span class="version"> La red nini (Alfa 0.9)</span></h3>
+            <h3>ROZED <span class="version"> La red nini (Alfa 0.9.1)</span></h3>
 
             <Ripple/>
         </a>
@@ -93,7 +93,10 @@
 </nav>
 
 <Dialogos></Dialogos>
-<SelectorDeComentarios/>
+
+{#if $globalStore.usuario.estaAutenticado && $globalStore.usuario.esMod}
+    <SelectorDeComentarios/>
+{/if}
 <style>
     /*NAVBAR*/
 

@@ -7,13 +7,13 @@
     "TiempoEntreHilos": 300,
     "LimiteArchivo": 0,
     "RegistroAbierto": true,
-    "NumeroMaximoDeCuentasPorIp": 2,
+    "NumeroMaximoDeCuentasPorIp": 10,
     "LinkDeInvitacion": "B193UL4W",
-    "RestriccionDeAcceso": 0,
+    "RestriccionDeAcceso": 1,
     "MensajePaginaDeChoque": "Los mods estan durmiendo",
     "CaptchaHilo": true,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
-    "Version": "0.9"
+    "Version": "0.9.1"
   }
 }

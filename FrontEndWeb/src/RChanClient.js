@@ -4,6 +4,12 @@ axios.maxRedirects = 0
 axios.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
+    if(response?.data?.redirect ?? false){
+        console.log(JSON.stringify(response))
+        window.location.href = response.data.redirect
+        console.log("Window location" + response.data.redirect);
+        throw new Error("Redirigido")
+    }
     if(response.request.responseURL && response.request.responseURL.indexOf("/Domad") != -1) {
         window.location = response.request.responseURL
     }
@@ -11,7 +17,7 @@ axios.interceptors.response.use(function (response) {
     return response
   }, function (error) {
       
-        if(error.response.data.redirect){
+        if(error?.response?.data.redirect){
             console.log(JSON.stringify(error.response))
             window.location = error.response.data.redirect
             return Promise.resolve();

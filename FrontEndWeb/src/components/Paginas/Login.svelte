@@ -14,11 +14,15 @@
         console.log(captcha);
         try {
             let res = await RChanClient.logearse(username, password)
+            // if(res.data.redirect) {
+            //     window.location.href = response.data.redirect
+            // }
         } catch (e) {
             console.log(e);
             error = e.response.data
             return
         }
+        console.log("chan")
         window.location = "/"
         // location.reload();
     }

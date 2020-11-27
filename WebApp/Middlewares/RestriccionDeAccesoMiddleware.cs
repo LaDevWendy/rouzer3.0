@@ -24,6 +24,12 @@ namespace WebApp
 
         public async Task Invoke(HttpContext ctx, IOptionsSnapshot<GeneralOptions> grlOpts)
         {
+            string url = ctx.Request.Path.ToString().ToLower();
+            if(url.Contains("hocamo") || url.Contains("hub"))
+            {
+                await next(ctx);
+                return;
+            }
             bool puedoAccerdor = false;
             if (grlOpts.Value.RestriccionDeAcceso == RestriccionDeAcceso.Publico)
             {
@@ -45,7 +51,6 @@ namespace WebApp
             {
                 if(ctx.Request.Path.StartsWithSegments(new PathString("/Login")) || ctx.Request.Path.StartsWithSegments(new PathString("/Registro")))
                 {
-                    System.Console.WriteLine("uy");
                     await next(ctx);
                 }
                 else 
