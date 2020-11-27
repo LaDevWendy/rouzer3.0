@@ -188,6 +188,9 @@ namespace Servicios
                 $"{CarpetaDeAlmacenamiento}/{media.Url}",
             });
 
+            media.Tipo = MediaType.Eliminado;
+            media.Url = "";
+            await context.SaveChangesAsync();
             while (archivosAEliminar.Count() != 0 || intentos == 0)
             {
                 try

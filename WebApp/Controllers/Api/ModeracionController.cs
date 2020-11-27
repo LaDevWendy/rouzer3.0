@@ -104,7 +104,7 @@ namespace WebApp.Controllers
                     Media = c.Media
                 }).ToListAsync();
 
-            return View(new {hilos, comentarios, denuncias, medias});
+            return View(new { hilos, comentarios, denuncias, medias });
         }
 
         [Route("/Moderacion/ListaDeUsuarios")]
@@ -114,7 +114,7 @@ namespace WebApp.Controllers
                 .OrderByDescending(u => u.Creacion)
                 .Take(100)
                 .ToListAsync();
-            
+
             var cantidadDeUsuarios = await context.Users.CountAsync();
 
             var ultimosBaneos = await context.Bans
@@ -227,23 +227,23 @@ namespace WebApp.Controllers
             denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
 
             bool mediaEliminado = false;
-            if(model.EliminarAdjunto)
+            if (model.EliminarAdjunto)
             {
-                mediaEliminado =  await mediaService.Eliminar(elemento.MediaId);
+                mediaEliminado = await mediaService.Eliminar(elemento.MediaId);
             }
 
             //Borro todos los hilos y comentarios del usuario
-            if(model.Desaparecer)
+            if (model.Desaparecer)
             {
                 var hilos = await context.Hilos.DeUsuario(elemento.UsuarioId).ToListAsync();
                 var comentarios = await context.Comentarios.DeUsuario(elemento.UsuarioId).ToListAsync();
 
                 hilos.ForEach(h => h.Estado = HiloEstado.Eliminado);
-                comentarios.ForEach(h => h.Estado =  ComentarioEstado.Eliminado);
+                comentarios.ForEach(h => h.Estado = ComentarioEstado.Eliminado);
             }
 
             await context.SaveChangesAsync();
-            return Json(new ApiResponse($"Usuario Baneado {(mediaEliminado?"; imagen/video eliminado":"")} {(model.Desaparecer?"; Usuario desaparecido":"")}"));
+            return Json(new ApiResponse($"Usuario Baneado {(mediaEliminado ? "; imagen/video eliminado" : "")} {(model.Desaparecer ? "; Usuario desaparecido" : "")}"));
         }
 
         [HttpPost]
@@ -284,11 +284,11 @@ namespace WebApp.Controllers
 
             comentarios.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
 
-            var  denuncias = await context.Denuncias
+            var denuncias = await context.Denuncias
                 .Where(d => ids.Contains(d.ComentarioId))
                 .ToListAsync();
             denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
-        
+
             int eliminados = await context.SaveChangesAsync();
             return Json(new ApiResponse($"comentarios domados!"));
         }
@@ -381,10 +381,12 @@ namespace WebApp.Controllers
             var medias = await context.Medias
                 .AsNoTracking()
                 .OrderByDescending(m => m.Creacion)
+                .Where(m => m.Tipo != MediaType.Eliminado)
                 .Take(100)
                 .ToListAsync();
 
-            return View(new {
+            return View(new
+            {
                 medias
             });
         }
@@ -395,27 +397,23 @@ namespace WebApp.Controllers
             public bool EliminarElementos { get; set; }
         }
         [HttpPost]
-        public async Task<ActionResult> EliminarMedia(EliminarMediaVm model)
+        public async Task<ActionResult> EliminarMedia(string[] ids)
         {
-            var media = await context.Medias.PorId(model.MediaId);
-            if(media is null) 
-            {
-                ModelState.AddModelError("Error", "No se encontro el archivo");
-                return Json(ModelState);
-            }
-            await mediaService.Eliminar(media.Id);
+            var medias = await context.Medias.Where(m => ids.Contains(m.Id)).ToListAsync();
 
-            if(model.EliminarElementos)
+            foreach (var m in medias)
             {
-                var comentarios = await  context.Comentarios
-                    .Where(c => c.MediaId == media.Id).ToListAsync();
-                var hilos = await  context.Hilos
-                    .Where(c => c.MediaId == media.Id).ToListAsync();
-                
+                await mediaService.Eliminar(m.Id);
+
+                var comentarios = await context.Comentarios
+                    .Where(c => c.MediaId == m.Id).ToListAsync();
+                var hilos = await context.Hilos
+                    .Where(c => c.MediaId == m.Id).ToListAsync();
+
                 comentarios.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
                 hilos.ForEach(c => c.Estado = HiloEstado.Eliminado);
-            }
 
+            }
             await context.SaveChangesAsync();
 
             return Json(new ApiResponse("Archivos Eliminados"));
@@ -440,7 +438,7 @@ namespace WebApp.Controllers
     {
         public string UsuarioId { get; set; }
         public string HiloId { get; set; }
-        [Required, Range(0,10, ErrorMessage="Motivo Invalido")]
+        [Required, Range(0, 10, ErrorMessage = "Motivo Invalido")]
         public MotivoDenuncia Motivo { get; set; }
         public string Aclaracion { get; set; }
         public string ComentarioId { get; set; }

@@ -60,6 +60,11 @@
         visible = !visible
     }
 
+    function seleccionar() {
+        if(!$globalStore.usuario.esMod) return;
+        selectorStore.selecionar(comentario.id)
+    }
+
     let mostrarReporte = true
 
     if(!Array.isArray(comentario.respuestas)) comentario.respuestas = []
@@ -89,7 +94,7 @@
     <div class="header">
         {#if comentario.esOp} <span class="nick tag tag-op">OP</span>{/if}
         <span 
-            on:click={() => selectorStore.selecionar(comentario.id)}
+            on:click={seleccionar}
             class:nombreResaltado = {comentario.nombre} 
             class="nick nombre cptr">{comentario.nombre ||'Gordo'}</span>
         {#if comentario.usuarioId}

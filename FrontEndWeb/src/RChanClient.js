@@ -200,6 +200,10 @@ export default class RChanClient {
     {
         return axios.post(`/api/Administracion/GenerarNuevoLinkDeInvitacion`)
     }
+    static eliminarMedias(ids)
+    {
+        return axios.post(`/api/Moderacion/EliminarMedia`, ids)
+    }
     static eliminarMedia(mediaId, eliminarElementos=true)
     {
         return axios.post(`/api/Moderacion/EliminarMedia`, {

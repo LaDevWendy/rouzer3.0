@@ -9,6 +9,7 @@
         $selectorStore.seleccionados = new Set([])
     }
 
+
 </script>
 
 {#if $selectorStore.seleccionados.size != 0}
