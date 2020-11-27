@@ -76,11 +76,8 @@
 						
 					</div>
 				</Dialogo>
-				<Dialogo textoActivador="Eliminar" titulo="Eliminar hilo" accion = {() => RChanClient.borrarHilo(hilo.id)}>
-					<div slot="body">
-						¿Estas seguro de que queres domar el hilo?
-					</div>
-				</Dialogo>
+
+				<Button on:click={() => abrir.eliminarHilo(hilo.id)} >Eliminar</Button>
 
 				<Button on:click={() => abrir.ban(hilo.id)}>Banear</Button>
 				<a href="/Moderacion/HistorialDeUsuario/{usuario.id}">

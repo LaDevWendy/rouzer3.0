@@ -13,6 +13,7 @@
         comentariosIds: [],
         usuarioId: "",
         mediaId:"",
+        eliminarMedia: false,
         mediaEliminarDependientes: true
     })
     
@@ -98,11 +99,12 @@
 <Dialogo visible={$dialogosStore.dialogoAbierto == "eliminarHilo"} 
     textoActivador="Eliminar" 
     titulo="Eliminar roz" 
-    accion = {() => RChanClient.borrarHilo($dialogosStore.hiloId)}
+    accion = {() => RChanClient.borrarHilos([$dialogosStore.hiloId], $dialogosStore.eliminarMedia)}
     >
     <span slot="activador"></span>
     <div slot="body">
         ¿Estas seguro de que queres domar el roz?
+        <Checkbox bind:checked={$dialogosStore.eliminarMedia} right>Eliminar Archivos</Checkbox>
     </div>
 </Dialogo>
 
@@ -130,11 +132,12 @@
 <Dialogo visible={$dialogosStore.dialogoAbierto == "eliminarComentarios"} 
     textoActivador="Eliminar" 
     titulo="Eliminar comentario" 
-    accion = {() => RChanClient.eliminarComentarios($dialogosStore.comentariosIds)}
+    accion = {() => RChanClient.eliminarComentarios($dialogosStore.comentariosIds, $dialogosStore.eliminarMedia)}
     >
     <span slot="activador"></span>
     <div slot="body">
         ¿Estas seguro de que queres borrar los comentarios {$dialogosStore.comentariosIds}
+        <Checkbox bind:checked={$dialogosStore.eliminarMedia} right>Eliminar Archivos</Checkbox>
     </div>
 </Dialogo>
 

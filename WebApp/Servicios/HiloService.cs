@@ -26,6 +26,7 @@ namespace Servicios
         IQueryable<HiloModel> OrdenadosPorBump();
         Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId="", int cantidad = 16);
         Task EliminarHilos(params string[] ids);
+        Task EliminarHilos(string[] ids, bool borrarMedias = false);
     }
 
     public class HiloService : ContextService, IHiloService
@@ -34,13 +35,15 @@ namespace Servicios
         private readonly IOptionsSnapshot<GeneralOptions> options;
         private readonly FormateadorService formateador;
         private readonly IHubContext<RChanHub> rchanHub;
+        private readonly IMediaService mediaService;
 
         public HiloService(RChanContext context,
             HashService hashService,
             IComentarioService comentarioService,
             IOptionsSnapshot<GeneralOptions> options,
             FormateadorService formateador,
-            IHubContext<RChanHub> rchanHub
+            IHubContext<RChanHub> rchanHub,
+            IMediaService mediaService
             )
         : base(context, hashService)
         {
@@ -48,6 +51,7 @@ namespace Servicios
             this.options = options;
             this.formateador = formateador;
             this.rchanHub = rchanHub;
+            this.mediaService = mediaService;
         }
 
         public async Task ActualizarHilo(HiloModel Hilo)
@@ -267,7 +271,9 @@ namespace Servicios
                 .OrderByDescending(h => h.Bump);
         }
 
-        public async Task EliminarHilos(params string[] ids) 
+        public Task EliminarHilos(params string[] ids) => EliminarHilos(ids);
+
+        public async Task EliminarHilos(string[] ids, bool borrarMedias = false) 
         {
             var hilos = await _context.Hilos.Where(h => ids.Contains(h.Id)).ToListAsync();
             hilos.ForEach(h => h.Estado = HiloEstado.Eliminado);
@@ -275,6 +281,15 @@ namespace Servicios
             //Limpiar denuncias
             var denuncias = await _context.Denuncias.Where(d => ids.Contains(d.HiloId)).ToListAsync();
             denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
+
+            if(borrarMedias) 
+            {
+                var mediaIds = hilos.Select(h => h.MediaId).ToArray();
+                foreach (var m in mediaIds)
+                {
+                    await mediaService.Eliminar(m);
+                }
+            }
 
             await _context.SaveChangesAsync();
             await rchanHub.Clients.All.SendAsync("HilosEliminados", ids);

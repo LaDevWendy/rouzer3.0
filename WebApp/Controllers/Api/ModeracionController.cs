@@ -275,9 +275,9 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> EliminarComentarios(string[] ids)
+        public async Task<ActionResult> EliminarComentarios(BorrarCreacionesVm model)
         {
-            await comentarioService.Eliminar(ids);
+            await comentarioService.Eliminar(model.Ids, model.BorrarMedia);
             return Json(new ApiResponse($"comentarios domados!"));
         }
 
@@ -319,14 +319,15 @@ namespace WebApp.Controllers
             return Json(new ApiResponse("Hilo stickeado"));
         }
 
-        public class BorrarHiloVm
+        public class BorrarCreacionesVm
         {
-            public string HiloId { get; set; }
+            public string[] Ids { get; set; }
+            public bool BorrarMedia { get; set; }
         }
         [HttpPost]
-        public async Task<ActionResult> BorrarHilo(BorrarHiloVm vm)
+        public async Task<ActionResult> BorrarHilo(BorrarCreacionesVm vm)
         {
-            await hiloService.EliminarHilos(vm.HiloId);
+            await hiloService.EliminarHilos(vm.Ids, vm.BorrarMedia);
             return Json(new ApiResponse("Hilo borrado"));
         }
 

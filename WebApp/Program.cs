@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Modelos;
 
 namespace WebApp
@@ -30,6 +31,12 @@ namespace WebApp
             {
                 var logger = scope.ServiceProvider.GetService<ILogger<Program>>();
                 var ctx = scope.ServiceProvider.GetService<RChanContext>();
+                var aspenv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                var opt = scope.ServiceProvider.GetService<IConfiguration>();
+                var wh = scope.ServiceProvider.GetService<IWebHostEnvironment>();
+
+                System.Console.WriteLine(opt.GetValue<string>("HCaptcha:SiteKey"));
+                System.Console.WriteLine(aspenv);
                 await ctx.Database.EnsureCreatedAsync();
 
                 var migs = await ctx.Database.GetPendingMigrationsAsync();

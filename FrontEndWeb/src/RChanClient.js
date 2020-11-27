@@ -115,9 +115,10 @@ export default class RChanClient {
             importancia: Number(importancia),
         })
     }
-    static borrarHilo(hiloId) {
+    static borrarHilos(ids, borrarMedia = false) {
         return axios.post("/api/Moderacion/BorrarHilo", {
-            hiloId,
+            ids,
+            borrarMedia
         })
     }
     static cambiarCategoria(hiloId, categoriaId) {
@@ -178,9 +179,12 @@ export default class RChanClient {
         return axios.post(`/api/Moderacion/RechazarDenuncia/${denunciaId}`)
     }
 
-    static eliminarComentarios(ids)
+    static eliminarComentarios(ids, borrarMedia = false)
     {
-        return axios.post(`/api/Moderacion/EliminarComentarios`, ids)
+        return axios.post(`/api/Moderacion/EliminarComentarios`, {
+            ids,
+            borrarMedia
+        })
     }
 
     static removerBan(id)

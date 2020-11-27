@@ -20,21 +20,25 @@ namespace Servicios
     {
         Task Guardar(ComentarioModel comentario, bool bumpearHilo = true);
         Task<List<ComentarioViewModel>> DeHilo(string hiloId, string creadorId);
-        Task Eliminar(params string[] ids);
+        Task Eliminar(params string[] ids) => Eliminar(ids, false);
+        Task Eliminar(string[] ids, bool borrarMedias);
     }
 
     public class ComentarioService : ContextService, IComentarioService
     {
         private readonly FormateadorService formateador;
         private readonly IHubContext<RChanHub> rchanHub;
+        private readonly IMediaService mediaService;
 
         public ComentarioService(RChanContext context,       
             FormateadorService formateador,              
             IHubContext<RChanHub> rchanHub,
+            IMediaService mediaService,
             HashService hashService)
             : base(context, hashService)
         {
             this.rchanHub = rchanHub;
+            this.mediaService = mediaService;
             this.formateador = formateador;
         }
 
@@ -64,7 +68,8 @@ namespace Servicios
             }
         }
 
-        public async Task Eliminar(params string[] ids)
+        public Task Eliminar(params string[] ids) => Eliminar(ids, false);
+        public async Task Eliminar(string[] ids, bool borrarMedias=false)
         {
             var comentarios = await _context.Comentarios
                 .Where(c => ids.Contains(c.Id))
@@ -76,7 +81,16 @@ namespace Servicios
             var denuncias = await _context.Denuncias
                 .Where(d => ids.Contains(d.ComentarioId))
                 .ToListAsync();
-            denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);            
+            denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);           
+            
+             if(borrarMedias) 
+            {
+                var mediaIds = comentarios.Select(h => h.MediaId).ToArray();
+                foreach (var m in mediaIds)
+                {
+                    await mediaService.Eliminar(m);
+                }
+            } 
             
             await rchanHub.Clients.All.SendAsync("ComentariosEliminados", ids);
 
