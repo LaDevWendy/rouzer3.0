@@ -65,7 +65,7 @@ async function crear() {
             {/each}
         </select>
 
-        <textarea bind:value={contenido} name="contenido" placeholder="Escribi un redactazo..."></textarea>
+        <textarea style="background: var(--color4);" bind:value={contenido} name="contenido" placeholder="Escribi un redactazo..."></textarea>
 
         <ErrorValidacion {error}/>
 

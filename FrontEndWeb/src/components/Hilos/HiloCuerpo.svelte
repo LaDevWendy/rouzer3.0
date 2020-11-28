@@ -14,6 +14,7 @@
         float: left;
         margin-right: 10px;
         max-width: 50%;
+        overflow: hidden;
     }
     .cuerpo {
         padding: 0 10px;

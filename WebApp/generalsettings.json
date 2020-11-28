@@ -10,10 +10,10 @@
     "NumeroMaximoDeCuentasPorIp": 2,
     "LinkDeInvitacion": "B193UL4W",
     "RestriccionDeAcceso": 1,
-    "MensajePaginaDeChoque": "Los mods estan durmiendo",
+    "MensajePaginaDeChoque": "Gran estreno a las 22hs, pongase su mejora traje",
     "CaptchaHilo": true,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
-    "Version": "1.0.1"
+    "Version": "1.0.2"
   }
 }
