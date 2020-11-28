@@ -57,9 +57,9 @@
             return
         }
         mediaType = MediaType.Youtube
-        vistaPreviaYoutube = `https://img.youtube.com/vi/${id[1]}/maxresdefault.jpg`
+        vistaPreviaYoutube = `https://img.youtube.com/vi/${id[1]}/hqdefault.jpg`
         videoUrl = inputLink
-        archivoBlob = `https://img.youtube.com/vi/${id[1]}/maxresdefault.jpg`
+        archivoBlob = `https://img.youtube.com/vi/${id[1]}/hqdefault.jpg`
         media.link = videoUrl
         estado = "cargado"
 

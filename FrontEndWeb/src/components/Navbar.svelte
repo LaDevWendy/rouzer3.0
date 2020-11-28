@@ -34,7 +34,7 @@
             <Ripple/>
         </span>
         <a href="/" style="font-family: euroFighter">
-            <h3>ROZED <span class="version"> La red nini (Version   Chad 1.0)</span></h3>
+            <h3>ROZED <span class="version"> La red nini (Version   Chad 1.0.1)</span></h3>
 
             <Ripple/>
         </a>

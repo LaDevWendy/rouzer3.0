@@ -150,8 +150,13 @@ namespace Servicios
             var mediaViejo = await context.Medias.FirstOrDefaultAsync(m => m.Hash == id);
             if(mediaViejo != null) return mediaViejo;
 
-            var vistaPrevia = await new HttpClient().GetAsync($"https://img.youtube.com/vi/{id}/maxresdefault.jpg");
+            var  vistaPrevia =  await new HttpClient().GetAsync($"https://img.youtube.com/vi/{id}/maxresdefault.jpg");
 
+            if(!vistaPrevia.IsSuccessStatusCode)
+            {
+                vistaPrevia = await new HttpClient().GetAsync($"https://img.youtube.com/vi/{id}/hqdefault.jpg");
+            }
+            
             if(!vistaPrevia.IsSuccessStatusCode) return null;
 
             var media = new MediaModel {

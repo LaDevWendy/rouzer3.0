@@ -14,6 +14,6 @@
     "CaptchaHilo": true,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
-    "Version": "1.0"
+    "Version": "1.0.1"
   }
 }
