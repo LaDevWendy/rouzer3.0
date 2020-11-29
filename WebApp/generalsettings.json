@@ -6,14 +6,14 @@
     "TiempoEntreComentarios": 5,
     "TiempoEntreHilos": 300,
     "LimiteArchivo": 0,
-    "RegistroAbierto": false,
-    "NumeroMaximoDeCuentasPorIp": 2,
+    "RegistroAbierto": true,
+    "NumeroMaximoDeCuentasPorIp": 100,
     "LinkDeInvitacion": "B193UL4W",
-    "RestriccionDeAcceso": 1,
-    "MensajePaginaDeChoque": "Gran estreno a las 22hs, pongase su mejora traje",
+    "RestriccionDeAcceso": 0,
+    "MensajePaginaDeChoque": "Ay no se",
     "CaptchaHilo": true,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
-    "Version": "1.0.3"
+    "Version": "1.1.0"
   }
 }

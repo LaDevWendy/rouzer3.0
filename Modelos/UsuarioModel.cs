@@ -38,5 +38,7 @@ namespace Modelos
         public override int AccessFailedCount { get; set; }
         [JsonIgnore, System.Text.Json.Serialization.JsonIgnore]
         public string Ip { get; set; }
+        [JsonIgnore, System.Text.Json.Serialization.JsonIgnore]
+        public string Token { get; set; } = "";
     }
 }

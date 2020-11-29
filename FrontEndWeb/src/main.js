@@ -5,6 +5,8 @@ import Administracion from './components/Administracion/Administracion.svelte';
 import Moderacion from './components/Paginas/Moderacion.svelte';
 import Login from './components/Paginas/Login.svelte';
 import Registro from './components/Paginas/Registro.svelte';
+import Inicio from './components/Paginas/Inicio.svelte';
+import Token from './components/Paginas/Token.svelte';
 import HistorialUsuario from './components/Paginas/HistorialUsuario.svelte';
 import Domado from './components/Paginas/Domado.svelte';
 import ListaDeUsuarios from './components/Paginas/ListaDeUsuarios.svelte';
@@ -24,9 +26,11 @@ let componentes = [
 	["#svelte-index", HiloList, {hiloList: window.hiloList}],
 	["#svelte-administracion", Administracion, {}],
 	["#svelte-moderacion", Moderacion, {}],
+	["#svelte-token", Token, {}],
 	["#svelte-login", Login, {}],
 	["#svelte-historialDeUsuario", HistorialUsuario, {}],
 	["#svelte-registro", Registro],
+	["#svelte-inicio", Inicio],
 	["#svelte-domado", Domado, {}],
 	["#svelte-listaDeUsuarios", ListaDeUsuarios, {}],
 	["#svelte-eliminadosYDesactivados", EliminadosYDesactivados, {}],

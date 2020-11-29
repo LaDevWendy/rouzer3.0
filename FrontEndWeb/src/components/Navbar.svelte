@@ -11,6 +11,7 @@
     import DenunciasNav from './Moderacion/DenunciasNav.svelte'
     import Signal from '../signal'
     import SelectorDeComentarios from './Moderacion/SelectorDeComentarios.svelte';
+    import Personalizacion from './Personalizacion.svelte'
     
 
     export let notificaciones = window.notificaciones || []
@@ -34,7 +35,7 @@
             <Ripple/>
         </span>
         <a href="/" style="font-family: euroFighter">
-            <h3>ROZED <span class="version"> La red nini (Version   Chad 1.0.3)</span></h3>
+            <h3>ROZED <span class="version"> La red nini (Version Chad 1.1.0)</span></h3>
 
             <Ripple/>
         </a>
@@ -97,6 +98,8 @@
 {#if $globalStore.usuario.estaAutenticado && $globalStore.usuario.esMod}
     <SelectorDeComentarios/>
 {/if}
+
+<!-- <Personalizacion></Personalizacion> -->
 <style>
     /*NAVBAR*/
 

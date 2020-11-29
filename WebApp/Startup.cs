@@ -83,7 +83,7 @@ namespace WebApp
                 opt.LoginPath = "/Login";
                 opt.Events.OnRedirectToLogin = async (c) => {
                     c.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    await c.Response.WriteAsync("{\"redirect\":\"/Login\"}");
+                    await c.Response.WriteAsync("{\"redirect\":\"/Inicio\"}");
                 };
             });
             services.AddAuthorization(options =>

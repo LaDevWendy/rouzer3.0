@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Data;
+using WebApp.Otros;
+using System.Security.Claims;
 
 namespace WebApp.Controllers
 {
@@ -22,6 +24,7 @@ namespace WebApp.Controllers
         private readonly SignInManager<UsuarioModel> signInManager;
         private readonly CaptchaService captcha;
         private readonly RChanContext context;
+        private readonly HashService hashService;
         private readonly IOptionsSnapshot<GeneralOptions> generalOptions;
 
         #region constructor
@@ -30,13 +33,15 @@ namespace WebApp.Controllers
             SignInManager<UsuarioModel> signInManager,
             CaptchaService captcha,
             IOptionsSnapshot<GeneralOptions> generalOptions,
-            RChanContext context
+            RChanContext context,
+            HashService hashService
         )
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.captcha = captcha;
             this.context = context;
+            this.hashService = hashService;
             this.generalOptions = generalOptions;
         }
         #endregion
@@ -66,48 +71,15 @@ namespace WebApp.Controllers
             }
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
-            var pasoElCaptcha= await captcha.Verificar(model.Captcha);
+            var res = await CheckeosRegistro(model.Captcha, model.Codigo);
 
-            if(!pasoElCaptcha && generalOptions.Value.CaptchaRegistro)
-            {
-                ModelState.AddModelError("Captcha", "Incorrecto");
-            }
-            if(!ModelState.IsValid) return BadRequest(ModelState);
-
-            if(!generalOptions.Value.RegistroAbierto)
-            {
-                if(string.IsNullOrWhiteSpace(model.Codigo))
-                {
-                    ModelState.AddModelError("Uy!", "El registro se encuentra cerrado por el momento");
-                }
-                else if (model.Codigo != generalOptions.Value.LinkDeInvitacion)
-                {
-                    ModelState.AddModelError("Uy!", "Codigo invalido");
-                }
-            }
-
-            if(!ModelState.IsValid) return BadRequest(ModelState);
-
-            string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            if(await context.Bans.EstaBaneado(User.GetId(), ip))
-            {
-                ModelState.AddModelError("Uff", "Esta ip esta baneada, no te podes registrar");
-                if(!ModelState.IsValid) return BadRequest(ModelState);
-            }
-
-            // Checkear cuentas creadas desde esa ip
-            int registrosPrevios = await context.Usuarios.CountAsync(u => u.Ip == ip);
-            if(registrosPrevios >= generalOptions.Value.NumeroMaximoDeCuentasPorIp)
-            {
-                ModelState.AddModelError("Jijo de buta", "Llegaste al numero maximo de cuentas por ip");
-                if(!ModelState.IsValid) return BadRequest(ModelState);
-            }
+            if(res != null) return res;
 
             UsuarioModel user = new UsuarioModel
             {
                 UserName = model.Nick,
                 Creacion = DateTimeOffset.Now,
-                Ip = ip,
+                Ip = HttpContext.GetIp(),
             };
             var createResult = await userManager.CreateAsync(user, model.Contraseña);
 
@@ -122,6 +94,76 @@ namespace WebApp.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult> Inicio(InicioVM model)
+        {
+            var res = await CheckeosRegistro(model.Captcha, model.Codigo);
+            if(res != null) return res;
+
+            UsuarioModel user = new UsuarioModel
+            {
+                UserName = "Anon." + hashService.Random(12),
+                Creacion = DateTimeOffset.Now,
+                Ip = HttpContext.GetIp(),
+            };
+            user.Token = hashService.Random(40);
+            var createResult = await userManager.CreateAsync(user);
+
+            await userManager.AddClaimAsync(user, new Claim("Token", user.Token));
+
+            if(createResult.Succeeded) 
+            {
+                await signInManager.SignInAsync(user, true);
+                return this.RedirectJson($"/Token?token={user.Token}");
+
+            }
+            else {
+                return BadRequest(createResult.Errors);
+            }
+        }
+
+        private async Task<ActionResult> CheckeosRegistro(string captcha, string codigo) 
+        {
+            var pasoElCaptcha= await this.captcha.Verificar(captcha);
+
+            if(!pasoElCaptcha && generalOptions.Value.CaptchaRegistro)
+            {
+                ModelState.AddModelError("Captcha", "Incorrecto");
+            }
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+            if(!generalOptions.Value.RegistroAbierto)
+            {
+                if(string.IsNullOrWhiteSpace(codigo))
+                {
+                    ModelState.AddModelError("Uy!", "El registro y los inicios de sesion se encuentran deshabilitados por el momento");
+                }
+                else if (codigo != generalOptions.Value.LinkDeInvitacion)
+                {
+                    ModelState.AddModelError("Uy!", "Codigo invalido");
+                }
+            }
+
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+            string ip = HttpContext.GetIp();
+            if(await context.Bans.EstaBaneado(User.GetId(), ip))
+            {
+                ModelState.AddModelError("Uff", "Esta ip esta baneada, no te podes registrar");
+                if(!ModelState.IsValid) return BadRequest(ModelState);
+            }
+
+            // Checkear cuentas creadas desde esa ip
+            int registrosPrevios = await context.Usuarios.CountAsync(u => u.Ip == ip);
+            if(registrosPrevios >= generalOptions.Value.NumeroMaximoDeCuentasPorIp)
+            {
+                ModelState.AddModelError("Jijo de buta", "Llegaste al numero maximo de sesiones/registros por ip");
+                if(!ModelState.IsValid) return BadRequest(ModelState);
+            }
+
+            return null;
+        }
+
         [HttpGet, Route("/Login")]
         public  ActionResult Login() 
         {
@@ -132,6 +174,45 @@ namespace WebApp.Controllers
         public  ActionResult Registro(string codigoDeInvitacion) 
         {
             return View("Registro", new {codigoDeInvitacion});
+        }
+
+        [HttpGet, Route("/Token")]
+        public  ActionResult Token(string token) 
+        {
+            return View("Token", new {token});
+        }
+
+        public class RestaurarSesionVm
+        {
+            public string Token { get; set; }
+        }
+        [HttpPost]
+        public  async Task<ActionResult> RestaurarSesion(RestaurarSesionVm model) 
+        {
+            if(model.Token.Length < 20) ModelState.AddModelError("Jijo", "Token invalido");
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            var user = await userManager.Users.FirstOrDefaultAsync(u => u.Token == model.Token);
+            if(user == null) ModelState.AddModelError("Jijo", "Token invalido");
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+
+            //Checkeo ban
+            string ip = HttpContext.GetIp();
+            var ban =  (await context.Bans
+                .Where(b => b.UsuarioId == user.Id || b.Ip == ip)
+                .ToListAsync())
+                .FirstOrDefault(b => b.Expiracion > DateTimeOffset.Now);
+
+            if(ban != null) return this.RedirectJson($"/Domado/{ban.Id}");
+
+            await signInManager.RefreshSignInAsync(user);
+            return this.RedirectJson("/");
+        }
+
+        [HttpGet, Route("/Inicio")]
+        public  ActionResult Inicio(string codigoDeInvitacion) 
+        {
+            return View("Inicio", new {codigoDeInvitacion});
         }
         [HttpGet, Route("/Domado/{id?}")]
         public  async Task<ActionResult> Domado(string id) 
@@ -221,6 +302,11 @@ namespace WebApp.Controllers
         public string Contraseña { get; set; }
         public string Captcha { get; set; }
 
+        public string Codigo { get; set; }
+    }
+    public class InicioVM
+    {
+        public string Captcha { get; set; }
         public string Codigo { get; set; }
     }
 

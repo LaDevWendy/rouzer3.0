@@ -18,7 +18,7 @@ public class RestriccionDeAccesoAction : IAsyncActionFilter
     {
         var ctx = context.HttpContext;
         string url = ctx.Request.Path.ToString().ToLower();
-        if (url.Contains("hocamo") || url.Contains("hub") || url.Contains("omado") || url.Contains("ogin"))
+        if (url.Contains("hocamo") || url.Contains("hub") || url.Contains("omado") || url.Contains("ogin") || url.Contains("inicio"))
         {
             await next();
             return;

@@ -66,16 +66,26 @@
     }
 
     @{
+        string GenerarUserName(string username) 
+        {
+            if(username is null) return null;
+
+            if(username.Contains("Anon.")) {
+                username = "Anon" ;
+            }
+            return username;
+        }
         var globalState = new {
             Usuario = new {
                 EstaAutenticado = User.Identity.IsAuthenticated,
-                UserName = User.Identity.Name,
+                UserName = GenerarUserName(User.Identity.Name),
                 @* Role = User.Claims.FirstOrDefault(c => c.ValueType == "Role").Value, *@
                 EsAdmin = User.EsAdmin(),
                 EsMod = User.EsMod(),
                 EsAyudante = User.EsAyudante(),
             }
         };
+
 
         var gnrlOpt = (GeneralPublicOptions)  generalOptions.Value;
         var configurafionPublica = new {

@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(RChanContext))]
-    [Migration("20201125225422_ComentarioRango")]
-    partial class ComentarioRango
+    [Migration("20201129160439_token")]
+    partial class token
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -492,6 +492,9 @@ namespace Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Token")
                         .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")

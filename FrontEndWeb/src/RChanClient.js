@@ -75,6 +75,18 @@ export default class RChanClient {
         })
     }
 
+    static restaurarSesion(token) {
+        return axios.post('/api/Usuario/RestaurarSesion', {
+            token
+        })
+    }
+    static inicio(captcha, codigoDeInvitacion="") {
+        return axios.post('/api/Usuario/Inicio', {
+            captcha,
+            codigo: codigoDeInvitacion,
+        })
+    }
+
     static logearse(nick, contraseña) {
         return axios.post('/api/Usuario/Login', {
             nick,

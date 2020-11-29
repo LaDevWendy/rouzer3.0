@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -126,6 +127,11 @@ namespace WebApp.Otros
                 return writer.GetStringBuilder().ToString();
             }
         }
+    }
+
+    public static class HttpContextEstensions 
+    {
+          public static string GetIp(this HttpContext ctx) =>  ctx.Connection.RemoteIpAddress.MapToIPv4().ToString();
     }
 
 }

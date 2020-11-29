@@ -5,85 +5,54 @@
     import ErrorValidacion from "../ErrorValidacion.svelte";
     import config from "../../config"
 
-    let username = ""
-    let password = ""
+    let terminos = false
     let captcha = ""
     let error = null
-    let usarToken = false
-    let token = ""
+    let codigo = window.model?.codigoDeInvitacion || ""
 
     async function accion(e) {
         console.log(captcha);
         try {
-            let res = null
-            if(!usarToken) {
-                res = await RChanClient.logearse(username, password)
-            } else {
-                res = await RChanClient.restaurarSesion(token)
-            }
-            // if(res.data.redirect) {
-            //     window.location.href = response.data.redirect
-            // }
+            await RChanClient.inicio(captcha, codigo)
         } catch (e) {
             console.log(e);
             error = e.response.data
             return
         }
-        console.log("chan")
-        window.location = "/"
+        // window.location = "/"
         // location.reload();
     }
 
 
 </script>
 <div class="fondo"></div>
-
 <main>
     <!-- <video src="623eb91fd792a152481ebe7cecc2ce9f.mp4" loop autoplay muted></video> -->
 
     <section >
-         <ErrorValidacion {error}/>
-        <h1>Hola anon!</h1>
-        <h2>Para crear y responder rozes en Rozed debes iniciar una sesion</h2>
-        <h3>No tenes un token o una cuenta? Enfermo!,  podes <a href="/Inicio"style="color:var(--color5) ">Iniciar Sesion</a> o <a href="/Registro"style="color:var(--color5) ">registrate</a> </h3>
-
-        
-        <form on:submit|preventDefault={accion}>
-            <Checkbox bind:checked={usarToken}>Usar Token</Checkbox>
-            {#if !usarToken}
+        {#if config.general.registroAbierto || codigo}
+            <h2>Para usar Rozed debes leer y aceptar las reglas</h2>
+            <h4>Tu ip esta a salvo, desde ya que si</h4>
+            <h4>Preferis crear una sesion con usuario y contraseña?   <a style="color:var(--color5); text-align:center;"  href="/Registro">Registro</a></h4>
             <ErrorValidacion {error}/>
-                <Textfield
-                autocomplete="off"
-                label="Nombre de usuario"
-                required
-                bind:value={username}
-                message="kikefoster4000"
-                />
-                <Textfield
-                    autocomplete="off"
-                    label="Contraseña"
-                    type="password"
-                    required
-                    bind:value={password}
-                    message="aynose1234"
-                />
-                {:else}
-                    <Textfield
-                    autocomplete="off"
-                    label="Token de sesion"
-                    bind:value={token}
-                    />
-                {/if}
+            <form on:submit|preventDefault={accion}>
+            
+            <a style="color:var(--color5); text-align:center; display:block" target="_blank" href="/reglas.html">Ver reglas</a>
+            <Checkbox right bind:checked={terminos}><div style="white-space: normal; text-align: center;">Yo Anon juro solemnemente seguir las reglas de Rozed </div></Checkbox>
+            <Captcha visible={config.general.captchaRegistro}  bind:token={captcha}/>
 
-                <div style="display:flex; justify-content: center;">
-                    <Button >Entrar</Button>
-                </div>
-        </form>
+            <div style="display:flex; justify-content: center; margin-top: 8px">
+                <Button disabled={!terminos}>Empezar a rozear</Button>
+            </div>
+
+            </form>
+        {:else}
+            <h2>Lo siento anon, el inicio de sesiones esta temporalmente deshabilitado</h2>
+        {/if}
     </section>
 </main>
 
 <style>
-
     main {
         margin:auto;
         height: auto;
@@ -131,7 +100,6 @@
         background: url('/imagenes/rosed.png');
         background-size: cover !important;
     }
-
     :global(.label) {
         color: #ffffffcc !important
     }

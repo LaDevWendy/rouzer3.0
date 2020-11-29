@@ -36,8 +36,8 @@
             <a href="/Login">
                 <li> <icon class="fe fe-log-in"/> Iniciar Sesion  <Ripple/></li>
             </a>
-            <a href="/Registro">
-                <li> <icon class="fe fe-user"/> Registrarse  <Ripple/></li>
+            <a href="/Inicio">
+                <li> <icon class="fe fe-user"/> Crear Sesion  <Ripple/></li>
             </a>
             {:else}
                 <li on:click={desloguearse}> <icon class="fe fe-log-out"/> Salir  <Ripple/></li>

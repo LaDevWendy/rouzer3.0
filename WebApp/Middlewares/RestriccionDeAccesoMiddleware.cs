@@ -25,7 +25,7 @@ namespace WebApp
         public async Task Invoke(HttpContext ctx, IOptionsSnapshot<GeneralOptions> grlOpts)
         {
             string url = ctx.Request.Path.ToString().ToLower();
-            if(url.Contains("hocamo") || url.Contains("hub"))
+            if(url.Contains("hocamo") || url.Contains("hub") || url.Contains("inicio"))
             {
                 await next(ctx);
                 return;
@@ -49,7 +49,9 @@ namespace WebApp
             }
             else
             {
-                if(ctx.Request.Path.StartsWithSegments(new PathString("/Login")) || ctx.Request.Path.StartsWithSegments(new PathString("/Registro")))
+                if(ctx.Request.Path.StartsWithSegments(new PathString("/Login")) 
+                || ctx.Request.Path.StartsWithSegments(new PathString("/Registro"))
+                || ctx.Request.Path.StartsWithSegments(new PathString("/Inicio")))
                 {
                     await next(ctx);
                 }

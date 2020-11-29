@@ -37,12 +37,13 @@ namespace WebApp
 
                 System.Console.WriteLine(opt.GetValue<string>("HCaptcha:SiteKey"));
                 System.Console.WriteLine(aspenv);
-                await ctx.Database.EnsureCreatedAsync();
+                // await ctx.Database.EnsureCreatedAsync();
 
                 var migs = await ctx.Database.GetPendingMigrationsAsync();
 
                 if(migs.Count() != 0) 
                 {
+                    var migrations = ctx.Database.GetPendingMigrations();
                     logger.LogInformation("Applicando migraciones pendientes");
                     try
                     {
