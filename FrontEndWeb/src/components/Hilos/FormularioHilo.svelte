@@ -65,7 +65,7 @@ async function crear() {
             {/each}
         </select>
 
-        <textarea style="background: var(--color4);" bind:value={contenido} name="contenido" placeholder="Escribi un redactazo..."></textarea>
+        <textarea rows="5" style="background: var(--color4);" bind:value={contenido} name="contenido" placeholder="Escribi un redactazo..."></textarea>
 
         <ErrorValidacion {error}/>
 
@@ -108,5 +108,18 @@ async function crear() {
         border-top: 2px solid var(--color5);
         max-height: 80vh !important;
         overflow-y: auto;
+        max-width: unset;
+        width: fit-content;
+    }
+    @media (min-width: 600px) {
+    form {
+            min-width: 500px;
+        }
+    }
+    @media (max-width: 400px) {
+    form {
+            width: 100%;
+            height: 94vh;
+        }
     }
 </style>

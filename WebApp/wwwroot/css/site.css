@@ -568,7 +568,7 @@ a:hover {
 .formulario {
   display: flex;
   flex-direction: column;
-  max-width: 500px;
+  /* max-width: 500px; */
   padding: 10px;
   /* border-radius: 10px; */
   /* padding-bottom: 0; */
@@ -678,18 +678,13 @@ button:active {
 }
 
 #crear-hilo-form {
-  
-position: fixed;
-  
-height: fit-content;
-  
-z-index: 1;
-  
-width: 100vw;
-  
-max-width: 465px;
-  
-/* margin: 0 auto; */
+  position: fixed;
+  height: fit-content;
+  z-index: 1;
+  width: 100vw;
+  /* max-width: 465px; */
+  /* margin: 0 auto; */
+  width: min-content;
 }
 
 .lista-nav {
