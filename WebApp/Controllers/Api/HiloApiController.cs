@@ -97,6 +97,9 @@ namespace WebApp.Controllers
                 Ip = ip,
             };
 
+            //Flags
+            // if(hilo.Contenido == )
+
             MediaModel media = null;
             if (vm.Archivo != null)
             {

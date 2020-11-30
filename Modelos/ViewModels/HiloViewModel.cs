@@ -18,6 +18,7 @@ namespace Modelos
             this.Estado = hilo.Estado;
             this.Rango = hilo.Rango;
             this.Nombre = hilo.Nombre;
+            // this.Dados = (hilo.Flags?? "").Contains("d");
         }
 
         public int CantidadComentarios { get; set; }
@@ -35,6 +36,7 @@ namespace Modelos
         public HiloEstado Estado { get; set; }
         public CreacionRango Rango { get; set; }
         public string Nombre { get; set; }
+        // public bool Dados { get; set; }
     }
 
     public class HiloViewModelMod : HiloViewModel

@@ -89,7 +89,13 @@ namespace Servicios
 
             hiloFullView.Hilo = new HiloViewModel(hilo);
 
-            hiloFullView.Comentarios = await comentarioService.DeHilo(id, hilo.UsuarioId);
+            hiloFullView.Comentarios =  await _context.Comentarios
+                .Where(c => c.HiloId == hilo.Id)
+                .Where(c => c.Estado == ComentarioEstado.Normal)
+                .OrderByDescending(c => c.Creacion)
+                .Include(c => c.Media)
+                .Select(c => new ComentarioViewModel(c, hilo))
+                .ToListAsync();
 
              if (!string.IsNullOrEmpty(userId))
              {
@@ -260,6 +266,9 @@ namespace Servicios
 
             hilosParaArchivar.ForEach(h => h.Estado = HiloEstado.Archivado);
 
+            // Flags
+            // if(hilo.Contenido.Contains(">>dados")) hilo.Flags += "d";
+
             hilo.Contenido = formateador.Parsear(hilo.Contenido);
             await _context.SaveChangesAsync();
             return hilo.Id;
@@ -319,6 +328,7 @@ namespace Servicios
                     Id = h.Id,
                     Titulo = h.Titulo,
                     Estado = h.Estado,
+                    // Dados = h.Flags.Contains("d"),
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count()
                 });
         }
@@ -333,6 +343,7 @@ namespace Servicios
                     Titulo = h.Titulo,
                     Estado = h.Estado,
                     Usuario = h.Usuario,
+                    // Dados = h.Flags.Contains("d"),
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                     UsuarioId = h.UsuarioId,
                 });

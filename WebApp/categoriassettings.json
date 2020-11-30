@@ -47,12 +47,12 @@
         "Nsfw": false
     }, {
         "Id": 10,
-        "Nombre": "Jeguito",
+        "Nombre": "Juguito",
         "NombreCorto": "JUE",
         "Nsfw": false
     }, {
         "Id": 11,
-        "Nombre": "Jumor",
+        "Nombre": "Humor",
         "NombreCorto": "JIJO",
         "Nsfw": false
     }, {
@@ -140,6 +140,11 @@
         "Id": 28,
         "Nombre": "Hentai",
         "NombreCorto": "HEN",
+        "Nsfw": true
+    }, {
+        "Id": 29,
+        "Nombre": "Economia",
+        "NombreCorto": "ECO",
         "Nsfw": true
     }]
 }

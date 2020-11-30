@@ -13,10 +13,10 @@
 <main>
     <!-- <video src="623eb91fd792a152481ebe7cecc2ce9f.mp4" loop autoplay muted></video> -->
 
-    <section >
+    <section style="word-break: break-all;">
         <h2>Este es tu token de sesion</h2>
         <p>{token}</p>
-        <h4>Sirve para poder usar la misma sesion entre diferentes navegadores y dispositivos</h4>
+        <h4>Sirve para poder usar la misma sesion en diferentes navegadores y dispositivos</h4>
         <p>Para utilizarlo tenes que dirigirte al <a href="/Login">login</a> y cliquear la opcion usar token</p>
     </section>
 </main>
@@ -34,7 +34,7 @@
     }
 
     section {
-        max-width: 600px;
+        max-width: 100vh;
         display: flex;
         flex-direction: column;
         gap: 16px;

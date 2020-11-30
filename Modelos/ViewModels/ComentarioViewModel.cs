@@ -14,6 +14,21 @@ namespace Modelos
             this.Nombre = comentario?.Nombre ?? "";
             this.Rango = comentario.Rango;
 
+        }
+        public ComentarioViewModel(ComentarioModel comentario, HiloModel hilo = null)
+        {
+            this.Contenido = comentario.Contenido;
+            this.Id = comentario.Id;
+            this.Creacion = comentario.Creacion;
+            this.Media = comentario.Media;
+            this.Nombre = comentario?.Nombre ?? "";
+            this.Rango = comentario.Rango;
+
+            if (hilo != null)
+            {
+                this.EsOp = comentario.UsuarioId == hilo.UsuarioId;
+            }
+
 
         }
         public ComentarioViewModel() {}
@@ -48,6 +63,7 @@ namespace Modelos
                 };
             }
         }
+        public int Dados { get; set; } = -1;
         
     }
     public class ComentarioViewModelMod: ComentarioViewModel

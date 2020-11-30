@@ -38,12 +38,17 @@
         respuestas.forEach(r => {
             r.addEventListener("mouseover", () => mostrarRespuesta(r.getAttribute("r-id").trim()))
             r.addEventListener("mouseleave", ocultarRespuesta)
+            r.addEventListener("click", () => resaltarCliqueado(r.getAttribute("r-id").trim()))
         })
     })
 
     function mostrarRespuesta(id) {
         mostrandoRespuesta = true
         respuestaMostrada = comentariosDic[id]
+    }
+
+    function resaltarCliqueado(id) {
+        dispatch("tagClickeado", id)
     }
 
     function ocultarRespuesta() {
@@ -76,14 +81,14 @@
 </script>
 
 <div bind:this={el}
-    class:resaltado={comentario.resaltado || $selectorStore.seleccionados.has(comentario.id)} 
+    class:resaltado={comentario.resaltado  || resaltado|| $selectorStore.seleccionados.has(comentario.id)} 
     class="comentario {windowsWidh <= 400?"comentario-movil":""}" 
     class:eliminado = {comentario?.estado  || 0 == ComentarioEstado.eliminado}
     class:comentarioMod = {comentario.rango > CreacionRango.Anon}
     r-id="{comentario.id}" id="{comentario.id}">
     <div  class="respuestas">
         {#each comentario.respuestas as r }
-        <a href="#{r}" class="restag" r-r="{r}"
+        <a href="#{r}" class="restag" r-id="{r}"
             on:mouseover={() => mostrarRespuesta(r)}
             on:mouseleave={ocultarRespuesta}
         >&gt;&gt;{r}</a> 
@@ -305,6 +310,13 @@
     .cptr {
         cursor: pointer;
     }
+
+@media (max-width: 600px) {
+  .comentario :global(.restag) {
+      font-weight: bold !important;
+  }
+}
+    /* @media(max-width >600px) {} */
 
     /* .comentario-movil :glo.media {
   max-width: 100%;

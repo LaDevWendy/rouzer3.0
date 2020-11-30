@@ -69,6 +69,14 @@
         })
         comentarios = comentarios
     }
+
+    function tagCliqueado(e) {
+        console.log(diccionarioComentarios);
+        console.log(e);
+        comentarios.forEach(c => c.resaltado = false)
+        comentarios = comentarios
+        diccionarioComentarios[e.detail].resaltado = true;
+    }
     
 		
 </script>
@@ -78,7 +86,7 @@
         <h3>Comentarios ({comentarios.length}) 
         </h3>
         {#if nuevosComentarios.length != 0}
-            <div class="badge">
+            <div class="badge" style="    font-size: 18px;height: auto;cursor: pointer;">
                 <span on:click={cargarNuevosComentarios}>+ {nuevosComentarios.length}</span>
             </div>
         {/if}
@@ -95,7 +103,12 @@
         {#each comentarios as comentario (comentario.id)}
             <li transition:fly|local={{y: -50, duration:250}}>
 
-                <Comentario on:colorClick={(e) => resaltarComentariosDeUsuario(e.detail.usuarioId || '') } hilo={hilo} bind:comentario {comentarios} comentariosDic = {diccionarioComentarios}/>
+                <Comentario 
+                    on:colorClick={(e) => resaltarComentariosDeUsuario(e.detail.usuarioId || '') } 
+                    hilo={hilo} 
+                    bind:comentario {comentarios} comentariosDic = {diccionarioComentarios}
+                    on:tagClickeado={tagCliqueado}
+                    />
             </li>
             {/each}
             

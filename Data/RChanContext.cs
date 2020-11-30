@@ -36,7 +36,7 @@ namespace Data
             base.OnConfiguring(optionsBuilder);
             if(!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql(connectionString ?? "Server=127.0.0.1;Port=5433;Database=RChanTest;User Id=postgres;Password=jejetabien;");
+                optionsBuilder.UseNpgsql(connectionString ?? "Server=127.0.0.1;Port=5433;Database=RozedBack;User Id=postgres;Password=jejetabien;");
             }
             if (!string.IsNullOrEmpty(connectionString))
             {
