@@ -144,7 +144,7 @@ namespace Servicios
                     Id = c.Id,
                     Creacion = c.Creacion,
                     EsOp = c.UsuarioId == hilo.UsuarioId,
-                    Media = c.Media
+                    Media = c.Media,
                 })
                 .ToListAsync();
 

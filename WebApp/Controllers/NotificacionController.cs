@@ -33,7 +33,7 @@ namespace WebApp.Controllers
         {
             var noti = await _context.Notificaciones.AsNoTracking()
                 .FirstOrDefaultAsync(n => n.Id == id || (hiloId == n.HiloId && comentarioId== n.ComentarioId && n.UsuarioId == User.GetId()));
-            if(noti is null) return Redirect($"/Hilo/{hiloId}/#{comentarioId}");
+            if(noti is null) return Redirect($"/Hilo/{hiloId}#{comentarioId}");
 
             var query =  _context.Notificaciones.AsQueryable();
                 if(noti.Tipo == NotificacionType.Comentario)
@@ -54,7 +54,7 @@ namespace WebApp.Controllers
             await _context.SaveChangesAsync();
             
 
-            return Redirect($"/Hilo/{noti.HiloId}");
+            return Redirect($"/Hilo/{noti.HiloId}#{comentarioId}");
         }
     }
 }

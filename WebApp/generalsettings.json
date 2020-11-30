@@ -9,7 +9,7 @@
     "RegistroAbierto": true,
     "NumeroMaximoDeCuentasPorIp": 6,
     "LinkDeInvitacion": "B193UL4W",
-    "RestriccionDeAcceso": 2,
+    "RestriccionDeAcceso": 0,
     "MensajePaginaDeChoque": "Volvemos cuando los mods se levanten. Tipo 2 o 3 pm.",
     "CaptchaHilo": false,
     "CaptchaComentario": false,

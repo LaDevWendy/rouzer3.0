@@ -71,13 +71,17 @@
     }
 
     function tagCliqueado(e) {
-        console.log(diccionarioComentarios);
-        console.log(e);
         comentarios.forEach(c => c.resaltado = false)
         comentarios = comentarios
         diccionarioComentarios[e.detail].resaltado = true;
     }
     
+
+    let comentarioUrl = window.location.hash.replace("#", "")
+
+    if(diccionarioComentarios[comentarioUrl]) {
+        diccionarioComentarios[comentarioUrl].resaltado = true
+    }
 		
 </script>
 <div class="comentarios">

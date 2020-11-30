@@ -47,7 +47,7 @@
         "Nsfw": false
     }, {
         "Id": 10,
-        "Nombre": "Juguito",
+        "Nombre": "Jueguito",
         "NombreCorto": "JUE",
         "Nsfw": false
     }, {
@@ -145,6 +145,11 @@
         "Id": 29,
         "Nombre": "Economia",
         "NombreCorto": "ECO",
-        "Nsfw": true
+        "Nsfw": false
+    }, {
+        "Id": 30,
+        "Nombre": "Humanidades",
+        "NombreCorto": "HUMA",
+        "Nsfw": false
     }]
 }

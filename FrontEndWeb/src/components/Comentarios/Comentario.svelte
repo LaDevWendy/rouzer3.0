@@ -269,9 +269,10 @@
     .color-azul {background: #00408a;}
 
     .color-rosa {background: #ff74c1;}
-
+    
     .color-negro {background: #000000;}
-
+    
+    .color-marron {background: #492916;}
 
     .color-multi {
         background: linear-gradient(#ffc400    25%, #00408a  25%, #00408a  50%, #53a538   50%, #53a538   75%, #dd3226  75%, #dd3226  100%);

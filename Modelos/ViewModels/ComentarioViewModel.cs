@@ -34,8 +34,6 @@ namespace Modelos
                     this.Dados = random.Next(10);
                 }
             }
-
-
         }
         public ComentarioViewModel() {}
         public string Id { get; set; }
