@@ -106,7 +106,7 @@ namespace WebApp.Controllers
             await comentarioService.Guardar(comentario);
 
 
-            ComentarioViewModel model = new ComentarioViewModel(comentario);
+            ComentarioViewModel model = new ComentarioViewModel(comentario, hilo);
             model.EsOp = hilo.UsuarioId == User.GetId();
 
              await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoComentario", model);

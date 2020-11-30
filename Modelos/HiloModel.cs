@@ -12,7 +12,7 @@ namespace Modelos
         public List<ComentarioModel> Comentarios { get; set; }
         public HiloEstado Estado { get; set; }
 
-        // public string Flags { get; set; } = "";
+        public string Flags { get; set; } = "";
 
         public UsuarioModel Usuario { get; set; }
 

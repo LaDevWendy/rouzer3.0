@@ -46,7 +46,7 @@
         {:else if media.tipo == MediaType.Video}
         
             {#if abierto}
-                <video bind:this={vid} loop controls  src="/{media.url}" style="margin-bottom: 16px;"></video>
+                <video muted bind:this={vid} loop controls  src="/{media.url}" style="margin-bottom: 16px;"></video>
                 <Button on:click={() => abierto = false} class="cerrar" icon>
                     <i class="fe fe-x"></i> 
                 </Button>

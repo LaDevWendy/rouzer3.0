@@ -95,7 +95,7 @@
 <style>
 .hilo-completo {
 	display: grid;
-	grid-template-columns: calc(60% - 10px) 40%;
+	grid-template-columns: calc(50% - 10px) 50%;
 	gap: 10px;
 	width: 100%;
 }

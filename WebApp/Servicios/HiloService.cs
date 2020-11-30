@@ -267,7 +267,7 @@ namespace Servicios
             hilosParaArchivar.ForEach(h => h.Estado = HiloEstado.Archivado);
 
             // Flags
-            // if(hilo.Contenido.Contains(">>dados")) hilo.Flags += "d";
+            if(hilo.Contenido.Contains(">>dados")) hilo.Flags += "d";
 
             hilo.Contenido = formateador.Parsear(hilo.Contenido);
             await _context.SaveChangesAsync();
@@ -328,7 +328,7 @@ namespace Servicios
                     Id = h.Id,
                     Titulo = h.Titulo,
                     Estado = h.Estado,
-                    // Dados = h.Flags.Contains("d"),
+                    Dados = h.Flags.Contains("d"),
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count()
                 });
         }
@@ -343,7 +343,7 @@ namespace Servicios
                     Titulo = h.Titulo,
                     Estado = h.Estado,
                     Usuario = h.Usuario,
-                    // Dados = h.Flags.Contains("d"),
+                    Dados = h.Flags.Contains("d"),
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                     UsuarioId = h.UsuarioId,
                 });

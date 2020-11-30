@@ -27,6 +27,12 @@ namespace Modelos
             if (hilo != null)
             {
                 this.EsOp = comentario.UsuarioId == hilo.UsuarioId;
+
+                if(hilo.Flags.Contains("d"))
+                {
+                    var random = new Random(comentario.Creacion.Millisecond + Creacion.Second);
+                    this.Dados = random.Next(10);
+                }
             }
 
 

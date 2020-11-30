@@ -95,7 +95,15 @@
         {/each}
     </div    >
     <div on:click={() => dispatch("colorClick", comentario)} 
-        class="color color-{comentario.color}">{CreacionRango.aString(comentario.rango).toUpperCase()}</div>
+        class="color color-{comentario.color}"
+        class:dado={comentario.dados != undefined && comentario.dados != -1}
+    >
+        {#if comentario.dados!= undefined && comentario.dados != -1}
+            {comentario.dados}
+        {:else}
+            {CreacionRango.aString(comentario.rango).toUpperCase()}
+        {/if}
+    </div>
     <div class="header">
         {#if comentario.esOp} <span class="nick tag tag-op">OP</span>{/if}
         <span 
@@ -310,7 +318,10 @@
     .cptr {
         cursor: pointer;
     }
-
+.dado {
+    font-size: 2rem;
+    font-family: 'euroFighter';
+}
 @media (max-width: 600px) {
   .comentario :global(.restag) {
       font-weight: bold !important;

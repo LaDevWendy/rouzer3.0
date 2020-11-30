@@ -9,6 +9,7 @@ import {fly} from "svelte/transition"
 
 import more from '../../icons/more-vertical.svg'
 import RChanClient from '../../RChanClient';
+import Dado from '../Dado.svelte'
 
 export let hilo
 let categorias = config.categorias
@@ -89,6 +90,7 @@ function onClick(e) {
                 {#if media.tipo == MediaType.Video} <div class="info" style="background:#18222D"><span class="fe fe-play"></span></div>{/if}
                 {#if media.tipo == MediaType.Youtube} <div class="info" style="var(--color5)"><span class="fe fe-play"></span></div>{/if}
                 {#if false} <div class="info" ><span class="fe fe-bar-chart-2"></span></div>{/if}
+                {#if hilo.dados}<Dado></Dado>{/if}
 
                 <div class="info">{hilo.cantidadComentarios}</div>
                 
@@ -98,6 +100,8 @@ function onClick(e) {
         </a>
     {/if}
 </li>
+
+
 
 <style>
     .info {
@@ -123,5 +127,6 @@ function onClick(e) {
     .hilo :global(button) {
         border-radius:  50% 0% 0% 50%;
     }
+
 
 </style>
