@@ -35,7 +35,7 @@
 	<div class="contenido">
 		<div class="panel">
 			<a href="/">Rozed</a>
-			<a href="/{config.getCategoriaById(hilo.categoriaId).nombreCorto}">/{config.getCategoriaById(hilo.categoriaId).nombre}</a>
+			<a href="/{config.categoriaPorId(hilo.categoriaId).nombreCorto}">/{config.categoriaPorId(hilo.categoriaId).nombre}</a>
 		</div>
 
 		<Acciones bind:hilo bind:acciones/>

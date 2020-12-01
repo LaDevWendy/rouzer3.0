@@ -52,11 +52,14 @@
             {#if mostrarCategorias}
                 <div transition:fly={{y: -50, duration:150}}>
                     {#each categorias as c (c.id)}
-                    
-                    <li > <icon class="fe fe-circle"/>  {c.nombre}
-                        <span style="width: fit-content;margin-left: auto;">
+                        <li class="categoria-link">
+                            <a href="/{c.nombreCorto}">
+                                <icon class="fe fe-circle"/>  {c.nombre}
+                            </a>
+                            <span style="width: fit-content;margin-left: auto;">
                             <Checkbox bind:checked={c.activa} right></Checkbox></span> 
-                        <Ripple/></li>
+                            <Ripple/>
+                        </li>
                     {/each}
 
                 </div>
@@ -97,5 +100,9 @@
     :global(.side-panel) {
         width: auto !important;
         min-width: 256px;
+    }
+    .categoria-link a {
+        flex: 1;
+        height: 100%;
     }
 </style>
