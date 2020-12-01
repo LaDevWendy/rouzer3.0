@@ -60,7 +60,7 @@
     <div class="acciones">
         {#if $globalStore.usuario.esMod}
             <div style=" flex-direction:row; display:flex">
-                <Checkbox bind:checked={mostrarRango} right>Tag_Mod</Checkbox>
+                <Checkbox bind:checked={mostrarRango} right>Lucesitas</Checkbox>
                 <Checkbox bind:checked={mostrarNombre} right>Nombre</Checkbox>
             </div>
         {/if}

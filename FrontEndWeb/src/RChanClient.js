@@ -228,4 +228,8 @@ export default class RChanClient {
         })
     }
 
+    static buscar(cadenaDeBusqueda) {
+        return axios.post(`/api/Hilo/Buscar?busqueda=${cadenaDeBusqueda}`)
+    }
+
 }

@@ -10,6 +10,7 @@ import Token from './components/Paginas/Token.svelte';
 import HistorialUsuario from './components/Paginas/HistorialUsuario.svelte';
 import Domado from './components/Paginas/Domado.svelte';
 import ListaDeUsuarios from './components/Paginas/ListaDeUsuarios.svelte';
+import Busqueda from './components/Paginas/Busqueda.svelte';
 import EliminadosYDesactivados from './components/Paginas/EliminadosYDesactivados.svelte';
 import MediaHome from './components/Paginas/MediaHome.svelte';
 
@@ -35,6 +36,7 @@ let componentes = [
 	["#svelte-listaDeUsuarios", ListaDeUsuarios, {}],
 	["#svelte-eliminadosYDesactivados", EliminadosYDesactivados, {}],
 	["#svelte-media-home", MediaHome, {}],
+	["#svelte-busqueda", Busqueda, {}],
 ]
 
 for (const c of componentes) {

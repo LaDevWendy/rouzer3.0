@@ -274,7 +274,23 @@ namespace WebApp.Controllers
 
             return Ok(hilos);
         }
+        [AllowAnonymous]
+        async public Task<ActionResult> Buscar(string busqueda) {
+            busqueda = string.Join("",busqueda.Take(15));
+            var resultados = await context.Hilos
+                .AsNoTracking()
+                .FiltrarNoActivos()
+                .Where(h => EF.Functions.ILike(h.Titulo, $"%{busqueda}%"))
+                .OrdenadosPorBump()
+                .AViewModel(context)
+                .Take(32)
+                .ToListAsync();
+            resultados.ForEach(h => h.Contenido = "");
+
+            return Ok(resultados);
+        }
     }
+    
 
     public class ApiResponse
     {

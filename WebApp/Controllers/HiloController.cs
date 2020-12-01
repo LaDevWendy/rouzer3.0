@@ -151,6 +151,12 @@ namespace WebApp.Controllers
             return View("Index", vm);
         }
 
+        [HttpGet("/Buscar")]
+        public IActionResult Buscar() 
+        {
+            return View();         
+        }
+
         private UsuarioVm GetUserInfo()
         {
             return new UsuarioVm

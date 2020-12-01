@@ -61,11 +61,16 @@
 
     async function cargarViejos({ detail: { loaded, complete }}) {
         if(hiloList.hilos.length == 0) complete()
-        let {data} = await RChanClient.cargarMasHilos(hiloList.hilos[hiloList.hilos.length -1].bump, hiloList.categoriasActivas)
-        console.log(data);
-        hiloList.hilos = [...hiloList.hilos, ...data]
-        if(data.length == 0) complete()
-        loaded()
+
+        try {
+            let {data} = await RChanClient.cargarMasHilos(hiloList.hilos[hiloList.hilos.length -1].bump, hiloList.categoriasActivas)
+            console.log(data);
+            hiloList.hilos = [...hiloList.hilos, ...data]
+            if(data.length == 0) complete()
+            loaded()
+        } catch {
+            complete()
+        }
     }
 
     let tienaMas = true
@@ -86,5 +91,5 @@
 </ul>
 <InfiniteLoading on:infinite={cargarViejos} distance={600}>
     <div style="text-align:center" slot="noMore">No hay mas hilos padre, recargue la pagina</div>
-    <div style="text-align:center" slot="noResults">No hay rozes</div>
+    <div style="text-align:center" slot="noResults"></div>
 </InfiniteLoading>

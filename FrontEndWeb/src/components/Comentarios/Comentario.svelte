@@ -295,7 +295,7 @@
         font-weight: bold;
     }
 
-    .comentarioMod .color {
+    .comentarioMod >.color {
         animation: luces 0.3s infinite alternate-reverse;
     }
 

@@ -27,15 +27,27 @@
         mostrarComputadorasConectadas = true;
     })
 
+    let oculta
+    let prevScrollpos = window.pageYOffset;
+    function onScroll(e) {
+        let currentScrollPos = window.pageYOffset;
+        oculta = currentScrollPos > prevScrollpos;
+        prevScrollpos = currentScrollPos;
+    }
+
 </script>
-<header>
+
+<svelte:window  on:scroll={onScroll}/>
+<header
+    class:oculta
+>
     <div class="nav-principal">
         <span on:click={() => mostrarMenu = !mostrarMenu}>
             <icon class="fe fe-menu"/>
             <Ripple/>
         </span>
         <a href="/" style="font-family: euroFighter">
-            <h3>ROZED <span class="version"> La red nini (Version Chad 1.1.0)</span></h3>
+            <h3>ROZED <span class="version"> La red nini (Version Chad 1.1.6)</span></h3>
 
             <Ripple/>
         </a>
@@ -65,14 +77,16 @@
             {/if}
 
             <DenunciasNav/>
-
+            <a href="/Buscar"class="nav-boton"  style="height:100%">
+                <Ripple/>
+                <span class="fe fe-search"></span>
+            </a>
             {#if $globalStore.usuario.estaAutenticado}
                 <Notificaciones bind:notificaciones/>
             {:else}
                 <a href="/Login"class="nav-boton"  style="height:100%">
                     <Ripple/>
-                    <span class="fe fe-user">
-                    </span>
+                    <span class="fe fe-user"></span>
                 </a>
             {/if}
 
@@ -165,6 +179,29 @@
     color: var(--color5) !important;
     font-size: 1rem;
 
+}
+
+
+@media(max-width:600px)
+{
+    .nav-categorias {
+        display: none;
+    }
+    header {
+        margin-bottom: 10px;
+        position: fixed;
+        z-index: 999;
+        top: 0;
+        width: 100vw;
+        transition: linear 0.2s;
+    }
+    :global(#svelte-navbar) + :global(*) {
+        margin-top: 40px;
+    }
+
+    .oculta {
+        transform: translateY(-50px) ;
+    }
 }
 
 .version {
