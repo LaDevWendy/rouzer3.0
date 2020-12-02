@@ -6,14 +6,14 @@
     "TiempoEntreComentarios": 2,
     "TiempoEntreHilos": 150,
     "LimiteArchivo": 0,
-    "RegistroAbierto": false,
+    "RegistroAbierto": true,
     "NumeroMaximoDeCuentasPorIp": 3,
     "LinkDeInvitacion": "B193UL4W",
-    "RestriccionDeAcceso": 2,
-    "MensajePaginaDeChoque": "Volvemos  cuando los meeeds despierten, y se apliquen las actualizaciones",
+    "RestriccionDeAcceso": 0,
+    "MensajePaginaDeChoque": "jeje",
     "CaptchaHilo": false,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
-    "Version": "1.1.7"
+    "Version": "1.2.0"
   }
 }

@@ -13,6 +13,8 @@ import ListaDeUsuarios from './components/Paginas/ListaDeUsuarios.svelte';
 import Busqueda from './components/Paginas/Busqueda.svelte';
 import EliminadosYDesactivados from './components/Paginas/EliminadosYDesactivados.svelte';
 import MediaHome from './components/Paginas/MediaHome.svelte';
+document.body.style["background"] = '#ffffff'
+
 
 // const app = new App({
 // 	target: document.body,

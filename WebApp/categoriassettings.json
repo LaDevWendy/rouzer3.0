@@ -151,5 +151,10 @@
         "Nombre": "Humanidades",
         "NombreCorto": "HUMA",
         "Nsfw": false
+    }, {
+        "Id": 31,
+        "Nombre": "Morfi",
+        "NombreCorto": "MRFI",
+        "Nsfw": false
     }]
 }

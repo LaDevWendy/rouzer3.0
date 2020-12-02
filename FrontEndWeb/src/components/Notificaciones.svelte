@@ -135,6 +135,7 @@
     left: 16px;
     min-width: 320px;
     width: fit-content;
+    z-index: 999999;
 }
 .nuevas-notificaciones li {
     max-width: 400px;

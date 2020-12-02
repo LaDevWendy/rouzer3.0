@@ -4,11 +4,16 @@
     import config from '../config';
     import globalStore from '../globalStore'
     import RChanClient from '../RChanClient';
+    import Dialogo from './Dialogo.svelte';
+    import Ajustes from './Dialogos/Ajustes.svelte';
     $:usuario = $globalStore.usuario
 
     export let mostrar = true
 
     let mostrarCategorias = false
+    let mostrarAjustes = false
+
+    $: if (mostrarAjustes) mostrar = false
 
     let categorias =  config.categorias.map(c => {
         c.activa = $globalStore.categoriasActivas.includes(c.id)
@@ -80,21 +85,25 @@
                 </a>
                 <hr>
             {/if}
+
+            <li on:click={() => mostrarAjustes = true}> <icon class="fe fe-settings"/> Ajustes  <Ripple/></li>
+
+            
             {#if $globalStore.usuario.esMod}
-                <a href="/Moderacion">
-                    <li> <icon class="fe fe-triangle"/> Moderacion  <Ripple/></li>
-                </a>
+            <a href="/Moderacion">
+                <li> <icon class="fe fe-triangle"/> Moderacion  <Ripple/></li>
+            </a>
             {/if}
             {#if $globalStore.usuario.esAdmin}
-                <a href="/Administracion">
-                    <li> <icon class="fe fe-triangle"/> Administracion  <Ripple/></li>
-                </a>
+            <a href="/Administracion">
+                <li> <icon class="fe fe-triangle"/> Administracion  <Ripple/></li>
+            </a>
             {/if}
             <hr>
-            <!-- <li> <icon class="fe fe-settings"/> Ajustes  <Ripple/></li> -->
         </ul>
     </section>
 </Sidepanel>
+<Ajustes bind:visible={mostrarAjustes}></Ajustes>
 
 <style>
     :global(.side-panel) {
@@ -104,5 +113,7 @@
     .categoria-link a {
         flex: 1;
         height: 100%;
+        display: flex;
+        align-items: center;
     }
 </style>

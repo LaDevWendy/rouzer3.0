@@ -1,11 +1,8 @@
 <script>
-    import { fade, blur, fly } from 'svelte/transition';
+    import { fly } from 'svelte/transition';
     import Comentario from './Comentario.svelte'
     import Formulario from './Formulario.svelte'
-    import {HubConnectionBuilder} from '@microsoft/signalr'
     import globalStore from '../../globalStore'
-    import { onMount } from 'svelte';
-    import VirtualList from '@sveltejs/svelte-virtual-list';
     import DialogoReporte from '../Dialogos/DialogoReporte.svelte';
     import Signal from '../../signal'
 

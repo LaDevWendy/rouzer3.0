@@ -58,6 +58,12 @@ namespace WebApp.Controllers
             var hilo = await context.Hilos.FirstOrDefaultAsync(c => c.Id == vm.HiloId);
             if(hilo is null) return NotFound();
 
+            if(hilo.Estado != HiloEstado.Normal) 
+            {
+                ModelState.AddModelError("Jeje", "Este roz no esta activo");
+                return BadRequest(ModelState);
+            }
+
             if(antiFlood.SegundosParaComentar(User)  != new TimeSpan(0))
             {
                 ModelState.AddModelError("Para para", $"faltan {antiFlood.SegundosParaComentar(User).Seconds} para que pudeas comentar");
@@ -106,11 +112,14 @@ namespace WebApp.Controllers
             await comentarioService.Guardar(comentario);
 
 
-            ComentarioViewModel model = new ComentarioViewModel(comentario, hilo);
+            var model = new ComentarioViewModel(comentario, hilo);
             model.EsOp = hilo.UsuarioId == User.GetId();
 
-             await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoComentario", model);
-             await rchanHub.Clients.Group("home").SendAsync("HiloComentado", hilo.Id, comentario.Contenido);
+            await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoComentario", model);
+            await rchanHub.Clients.Group("home").SendAsync("HiloComentado", hilo.Id, comentario.Contenido);
+
+            var comentarioMod = new ComentarioViewModelMod(comentario);
+            await rchanHub.Clients.Group("moderacion").SendAsync("NuevoComentarioMod", comentarioMod);
             
             await notificacioensService.NotificarRespuestaAHilo(hilo, comentario);
             await notificacioensService.NotificarRespuestaAComentarios(hilo, comentario);

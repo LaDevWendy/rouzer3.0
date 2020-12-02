@@ -280,7 +280,7 @@ namespace Servicios
                 .OrderByDescending(h => h.Bump);
         }
 
-        public Task EliminarHilos(params string[] ids) => EliminarHilos(ids);
+        public Task EliminarHilos(params string[] ids) => EliminarHilos(ids, false);
 
         public async Task EliminarHilos(string[] ids, bool borrarMedias = false) 
         {

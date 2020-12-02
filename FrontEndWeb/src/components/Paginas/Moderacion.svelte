@@ -1,11 +1,12 @@
 <script>
-    import { each } from 'svelte/internal'
     import Comentario from '../Comentarios/Comentario.svelte'
+    import { fly } from 'svelte/transition';
     import Denuncia from '../Denuncia.svelte'
     import HiloPreview from '../Hilos/HiloPreview.svelte'
     import BarraModeracion from '../Moderacion/BarraModeracion.svelte';
     import ComentarioMod from '../Moderacion/ComentarioMod.svelte';
     import HiloPreviewMod from '../Moderacion/HiloPreviewMod.svelte';
+    import Sigal from '../../signal'
 
     let hilos = window.model.hilos
     let comentarios = window.model.comentarios
@@ -16,6 +17,14 @@
         c.respuestas = []
         return c
     })
+
+    Sigal.subscribirAModeracion()
+    Sigal.coneccion.on("NuevoComentarioMod", comentario => {
+        comentario.respuestas = []
+        comentarios.unshift(comentario)
+        comentarios = comentarios
+    })
+
 </script>
 <main>
     <BarraModeracion/>
@@ -46,7 +55,9 @@
         <ul>
             <h3 style="height:40px">Ultimos comentarios</h3>
             {#each comentarios as c}
-                <ComentarioMod comentario={c}/>
+                <li transition:fly|local={{y: -50, duration:250}}>
+                    <ComentarioMod comentario={c}/>
+                </li>
             {/each}
         </ul>
     </div>
