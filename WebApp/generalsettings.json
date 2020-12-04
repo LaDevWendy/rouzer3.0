@@ -6,14 +6,14 @@
     "TiempoEntreComentarios": 2,
     "TiempoEntreHilos": 150,
     "LimiteArchivo": 0,
-    "RegistroAbierto": true,
+    "RegistroAbierto": false,
     "NumeroMaximoDeCuentasPorIp": 3,
     "LinkDeInvitacion": "B193UL4W",
-    "RestriccionDeAcceso": 0,
-    "MensajePaginaDeChoque": "jeje",
+    "RestriccionDeAcceso": 2,
+    "MensajePaginaDeChoque": "Tinelli se metió en el orto a los meedz, tuvimos que cerrar rozed",
     "CaptchaHilo": false,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
-    "Version": "1.3.0"
+    "Version": "1.3.1"
   }
 }

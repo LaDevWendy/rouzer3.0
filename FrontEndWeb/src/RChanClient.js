@@ -36,7 +36,7 @@ axios.interceptors.response.use(function (response) {
 
 export default class RChanClient {
     // Acciones
-    static crearHilo(titulo, categoria, contenido, archivo, link="", captcha="", mostrarNombre=false, mostrarRango=false) {
+    static crearHilo(titulo, categoria, contenido, archivo, link="", captcha="", encuesta=[], mostrarNombre=false, mostrarRango=false) {
         let form = new FormData()
         form.append("Titulo", titulo)
         form.append("CategoriaId", categoria)
@@ -44,6 +44,7 @@ export default class RChanClient {
         form.append("Archivo", archivo)
         form.append("Link", link)
         form.append("captcha", captcha)
+        form.append("encuesta", encuesta)
         if(mostrarNombre || mostrarRango) {
             form.append('mostrarNombre', mostrarNombre)
             form.append('mostrarRango', mostrarRango)
@@ -51,13 +52,14 @@ export default class RChanClient {
         return axios.post("/api/Hilo/Crear", form)
     }
 
-    static crearComentario(hiloId, contenido, archivo = null, link="", captcha="", mostrarNombre=false, mostrarRango=false) {
+    static crearComentario(hiloId, contenido, archivo = null, link="", captcha="", encuesta=[], mostrarNombre=false, mostrarRango=false) {
         let form = new FormData();
         form.append('hiloId', hiloId)
         form.append('contenido', contenido)
         form.append('archivo', archivo)
         form.append("Link", link)
         form.append('captcha', captcha)
+        form.append('encuesta', encuesta)
 
         if(mostrarNombre || mostrarRango) {
             form.append('mostrarNombre', mostrarNombre)

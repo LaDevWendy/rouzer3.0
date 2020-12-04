@@ -24,6 +24,12 @@
         opciones = new Set()
         estado = 0
     }
+
+    function aceptar() {
+        estado = 2
+        opciones = opciones
+        console.log(opciones);
+    }
 </script>
 
 <!-- <Checkbox bind:checked={visible}>Encuesta</Checkbox> -->
@@ -33,7 +39,7 @@
     <Button on:click={() => estado = 1}>Agregar Encuesta</Button>
     {/if}
     {#if estado == 2}
-    <Button on:click={() => estado = 0}>Remover Encuesta</Button>
+    <Button on:click={cancelar}>Remover Encuesta</Button>
     {/if}
 </span>
 
@@ -49,7 +55,7 @@
     {/if}
     <div style="margin-top:8px">
         {#if opciones.size > 1}
-        <Button on:click={(() => estado = 2)} color="primary">Aceptar</Button>
+        <Button on:click={aceptar} color="primary">Aceptar</Button>
         {:else}
         <Button color="primary" on:click={cancelar}>Cancelar</Button>
         {/if}

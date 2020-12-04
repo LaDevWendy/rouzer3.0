@@ -17,6 +17,8 @@
     export let hilo;
     export let comentariosDic = {   };
     export let resaltado = false
+
+    export let esRespuesta = false
     
     let el
     let respuestas
@@ -30,6 +32,7 @@
     let dispatch = createEventDispatcher()
     
     let mostrarMenu = false
+
     
 
     onMount(() => {
@@ -78,6 +81,11 @@
         if(!$comentarioStore.includes(`>>${comentario.id}\n`))
             $comentarioStore+= `>>${comentario.id}\n`
     }
+
+    function esOp(comentarioId) {
+        let  comentario = comentariosDic[comentarioId] ?? {esOp:false}
+        return comentario.esOp
+    }
 </script>
 
 <div bind:this={el}
@@ -85,13 +93,13 @@
     class="comentario {windowsWidh <= 400?"comentario-movil":""}" 
     class:eliminado = {comentario?.estado  || 0 == ComentarioEstado.eliminado}
     class:comentarioMod = {comentario.rango > CreacionRango.Anon}
-    r-id="{comentario.id}" id="{comentario.id}">
+    r-id="{comentario.id}" id="{comentario.id}{esRespuesta?'-res':''}">
     <div  class="respuestas">
         {#each comentario.respuestas as r }
         <a href="#{r}" class="restag" r-id="{r}"
             on:mouseover={() => mostrarRespuesta(r)}
             on:mouseleave={ocultarRespuesta}
-        >&gt;&gt;{r}</a> 
+        >&gt;&gt;{r}{esOp(r)?'(OP)' : ''} </a> 
         {/each}
     </div    >
     <div on:click={() => dispatch("colorClick", comentario)} 
@@ -156,7 +164,7 @@
     {/if}
     {#if mostrandoRespuesta}
         <div transition:fly|local={{x: -50, duration:150}} class="comentario-flotante">
-            <svelte:self comentario = {respuestaMostrada} ></svelte:self>
+            <svelte:self comentario = {respuestaMostrada}  esRespuesta={true}></svelte:self>
         </div>
     {/if}
 </div>
@@ -189,7 +197,8 @@
         grid-area: respuestas;
         font-size: 0.7em;
         flex-wrap: wrap;
-            display: flex;
+        display: flex;
+        gap: 4px;
     }
 
     .contenido .media {

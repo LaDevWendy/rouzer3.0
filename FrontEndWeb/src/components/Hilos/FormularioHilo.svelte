@@ -20,6 +20,8 @@ let media
 let captcha = ""
 
 let encuesta = new Set([])
+$: encuestaArray = [...encuesta]
+$: console.log(encuesta)
 
 let mostrarRango = false
 let mostrarNombre = false
@@ -31,12 +33,30 @@ let error = null
 
 async function crear() {
     cargando = true
+    encuesta = encuesta
+    console.log(encuesta);
     try {
         let r = null 
         if(!$globalStore.usuario.esMod){
-                r = await  await RChanClient.crearHilo(titulo, categoria, contenido, media.archivo, media.link, captcha)
+                r = await  await RChanClient
+                    .crearHilo(titulo, 
+                        categoria,
+                        contenido, 
+                        media.archivo, 
+                        media.link, 
+                        captcha,
+                        [...encuesta])
             } else {
-                r = await  await RChanClient.crearHilo(titulo, categoria, contenido, media.archivo, media.link, captcha, mostrarNombre, mostrarRango)
+                r = await  await RChanClient
+                    .crearHilo(titulo, 
+                        categoria,
+                        contenido, 
+                        media.archivo, 
+                        media.link,
+                        captcha,
+                        [...encuesta], 
+                        mostrarNombre, 
+                        mostrarRango)
             }
         if (r.status == 201) {
                 window.location.replace(r.headers.location)
