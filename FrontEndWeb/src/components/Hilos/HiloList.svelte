@@ -8,8 +8,11 @@
     import RChanClient from '../../RChanClient';
     import Signal from '../../signal';
 
-
     export let hiloList
+    export let noCargarNuevos = false
+
+    hiloList.categoriasActivas == hiloList.categoriasActivas ??  $globalStore.categoriasActivas.includes(hilo.categoriaId)
+
 
     let nuevoshilos = []
     // let connection = new HubConnectionBuilder().withUrl("/hub").build();
@@ -32,7 +35,9 @@
 
 
     function onHiloCreado(hilo) {
-        if($globalStore.categoriasActivas.includes(hilo.categoriaId)){
+        if(noCargarNuevos) return;
+        if(hiloList.categoriasActivas.includes(hilo.categoriaId)
+        ){
             nuevoshilos = [hilo, ...nuevoshilos]
         }
     }
@@ -81,7 +86,7 @@
     {#if nuevoshilos.length > 0}
         <div class="cargar-nuevos-hilos" on:click={cargarNuevos} transition:fly|local={{x:100}}>
             <icon class="fe fe-rotate-cw"  style="margin-right: 8px;"/> 
-            Cargar {nuevoshilos.length} {nuevoshilos.length==1? 'hilo nuevo':'hilos nuevos'}
+            Cargar {nuevoshilos.length} {nuevoshilos.length==1? 'roz nuevo':'rozes nuevos'}
             <Ripple/>
         </div>
     {/if}

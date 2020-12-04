@@ -84,18 +84,22 @@ namespace WebApp.Controllers
             };
 
             MediaModel media = null;
-            if(vm.Archivo != null) 
+            try
             {
-                 if(!new []{"jpeg", "jpg", "gif", "mp4", "webm", "png"}.Contains(vm.Archivo.ContentType.Split("/")[1]))
+                if(vm.Archivo != null) 
                 {
-                    ModelState.AddModelError("El Archivo no es soportado", "");
-                    return BadRequest(ModelState);
+                    if(!new []{"jpeg", "jpg", "gif", "mp4", "webm", "png"}.Contains(vm.Archivo.ContentType.Split("/")[1]))
+                    {
+                        ModelState.AddModelError("El Archivo no es soportado", "");
+                        return BadRequest(ModelState);
+                    }
+                        media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
+                } else  if (!string.IsNullOrWhiteSpace(vm.Link))
+                {
+                    media = await mediaService.GenerarMediaDesdeLink(vm.Link);
                 }
-                    media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
-            } else  if (!string.IsNullOrWhiteSpace(vm.Link))
-            {
-                media = await mediaService.GenerarMediaDesdeLink(vm.Link);
             }
+            catch (Exception) {}
             if(media != null)
             {
                 comentario.Media = media;
@@ -118,7 +122,7 @@ namespace WebApp.Controllers
             await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoComentario", model);
             await rchanHub.Clients.Group("home").SendAsync("HiloComentado", hilo.Id, comentario.Contenido);
 
-            var comentarioMod = new ComentarioViewModelMod(comentario);
+            var comentarioMod = new ComentarioViewModelMod(comentario){HiloId = hilo.Id};
             await rchanHub.Clients.Group("moderacion").SendAsync("NuevoComentarioMod", comentarioMod);
             
             await notificacioensService.NotificarRespuestaAHilo(hilo, comentario);

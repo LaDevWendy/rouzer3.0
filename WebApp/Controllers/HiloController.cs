@@ -147,7 +147,7 @@ namespace WebApp.Controllers
             };
             
             var hilos = await query.AViewModel(context).ToListAsync();
-            var vm = new HiloListViewModel { Hilos = hilos };
+            var vm = new HiloListViewModel { Hilos = hilos, CategoriasActivas = new List<int>() };
             return View("Index", vm);
         }
 

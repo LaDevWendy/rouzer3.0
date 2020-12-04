@@ -102,6 +102,13 @@
 
 /* @media (max-width: 992px) {
 } */
+.hilo-completo :global(.cuerpo){
+	position: sticky;
+	top: 10px;
+	position: -webkit-sticky;
+	max-height: 100vh;
+    overflow: auto;
+}
 @media (max-width: 992px) {
 	.hilo-completo {
 		grid-template-columns: calc(40% - 10px) 60%;
@@ -115,6 +122,7 @@
 @media (max-width: 768px) {
 	.hilo-completo {
 		grid-template-columns: 100%;
+		margin-top: 50px;
 	}
 }
 

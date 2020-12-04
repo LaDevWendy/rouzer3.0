@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore;
 using Modelos;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace Data
 {
@@ -52,6 +53,13 @@ namespace Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<HiloModel>()
                 .HasIndex(h => h.Bump);
+
+            modelBuilder.Entity<HiloModel>()
+                .Property(h => h.Encuesta)
+                .HasConversion(
+                     v => JsonConvert.SerializeObject(v, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }),
+                    v => JsonConvert.DeserializeObject<Encuesta>(v, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })
+                );
             // modelBuilder.Entity<BaneoModel>()
             //     .HasOne(b => b.Comentario)
             //     .WithOne(c => c.)

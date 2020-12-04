@@ -28,7 +28,7 @@
     }, {
         "Id": 6,
         "Nombre": "Conspiraciones",
-        "NombreCorto": "(())",
+        "NombreCorto": "((()))",
         "Nsfw": false
     }, {
         "Id": 7,
@@ -155,6 +155,11 @@
         "Id": 31,
         "Nombre": "Morfi",
         "NombreCorto": "MRFI",
+        "Nsfw": false
+    },{
+        "Id": 32,
+        "Nombre": "Noticias",
+        "NombreCorto": "NOTI",
         "Nsfw": false
     }]
 }

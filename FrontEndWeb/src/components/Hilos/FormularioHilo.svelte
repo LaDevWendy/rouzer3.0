@@ -9,6 +9,7 @@ import MediaInput from '../MediaInput.svelte';
 import Captcha from '../Captcha.svelte';
 import Spinner from '../Spinner.svelte';
 import globalStore from '../../globalStore';
+import FormularioEncuesta from './FormularioEncuesta.svelte';
 
 export let mostrar = false
 
@@ -17,6 +18,8 @@ let categoria = "-1"
 let contenido = ""
 let media
 let captcha = ""
+
+let encuesta = new Set([])
 
 let mostrarRango = false
 let mostrarNombre = false
@@ -65,16 +68,18 @@ async function crear() {
             {/each}
         </select>
 
+        <!-- <FormularioEncuesta bind:opciones={encuesta}/> -->
+
         <textarea rows="5" style="background: var(--color4);" bind:value={contenido} name="contenido" placeholder="Escribi un redactazo..."></textarea>
 
         <ErrorValidacion {error}/>
 
         {#if $globalStore.usuario.esMod}
-        <div style=" flex-direction:row; display:flex">
-            <Checkbox bind:checked={mostrarRango} right>Tag_Mod</Checkbox>
-            <Checkbox bind:checked={mostrarNombre} right>Nombre</Checkbox>
-        </div>
-    {/if}
+            <div style=" flex-direction:row; display:flex">
+                <Checkbox bind:checked={mostrarRango} right>Tag_Mod</Checkbox>
+                <Checkbox bind:checked={mostrarNombre} right>Nombre</Checkbox>
+            </div>
+        {/if}
         <Captcha visible={config.general.captchaHilo}  bind:token={captcha}/>
         <div style="display:flex;     justify-content: flex-end;">
             <Button color="primary" on:click={() => mostrar = false}>Cancelar</Button>

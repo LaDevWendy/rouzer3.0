@@ -34,6 +34,8 @@
         window.localStorage.setItem("ajustes", JSON.stringify(config))
         if(!config.fondoAburrido) {
             document.body.style["backgroundImage"] = `url(/imagenes/rosed.png)`
+            document.body.style["backgroundSize"] =  'auto'
+            document.body.style.backgroundAttachment = 'fixed'
             return
         }
         if(config.usarImagen) {

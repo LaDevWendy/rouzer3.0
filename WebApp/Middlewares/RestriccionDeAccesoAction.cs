@@ -49,7 +49,7 @@ public class RestriccionDeAccesoAction : IAsyncActionFilter
             else
             {
                 ctx.Response.Redirect("/chocamo");
-                await next();
+                return;
             }
 
         }

@@ -21,7 +21,7 @@
                     href="/Moderacion/HistorialDeUsuario/{b.usuario.id}">
                     {b.usuario.userName}</a>
                     fue baneado hace <Tiempo date={b.creacion}/> <br>
-                    <a style="color:var(--color6)" href="/Hilos/{b.hiloId}#{b.comentarioId}">roz/comentario del baneo</a>
+                    <a style="color:var(--color6)" href="/Hilo/{b.hiloId}#{b.comentarioId}">roz/comentario del baneo</a>
                     Duracion: {formatearTimeSpan(b.duracion)}
                     <br>
                     <Dialogo textoActivador="Desbanear" titulo="Desbanear gordo" accion = {() => RChanClient.removerBan(b.id)}>

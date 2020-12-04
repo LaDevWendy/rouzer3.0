@@ -304,6 +304,11 @@ namespace Servicios
             await rchanHub.Clients.All.SendAsync("HilosEliminados", ids);
 
         }
+
+        public async Task LimpiarHilo(HiloModel hilo)
+        {
+            
+        }
     }
 
     public class GetHilosOptions

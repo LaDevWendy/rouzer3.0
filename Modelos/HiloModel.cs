@@ -16,6 +16,8 @@ namespace Modelos
 
         public UsuarioModel Usuario { get; set; }
 
+        public Encuesta Encuesta { get; set; }
+
     }
 
     public enum HiloEstado {

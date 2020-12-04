@@ -101,23 +101,25 @@ namespace WebApp.Controllers
             // if(hilo.Contenido == )
 
             MediaModel media = null;
-            if (vm.Archivo != null)
-            {
-                if(!new []{"jpeg", "jpg", "gif", "mp4", "webm", "png"}.Contains(vm.Archivo.ContentType.Split("/")[1]))
+            try {
+                if (vm.Archivo != null)
                 {
-                    ModelState.AddModelError("Archivo invalido", "");
-                    return BadRequest(ModelState);
+                    if(!new []{"jpeg", "jpg", "gif", "mp4", "webm", "png"}.Contains(vm.Archivo.ContentType.Split("/")[1]))
+                    {
+                        ModelState.AddModelError("Archivo invalido", "");
+                        return BadRequest(ModelState);
+                    }
+                        media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
                 }
-                    media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
-            }
-            else  if (!string.IsNullOrWhiteSpace(vm.Link))
-            {
-                media = await mediaService.GenerarMediaDesdeLink(vm.Link);
-            }
+                else  if (!string.IsNullOrWhiteSpace(vm.Link))
+                {
+                    media = await mediaService.GenerarMediaDesdeLink(vm.Link);
+                }
+            } catch(System.Exception) {}
 
             if(media is null)
             {
-                ModelState.AddModelError("Chocamo", "No se pudo importar el link");
+                ModelState.AddModelError("Chocamo", "No se pudo subir el archivo o importar el link");
                 return BadRequest(ModelState);
             }
 
@@ -142,7 +144,10 @@ namespace WebApp.Controllers
             }
 
             await context.SaveChangesAsync();
-            await rchanHub.Clients.Group("home").SendAsync("HiloCreado", new HiloViewModel(hilo));
+            var viewModel = new HiloViewModel(hilo);
+            await rchanHub.Clients.Group("home").SendAsync("HiloCreado", viewModel);
+            await rchanHub.Clients.Group("moderacion").SendAsync("HiloCreadoMod", viewModel);
+
 
             return Created($"/Hilo/{id}", null);
         }
@@ -275,7 +280,7 @@ namespace WebApp.Controllers
             return Ok(hilos);
         }
         [AllowAnonymous]
-        async public Task<ActionResult> Buscar(string busqueda) {
+        async public Task<ActionResult> Buscar(string busqueda="") {
             busqueda = string.Join("",busqueda.Take(15));
             var resultados = await context.Hilos
                 .AsNoTracking()

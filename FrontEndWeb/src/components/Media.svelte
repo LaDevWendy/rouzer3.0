@@ -1,7 +1,7 @@
 <script>
     import MediaType from "../MediaType";
     import {onMount} from "svelte/";
-    import {Icon, Button} from "svelte-mui"
+    import {Icon, Button, Ripple} from "svelte-mui"
 
     export let media
     export let modoCuadrado = false
@@ -23,7 +23,9 @@
 
 </script>
 
-<div class="media" class:abierto>
+<div class="media" 
+    class:abierto
+    class:youtube={media.tipo == MediaType.Youtube}>
     {#if !abierto}
         <div class="ocultar">
             <Button on:click={() => oculto = !oculto} class="cerrar" icon>
@@ -71,7 +73,13 @@
                     <i class="fe fe-youtube" style="position: relative;left: 1px;"></i> 
                 </Button>
                 {/if}
-                <!-- <a class="medialink" target="_blanck" href="https://www.youtube.com/watch/{media.id}">https://www.youtube.com/watch/{media.id}</a> -->
+                <a 
+                    class="medialink" 
+                    target="_blanck" 
+                    href="https://www.youtube.com/watch/{media.id}">
+                    Abrir en Yeutube 
+                    <Ripple/>
+                </a>
     {/if}
 </div>
 
@@ -84,6 +92,7 @@
         width: 50%;
         max-height: 80vh;
         display: flex;
+        flex-direction: column;
     }
     video, .abierto {
         width:100%;
@@ -120,8 +129,15 @@
     }
 
     .medialink{
-        background: var(--color4);
+        background: var(--color1);
         width: 100%;
+        text-align: center;
+        padding: 2px 0;
+        border-radius: 0 0 4px 4px;
+        border: solid 1px black;
+        border-top: none;
+        font-size: 12px;
+        color: #ffffffe3 !important;
     }
     a {
         width: 100%;
@@ -132,6 +148,12 @@
     }
     .media:hover .ocultar {
         display: block  ;
+    }
+    .youtube, iframe, .youtube img {
+        border-radius: 4px 4px 0 0 !important;
+    }
+    .youtube iframe {
+        border-radius: 0 !important;
     }
 
 </style>

@@ -50,11 +50,13 @@ namespace WebApp
                 if(banNoVisto != null)
                 {
                     ctx.Response.Redirect("/Domado");
+                    return;
                 }
 
                 if(banActivo != null &&  ctx.User.Identity.IsAuthenticated)
                 {
                     await sm.SignOutAsync();
+                    return;
                 }
             }
             await next();
