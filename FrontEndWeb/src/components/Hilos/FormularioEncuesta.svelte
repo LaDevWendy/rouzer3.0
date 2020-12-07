@@ -4,7 +4,8 @@
     let estado = 0 // 0 sin encuesta, 1 agregando encuesnta 2 encuesta agregada
     
     const limiteOpciones = 6
-    let   opciones = new Set([])
+    export let   opciones = new Set([])
+    let opcionesArray = []
     let opcionNueva = ""
 
  
@@ -14,56 +15,62 @@
         opciones.add(opcionNueva)
         opciones = opciones
         opcionNueva = "" 
+        opcionesArray = [...opciones]
     }
     function remover(opcion) {
         opciones.delete(opcion)
         opciones = opciones
+        opcionesArray = [...opciones]
     }
 
     function cancelar() {
         opciones = new Set()
         estado = 0
+        opcionesArray = [...opciones]
     }
 
     function aceptar() {
         estado = 2
         opciones = opciones
-        console.log(opciones);
+        opcionesArray = [...opciones]
+        console.log(opcionesArray);
     }
 </script>
 
 <!-- <Checkbox bind:checked={visible}>Encuesta</Checkbox> -->
-<span style="margin:4px 0">
+<span style="margin:4px 0;display: flex;justify-content: center;">
 
     {#if estado == 0  || estado == 1}
-    <Button on:click={() => estado = 1}>Agregar Encuesta</Button>
+        <Button on:click={() => estado = 1}><icon class="fe fe-bar-chart-2" style="font-size: 1.2rem;"></icon></Button>
     {/if}
     {#if estado == 2}
-    <Button on:click={cancelar}>Remover Encuesta</Button>
+        <Button color="var(--color5)" on:click={cancelar}><icon class="fe fe-bar-chart-2" style="font-size: 1.2rem;"></icon></Button>
     {/if}
 </span>
 
-<Dialog visible={estado == 1}>
-    <div slot="title">Opciones ({opciones.size}/{limiteOpciones})</div>
-    <ul>
-        {#each [...opciones] as o}
-            <li on:click={() => remover(o)}>{o} <Ripple/></li>
-        {/each}
-    </ul>
-    {#if opciones.size < 6}
-        <input bind:value={opcionNueva} type="text" placeholder="Añadir opcion">
-    {/if}
-    <div style="margin-top:8px">
-        {#if opciones.size > 1}
-        <Button on:click={aceptar} color="primary">Aceptar</Button>
-        {:else}
-        <Button color="primary" on:click={cancelar}>Cancelar</Button>
-        {/if}
+{#if estado == 1}
+    <Dialog visible={true}>
+        <div slot="title">Opciones ({opciones.size}/{limiteOpciones})</div>
+        <ul>
+            {#each opcionesArray as o}
+                <li on:click={() => remover(o)}>{o} <Ripple/></li>
+            {/each}
+        </ul>
         {#if opciones.size < 6}
-            <Button color="primary" on:click={agregarOpcion}>Añadir</Button>
+            <input bind:value={opcionNueva} type="text" placeholder="Añadir opcion">
         {/if}
-    </div>
-</Dialog>
+        <div style="margin-top:8px">
+            {#if opciones.size > 1}
+                <Button on:click={aceptar} color="primary">Aceptar</Button>
+            {:else}
+                <Button color="primary" on:click={cancelar}>Cancelar</Button>
+            {/if}
+            {#if opciones.size < 6}
+                <Button color="primary" on:click={agregarOpcion}>Añadir</Button>
+            {/if}
+        </div>
+    </Dialog>
+{/if}
 
 <style>
     li {

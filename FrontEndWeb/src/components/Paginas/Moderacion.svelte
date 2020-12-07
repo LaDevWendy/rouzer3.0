@@ -24,6 +24,9 @@
         comentarios.unshift(comentario)
         comentarios = comentarios
     })
+    Sigal.coneccion.on("HiloCreadoMod", hilo => {
+        hilos = [hilo, ...hilos]
+    })
 
 </script>
 <main>

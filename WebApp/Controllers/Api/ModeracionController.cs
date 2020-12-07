@@ -89,6 +89,7 @@ namespace WebApp.Controllers
                 .Include(d => d.Hilo.Media)
                 .Include(d => d.Hilo.Usuario)
                 .Include(d => d.Comentario.Usuario)
+                .Where(d => d.Creacion > DateTime.Now - TimeSpan.FromDays(1.5))
                 .ToListAsync();
 
             var medias = await context.Comentarios
@@ -350,6 +351,12 @@ namespace WebApp.Controllers
             }
 
             hilo.CategoriaId = vm.CategoriaId;
+
+            var denunciasPorCategoriaIncorrecta = await context.Denuncias
+                .Where(d => d.HiloId == vm.HiloId)
+                .Where(d => d.Motivo == MotivoDenuncia.CategoriaIncorrecta)
+                .ToListAsync();
+            denunciasPorCategoriaIncorrecta.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
 
             await context.SaveChangesAsync();
             return Json(new ApiResponse("Categoria cambiada!"));

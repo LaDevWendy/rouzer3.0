@@ -88,7 +88,7 @@ async function crear() {
             {/each}
         </select>
 
-        <!-- <FormularioEncuesta bind:opciones={encuesta}/> -->
+        <FormularioEncuesta bind:opciones={encuesta}/>
 
         <textarea rows="5" style="background: var(--color4);" bind:value={contenido} name="contenido" placeholder="Escribi un redactazo..."></textarea>
 

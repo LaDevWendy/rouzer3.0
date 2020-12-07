@@ -161,5 +161,20 @@
         "Nombre": "Noticias",
         "NombreCorto": "NOTI",
         "Nsfw": false
+    },{
+        "Id": 33,
+        "Nombre": "Descargas",
+        "NombreCorto": "DESC",
+        "Nsfw": false
+    },{
+        "Id": 34,
+        "Nombre": "Homo",
+        "NombreCorto": "HOMO",
+        "Nsfw": true
+    },{
+        "Id": 35,
+        "Nombre": "Ciencia",
+        "NombreCorto": "CIEN",
+        "Nsfw": false
     }]
 }

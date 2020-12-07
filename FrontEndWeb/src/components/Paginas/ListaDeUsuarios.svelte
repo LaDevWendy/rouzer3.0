@@ -10,7 +10,7 @@
 </script>
 
 <BarraModeracion/>
-<main>
+<section>
     <div class="lista-baneos panel">
         <h2>Baneos activos</h2>
         <ul>
@@ -46,7 +46,7 @@
             {/each}
         </ul>
     </div>
-</main>
+</section>
 
 <style>
     .ban {
@@ -56,14 +56,14 @@
         border-radius: 4px;
     }
 
-    main {
+    section {
         display: flex;
         gap: 10px;
         justify-content: center;
         align-items: flex-start;
     }
 
-    main>div {
+    section>div {
         max-width: 500px;
     }
 </style>

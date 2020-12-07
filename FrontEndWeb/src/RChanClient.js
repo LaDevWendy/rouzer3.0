@@ -44,7 +44,7 @@ export default class RChanClient {
         form.append("Archivo", archivo)
         form.append("Link", link)
         form.append("captcha", captcha)
-        form.append("encuesta", encuesta)
+        form.append("encuesta", JSON.stringify(encuesta))
         if(mostrarNombre || mostrarRango) {
             form.append('mostrarNombre', mostrarNombre)
             form.append('mostrarRango', mostrarRango)
@@ -230,6 +230,9 @@ export default class RChanClient {
 
     static buscar(cadenaDeBusqueda) {
         return axios.post(`/api/Hilo/Buscar?busqueda=${cadenaDeBusqueda}`)
+    }
+    static votarEncuesta(hiloId, opcion) {
+        return axios.post(`/api/Hilo/VotarEncuesta`, {hiloId, opcion})
     }
 
 }

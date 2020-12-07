@@ -143,7 +143,7 @@ namespace WebApp.Controllers
             var result = await userManager.RemoveClaimAsync(user, new Claim("Role", role));
             if (result.Succeeded)
             {
-                await signInManager.RefreshSignInAsync(user);
+                // await signInManager.RefreshSignInAsync(user);
                 return Json(new ApiResponse($"{user.UserName} ya no es {role}"));
             }
             else

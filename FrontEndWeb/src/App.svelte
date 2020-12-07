@@ -12,6 +12,7 @@
 	import Media from './components/Media.svelte'
 	import HiloCuerpo from './components/Hilos/HiloCuerpo.svelte'
 	import {abrir} from './components/Dialogos/Dialogos.svelte'
+	import Encuesta from './components/Hilos/Encuesta.svelte'
 
 
 	let data = window.data || dataEjemplo
@@ -39,6 +40,9 @@
 		</div>
 
 		<Acciones bind:hilo bind:acciones/>
+		{#if hilo.encuestaData}
+			<Encuesta bind:encuesta={hilo.encuestaData} hiloId={hilo.id}></Encuesta>
+		{/if}
 		
 		{#if $globalStore.usuario.esMod}
 		{#if hilo.estado == 2 }

@@ -19,6 +19,7 @@ namespace Modelos
             this.Rango = hilo.Rango;
             this.Nombre = hilo.Nombre;
             this.Dados = hilo.Flags.Contains("d");
+            this.Encuesta = hilo.Encuesta != null;
         }
 
         public int CantidadComentarios { get; set; }
@@ -37,6 +38,8 @@ namespace Modelos
         public CreacionRango Rango { get; set; }
         public string Nombre { get; set; }
         public bool Dados { get; set; }
+        public bool Encuesta { get; set; }
+        public EncuestaViewModel EncuestaData { get; set; }
     }
 
     public class HiloViewModelMod : HiloViewModel

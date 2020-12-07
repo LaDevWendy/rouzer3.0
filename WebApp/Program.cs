@@ -35,6 +35,22 @@ namespace WebApp
                 var opt = scope.ServiceProvider.GetService<IConfiguration>();
                 var wh = scope.ServiceProvider.GetService<IWebHostEnvironment>();
 
+                // //Prueba limpiar roz
+                // var hiloId = "7CTLRORYX0GS02KOME8R";
+                // var hilo = await ctx.Hilos.FirstOrDefaultAsync(h => h.Id == hiloId);
+                // var acciones = await ctx.HiloAcciones.Where(d => d.HiloId == hiloId).ToListAsync();
+                // var notis = await ctx.Notificaciones.Where( n => n.HiloId == hiloId).ToListAsync();
+
+                // ctx.Remove(hilo);
+                // ctx.RemoveRange(acciones);
+                // ctx.RemoveRange(notis);
+                // await ctx.SaveChangesAsync();
+
+                // var comentarios = await ctx.Comentarios.Where(c => c.HiloId == hiloId).ToListAsync();
+                // var denuncias = await ctx.Denuncias.Where(d => d.HiloId == hiloId).ToListAsync();
+                // var baneos = await ctx.Bans.Where(d => d.HiloId == hiloId).ToListAsync();
+
+
                 System.Console.WriteLine(opt.GetValue<string>("HCaptcha:SiteKey"));
                 System.Console.WriteLine(aspenv);
                 // await ctx.Database.EnsureCreatedAsync();

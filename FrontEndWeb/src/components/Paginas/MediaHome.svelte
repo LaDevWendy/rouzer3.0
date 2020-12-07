@@ -31,7 +31,7 @@
 
 
 <BarraModeracion />
-<main class="media-home">
+<section class="media-home">
     
     {#if selecionados.length > 0}
         <div style="justify-content: center;display: flex; margin:8px">
@@ -52,7 +52,7 @@
             </li>
         {/each}
     </ul>
-</main>
+</section>
 
 <style>
     .check {

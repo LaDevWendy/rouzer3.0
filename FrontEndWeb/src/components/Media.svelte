@@ -85,7 +85,8 @@
 
 <style>
     video, img {
-        border-radius: 4px
+        border-radius: 4px;
+        max-height: 80vh;
     }
     .media {
         position: relative;

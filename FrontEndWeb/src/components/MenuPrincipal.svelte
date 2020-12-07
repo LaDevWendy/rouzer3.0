@@ -87,6 +87,9 @@
             {/if}
 
             <li on:click={() => mostrarAjustes = true}> <icon class="fe fe-settings"/> Ajustes  <Ripple/></li>
+            <a href="/reglas.html">
+                <li > <icon class="fe fe-align-justify"/> Reglas  <Ripple/></li>
+            </a>
 
             
             {#if $globalStore.usuario.esMod}

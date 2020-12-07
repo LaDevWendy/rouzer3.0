@@ -60,7 +60,7 @@ namespace Servicios
             _context.Comentarios.Add(comentario);
             await _context.SaveChangesAsync();
             
-            if(!comentario.Contenido.Contains("gt;hide")) 
+            if(!comentario.Contenido.ToLower().Contains("gt;hide")) 
             {
                 await db.Query("Hilos")
                     .Where("Id", comentario.HiloId)

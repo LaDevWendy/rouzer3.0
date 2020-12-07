@@ -12,14 +12,21 @@
         Signal.subscribirAModeracion();
     }
 
+    const underAttack = new Audio("/audio/underAttack.mp3")
     Signal.coneccion.on("nuevaDenuncia", (denuncia) => {
+        underAttack.play()
+
         denuncias = [denuncia, ...denuncias]
         mostrar = true;
     })
 </script>
 
 
+<svelte:head>
+    <title>{denuncias.length != 0?`{${denuncias.length}}!`:''} {document.title.split("!").pop()}</title>
+</svelte:head>
 {#if $globalStore.usuario?.esMod}
+
     <span on:click={() => mostrar = !mostrar } class="nav-boton" style="height:100%;position:relative">
         <Ripple />
         <span class="fe fe-alert-circle" />

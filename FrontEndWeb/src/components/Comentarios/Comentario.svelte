@@ -191,6 +191,7 @@
     .comentario .texto {
         white-space: pre-wrap;
         word-break: break-word;
+        overflow: hidden;
     }
 
     .respuestas {

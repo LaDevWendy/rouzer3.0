@@ -60,7 +60,7 @@ namespace WebApp.Controllers
         #endregion
 
         [Authorize]
-        public async Task<ActionResult<ApiResponse>> Crear([FromForm] CrearHiloViewModel vm)
+        public async Task<ActionResult> Crear([FromForm] CrearHiloViewModel vm)
         {
             bool existeLaCategoria = categoriasOpt.Value.Any(c => c.Id == vm.CategoriaId);
 
@@ -86,7 +86,6 @@ namespace WebApp.Controllers
 
             // Chequeuear si esta Baneado
             var ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            System.Console.WriteLine(ip);
             var hilo = new HiloModel
             {
                 UsuarioId = User.GetId(),
@@ -97,8 +96,9 @@ namespace WebApp.Controllers
                 Ip = ip,
             };
 
-            //Flags
-            // if(hilo.Contenido == )
+            //Encuestas
+            var result = AgregarEncuesta(vm, hilo);
+            if(result != null) return result;
 
             MediaModel media = null;
             try {
@@ -293,6 +293,81 @@ namespace WebApp.Controllers
             resultados.ForEach(h => h.Contenido = "");
 
             return Ok(resultados);
+        }
+
+        private ActionResult AgregarEncuesta(CrearHiloViewModel vm, HiloModel hilo) {
+            string[] opcionesEncuesta =  null;
+            try
+            {
+                opcionesEncuesta = Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(vm.Encuesta);
+            }
+            catch (System.Exception)
+            {
+                ModelState.AddModelError("","No se pudeo agregar la encuesta");
+                return BadRequest(ModelState);
+            }
+            if(opcionesEncuesta.Length < 2) 
+            {
+                hilo.Encuesta = null;
+                return null;
+            }
+            if(opcionesEncuesta.Length >= 10)
+            {
+                ModelState.AddModelError("", "El maximo de opciones para una encuesta des de 10");
+                return BadRequest(ModelState);
+            }
+            if(opcionesEncuesta.Where(o => o.Length > 64).Any())
+            {
+                ModelState.AddModelError("", "Las opcione de la encuesta no puede tener mas de 32 caracteres");
+                return BadRequest(ModelState);
+            }
+
+            var encuesta = new Encuesta {
+                Opciones = opcionesEncuesta.Select(o => new OpcionEncuesta {Nombre = o, Votos = 0 }).ToList()
+            };
+
+            hilo.Encuesta = encuesta;
+            return null;
+        }
+
+        public class VotarEncuestaVm
+        {
+            public string HiloId { get; set; } = "";
+            public string Opcion { get; set; } = "";
+        }
+          async public Task<ActionResult> VotarEncuesta(VotarEncuestaVm model) 
+        {
+            var hilo = await context.Hilos.PorId(model.HiloId);
+
+            if(hilo is null || hilo.Encuesta is null) 
+            {
+                ModelState.AddModelError("jeje", "No se encontro la encuesta");
+                return BadRequest(ModelState);
+            }
+
+            string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+
+            if(hilo.Encuesta.Ids.Contains(User.GetId()) || hilo.Encuesta.Ips.Contains(ip))
+            {
+                ModelState.AddModelError("Ay", "Usted ya ha votado");
+                return BadRequest(ModelState);
+            }
+
+            if(!hilo.Encuesta.Opciones.Any(o => o.Nombre == model.Opcion))
+            {
+                ModelState.AddModelError("Ay", "No se encontro la opcion");
+                return BadRequest(ModelState);
+            }
+
+            hilo.Encuesta.Opciones.FirstOrDefault(o => o.Nombre == model.Opcion).Votos++;
+            hilo.Encuesta.Ids.Add(User.GetId());
+            hilo.Encuesta.Ips.Add(ip);
+
+            context.Update(hilo);
+            await context.SaveChangesAsync();
+
+            return Ok(new ApiResponse("Encuesta votada"));
+        
         }
     }
     

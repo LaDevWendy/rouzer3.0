@@ -21,8 +21,7 @@
     Signal.coneccion.on("HiloCreado", onHiloCreado)
     Signal.coneccion.on("HiloComentado", onHiloComentado)
     Signal.coneccion.on("HilosEliminados", (ids) => {
-        console.log("Hilos eliminados ");
-        console.log(ids);
+
         hiloList.hilos = hiloList.hilos.filter(h => !ids.includes(h.id))
         nuevoshilos = nuevoshilos.filter(h => !ids.includes(h.id))
     })
@@ -69,7 +68,6 @@
 
         try {
             let {data} = await RChanClient.cargarMasHilos(hiloList.hilos[hiloList.hilos.length -1].bump, hiloList.categoriasActivas)
-            console.log(data);
             hiloList.hilos = [...hiloList.hilos, ...data]
             if(data.length == 0) complete()
             loaded()

@@ -12,6 +12,7 @@
     import Signal from '../signal'
     import SelectorDeComentarios from './Moderacion/SelectorDeComentarios.svelte';
     import Subir from './Subir.svelte'
+import { onMount } from 'svelte';
     
 
     export let notificaciones = window.notificaciones || []
@@ -28,84 +29,108 @@
     })
 
     let oculta
+    let ocultarCategorias = false
+    let compacta = false
     let prevScrollpos = window.pageYOffset;
+
     function onScroll(e) {
+        compacta = !(window.pageYOffset == 0)
+        ocultarCategorias = compacta
+    
         let currentScrollPos = window.pageYOffset;
         oculta = currentScrollPos > prevScrollpos;
         prevScrollpos = currentScrollPos;
     }
 
+    let height = 0
+    
+    // $: if(height) {
+    //     try {
+    //         document.querySelector("main").style.marginTop = (height - 17) + "px"
+    //     } catch (error) {console.log(error)}
+    // }
+    
+
 </script>
 
 <svelte:window  on:scroll={onScroll}/>
+
 <header
     class:oculta
+    bind:offsetHeight={height}
 >
-    <div class="nav-principal">
-        <span on:click={() => mostrarMenu = !mostrarMenu}>
-            <icon class="fe fe-menu"/>
-            <Ripple/>
-        </span>
-        <a href="/" style="font-family: euroFighter">
-            <h3>ROZED <span class="version"> La red nini (Version Chad 1.3.2)</span></h3>
-
-            <Ripple/>
-        </a>
-        <!-- <MensajeRotativo/> -->
-        <div class="estadisticas">
-            <!-- {#if mostrarComputadorasConectadas}
-                <span transition:fade={{duration: 5000 }}   on:introend="{() => mostrarComputadorasConectadas = false}">
-                    {computadorasConectadas} computadora{computadorasConectadas!=1?'s':''} conectada{computadorasConectadas!=1?'s':''}
-                </span>
-            {/if} -->
-        </div>
-
-        <div class="nav-botones" style="position: relative;">
-
-
-            {#if $globalStore?.usuario?.esMod}
-                <a href="/Moderacion">
-                    <span style="height: 48px;display: flex;align-items: center;">
-                        <!-- <icon class="fe fe-triangle"/>
-                         -->
-                         <span style="top: -1px;
-                         font-size: 24px;
-                         padding: 0 4px;">✡</span>
-                        <Ripple/>
-                    </span>
-                </a>
-            {/if}
-
-            <DenunciasNav/>
-            <a href="/Buscar"class="nav-boton"  style="height:100%">
+    <nav
+    >
+        <div class="nav-principal">
+            <span on:click={() => mostrarMenu = !mostrarMenu}>
+                <icon class="fe fe-menu"/>
                 <Ripple/>
-                <span class="fe fe-search"></span>
-            </a>
-            {#if $globalStore.usuario.estaAutenticado}
-                <Notificaciones bind:notificaciones/>
-            {:else}
-                <a href="/Login"class="nav-boton"  style="height:100%">
-                    <Ripple/>
-                    <span class="fe fe-user"></span>
-                </a>
-            {/if}
+            </span>
+            <a href="/" style="font-family: euroFighter">
+                <h3>ROZED <span class="version"> La red nini (Version Chad 1.4.0)</span></h3>
 
-        </div>
-        <span class="nav-boton crear-hilo-boton" on:click={() => mostrarFormularioHilo = true}>
-            <span style="width:max-content; margin-right: 6px;cursor: pointer;">Crear Roz</span>
-            <span class="fe fe-plus"></span>
-            <Ripple/>
-        </span>
-        <FormularioHilo bind:mostrar ={mostrarFormularioHilo}/>
-    <MenuPrincipal bind:mostrar={mostrarMenu}/>
-    <FormularioLogin/>
+                <Ripple/>
+            </a>
+            <!-- <MensajeRotativo/> -->
+            <div class="estadisticas">
+                <!-- {#if mostrarComputadorasConectadas}
+                    <span transition:fade={{duration: 5000 }}   on:introend="{() => mostrarComputadorasConectadas = false}">
+                        {computadorasConectadas} computadora{computadorasConectadas!=1?'s':''} conectada{computadorasConectadas!=1?'s':''}
+                    </span>
+                {/if} -->
+            </div>
+
+            <div class="nav-botones" style="position: relative;">
+
+
+                {#if $globalStore?.usuario?.esMod}
+                    <a href="/Moderacion">
+                        <span style="height: 48px;display: flex;align-items: center;">
+                            <!-- <icon class="fe fe-triangle"/>
+                            -->
+                            <span style="top: -1px;
+                            font-size: 24px;
+                            padding: 0 4px;">✡</span>
+                            <Ripple/>
+                        </span>
+                    </a>
+                {/if}
+                {#if $globalStore.usuario?.esMod}
+                    <DenunciasNav/>
+                {/if}
+
+                <a href="/Buscar"class="nav-boton"  style="height:100%">
+                    <Ripple/>
+                    <span class="fe fe-search"></span>
+                </a>
+                {#if $globalStore.usuario.estaAutenticado}
+                    <Notificaciones bind:notificaciones/>
+                {:else}
+                    <a href="/Login"class="nav-boton"  style="height:100%">
+                        <Ripple/>
+                        <span class="fe fe-user"></span>
+                    </a>
+                {/if}
+
+            </div>
+            <span class="nav-boton crear-hilo-boton" on:click={() => mostrarFormularioHilo = true}>
+                <span style="width:max-content; margin-right: 6px;cursor: pointer;">Crear Roz</span>
+                <span class="fe fe-plus"></span>
+                <Ripple/>
+            </span>
+            <FormularioHilo bind:mostrar ={mostrarFormularioHilo}/>
+        <MenuPrincipal bind:mostrar={mostrarMenu}/>
+        <FormularioLogin/>
+    </nav>
+    <nav class="nav-categorias"
+        class:ocultarCategorias>
+        {#each config.categorias as c (c.id)}
+            <a href="/{c.nombreCorto}" title={c.nombre}>/{c.nombreCorto}</a>
+        {/each}
+        <Ripple color="var(--color5)"/>
+    </nav>
 </header>
-<nav class="nav-categorias">
-    {#each config.categorias as c (c.id)}
-        <a href="/{c.nombreCorto}" title={c.nombre}>/{c.nombreCorto}</a>
-    {/each}
-    <Ripple color="var(--color5)"/>
-</nav>
+
 
 <Dialogos></Dialogos>
 
@@ -182,6 +207,40 @@
 
 }
 
+header {
+    margin-bottom: 10px;
+    /* position: fixed; */
+    z-index: 10;
+    top: 0;
+    width: 100vw;
+    transition: linear 0.2s;
+}
+.compacta  .nav-categorias {
+    margin: 0;
+    padding: 0;
+    gap: 4px;
+}
+/* .compacta  .nav-categorias a{
+    font-size: 14px !important;
+} */
+
+/* .nav-categorias {
+    opacity: 1;
+    transition: linear 0.1s;
+
+} */
+
+/* :global(main) {
+    margin-top: 120px;
+} */
+
+/* .oculta {
+    transform: translateY(-120px) ;
+} */
+
+/* .ocultarCategorias {
+    opacity: 0;
+} */
 
 @media(max-width:600px)
 {
@@ -191,12 +250,12 @@
     header {
         margin-bottom: 10px;
         position: fixed;
-        z-index: 999;
+        z-index: 10;
         top: 0;
         width: 100vw;
         transition: linear 0.2s;
     }
-    :global(#svelte-navbar) + :global(*) {
+    :global(main){
         margin-top: 50px;
     }
 

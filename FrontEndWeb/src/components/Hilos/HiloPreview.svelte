@@ -89,7 +89,7 @@ function onClick(e) {
                 <div class="info" style="">{(config.categoriaPorId(hilo.categoriaId)?? {nombreCorto:"??"}).nombreCorto}</div>
                 {#if media.tipo == MediaType.Video} <div class="info" style="background:#18222D"><span class="fe fe-play"></span></div>{/if}
                 {#if media.tipo == MediaType.Youtube} <div class="info" style="var(--color5)"><span class="fe fe-play"></span></div>{/if}
-                {#if false} <div class="info" ><span class="fe fe-bar-chart-2"></span></div>{/if}
+                {#if hilo.encuesta} <div class="info encuesta" ><span class="fe fe-bar-chart-2"></span></div>{/if}
                 {#if hilo.dados}<Dado></Dado>{/if}
 
                 <div class="info">{hilo.cantidadComentarios}</div>
@@ -126,6 +126,15 @@ function onClick(e) {
     }
     .hilo :global(button) {
         border-radius:  50% 0% 0% 50%;
+    }
+    .encuesta {
+        background: var(--color6);
+        padding: 0 !important;
+        margin: 0 2px;
+        width: 18px;
+        display: flex;
+        justify-content: center;
+        border-radius: 2px !important;
     }
 
 

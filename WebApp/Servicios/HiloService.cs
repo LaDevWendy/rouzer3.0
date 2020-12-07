@@ -89,6 +89,11 @@ namespace Servicios
 
             hiloFullView.Hilo = new HiloViewModel(hilo);
 
+            if(hilo.Encuesta != null) 
+            {
+                hiloFullView.Hilo.EncuestaData = new EncuestaViewModel(hilo.Encuesta, userId);
+            }
+
             hiloFullView.Comentarios =  await _context.Comentarios
                 .Where(c => c.HiloId == hilo.Id)
                 .Where(c => c.Estado == ComentarioEstado.Normal)
@@ -127,6 +132,11 @@ namespace Servicios
 
             hiloFullView.Usuario =  await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == hilo.UsuarioId);
             hiloFullView.Hilo = new HiloViewModel(hilo);
+
+             if(hilo.Encuesta != null) 
+            {
+                hiloFullView.Hilo.EncuestaData = new EncuestaViewModel(hilo.Encuesta, userId);
+            }
 
             hiloFullView.Comentarios = await _context.Comentarios
                 .AsNoTracking()
@@ -307,7 +317,24 @@ namespace Servicios
 
         public async Task LimpiarHilo(HiloModel hilo)
         {
-            
+            var baneos = await _context.Bans.Where(d => d.HiloId == hilo.Id).ToListAsync();
+
+            if(baneos.Count == 0) 
+            {
+                
+            }
+
+            var acciones = await _context.HiloAcciones.Where(d => d.HiloId == hilo.Id).ToListAsync();
+            var notis = await _context.Notificaciones.Where( n => n.HiloId == hilo.Id).ToListAsync();
+
+            var comentarios = await _context.Comentarios.Where(c => c.HiloId == hilo.Id).ToListAsync();
+            var denuncias = await _context.Denuncias.Where(d => d.HiloId == hilo.Id).ToListAsync();
+
+
+            _context.Remove(hilo);
+            _context.RemoveRange(acciones);
+            _context.RemoveRange(notis);
+            await _context.SaveChangesAsync();
         }
     }
 
@@ -334,6 +361,7 @@ namespace Servicios
                     Titulo = h.Titulo,
                     Estado = h.Estado,
                     Dados = h.Flags.Contains("d"),
+                    Encuesta = h.Encuesta != null,
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count()
                 });
         }
@@ -349,6 +377,7 @@ namespace Servicios
                     Estado = h.Estado,
                     Usuario = h.Usuario,
                     Dados = h.Flags.Contains("d"),
+                    Encuesta = h.Encuesta != null,
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                     UsuarioId = h.UsuarioId,
                 });
