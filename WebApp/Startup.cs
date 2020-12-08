@@ -59,6 +59,7 @@ namespace WebApp
             services.AddMvc(opts => {
                 opts.Filters.Add<RestriccionDeAccesoAction>();
                 opts.Filters.Add<BanFilter>();
+                opts.Filters.Add<ProtocoloMessi>();
             }).AddRazorRuntimeCompilation();
 
             services.AddDbContext<RChanContext>(options =>

@@ -67,7 +67,7 @@
     
         {#if estado == 1}
             <Dialog  visible={true} modal={true}>
-                <div slot="title">Eliga una opcion padre</div>
+                <div slot="title">Elija una opcion padre</div>
                 <ul>
                     <Spinner cargando={votando}>
                         {#each encuesta.opciones as o}

@@ -10,10 +10,11 @@
     "NumeroMaximoDeCuentasPorIp": 3,
     "LinkDeInvitacion": "B193UL4W",
     "RestriccionDeAcceso": 0,
-    "MensajePaginaDeChoque": "Tinelli se metió en el orto a los meedz, tuvimos que cerrar rozed",
+    "MensajePaginaDeChoque": "Tinelli se meti\u00F3 en el orto a los meedz, tuvimos que cerrar rozed",
+    "ModoMessi": false,
     "CaptchaHilo": false,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
-    "Version": "1.4.0"
+    "Version": "1.4.1"
   }
 }

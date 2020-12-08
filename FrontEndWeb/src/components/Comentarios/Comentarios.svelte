@@ -82,7 +82,9 @@
 		
 </script>
 <div class="comentarios">
-    <Formulario {hilo}/>
+    {#if !window.config.general.modoMessi || $globalStore.usuario.esMod}
+        <Formulario {hilo}/>
+    {/if}
     <div class="contador-comentarios panel">
         <h3>Comentarios ({comentarios.length}) 
         </h3>

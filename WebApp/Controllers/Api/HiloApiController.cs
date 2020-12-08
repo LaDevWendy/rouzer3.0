@@ -281,6 +281,7 @@ namespace WebApp.Controllers
         }
         [AllowAnonymous]
         async public Task<ActionResult> Buscar(string busqueda="") {
+            if(string.IsNullOrWhiteSpace(busqueda)) busqueda = "";
             busqueda = string.Join("",busqueda.Take(15));
             var resultados = await context.Hilos
                 .AsNoTracking()

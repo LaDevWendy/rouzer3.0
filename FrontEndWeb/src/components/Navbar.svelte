@@ -12,7 +12,7 @@
     import Signal from '../signal'
     import SelectorDeComentarios from './Moderacion/SelectorDeComentarios.svelte';
     import Subir from './Subir.svelte'
-import { onMount } from 'svelte';
+    import { onMount } from 'svelte';
     
 
     export let notificaciones = window.notificaciones || []
@@ -20,6 +20,7 @@ import { onMount } from 'svelte';
     let mostrarMenu = false
     let mostrarFormularioHilo = false
     let computadorasConectadas = window.estadisticas.computadorasConectadas
+    let protocoloMessi = window.config.general.modoMessi 
 
     let mostrarComputadorasConectadas = false
 
@@ -49,14 +50,17 @@ import { onMount } from 'svelte';
     //         document.querySelector("main").style.marginTop = (height - 17) + "px"
     //     } catch (error) {console.log(error)}
     // }
-    
 
+    if(protocoloMessi) {
+        document.body.style.setProperty("--color5", "rgb(28 185 208)")
+    }
 </script>
 
 <svelte:window  on:scroll={onScroll}/>
 
 <header
     class:oculta
+    class:protocoloMessi
     bind:offsetHeight={height}
 >
     <nav
@@ -67,7 +71,7 @@ import { onMount } from 'svelte';
                 <Ripple/>
             </span>
             <a href="/" style="font-family: euroFighter">
-                <h3>ROZED <span class="version"> La red nini (Version Chad 1.4.0)</span></h3>
+                <h3>ROZED <span class="version"> {!protocoloMessi? `La red nini (Version Chad ${window.config.general.version}`:`Protocolo Messi activado (Version Chad ${window.config.general.version}`} </span></h3>
 
                 <Ripple/>
             </a>
@@ -79,6 +83,9 @@ import { onMount } from 'svelte';
                     </span>
                 {/if} -->
             </div>
+            {#if protocoloMessi}
+                <div class="messi"></div>
+            {/if}
 
             <div class="nav-botones" style="position: relative;">
 
@@ -113,11 +120,14 @@ import { onMount } from 'svelte';
                 {/if}
 
             </div>
-            <span class="nav-boton crear-hilo-boton" on:click={() => mostrarFormularioHilo = true}>
-                <span style="width:max-content; margin-right: 6px;cursor: pointer;">Crear Roz</span>
-                <span class="fe fe-plus"></span>
-                <Ripple/>
-            </span>
+            {#if !protocoloMessi || $globalStore.usuario.esMod}
+                <span class="nav-boton crear-hilo-boton" on:click={() => mostrarFormularioHilo = true}>
+                    <span style="width:max-content; margin-right: 6px;cursor: pointer;">Crear Roz</span>
+                    <span class="fe fe-plus"></span>
+                    <Ripple/>
+                </span>
+            {/if}
+
             <FormularioHilo bind:mostrar ={mostrarFormularioHilo}/>
         <MenuPrincipal bind:mostrar={mostrarMenu}/>
         <FormularioLogin/>
@@ -142,6 +152,9 @@ import { onMount } from 'svelte';
 <!-- <Personalizacion></Personalizacion> -->
 <style>
     /*NAVBAR*/
+.protocoloMessi  .nav-principal{
+    background: rgb(0, 133, 241) !important;
+}
 
 .nav-principal {
     border-top: solid var(--color5) 2px;
@@ -289,6 +302,16 @@ header {
     justify-self: center;
     margin: auto;
     overflow: hidden;
+}
+.messi {
+    background-image: url("/imagenes/messi.gif");
+    height: 48px;
+    background-size: 70px;
+    position: absolute;
+    mix-blend-mode: overlay;
+    width: 100%;
+    pointer-events: none; 
+
 }
 
 /* .estadisticas span {
