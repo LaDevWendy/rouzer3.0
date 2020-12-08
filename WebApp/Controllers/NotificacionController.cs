@@ -51,7 +51,15 @@ namespace WebApp.Controllers
                 .ToListAsync();
 
             _context.Notificaciones.RemoveRange(notisABorrar);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine(e);
+            }
             
 
             return Redirect($"/Hilo/{noti.HiloId}#{comentarioId}");

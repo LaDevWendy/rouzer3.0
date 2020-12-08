@@ -24,6 +24,7 @@ namespace Servicios
         Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo);
         Task<MediaModel> GenerarMediaDesdeLink(string url);
         Task<bool> Eliminar(string id) ;
+        Task<int> LimpiarMediasHuerfanos();
     }
 
     public class MediaService : IMediaService
@@ -209,6 +210,18 @@ namespace Servicios
                 intentos--;
             }
             return intentos == 0;
+        }
+
+        public async Task<int> LimpiarMediasHuerfanos() 
+        {
+            var mediasABorrar= await context.Medias
+                .Where(m => !context.Hilos.Any(h => h.MediaId == m.Id) &&
+                    !context.Comentarios.Any(c => c.MediaId == m.Id))
+                .Where(m => m.Tipo != MediaType.Eliminado)
+                .ToListAsync();
+            
+            mediasABorrar.ForEach(m => Console.WriteLine(m.Url));
+            return mediasABorrar.Count();
         }
     }
 }

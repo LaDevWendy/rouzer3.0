@@ -27,6 +27,8 @@ namespace Servicios
         Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId="", int cantidad = 16);
         Task EliminarHilos(params string[] ids);
         Task EliminarHilos(string[] ids, bool borrarMedias = false);
+        Task LimpiarHilo(string id);
+        Task LimpiarHilo(HiloModel hilo);
     }
 
     public class HiloService : ContextService, IHiloService
@@ -318,23 +320,26 @@ namespace Servicios
         public async Task LimpiarHilo(HiloModel hilo)
         {
             var baneos = await _context.Bans.Where(d => d.HiloId == hilo.Id).ToListAsync();
-
-            if(baneos.Count == 0) 
-            {
-                
-            }
-
             var acciones = await _context.HiloAcciones.Where(d => d.HiloId == hilo.Id).ToListAsync();
             var notis = await _context.Notificaciones.Where( n => n.HiloId == hilo.Id).ToListAsync();
 
             var comentarios = await _context.Comentarios.Where(c => c.HiloId == hilo.Id).ToListAsync();
             var denuncias = await _context.Denuncias.Where(d => d.HiloId == hilo.Id).ToListAsync();
-
-
-            _context.Remove(hilo);
+            
             _context.RemoveRange(acciones);
             _context.RemoveRange(notis);
+
+            if(baneos.Count == 0) 
+            {
+                _context.Remove(hilo);
+            } 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task LimpiarHilo(string id)
+        {
+            var hilo = await _context.Hilos.PorId(id);
+            if(hilo != null) await LimpiarHilo(hilo);
         }
     }
 
