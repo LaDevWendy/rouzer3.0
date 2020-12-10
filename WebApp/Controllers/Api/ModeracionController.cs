@@ -225,6 +225,9 @@ namespace WebApp.Controllers
             }
             denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
 
+            await rchanHub.Clients.Group("moderacion")
+                .SendAsync("denunciasAceptadas", denuncias.Select(d => d.Id).ToArray());
+
             bool mediaEliminado = false;
             if (model.EliminarAdjunto)
             {
@@ -271,6 +274,10 @@ namespace WebApp.Controllers
             }
 
             denuncia.Estado = EstadoDenuncia.Rechazada;
+
+            await rchanHub.Clients.Group("moderacion")
+                .SendAsync("denunciasRechazadas", new string[]{denuncia.Id});
+
             await context.SaveChangesAsync();
             return Json(new ApiResponse("Denuncia rechazada"));
         }
@@ -357,6 +364,9 @@ namespace WebApp.Controllers
                 .Where(d => d.Motivo == MotivoDenuncia.CategoriaIncorrecta)
                 .ToListAsync();
             denunciasPorCategoriaIncorrecta.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
+
+            await rchanHub.Clients.Group("moderacion")
+                .SendAsync("denunciasAceptadas", denunciasPorCategoriaIncorrecta.Select(d => d.Id).ToArray());
 
             await context.SaveChangesAsync();
             return Json(new ApiResponse("Categoria cambiada!"));

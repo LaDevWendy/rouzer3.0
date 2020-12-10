@@ -82,6 +82,7 @@
 
     onMount(() => {
         window.addEventListener('paste', e => {
+            console.log(e.clipboardData.files);
             input.files = e.clipboardData.files;
             actualizarArchivo()
         });

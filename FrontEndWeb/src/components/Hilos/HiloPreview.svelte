@@ -66,6 +66,7 @@ function onClick(e) {
             <span slot="activador">
                 <Button  icon color="white" style="margin-left: auto;"  on:click={()=> mostrarMenu = !mostrarMenu}>
                     <Icon><svelte:component this={more} /></Icon> 
+                    <!-- <i class="fe fe-circle"></i> -->
                 </Button>
             </span>
             <li on:click={toggle}>{visible?'Ocultar':'Mostrar'} <Ripple/></li>
@@ -109,7 +110,7 @@ function onClick(e) {
         margin: 0;
         height: 18px!important;
     }
-
+    
     .info:first-child {
         border-radius: 50px 0 0 50px!important;
     }
@@ -120,7 +121,7 @@ function onClick(e) {
     .sticky-info {
         background: var(--color1)
     }
-
+    
     .hilo:hover :global(button) {
         background: rgb(23 33 43 / 22%) !important;
     }
@@ -137,5 +138,15 @@ function onClick(e) {
         border-radius: 2px !important;
     }
 
-
+    /* Nuevo estilo */
+    /* .infos {
+        padding-top: 0;
+    }
+    .info:first-child {
+        border-radius: 0px 0 0 7px!important;
+    }
+    .info:last-child {
+        border-radius: 0 0px 7px 0!important;
+    }
+     */
 </style>

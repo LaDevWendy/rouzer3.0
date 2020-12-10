@@ -99,7 +99,9 @@ namespace WebApp.Controllers
                     media = await mediaService.GenerarMediaDesdeLink(vm.Link);
                 }
             }
-            catch (Exception) {}
+            catch (Exception e) {
+                Console.WriteLine(e);
+            }
             if(media != null)
             {
                 comentario.Media = media;
@@ -137,7 +139,7 @@ namespace WebApp.Controllers
 public class ComentarioFormViewModel {
     [Required]
     public string HiloId { get; set; }
-    [MaxLength(1500, ErrorMessage="Pero este comentario es muy largo padre")]
+    [MaxLength(3000, ErrorMessage="Pero este comentario es muy largo padre")]
     public string Contenido { get; set; } = "";
     public IFormFile Archivo { get; set; }
     public string Link { get; set; }

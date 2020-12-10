@@ -42,8 +42,8 @@
         "Nsfw": false
     }, {
         "Id": 9,
-        "Nombre": "Historia",
-        "NombreCorto": "HIS",
+        "Nombre": "Naturaleza",
+        "NombreCorto": "NAT",
         "Nsfw": false
     }, {
         "Id": 10,
@@ -175,6 +175,16 @@
         "Id": 35,
         "Nombre": "Ciencia",
         "NombreCorto": "CIEN",
+        "Nsfw": false
+    },{
+        "Id": 36,
+        "Nombre": "Autito brum brum",
+        "NombreCorto": "AUTO",
+        "Nsfw": false
+    },{
+        "Id": 37,
+        "Nombre": "Salud",
+        "NombreCorto": "SLD",
         "Nsfw": false
     }]
 }

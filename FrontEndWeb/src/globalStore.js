@@ -28,11 +28,11 @@ export default  {
     subscribe: store.subscribe,
     set(value) {
         localStorage.setItem('comentariosOcultos', JSON.stringify(Array.from(value.comentariosOcultos.keys())))
-        Cookie.set('categoriasActivas', value.categoriasActivas)
+        Cookie.set('categoriasActivas', value.categoriasActivas, { expires: 696969 })
         store.set(value)
     },
     update (config){
-        Cookie.set('categoriasActivas', config.categoriasActivas)
+        Cookie.set('categoriasActivas', config.categoriasActivas, { expires: 696969 })
         store.update(config)
     }
 }

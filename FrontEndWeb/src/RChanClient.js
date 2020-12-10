@@ -5,9 +5,7 @@ axios.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     if(response?.data?.redirect ?? false){
-        console.log(JSON.stringify(response))
         window.location.href = response.data.redirect
-        console.log("Window location" + response.data.redirect);
         throw new Error("Redirigido")
     }
     if(response.request.responseURL && response.request.responseURL.indexOf("/Domad") != -1) {
@@ -226,6 +224,10 @@ export default class RChanClient {
             mediaId,
             eliminarElementos,
         })
+    }
+    static limpiarRozesViejos()
+    {
+        return axios.post(`/api/Administracion/LimpiarRozesViejos`)
     }
 
     static buscar(cadenaDeBusqueda) {

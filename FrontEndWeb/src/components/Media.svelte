@@ -8,7 +8,7 @@
 
     $: vistaPrevia = modoCuadrado? media.vistaPreviaCuadrado : media.vistaPrevia
 
-    let abierto = false 
+    export let abierto = false 
     let oculto = false
     let vid
 

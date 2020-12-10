@@ -54,6 +54,10 @@
     if(protocoloMessi) {
         document.body.style.setProperty("--color5", "rgb(28 185 208)")
     }
+
+    $: if(mostrarFormularioHilo && !$globalStore.usuario.estaAutenticado) {
+        window.location = '/Inicio'
+    }
 </script>
 
 <svelte:window  on:scroll={onScroll}/>
@@ -71,7 +75,7 @@
                 <Ripple/>
             </span>
             <a href="/" style="font-family: euroFighter">
-                <h3>ROZED <span class="version"> {!protocoloMessi? `La red nini (Version Chad ${window.config.general.version}`:`Protocolo Messi activado (Version Chad ${window.config.general.version}`} </span></h3>
+                <h3>ROZED <span class="version"> {!protocoloMessi? `La red nini - Version Chad ${window.config.general.version}`:`Protocolo Messi activado - Version Chad ${window.config.general.version}`} </span></h3>
 
                 <Ripple/>
             </a>

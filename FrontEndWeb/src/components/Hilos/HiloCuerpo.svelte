@@ -1,15 +1,27 @@
 <script>
     import Media from "../Media.svelte";
     export let hilo = null
+
+    let mediaExpandido= false
+
 </script>
 
-<div class="cuerpo">
-    <Media media={hilo.media}/>
+<div class="cuerpo" class:mediaExpandido>
+    <Media media={hilo.media} bind:abierto={mediaExpandido}/>
     <h1 style="margin-bottom:16px">{hilo.titulo}</h1>
     <div class="texto" style="white-space: pre-wrap;word-break: break-word;">{@html hilo.contenido}</div>
 </div>
 
 <style>
+    .mediaExpandido {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .mediaExpandido h1 {
+        width: 100%;
+    }
+
     :global(.media) {
         float: left;
         margin-right: 10px;
@@ -28,5 +40,6 @@
     .cuerpo :global(a) {
         color: var(--color5) !important;
     }
+
 }
 </style>

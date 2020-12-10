@@ -24,6 +24,8 @@
     let respuestas
     let mostrandoRespuesta = false
     let respuestaMostrada
+
+    let mediaExpandido = false
     
     let windowsWidh = window.screen.width
 
@@ -153,13 +155,15 @@
     <div class="respuestas">
     </div>
     {#if visible}
-        <div class="contenido">
+        <div 
+            class="contenido"
+            class:mediaExpandido>
             {#if comentario.media}
-                <Media media={comentario.media}/>
+                <Media media={comentario.media} bind:abierto={mediaExpandido}/>
             {/if}
-            <div class="texto">
+            <span class="texto">
                 {@html comentario.contenido}
-            </div>
+            </span>
         </div>
     {/if}
     {#if mostrandoRespuesta}
@@ -178,14 +182,23 @@
             "color header"
             "color respuestas"
             "color cuerpo";
+        grid-template-rows: auto auto auto;
         padding: 10px;
         position: relative;
         margin-bottom: 8px;
         text-underline-position: under;
+        transition: 0.1s background-color linear;
     }
 
     .comentario .contenido {
         grid-area: cuerpo;
+    }
+    .mediaExpandido {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    :global(.media) {
+        margin-bottom: 10px;
     }
 
     .comentario .texto {
@@ -195,7 +208,7 @@
     }
 
     .respuestas {
-        grid-area: respuestas;
+        grid-row: 2;
         font-size: 0.7em;
         flex-wrap: wrap;
         display: flex;

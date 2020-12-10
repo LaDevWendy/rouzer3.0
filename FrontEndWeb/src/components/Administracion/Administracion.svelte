@@ -2,6 +2,7 @@
     import {Button, Checkbox,Radio} from 'svelte-mui'
     import config from '../../config'
     import RChanClient from '../../RChanClient'
+import Dialogo from '../Dialogo.svelte'
     import ErrorValidacion from '../ErrorValidacion.svelte'
 
     let model = window.model
@@ -146,6 +147,21 @@
                 <li>Mensaje pagina de choque</li>
                 <textarea bind:value={model.config.mensajePaginaDeChoque} cols="30" rows="10"></textarea>
                 <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
+            </ul>
+        </div>
+    </section>
+    <section style="max-width: 400px">
+        <h3>Mantenimiento</h3>
+        <ErrorValidacion error={error}/>
+        <div class="menu">
+            <ul >
+               <Dialogo accion={() => RChanClient.limpiarRozesViejos()}
+                titulo={'Limpiar rozes viejos'}
+                textoActivador={'Limpiar rozes viejos'}>
+                    <div slot="body">
+                        Eliminar los rozs con mas de 48 horas de su  eliminados o archivacion
+                    </div>
+               </Dialogo>
             </ul>
         </div>
     </section>

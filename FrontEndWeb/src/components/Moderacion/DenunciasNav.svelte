@@ -1,5 +1,6 @@
 <script>
     import { Ripple } from "svelte-mui";
+    import { EstadoDenuncia } from "../../enums";
     import globalStore from "../../globalStore";
     import Signal from "../../signal";
     import Denuncia from "../Denuncia.svelte";
@@ -8,16 +9,42 @@
 
     let mostrar = false;
 
+    $: if(denuncias.filter(d => d.estado == EstadoDenuncia.NoRevisada).length == 0) {
+        mostrar = false
+    }
+
     if($globalStore.usuario.esMod) {
         Signal.subscribirAModeracion();
     }
 
     const underAttack = new Audio("/audio/underAttack.mp3")
+    const toing = new Audio("/audio/toing.mp3")
+
     Signal.coneccion.on("nuevaDenuncia", (denuncia) => {
         underAttack.play()
 
         denuncias = [denuncia, ...denuncias]
         mostrar = true;
+    })
+
+    Signal.coneccion.on("denunciasRechazadas", (ids) => {
+        toing.play()
+
+        denuncias = denuncias.map(d => {
+            if(ids.includes(d.id)) 
+                d.estado = EstadoDenuncia.Rechazada
+            return d
+        })
+    })
+
+    Signal.coneccion.on("denunciasAceptadas", (ids) => {
+        toing.play()
+
+        denuncias = denuncias.map(d => {
+            if(ids.includes(d.id)) 
+                d.estado = EstadoDenuncia.Aceptada
+            return d
+        })
     })
 </script>
 
@@ -30,9 +57,9 @@
     <span on:click={() => mostrar = !mostrar } class="nav-boton" style="height:100%;position:relative">
         <Ripple />
         <span class="fe fe-alert-circle" />
-        {#if denuncias.length != 0}
+        {#if denuncias.filter(d => d.estado == EstadoDenuncia.NoRevisada).length != 0}
             <div class="noti-cont" style="position: absolute;">
-                <span>{denuncias.length}</span>
+                <span>{denuncias.filter(d => d.estado == EstadoDenuncia.NoRevisada).length}</span>
             </div>
         {/if}
     </span>
@@ -40,7 +67,7 @@
     {#if mostrar}
         <div class="denuncias-nav">
             <ul>
-                {#each denuncias as d}
+                {#each denuncias as d (d.id)}
                     <Denuncia bind:denuncia={d} />
                 {:else}
                     <h3 style="text-align:center">No hay denuncias</h3>

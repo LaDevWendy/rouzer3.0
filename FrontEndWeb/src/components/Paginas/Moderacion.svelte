@@ -51,7 +51,7 @@
         </ul>
         <ul style="width:33%">
             <h3 style="height:40px">Ultimos hilos</h3>
-            {#each hilos as h}
+            {#each hilos as h (h.id)}
                 <HiloPreviewMod hilo={h}/>
             {/each}
         </ul>

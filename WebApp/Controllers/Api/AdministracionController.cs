@@ -170,6 +170,29 @@ namespace WebApp.Controllers
                 return View();
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult> LimpiarRozesViejos () 
+        {
+            var dosDiasAtras = DateTimeOffset.Now - TimeSpan.FromDays(2);
+            var hilosALimpiar = await context.Hilos
+                .Where(h => h.Estado == HiloEstado.Archivado || h.Estado == HiloEstado.Eliminado)
+                .Where(h => h.Bump < dosDiasAtras)
+                .ToListAsync();
+            
+            foreach (var h in hilosALimpiar)
+            {
+                await hiloService.LimpiarHilo(h);
+            }
+            await context.SaveChangesAsync();
+            var ArchivosLimpiados = await mediaService.LimpiarMediasHuerfanos();
+
+                return Json(new {
+                    HilosLimpiados = hilosALimpiar.Count(),
+                    ArchivosLimpiados
+                });
+
+        } 
     }
 }
 

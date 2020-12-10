@@ -154,7 +154,8 @@ namespace WebApp.Controllers
             }
 
             // Checkear cuentas creadas desde esa ip
-            int registrosPrevios = await context.Usuarios.CountAsync(u => u.Ip == ip);
+            var unaSemanaAntes = DateTimeOffset.Now - TimeSpan.FromDays(7);
+            int registrosPrevios = await context.Usuarios.CountAsync(u => u.Ip == ip && u.Creacion > unaSemanaAntes);
             if(registrosPrevios >= generalOptions.Value.NumeroMaximoDeCuentasPorIp)
             {
                 ModelState.AddModelError("Jijo de buta", "Llegaste al numero maximo de sesiones/registros por ip");

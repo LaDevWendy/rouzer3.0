@@ -328,6 +328,7 @@ namespace Servicios
             
             _context.RemoveRange(acciones);
             _context.RemoveRange(notis);
+            _context.RemoveRange(denuncias);
 
             if(baneos.Count == 0) 
             {

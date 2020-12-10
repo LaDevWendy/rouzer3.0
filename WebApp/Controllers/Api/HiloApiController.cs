@@ -302,8 +302,9 @@ namespace WebApp.Controllers
             {
                 opcionesEncuesta = Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(vm.Encuesta);
             }
-            catch (System.Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 ModelState.AddModelError("","No se pudeo agregar la encuesta");
                 return BadRequest(ModelState);
             }

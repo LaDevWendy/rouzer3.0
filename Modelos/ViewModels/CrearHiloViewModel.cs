@@ -11,7 +11,7 @@ namespace Modelos
         public string Titulo { get; set; }
 
         [Required(ErrorMessage="Tienes que escribir un redactazo, o por lo menos un caracter")]
-        [MaxLength(5000, ErrorMessage="El redactazo es muy largo padre, 50000 caracteres maximo")]
+        [MaxLength(10000, ErrorMessage="El redactazo es muy largo padre, 10000 caracteres maximo")]
         public string Contenido { get; set; }
         
         [Required(ErrorMessage="Debes elegir una categoria para su hilo anon")]

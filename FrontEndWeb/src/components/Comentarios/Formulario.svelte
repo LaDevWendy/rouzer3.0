@@ -48,6 +48,12 @@
         media.archivo = null
         error = null
     }
+    function onFocus() {
+        error = null
+        if(!$globalStore.usuario.estaAutenticado) {
+            window.location = '/Inicio'
+        }
+    }
 
 </script>
 
@@ -55,7 +61,11 @@
     <ErrorValidacion {error}/>
 
     <MediaInput bind:media={media} compacto={true}></MediaInput>
-    <textarea on:focus={() => error = null} bind:value={$comentarioStore} cols="30" rows="10" placeholder="Que dificil discutir con pibes..."></textarea>
+    <textarea 
+        on:focus={onFocus} 
+        bind:value={$comentarioStore} 
+        cols="30" 
+        rows="10" placeholder="Que dificil discutir con pibes..."></textarea>
 
     <div class="acciones">
         {#if $globalStore.usuario.esMod}
