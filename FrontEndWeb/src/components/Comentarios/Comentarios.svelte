@@ -1,10 +1,12 @@
 <script>
     import { fly } from 'svelte/transition';
+    import { Button } from 'svelte-mui'
     import Comentario from './Comentario.svelte'
     import Formulario from './Formulario.svelte'
     import globalStore from '../../globalStore'
     import DialogoReporte from '../Dialogos/DialogoReporte.svelte';
     import Signal from '../../signal'
+    import CarpetaMedia from './CarpetaMedia.svelte';
 
     export let hilo
     export let comentarios
@@ -79,8 +81,23 @@
     if(diccionarioComentarios[comentarioUrl]) {
         diccionarioComentarios[comentarioUrl].resaltado = true
     }
-		
+
+    let resaltadoIdUnico = false
+    function idUnicoClickeado(e) {
+        comentarios.forEach(c => {
+            if(!resaltadoIdUnico) {
+                c.resaltado = c.idUnico == e.detail
+            } else {
+                c.resaltado = false
+            }
+        });
+        comentarios = comentarios
+        resaltadoIdUnico = !resaltadoIdUnico
+    }
+        
+    let carpetaMedia = false
 </script>
+<CarpetaMedia {comentarios} bind:visible={carpetaMedia}></CarpetaMedia>
 <div class="comentarios">
     {#if !window.config.general.modoMessi || $globalStore.usuario.esMod}
         <Formulario {hilo}/>
@@ -94,11 +111,16 @@
             </div>
         {/if}
         <div class="acciones-comentario">
-            <i class="fe fe-folder"></i>
+            <!-- <i on:click={() => carpetaMedia = !carpetaMedia} class="fe fe-folder"></i> -->
+            <Button on:click={() => carpetaMedia = !carpetaMedia} 
+                dense icon><icon class="fe fe-folder"></icon>
+            </Button>
             {#if comentarios.length > 0}
-            <a href="#{comentarios[comentarios.length -1].id} ">
-                <i class="fe fe-arrow-down"></i>
-            </a>
+                <a href="#{comentarios[comentarios.length -1].id}" style="margin: 0;">
+                    <Button
+                        dense icon><icon class="fe fe-arrow-down"></icon>
+                    </Button>
+                </a>
             {/if}
         </div>
     </div>
@@ -109,8 +131,9 @@
                 <Comentario 
                     on:colorClick={(e) => resaltarComentariosDeUsuario(e.detail.usuarioId || '') } 
                     hilo={hilo} 
-                    bind:comentario {comentarios} comentariosDic = {diccionarioComentarios}
+                    bind:comentario {comentarios} bind:comentariosDic = {diccionarioComentarios}
                     on:tagClickeado={tagCliqueado}
+                    on:idUnicoClickeado={idUnicoClickeado}
                     />
             </li>
             {/each}

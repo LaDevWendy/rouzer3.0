@@ -1,5 +1,8 @@
 using System;
+using System.ComponentModel;
+using System.Linq;
 using Modelos;
+using Newtonsoft.Json;
 
 namespace Modelos
 {
@@ -33,19 +36,43 @@ namespace Modelos
                     var random = new Random(comentario.Creacion.Millisecond + Creacion.Second);
                     this.Dados = random.Next(10);
                 }
+                if(hilo.Flags.Contains("i"))
+                {
+                    IdUnico = GenerarIdUnico(hilo.Id, comentario.UsuarioId);
+                }
             }
         }
         public ComentarioViewModel() {}
+
         public string Id { get; set; }
         public string Contenido { get; set; }
         public DateTimeOffset Creacion { get; set; }
         public bool EsOp { get; set; }
         public MediaModel Media { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore), DefaultValue("")]
         public string Nombre { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore), DefaultValue(0)]
         public CreacionRango Rango { get; set; }
+
+        public string IdUnico { get; set; } = "";
+
         public string Color   {
             get {
                 var r = new Random(Creacion.Millisecond + Creacion.Second);
+
+                if(r.Next(5000) == 69)
+                {
+                    return r.Next(4) switch {
+                        0 => "rose-violeta",
+                        1 => "rose-castaña",
+                        2 => "rose-azul",
+                        3 => "rose-rubia",
+                        _ => "",
+                    };
+                }
+                if(r.Next(2000) == 10) return "white";
+                if(r.Next(100) == 10) return "navideño";
 
                 if(r.Next(200) == 2) 
                 {
@@ -68,6 +95,15 @@ namespace Modelos
             }
         }
         public int Dados { get; set; } = -1;
+
+        static protected string GenerarIdUnico(string hiloId, string usuarioId)
+        {
+            var random = new Random((hiloId + usuarioId).GetHashCode());
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, 3)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+        
         
     }
     public class ComentarioViewModelMod: ComentarioViewModel
@@ -75,8 +111,13 @@ namespace Modelos
         public ComentarioViewModelMod() {}
         public ComentarioViewModelMod(ComentarioModel comentario):base(comentario)
         {
-
+            UsuarioId = comentario.UsuarioId;
         }
+        public ComentarioViewModelMod(ComentarioModel comentario, HiloModel hilo):base(comentario, hilo)
+        {
+            UsuarioId = comentario.UsuarioId;
+        }
+
         public string HiloId { get; set; }
         public string UsuarioId { get; set; }
         public ComentarioEstado Estado { get; set; }

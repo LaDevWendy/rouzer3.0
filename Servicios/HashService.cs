@@ -6,7 +6,8 @@ namespace Servicios
 {
     public class HashService
     {
-        private static Random random = new Random();
+        private static readonly Random random = new Random();
+
         public string Random(int length=20)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

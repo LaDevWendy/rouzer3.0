@@ -89,6 +89,12 @@ body {
   background-attachment: fixed;
   background-size: contain;
 }
+.ns {
+  user-select: none;
+}
+.cpt {
+  cursor: pointer;
+}
 a {
   text-decoration: none;
 }

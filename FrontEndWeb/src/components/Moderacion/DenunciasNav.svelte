@@ -28,6 +28,7 @@
     })
 
     Signal.coneccion.on("denunciasRechazadas", (ids) => {
+        if(ids.length == 0) return
         toing.play()
 
         denuncias = denuncias.map(d => {
@@ -38,6 +39,7 @@
     })
 
     Signal.coneccion.on("denunciasAceptadas", (ids) => {
+        if(ids.length == 0) return
         toing.play()
 
         denuncias = denuncias.map(d => {

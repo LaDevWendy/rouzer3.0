@@ -146,18 +146,7 @@ namespace Servicios
                 .Where(c => c.Estado != ComentarioEstado.Eliminado || mostrarOcultos)
                 .OrderByDescending(c => c.Creacion)
                 .Include(c => c.Media)
-                .Select(c => new ComentarioViewModelMod {
-                    UsuarioId = c.UsuarioId,
-                    Username = c.Usuario.UserName,
-                    Estado = c.Estado,
-                    Contenido = c.Contenido,
-                    Rango =  c.Rango,
-                    Nombre = c.Nombre,
-                    Id = c.Id,
-                    Creacion = c.Creacion,
-                    EsOp = c.UsuarioId == hilo.UsuarioId,
-                    Media = c.Media,
-                })
+                .Select(c => new ComentarioViewModelMod(c, hilo))
                 .ToListAsync();
 
              if (!string.IsNullOrEmpty(userId))
@@ -280,6 +269,7 @@ namespace Servicios
 
             // Flags
             if(hilo.Contenido.Contains(">>dados")) hilo.Flags += "d";
+            if(hilo.Contenido.Contains(">>idunico")) hilo.Flags += "i";
 
             hilo.Contenido = formateador.Parsear(hilo.Contenido);
             await _context.SaveChangesAsync();

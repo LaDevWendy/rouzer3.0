@@ -25,6 +25,7 @@
 
 <div class="media" 
     class:abierto
+    class:modoCuadrado
     class:youtube={media.tipo == MediaType.Youtube}>
     {#if !abierto}
         <div class="ocultar">
@@ -157,4 +158,8 @@
         border-radius: 0 !important;
     }
 
+    .modoCuadrado {
+        width: 100%;
+        max-width: 100%;
+    }
 </style>

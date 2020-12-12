@@ -75,7 +75,7 @@
                 <Ripple/>
             </span>
             <a href="/" style="font-family: euroFighter">
-                <h3>ROZED <span class="version"> {!protocoloMessi? `La red nini - Version Chad ${window.config.general.version}`:`Protocolo Messi activado - Version Chad ${window.config.general.version}`} </span></h3>
+                <h3 class="rozed">ROZED <span class="version"> {!protocoloMessi? `La red nini - Version Chad ${window.config.general.version}`:`Protocolo Messi activado - Version Chad ${window.config.general.version}`} </span></h3>
 
                 <Ripple/>
             </a>
@@ -316,6 +316,18 @@ header {
     width: 100%;
     pointer-events: none; 
 
+}
+
+.rozed::after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    right: 7px;
+    height: 32px;
+    width: 32px;
+    transform: rotate(-4deg) scaleX(-1);
+    background: url(/imagenes/colores/gorrito.png) 0% 0% / 85% no-repeat;
+    background-repeat: no-repeat;
 }
 
 /* .estadisticas span {

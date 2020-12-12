@@ -88,6 +88,12 @@
         let  comentario = comentariosDic[comentarioId] ?? {esOp:false}
         return comentario.esOp
     }
+
+    function idUnicoColor() {
+        let coloresPosibles = ['#7bd800', '#00d87e', '#006ad8','#3500d8', '#8500d8', '#d80096', '#737679', '#5d130b', '#ec64e2', '#ff5722']
+        let n = comentario.idUnico.charCodeAt(0) + comentario.idUnico.charCodeAt(1) + comentario.idUnico.charCodeAt(2);
+        return coloresPosibles[n % coloresPosibles.length - 1]
+    }
 </script>
 
 <div bind:this={el}
@@ -105,13 +111,15 @@
         {/each}
     </div    >
     <div on:click={() => dispatch("colorClick", comentario)} 
-        class="color color-{comentario.color}"
+        class="color color-{comentario.color} ns"
         class:dado={comentario.dados != undefined && comentario.dados != -1}
     >
         {#if comentario.dados!= undefined && comentario.dados != -1}
             {comentario.dados}
-        {:else}
+        {:else if comentario.rango}
             {CreacionRango.aString(comentario.rango).toUpperCase()}
+        {:else}
+            ANON
         {/if}
     </div>
     <div class="header">
@@ -119,14 +127,22 @@
         <span 
             on:click={seleccionar}
             class:nombreResaltado = {comentario.nombre} 
-            class="nick nombre cptr">{comentario.nombre ||'Gordo'}</span>
+            class="nick nombre cptr">{comentario.nombre ||'Gordo'}
+        </span>
+        {#if comentario.idUnico}
+            <span 
+                on:click={() => dispatch("idUnicoClickeado", comentario.idUnico)} 
+                class="tag ns cpt idunico" style={`background:${idUnicoColor()};`}>
+                {comentario.idUnico} <Ripple color="var(--color5)"/>
+            </span>
+        {/if}
         {#if comentario.usuarioId}
         <a href="/Moderacion/HistorialDeUsuario/{comentario.usuarioId}" style="color:var(--color6) !important">
             <span class="nick">{comentario.usuarioId.split("-")[0]}</span>
         </a>
         {/if}
         <!-- <span class="rol tag">anon</span> -->
-        <span class="id tag" on:click={() => tagear(comentario.id)}>{comentario.id}</span>
+        <span class="id tag ns" on:click={() => tagear(comentario.id)}>{comentario.id}</span>
         <span class="tiempo"><Tiempo date={comentario.creacion}/></span>
 
         <div>
@@ -188,6 +204,7 @@
         margin-bottom: 8px;
         text-underline-position: under;
         transition: 0.1s background-color linear;
+        overflow: hidden !important;
     }
 
     .comentario .contenido {
@@ -239,6 +256,19 @@
         border-radius: 4px;
     }
 
+    .color-rojo::after, .color-multi::after, .comentarioMod .color::after, .color-navideño::after {
+        content: '';
+        background: url(/imagenes/colores/gorrito.png);
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        height: 26px;
+        width: 26px;
+        background-size: 85%;
+        background-repeat: no-repeat;
+        transform: rotate(-4deg);
+    }
+
     .comentario .header {
         grid-template-areas: color;
         display: flex;
@@ -284,24 +314,35 @@
     }
 
     .color-rojo {background: #dd3226;}
-
     .color-verde {background: #53a538;}
-
     .color-amarillo {background: #ffc400;}
-
     .color-azul {background: #00408a;}
-
     .color-rosa {background: #ff74c1;}
-    
     .color-negro {background: #000000;}
-    
     .color-marron {background: #492916;}
+    .color-white {color: #00abec;border-top: solid 4px #ffc400; background: white;}
+
+    .color-rose-rubia {background: url(/imagenes/colores/rose-rubia.jpg); background-size: 100%; color:transparent;}
+    .color-rose-azul {background: url(/imagenes/colores/rose-azul.jpg); background-size: 100%; color:transparent;}
+    .color-rose-castaña {background: url(/imagenes/colores/rose-castaña.jpg); background-size: 100%; color:transparent;}
+    .color-rose-violeta {background: url(/imagenes/colores/rose-violeta.jpg); background-size: 100%; color:transparent;}
 
     .color-multi {
         background: linear-gradient(#ffc400    25%, #00408a  25%, #00408a  50%, #53a538   50%, #53a538   75%, #dd3226  75%, #dd3226  100%);
         animation: multi .3s infinite;
     }
+
+    .color-navideño {
+        background: linear-gradient(#f0202e    33.3%, #ffffff  33.3%, #ffffff  66.3%, #008939   66.3%, #008939   100%) ;
+        color: #ffc400;
+        animation: navideño .4s infinite;
+    }
     
+    @keyframes navideño {
+        33.3%  { background: linear-gradient(#008939    33.3%, #f0202e  33.3%, #f0202e  66.3%, #ffffff   66.3%, #ffffff   100%);}
+        66.3%  { background: linear-gradient(#ffffff    33.3%, #008939  33.3%, #008939  66.3%, #f0202e   66.3%, #f0202e   100%);}
+        100%   { background: linear-gradient(#f0202e    33.3%, #ffffff  33.3%, #ffffff  66.3%, #008939   66.3%, #008939   100%);}
+    }
     @keyframes multi {
         20%  { background: linear-gradient(#dd3226 25%, #ffc400 25%, #ffc400 50%, #00408a 50%, #00408a 75%, #53a538 75%, #53a538 100%);}
         60%  { background: linear-gradient(#53a538 25%, #dd3226 25%, #dd3226 50%, #ffc400 50%, #ffc400 75%, #00408a 75%, #00408a 100%);}
@@ -312,6 +353,7 @@
     .comentarioMod  {
         border-top: solid 2px;
         animation: borde-luz 0.3s infinite alternate-reverse;
+        
     }
     .nombreResaltado {
         color: var(--color6);
@@ -320,6 +362,7 @@
 
     .comentarioMod >.color {
         animation: luces 0.3s infinite alternate-reverse;
+        color: white !important;
     }
 
     @keyframes borde-luz {
@@ -345,6 +388,10 @@
 .dado {
     font-size: 2rem;
     font-family: 'euroFighter';
+}
+
+.idunico:hover {
+   color: var(--color5)
 }
 @media (max-width: 600px) {
   .comentario :global(.restag) {

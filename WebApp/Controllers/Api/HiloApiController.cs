@@ -115,7 +115,11 @@ namespace WebApp.Controllers
                 {
                     media = await mediaService.GenerarMediaDesdeLink(vm.Link);
                 }
-            } catch(System.Exception) {}
+            } catch(Exception e) {
+                ModelState.AddModelError("El  formato del archivo no es soportado", "");
+                Console.WriteLine(e);
+                return BadRequest(ModelState);
+            }
 
             if(media is null)
             {
