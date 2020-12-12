@@ -204,7 +204,6 @@
         margin-bottom: 8px;
         text-underline-position: under;
         transition: 0.1s background-color linear;
-        overflow: hidden !important;
     }
 
     .comentario .contenido {
