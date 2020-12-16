@@ -10,6 +10,7 @@ import Captcha from '../Captcha.svelte';
 import Spinner from '../Spinner.svelte';
 import globalStore from '../../globalStore';
 import FormularioEncuesta from './FormularioEncuesta.svelte';
+import { tick } from 'svelte';
 
 export let mostrar = false
 
@@ -67,6 +68,16 @@ async function crear() {
     cargando = false
 }
 
+
+let escribiendoRedactazo = false
+let textarea2
+
+async function onTeaxtAreaFocus(params) {
+    console.log(textarea2);
+    escribiendoRedactazo = true
+    await tick()
+    textarea2.focus()
+}
 </script>
 
 {#if mostrar}
@@ -90,7 +101,28 @@ async function crear() {
 
         <FormularioEncuesta bind:opciones={encuesta}/>
 
-        <textarea rows="5" style="background: var(--color4);" bind:value={contenido} name="contenido" placeholder="Escribi un redactazo..."></textarea>
+        <textarea 
+            rows="5" 
+            style="background: var(--color4);" 
+            bind:value={contenido} name="contenido" 
+            on:focus={onTeaxtAreaFocus}
+            placeholder="Escribi un redactazo..."></textarea>
+        {#if escribiendoRedactazo}
+        <div class="">
+                <textarea 
+                    rows="5" 
+                    style="background: var(--color4);" 
+                    bind:this={textarea2}
+                    bind:value={contenido} name="contenido" 
+                    class="expandida"
+                    on:focus={onTeaxtAreaFocus}
+                    on:blur={() => escribiendoRedactazo = false}
+                    placeholder="Escribi un redactazo..."></textarea>
+                    <div style="position:absolute; z-index:2; bottom:60px;right:10px">
+                        <Button color="var(--color5)" icon ><icon class="fe fe-check"></icon></Button>
+                    </div>
+            </div>
+        {/if}
 
         <ErrorValidacion {error}/>
 
@@ -135,6 +167,7 @@ async function crear() {
         overflow-y: auto;
         max-width: unset;
         width: fit-content;
+        position: relative;
     }
     @media (min-width: 600px) {
     form {
@@ -146,5 +179,22 @@ async function crear() {
             width: 100%;
             height: 94vh;
         }
+    }
+
+    @media (max-width: 600px) {
+        form {
+            width: 100vw !important;
+            height: calc(100vh - 50px) !important;
+            max-height: calc(100vh - 50px) !important;
+        }
+    }
+
+    .expandida {
+        position: absolute;
+        top: 10px;
+        top: 10px;
+        bottom: 50px;
+        z-index: 1;
+        width: calc(100% - 20px);
     }
 </style>

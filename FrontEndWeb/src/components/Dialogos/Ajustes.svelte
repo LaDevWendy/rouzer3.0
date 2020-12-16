@@ -59,6 +59,7 @@
 
 <Dialog width="320" bind:visible={visible}>
     <div slot="title">Ajustes</div>
+    <!-- <Checkbox  bind:checked={config.scrollAncho} right>Scroll ancho</Checkbox>   -->
     <Checkbox  bind:checked={config.fondoAburrido} right>Fondo personalizado</Checkbox>
     {#if config.fondoAburrido}
         <Checkbox  bind:checked={config.usarImagen} right>Usar imagen</Checkbox>

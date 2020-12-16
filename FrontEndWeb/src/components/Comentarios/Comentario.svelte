@@ -221,6 +221,7 @@
         white-space: pre-wrap;
         word-break: break-word;
         overflow: hidden;
+        display: inline-block;
     }
 
     .respuestas {
@@ -229,6 +230,8 @@
         flex-wrap: wrap;
         display: flex;
         gap: 4px;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
     }
 
     .contenido .media {

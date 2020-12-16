@@ -29,16 +29,19 @@ namespace Servicios
         private readonly FormateadorService formateador;
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly IMediaService mediaService;
+        private readonly AccionesDeModeracionService historial;
 
         public ComentarioService(RChanContext context,       
             FormateadorService formateador,              
             IHubContext<RChanHub> rchanHub,
             IMediaService mediaService,
-            HashService hashService)
+            HashService hashService,
+            AccionesDeModeracionService historial)
             : base(context, hashService)
         {
             this.rchanHub = rchanHub;
             this.mediaService = mediaService;
+            this.historial = historial;
             this.formateador = formateador;
         }
 
@@ -90,7 +93,7 @@ namespace Servicios
                 {
                     await mediaService.Eliminar(m);
                 }
-            } 
+            }
             
             await rchanHub.Clients.All.SendAsync("ComentariosEliminados", ids);
 

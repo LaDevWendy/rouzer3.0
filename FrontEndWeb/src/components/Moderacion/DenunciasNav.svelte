@@ -6,6 +6,7 @@
     import Denuncia from "../Denuncia.svelte";
 
     let denuncias = window.denuncias || [];
+    $: denunciasActivas = denuncias.filter(d => d.estado == EstadoDenuncia.NoRevisada)
 
     let mostrar = false;
 
@@ -52,7 +53,7 @@
 
 
 <svelte:head>
-    <title>{denuncias.length != 0?`{${denuncias.length}}!`:''} {document.title.split("!").pop()}</title>
+    <title>{denunciasActivas.length != 0?`{${denunciasActivas.length}}!`:''} {document.title.split("!").pop()}</title>
 </svelte:head>
 {#if $globalStore.usuario?.esMod}
 

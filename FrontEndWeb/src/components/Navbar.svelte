@@ -58,9 +58,11 @@
     $: if(mostrarFormularioHilo && !$globalStore.usuario.estaAutenticado) {
         window.location = '/Inicio'
     }
+
+    let scrollY = 0
 </script>
 
-<svelte:window  on:scroll={onScroll}/>
+<svelte:window  on:scroll={onScroll} bind:scrollY={scrollY}/>
 
 <header
     class:oculta
@@ -69,7 +71,7 @@
 >
     <nav
     >
-        <div class="nav-principal">
+        <div class="nav-principal" class:modoSticky={scrollY > 200}>
             <span on:click={() => mostrarMenu = !mostrarMenu}>
                 <icon class="fe fe-menu"/>
                 <Ripple/>
@@ -133,17 +135,17 @@
             {/if}
 
             <FormularioHilo bind:mostrar ={mostrarFormularioHilo}/>
-        <MenuPrincipal bind:mostrar={mostrarMenu}/>
-        <FormularioLogin/>
-    </nav>
-    <nav class="nav-categorias"
+            <FormularioLogin/>
+        </nav>
+        <nav class="nav-categorias"
         class:ocultarCategorias>
         {#each config.categorias as c (c.id)}
-            <a href="/{c.nombreCorto}" title={c.nombre}>/{c.nombreCorto}</a>
+        <a href="/{c.nombreCorto}" title={c.nombre}>/{c.nombreCorto}</a>
         {/each}
         <Ripple color="var(--color5)"/>
     </nav>
 </header>
+<MenuPrincipal bind:mostrar={mostrarMenu}/>
 
 
 <Dialogos></Dialogos>
@@ -166,7 +168,7 @@
     /* margin-bottom: 10px; */
 }
 .nav-principal>*, .nav-principal nav-botones  span{
-    height: 48px;
+    /* height: 48px; */
     display: flex;
     align-items: center;
     /* margin-bottom: 10px; */
@@ -328,6 +330,18 @@ header {
     transform: rotate(-4deg) scaleX(-1);
     background: url(/imagenes/colores/gorrito.png) 0% 0% / 85% no-repeat;
     background-repeat: no-repeat;
+}
+
+.modoSticky {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 36px;
+    z-index: 1;
+}
+
+.modoSticky .rozed::after {
+    top: 0px;
 }
 
 /* .estadisticas span {

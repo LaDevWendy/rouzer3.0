@@ -13,6 +13,7 @@
 	import HiloCuerpo from './components/Hilos/HiloCuerpo.svelte'
 	import {abrir} from './components/Dialogos/Dialogos.svelte'
 	import Encuesta from './components/Hilos/Encuesta.svelte'
+	import { HiloEstado } from './enums'
 
 
 	let data = window.data || dataEjemplo
@@ -80,9 +81,12 @@
 						
 					</div>
 				</Dialogo>
-
-				<Button on:click={() => abrir.eliminarHilo(hilo.id)} >Eliminar</Button>
-
+				{#if hilo.estado != HiloEstado.eliminado}
+					<Button on:click={() => abrir.eliminarHilo(hilo.id)} >Eliminar</Button>
+				{/if}
+				{#if hilo.estado == HiloEstado.eliminado}
+					<Button on:click={() => abrir.restaurarHilo(hilo.id)} >Restaurar</Button>
+				{/if}
 				<Button on:click={() => abrir.ban(hilo.id)}>Banear</Button>
 				<a href="/Moderacion/HistorialDeUsuario/{usuario.id}">
 					<Button>Op</Button>
@@ -108,7 +112,8 @@
 } */
 .hilo-completo :global(.cuerpo){
 	position: sticky;
-	top: 10px;
+	/* top: 10px; */
+	top: 60px;
 	position: -webkit-sticky;
 	max-height: 100vh;
     overflow: auto;

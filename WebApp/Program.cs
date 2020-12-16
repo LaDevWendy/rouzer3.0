@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Modelos;
+using Servicios;
 
 namespace WebApp
 {
@@ -34,6 +35,11 @@ namespace WebApp
                 var aspenv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
                 var opt = scope.ServiceProvider.GetService<IConfiguration>();
                 var wh = scope.ServiceProvider.GetService<IWebHostEnvironment>();
+                var comentarioService = scope.ServiceProvider.GetService<IComentarioService>();
+                var hash = scope.ServiceProvider.GetService<HashService>();
+                var hiloService = scope.ServiceProvider.GetService<IHiloService>();
+
+                await hiloService.LimpiarHilo("BCIFHTFWVULKC1GLE5GM");
 
                 // //Prueba limpiar roz
                 // var hiloId = "7CTLRORYX0GS02KOME8R";
@@ -49,6 +55,19 @@ namespace WebApp
                 // var comentarios = await ctx.Comentarios.Where(c => c.HiloId == hiloId).ToListAsync();
                 // var denuncias = await ctx.Denuncias.Where(d => d.HiloId == hiloId).ToListAsync();
                 // var baneos = await ctx.Bans.Where(d => d.HiloId == hiloId).ToListAsync();
+
+                // for (int i = 0; i < 50 ; i--)
+                // {
+                //     ctx.Add(new ComentarioModel {
+                //         Contenido = "alsdfkj",
+                //         HiloId = "DU1CVRC0WN220LPKTWFI",
+                //         UsuarioId = "b21f6ba5-2019-4937-833b-22beb0d26d42",
+                //         Id = hash.Random(8) + "d"
+                //     });
+                //     System.Console.WriteLine(new Random().Next(2000));
+                    
+                // }
+                // await ctx.SaveChangesAsync();
 
 
                 System.Console.WriteLine(opt.GetValue<string>("HCaptcha:SiteKey"));

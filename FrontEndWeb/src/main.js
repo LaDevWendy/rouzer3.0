@@ -13,8 +13,7 @@ import ListaDeUsuarios from './components/Paginas/ListaDeUsuarios.svelte';
 import Busqueda from './components/Paginas/Busqueda.svelte';
 import EliminadosYDesactivados from './components/Paginas/EliminadosYDesactivados.svelte';
 import MediaHome from './components/Paginas/MediaHome.svelte';
-document.body.style["background"] = '#ffffff'
-
+import Historial from './components/Paginas/Historial.svelte';
 
 // const app = new App({
 // 	target: document.body,
@@ -39,6 +38,7 @@ let componentes = [
 	["#svelte-eliminadosYDesactivados", EliminadosYDesactivados, {}],
 	["#svelte-media-home", MediaHome, {}],
 	["#svelte-busqueda", Busqueda, {}],
+	["#svelte-historial", Historial, {}],
 ]
 
 for (const c of componentes) {

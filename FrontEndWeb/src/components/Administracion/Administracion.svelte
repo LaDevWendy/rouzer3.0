@@ -67,7 +67,7 @@ import Dialogo from '../Dialogo.svelte'
 
 </script>
 <main class="administracion">
-    <section style="max-width: 400px">
+    <section >
         <h3>Equipo</h3>
         <ErrorValidacion error={error}/>
         <div class="menu">
@@ -92,7 +92,7 @@ import Dialogo from '../Dialogo.svelte'
         </div>
     </section>
 
-    <section style="max-width: 400px">
+    <section >
         <h3>Configuracion</h3>
         <ErrorValidacion error={error}/>
         <div class="menu">
@@ -109,7 +109,7 @@ import Dialogo from '../Dialogo.svelte'
             </ul>
         </div>
     </section>
-    <section style="max-width: 400px">
+    <section >
         <h3>Registro</h3>
         <ErrorValidacion error={error}/>
         <div class="menu">
@@ -131,7 +131,7 @@ import Dialogo from '../Dialogo.svelte'
             </ul>
         </div>
     </section>
-    <section style="max-width: 400px">
+    <section >
         <h3>Acceso</h3>
         <ErrorValidacion error={error}/>
         <div class="menu">
@@ -150,7 +150,7 @@ import Dialogo from '../Dialogo.svelte'
             </ul>
         </div>
     </section>
-    <section style="max-width: 400px">
+    <section >
         <h3>Mantenimiento</h3>
         <ErrorValidacion error={error}/>
         <div class="menu">
@@ -179,6 +179,12 @@ import Dialogo from '../Dialogo.svelte'
     }
     main > section {
         flex: 1;
+    }
+    section {
+        max-width: 400px;
+        width: max-content;
+        min-width: 270px !important;
+
     }
     .header {
         background: rgba(255, 255, 255, 0.089) !important;

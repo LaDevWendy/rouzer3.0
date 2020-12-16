@@ -26,7 +26,7 @@ namespace Servicios
         IQueryable<HiloModel> OrdenadosPorBump();
         Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId="", int cantidad = 16);
         Task EliminarHilos(params string[] ids);
-        Task EliminarHilos(string[] ids, bool borrarMedias = false);
+        Task EliminarHilos(string[] ids, bool borrarMedias = false, string usuarioId="");
         Task LimpiarHilo(string id);
         Task LimpiarHilo(HiloModel hilo);
     }
@@ -38,6 +38,7 @@ namespace Servicios
         private readonly FormateadorService formateador;
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly IMediaService mediaService;
+        private readonly AccionesDeModeracionService historial;
 
         public HiloService(RChanContext context,
             HashService hashService,
@@ -45,7 +46,8 @@ namespace Servicios
             IOptionsSnapshot<GeneralOptions> options,
             FormateadorService formateador,
             IHubContext<RChanHub> rchanHub,
-            IMediaService mediaService
+            IMediaService mediaService,
+            AccionesDeModeracionService historial
             )
         : base(context, hashService)
         {
@@ -54,6 +56,7 @@ namespace Servicios
             this.formateador = formateador;
             this.rchanHub = rchanHub;
             this.mediaService = mediaService;
+            this.historial = historial;
         }
 
         public async Task ActualizarHilo(HiloModel Hilo)
@@ -284,9 +287,13 @@ namespace Servicios
 
         public Task EliminarHilos(params string[] ids) => EliminarHilos(ids, false);
 
-        public async Task EliminarHilos(string[] ids, bool borrarMedias = false) 
+        public async Task EliminarHilos(string[] ids, bool borrarMedias = false, string usuarioId="")
         {
-            var hilos = await _context.Hilos.Where(h => ids.Contains(h.Id)).ToListAsync();
+            var hilos = await _context.Hilos
+                .Where(h => ids.Contains(h.Id))
+                .Where(h => h.Estado != HiloEstado.Eliminado)
+                .ToListAsync();
+
             hilos.ForEach(h => h.Estado = HiloEstado.Eliminado);
 
             //Limpiar denuncias
@@ -303,6 +310,11 @@ namespace Servicios
             }
 
             await _context.SaveChangesAsync();
+
+            // Historial
+            await Task.WhenAll(hilos.Select( h => 
+                historial.RegistrarEliminacion(usuarioId, h.Id)));
+
             await rchanHub.Clients.All.SendAsync("HilosEliminados", ids);
 
         }

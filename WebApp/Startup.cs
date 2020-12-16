@@ -124,6 +124,7 @@ namespace WebApp
             services.AddScoped<IComentarioService, ComentarioService>();
             // services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<HashService>();
+            services.AddScoped<AccionesDeModeracionService>();
             services.AddScoped<IMediaService, MediaService>(s =>
             {
                 var env = s.GetService<IWebHostEnvironment>();

@@ -15,33 +15,44 @@
     function cargarNuevosComentarios() {
         comentarios = [...nuevosComentarios, ...comentarios]
         nuevosComentarios = []
+        comentarios.forEach(agregarComentarioADiccionario)
+        comentarios.forEach(cargarRespuestas)
+        // Añadir el restag a los comentarios tageados por este comentario
+        
+        agregarComentarioADiccionario(comentario)
+        cargarRespuestas(comentario)
+        comentarios = comentarios;
     }
 
     let diccionarioRespuestas = {}
-	let diccionarioComentarios = {}
-
-	comentarios
-		.forEach(c => {
-			diccionarioComentarios[c.id] = c
-			let tags = c.contenido.match(/#([A-Z0-9]{8})/g)
+    let diccionarioComentarios = {}
+    
+    function agregarComentarioADiccionario(comentario) {
+        diccionarioComentarios[comentario.id] = comentario
+			let tags = comentario.contenido.match(/#([A-Z0-9]{8})/g)
 			if(!tags) return;
-			let id = c.id
+			let id = comentario.id
 			for(const tag of tags) {
 				let otraId = tag.slice(1, 9)
 				if(!diccionarioRespuestas[otraId]) diccionarioRespuestas[otraId] = []
-				diccionarioRespuestas[otraId].push(id)
-			}
-		})
-	
-	comentarios.forEach(c => {
-		if(diccionarioRespuestas[c.id]) c.respuestas = [...diccionarioRespuestas[c.id]]
-		else c.respuestas = []
-    })
+                diccionarioRespuestas[otraId].push(id)
+                diccionarioRespuestas[otraId] = diccionarioRespuestas[otraId]
+            }
+        diccionarioRespuestas = diccionarioRespuestas
+    }
+
+    function cargarRespuestas(comentario) {
+        if(diccionarioRespuestas[comentario.id]) comentario.respuestas = [...diccionarioRespuestas[comentario.id]]
+        else comentario.respuestas = []
+        comentario.respuestas = Array.from(new Set(comentario.respuestas))
+    }
+
+	comentarios.forEach(agregarComentarioADiccionario)
+	comentarios.forEach(cargarRespuestas)
 
     function onComentarioCreado(comentario) {
-        comentario.respuestas = []
-        // Añadir el restag a los comentarios tageados por este comentario
         nuevosComentarios = [comentario, ...nuevosComentarios]
+        comentario.respuestas = []
     }
 
      Signal.coneccion.on("NuevoComentario", onComentarioCreado)
@@ -80,6 +91,8 @@
 
     if(diccionarioComentarios[comentarioUrl]) {
         diccionarioComentarios[comentarioUrl].resaltado = true
+        
+        document.getElementById(comentarioUrl)?.scrollIntoView()
     }
 
     let resaltadoIdUnico = false
@@ -139,5 +152,6 @@
             {/each}
             
         </div>
+        <div style="height:500px"></div>
 
 </div>

@@ -28,10 +28,12 @@
     }
 </script>
 
-<Sidepanel left bind:visible={mostrar} disableScroll style="background: red">
+<Sidepanel left bind:visible={mostrar} style="background: red">
     <section class="menu-principal">
         <div class="menu-principal-header">
-            <h1 style="font-family: 'euroFighter';">ROZED</h1>
+            <a href="/">
+                <h1 style="font-family: 'euroFighter';">ROZED</h1>
+            </a>
             {#if usuario.estaAutenticado}
             <span style="display: block;text-align: center;">Hola {usuario.userName}!</span>
             {/if}

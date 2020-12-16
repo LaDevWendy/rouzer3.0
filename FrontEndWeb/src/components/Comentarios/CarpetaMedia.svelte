@@ -81,7 +81,7 @@
         margin-bottom: 10px;
     }
 
-    :global(.medialink){
+    .carpeta-media :global(.medialink){
         display: none !important;
     }
 

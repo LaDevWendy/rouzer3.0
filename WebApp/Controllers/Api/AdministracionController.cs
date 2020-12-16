@@ -177,7 +177,7 @@ namespace WebApp.Controllers
             var dosDiasAtras = DateTimeOffset.Now - TimeSpan.FromDays(2);
             var hilosALimpiar = await context.Hilos
                 .Where(h => h.Estado == HiloEstado.Archivado || h.Estado == HiloEstado.Eliminado)
-                .Where(h => h.Bump < dosDiasAtras)
+                .Where(h => h.Creacion < dosDiasAtras)
                 .ToListAsync();
             
             foreach (var h in hilosALimpiar)
@@ -187,10 +187,7 @@ namespace WebApp.Controllers
             await context.SaveChangesAsync();
             var ArchivosLimpiados = await mediaService.LimpiarMediasHuerfanos();
 
-                return Json(new {
-                    HilosLimpiados = hilosALimpiar.Count(),
-                    ArchivosLimpiados
-                });
+                return Json(new ApiResponse($"{hilosALimpiar.Count()} hilos limpiados y {ArchivosLimpiados} archivos limpiados"));
 
         } 
     }

@@ -4,10 +4,11 @@
 
 <nav class="moderacion-nav" style="width:100%;margin:0 auto;">
     <ButtonGroup  color="var(--color7)" >
-        <Button outlined> <a href="/Moderacion">Pagina principal</a></Button>
-        <Button outlined> <a href="/Moderacion/ListaDeUsuarios">Usuarios y baneos</a></Button>
-        <Button outlined> <a href="/Moderacion/EliminadosYDesactivados">Eliminados y desactivados</a></Button>
-        <Button outlined> <a href="/Moderacion/Media">Imagenes y videos</a></Button>
+        <a href="/Moderacion"><Button outlined>Pagina principal</Button> </a>
+        <a href="/Moderacion/ListaDeUsuarios"><Button outlined>Usuarios y baneos</Button> </a>
+        <a href="/Moderacion/EliminadosYDesactivados"><Button outlined>Eliminados y desactivados</Button> </a>
+        <a href="/Moderacion/Media"><Button outlined>Imagenes y videos</Button> </a>
+        <a href="/Moderacion/Historial"><Button outlined>Historial</Button> </a>
     
     </ButtonGroup >
 </nav>

@@ -61,7 +61,7 @@ namespace Modelos
             get {
                 var r = new Random(Creacion.Millisecond + Creacion.Second);
 
-                if(r.Next(5000) == 69)
+                if(r.Next(1000) == 69)
                 {
                     return r.Next(4) switch {
                         0 => "rose-violeta",
@@ -71,7 +71,7 @@ namespace Modelos
                         _ => "",
                     };
                 }
-                if(r.Next(2000) == 10) return "white";
+                if(r.Next(1000) == 10) return "white";
                 if(r.Next(100) == 10) return "navideño";
 
                 if(r.Next(200) == 2) 
@@ -116,6 +116,7 @@ namespace Modelos
         public ComentarioViewModelMod(ComentarioModel comentario, HiloModel hilo):base(comentario, hilo)
         {
             UsuarioId = comentario.UsuarioId;
+            Estado = comentario.Estado;
         }
 
         public string HiloId { get; set; }

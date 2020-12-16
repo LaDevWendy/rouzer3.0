@@ -31,6 +31,7 @@ namespace Data
         public DbSet<DenunciaModel> Denuncias { get; set; }
         public DbSet<Sticky> Stickies { get; set; }
         public DbSet<BaneoModel> Bans { get; set; }
+        public DbSet<AccionDeModeracion> AccionesDeModeracion { get; set; }
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -63,6 +64,23 @@ namespace Data
             // modelBuilder.Entity<BaneoModel>()
             //     .HasOne(b => b.Comentario)
             //     .WithOne(c => c.)
+            modelBuilder.Entity<AccionDeModeracion>()
+                .HasOne(a => a.Comentario)
+                .WithMany()
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<AccionDeModeracion>()
+                .HasOne(a => a.Hilo)
+                .WithMany()
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<AccionDeModeracion>()
+                .HasOne(a => a.Ban)
+                .WithMany()
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

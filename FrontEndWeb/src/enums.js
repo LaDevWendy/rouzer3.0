@@ -1,3 +1,14 @@
+class Enum {
+    static aString(rango) 
+    {
+        let keys = Object.keys(this)
+        let string = ""
+        keys.forEach(k => {
+            if(this[k] == rango) string = k;
+        });
+        return  string
+    }
+}
 export class HiloEstado {
     static normal = 0
     static archivado = 1
@@ -8,7 +19,7 @@ export class ComentarioEstado {
     static eliminado = 1
 }
 
-export class MotivoDenuncia
+export class MotivoDenuncia  extends Enum
 {
     static CategoriaIncorrecta = 0
     static Spam = 1
@@ -38,6 +49,27 @@ export class CreacionRango
         let string = ""
         keys.forEach(k => {
             if(CreacionRango[k] == rango) string = k;
+        });
+        return  string
+    }
+}
+export class TipoAccion 
+{
+    static ComentarioBorrado = 0
+    static HiloBorrado = 1
+    static CategoriaCambiada = 2
+    static DenunciaRechazada = 3
+    static UsuarioBaneado = 4
+    static UsuarioDesbaneado = 5
+    static ComentarioRestaurado = 6
+    static HiloRestaurado = 7
+
+    static aString(rango) 
+    {
+        let keys = Object.keys(TipoAccion)
+        let string = ""
+        keys.forEach(k => {
+            if(TipoAccion[k] == rango) string = k;
         });
         return  string
     }
