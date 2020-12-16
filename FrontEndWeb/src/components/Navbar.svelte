@@ -165,6 +165,7 @@
 .nav-principal {
     border-top: solid var(--color5) 2px;
     align-items: stretch !important;
+    height: 48px;
     /* margin-bottom: 10px; */
 }
 .nav-principal>*, .nav-principal nav-botones  span{
@@ -193,6 +194,7 @@
   display: flex;
 }
 .crear-hilo-boton{
+    height: 100%;
     background: var(--color5);
 }
 :global(.nav-boton) {
