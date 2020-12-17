@@ -205,7 +205,7 @@ namespace Servicios
             {
                 try
                 {
-                    if(archivosAEliminar.First().Contains("youtube")) 
+                    if(archivosAEliminar.First().Contains("youtu")) 
                     {
 
                     }
