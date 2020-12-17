@@ -41,5 +41,11 @@
         color: var(--color5) !important;
     }
 
+    @media (max-width: 600px) {
+        h1{
+            font-weight: bold !important;
+        }
+    }
+
 }
 </style>

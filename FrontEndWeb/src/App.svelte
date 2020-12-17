@@ -134,5 +134,8 @@
 		margin-top: 50px;
 	}
 }
+@media (max-width: 600px) {
+	a {font-weight: bold;}
+}
 
 </style>

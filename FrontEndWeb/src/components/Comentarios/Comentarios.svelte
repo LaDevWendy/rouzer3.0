@@ -152,6 +152,16 @@
             {/each}
             
         </div>
-        <div style="height:500px"></div>
+        <div class="espacio-vacio"></div>
 
 </div>
+
+<style>
+    .espacio-vacio {
+        height: 200px;   
+    }
+    @media(max-width: 600px) {
+        .espacio-vacio {display: none;}
+    }
+
+</style>

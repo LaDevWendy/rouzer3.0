@@ -61,7 +61,7 @@ namespace Modelos
             get {
                 var r = new Random(Creacion.Millisecond + Creacion.Second);
 
-                if(r.Next(1000) == 69)
+                if(r.Next(1000) == 33)
                 {
                     return r.Next(4) switch {
                         0 => "rose-violeta",

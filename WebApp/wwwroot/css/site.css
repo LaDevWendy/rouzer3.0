@@ -709,16 +709,26 @@ z-index: 1;
 }
 
 .sombra {
-  /* filter: blur(15px); */
-  background: #0000008a;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
-  position: fixed;
-  display: flex;
-  align-items: center;
-  /* justify-items: center; */
-  justify-content: center;
+  
+/* filter: blur(15px); */
+  
+background: #0000008a;
+  
+width: 100vw;
+  
+height: 100vh;
+  
+z-index: 1;
+  
+position: fixed;
+  
+display: flex;
+  
+align-items: center;
+  
+/* justify-items: center; */
+  
+justify-content: center;
 }
 
 .field-validation-error {

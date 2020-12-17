@@ -399,6 +399,7 @@
   .comentario :global(.restag) {
       font-weight: bold !important;
   }
+  .comentario :global(a) {font-weight: bold !important;}
 }
     /* @media(max-width >600px) {} */
 

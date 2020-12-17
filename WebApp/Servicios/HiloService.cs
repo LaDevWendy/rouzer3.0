@@ -11,6 +11,7 @@ using Dapper;
 using Microsoft.Extensions.Options;
 using WebApp;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace Servicios
 {
@@ -29,6 +30,8 @@ namespace Servicios
         Task EliminarHilos(string[] ids, bool borrarMedias = false, string usuarioId="");
         Task LimpiarHilo(string id);
         Task LimpiarHilo(HiloModel hilo);
+        Task LimpiarHilosViejos();
+        
     }
 
     public class HiloService : ContextService, IHiloService
@@ -39,15 +42,17 @@ namespace Servicios
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly IMediaService mediaService;
         private readonly AccionesDeModeracionService historial;
+        private readonly ILogger<HiloService> logger;
 
         public HiloService(RChanContext context,
             HashService hashService,
             IComentarioService comentarioService,
             IOptionsSnapshot<GeneralOptions> options,
             FormateadorService formateador,
-            IHubContext<RChanHub> rchanHub,
+            IHubContext<RChanHub> rchanHub, 
             IMediaService mediaService,
-            AccionesDeModeracionService historial
+            AccionesDeModeracionService historial,
+            ILogger<HiloService> logger
             )
         : base(context, hashService)
         {
@@ -57,6 +62,7 @@ namespace Servicios
             this.rchanHub = rchanHub;
             this.mediaService = mediaService;
             this.historial = historial;
+            this.logger = logger;
         }
 
         public async Task ActualizarHilo(HiloModel Hilo)
@@ -344,6 +350,24 @@ namespace Servicios
             var hilo = await _context.Hilos.PorId(id);
             if(hilo != null) await LimpiarHilo(hilo);
         }
+        public async Task LimpiarHilosViejos () 
+        {
+            var dosDiasAtras = DateTimeOffset.Now - TimeSpan.FromDays(2);
+            var hilosALimpiar = await _context.Hilos
+                .Where(h => h.Estado == HiloEstado.Archivado || h.Estado == HiloEstado.Eliminado)
+                .Where(h => h.Creacion < dosDiasAtras)
+                .ToListAsync();
+            
+            foreach (var h in hilosALimpiar)
+            {
+                await LimpiarHilo(h);
+            }
+            await _context.SaveChangesAsync();
+            var ArchivosLimpiados = await mediaService.LimpiarMediasHuerfanos();
+
+            logger.LogInformation($"{hilosALimpiar.Count()} hilos limpiados y {ArchivosLimpiados} archivos limpiados");
+
+        } 
     }
 
     public class GetHilosOptions

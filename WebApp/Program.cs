@@ -39,7 +39,18 @@ namespace WebApp
                 var hash = scope.ServiceProvider.GetService<HashService>();
                 var hiloService = scope.ServiceProvider.GetService<IHiloService>();
 
-                await hiloService.LimpiarHilo("BCIFHTFWVULKC1GLE5GM");
+                try
+                {
+                    logger.LogInformation("Intentando limpiar los hilos viejos");
+                    await hiloService.LimpiarHilosViejos();
+                    
+                }
+                catch (Exception e)
+                {
+                    logger.LogInformation("Hubo un error al limpiar los hilos viejos");
+                    logger.LogError(e.ToString());
+                }
+
 
                 // //Prueba limpiar roz
                 // var hiloId = "7CTLRORYX0GS02KOME8R";
