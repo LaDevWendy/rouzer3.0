@@ -358,9 +358,13 @@ namespace Servicios
                 .Where(h => h.Creacion < dosDiasAtras)
                 .ToListAsync();
             
+            int total = hilosALimpiar.Count();
+            int limpiados = 0;
             foreach (var h in hilosALimpiar)
             {
+                logger.LogInformation($"Limpeando hilo {h.Titulo}({limpiados}/{total})");
                 await LimpiarHilo(h);
+                limpiados++;
             }
             await _context.SaveChangesAsync();
             var ArchivosLimpiados = await mediaService.LimpiarMediasHuerfanos();

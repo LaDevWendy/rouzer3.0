@@ -15,6 +15,7 @@ using System.Drawing.Imaging;
 using Microsoft.AspNetCore.Hosting;
 using System.Text.RegularExpressions;
 using System.Net.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Servicios
 {
@@ -32,12 +33,15 @@ namespace Servicios
         private string CarpetaDeAlmacenamiento { get; }
         private readonly RChanContext context;
         private readonly IWebHostEnvironment env;
+        private readonly ILogger<MediaService> logger;
 
-        public MediaService(string carpetaDeAlmacenamiento, RChanContext context, IWebHostEnvironment env)
+        public MediaService(string carpetaDeAlmacenamiento, RChanContext context, IWebHostEnvironment env, ILogger<MediaService> logger
+)
         {
             this.CarpetaDeAlmacenamiento = carpetaDeAlmacenamiento;
             this.context = context;
             this.env = env;
+            this.logger = logger;
         }
 
         public string GetThumbnail(string id)
@@ -186,7 +190,7 @@ namespace Servicios
 
         public async Task<bool> Eliminar(string id) 
         {
-            var intentos = 50;
+            var intentos = 25;
             var media = await context.Medias.FirstOrDefaultAsync(m => m.Id == id);
             var archivosAEliminar = new List<string> (new[]{
                 $"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadrado}",
@@ -206,7 +210,7 @@ namespace Servicios
                 }
                 catch (Exception) { }
             
-                await Task.Delay(200);
+                await Task.Delay(100);
                 intentos--;
             }
             return intentos == 0;
@@ -220,11 +224,14 @@ namespace Servicios
                 .Where(m => m.Tipo != MediaType.Eliminado)
                 .ToListAsync();
             
+            logger.LogInformation($"Limpiando medias viejos {mediasABorrar.Count()}");
+            
             var eliminados = new List<MediaModel>();
             foreach (var m in mediasABorrar)
             {
                 try
                 {
+                    logger.LogInformation($"Limpiando {m.Id}");
                     await Eliminar(m.Id);
                     eliminados.Add(m);
                 }
