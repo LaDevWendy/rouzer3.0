@@ -208,7 +208,9 @@ namespace Servicios
                     File.Delete(archivosAEliminar.First());
                     archivosAEliminar.Remove(archivosAEliminar.First());
                 }
-                catch (Exception) { }
+                catch (Exception e ) { 
+                    logger.LogError(e.ToString());
+                }
             
                 await Task.Delay(100);
                 intentos--;
