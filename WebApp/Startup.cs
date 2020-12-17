@@ -22,6 +22,7 @@ using System.Security.Claims;
 using Westwind.AspNetCore.LiveReload;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace WebApp
 {
@@ -128,7 +129,8 @@ namespace WebApp
             services.AddScoped<IMediaService, MediaService>(s =>
             {
                 var env = s.GetService<IWebHostEnvironment>();
-                return new MediaService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env);
+                var logger = s.GetService<ILogger<MediaService>>();
+                return new MediaService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env, logger);
             });
             services.AddSingleton<FormateadorService>();
 
