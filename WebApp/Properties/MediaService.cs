@@ -212,8 +212,8 @@ namespace Servicios
                     logger.LogError(e.ToString());
                 }
             
-                await Task.Delay(100);
                 intentos--;
+                await Task.Delay(100);
             }
             return intentos == 0;
         }
