@@ -205,7 +205,13 @@ namespace Servicios
             {
                 try
                 {
-                    File.Delete(archivosAEliminar.First());
+                    if(archivosAEliminar.First().Contains("youtube")) 
+                    {
+
+                    }
+                    else {
+                        File.Delete(archivosAEliminar.First());
+                    }
                     archivosAEliminar.Remove(archivosAEliminar.First());
                 }
                 catch (Exception e ) { 
