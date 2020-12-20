@@ -51,10 +51,19 @@ function onClick(e) {
     }
 }
 
+
+function onContextMenu(e) {
+    if(!e.ctrlKey)return;
+    e.preventDefault()
+    toggle()
+}
+
 </script>
 
+{#if visible}
 <li class="hilo"
-    on:mouseleave={() => mostrarMenu = false}
+    on:mouseleave={() => {mostrarMenu = false;}}
+    on:contextmenu={onContextMenu}
     >
     <div class="" style="top: 0;
     right: 0;
@@ -77,8 +86,7 @@ function onClick(e) {
             {/if}
         </Menu>
     </div>
-    {#if visible}
-        <a  style="background:url({media.vistaPreviaCuadrado})" href="/Hilo/{hilo.id}" class="hilo-in" on:click={onClick} transition:fly|local={{duration:1000}}>
+        <a  style="background:url({media.vistaPreviaCuadrado})" href="/Hilo/{hilo.id}" class="hilo-in" on:click={onClick} transition:fly|local={{duration:250}}>
         <!-- <a  href="#asf" class="hilo-in" :bind:id={hilo.id}}> -->
             {#if destellando}
                 <div class="destello"></div>
@@ -99,8 +107,8 @@ function onClick(e) {
 
             <h3>{hilo.titulo}</h3>
         </a>
-    {/if}
-</li>
+    </li>
+{/if}
 
 
 

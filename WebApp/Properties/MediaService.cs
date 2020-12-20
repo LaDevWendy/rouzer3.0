@@ -216,10 +216,9 @@ namespace Servicios
                 }
                 catch (Exception e ) { 
                     logger.LogError(e.ToString());
+                    intentos--;
+                    await Task.Delay(100);
                 }
-            
-                intentos--;
-                await Task.Delay(100);
             }
             return intentos == 0;
         }

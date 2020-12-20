@@ -48,6 +48,7 @@
     })
 
     function mostrarRespuesta(id) {
+        if(!comentariosDic[id]) return
         mostrandoRespuesta = true
         respuestaMostrada = comentariosDic[id]
     }

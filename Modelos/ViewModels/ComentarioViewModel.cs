@@ -59,10 +59,11 @@ namespace Modelos
 
         public string Color   {
             get {
-                var r = new Random(Creacion.Millisecond + Creacion.Second);
+                var r = new Random(Id.GetHashCode() + (int) Creacion.UtcTicks + Creacion.Millisecond + Creacion.Second + Creacion.Minute + Creacion.Month);
 
-                if(r.Next(1000) == 33)
+                if(r.Next(5000) == 9)
                 {
+                    r.Next();
                     return r.Next(4) switch {
                         0 => "rose-violeta",
                         1 => "rose-castaña",
@@ -71,7 +72,7 @@ namespace Modelos
                         _ => "",
                     };
                 }
-                if(r.Next(1000) == 10) return "white";
+                if(r.Next(2000) == 11) return "white";
                 if(r.Next(100) == 10) return "navideño";
 
                 if(r.Next(200) == 2) 

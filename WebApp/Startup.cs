@@ -134,17 +134,6 @@ namespace WebApp
             });
             services.AddSingleton<FormateadorService>();
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("",
-                builder =>
-                {
-                    builder.WithOrigins("http://localhost:8080/")
-                                        .AllowAnyHeader()
-                                        .AllowAnyMethod();
-                });
-            });
-
             services.AddAntiforgery(options => 
             {
                 // Set Cookie properties using CookieBuilder properties†.
@@ -210,8 +199,6 @@ namespace WebApp
             });
 
             app.UseRouting();
-            app.UseCors();
-
             app.UseAuthentication();
             app.UseAuthorization();
 

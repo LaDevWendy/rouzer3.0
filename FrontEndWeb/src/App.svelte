@@ -136,6 +136,7 @@
 }
 @media (max-width: 600px) {
 	a {font-weight: bold;}
+	.hilo-completo :global(.cuerpo) {max-height: unset;}
 }
 
 </style>

@@ -204,6 +204,7 @@ namespace WebApp.Controllers
                 .Include(a => a.Denuncia.Comentario.Media)
                 .Include(a => a.Denuncia.Hilo.Media)
                 .Include(a => a.Denuncia.Hilo.Usuario)
+                .Include(a => a.Denuncia.Comentario.Usuario)
                 // .Take(100)
                 .ToListAsync();
             

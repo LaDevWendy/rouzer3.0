@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace Modelos
 {
@@ -27,6 +28,7 @@ namespace Modelos
         public HiloModel Hilo { get; set; }
         public ComentarioModel Comentario { get; set; }
 
+        [JsonIgnore]
         public string Ip { get; set; }
 
         public UsuarioModel Usuario { get; set; }

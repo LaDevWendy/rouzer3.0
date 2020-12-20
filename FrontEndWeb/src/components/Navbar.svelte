@@ -13,6 +13,7 @@
     import SelectorDeComentarios from './Moderacion/SelectorDeComentarios.svelte';
     import Subir from './Subir.svelte'
     import { onMount } from 'svelte';
+    import NavCategorias from './NavCategorias.svelte'
     
 
     export let notificaciones = window.notificaciones || []
@@ -137,13 +138,7 @@
             <FormularioHilo bind:mostrar ={mostrarFormularioHilo}/>
             <FormularioLogin/>
         </nav>
-        <nav class="nav-categorias"
-        class:ocultarCategorias>
-        {#each config.categorias as c (c.id)}
-        <a href="/{c.nombreCorto}" title={c.nombre}>/{c.nombreCorto}</a>
-        {/each}
-        <Ripple color="var(--color5)"/>
-    </nav>
+       <NavCategorias visible={!ocultarCategorias}></NavCategorias>
 </header>
 <MenuPrincipal bind:mostrar={mostrarMenu}/>
 
@@ -210,26 +205,8 @@
   transform: scale(1.22);
 }
 
-.nav-categorias {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px 10px;
-    margin-bottom: 8px;
-    justify-content: center;
-    background: var(--color1);
-    margin-top: 10px;
-    padding: 8px;
-}
-
-
-.nav-categorias a {
-    color: var(--color5) !important;
-    font-size: 1rem;
-
-}
-
 header {
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
     /* position: fixed; */
     z-index: 10;
     top: 0;
@@ -344,6 +321,9 @@ header {
 
 .modoSticky .rozed::after {
     top: 0px;
+}
+.modoSticky .version {
+    display: none;
 }
 
 /* .estadisticas span {

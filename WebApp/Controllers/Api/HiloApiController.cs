@@ -78,7 +78,8 @@ namespace WebApp.Controllers
             // Chequeuear si es flood
             if(antiFlood.SegundosParaHilo(User)  != new TimeSpan(0))
             {
-                ModelState.AddModelError("Para para", $"faltan {antiFlood.SegundosParaHilo(User).Minutes} minutos para que pudeas crear otro roz");
+                var minutos = antiFlood.SegundosParaHilo(User).Minutes;
+                ModelState.AddModelError("Para para", $"faltan {minutos} minuto{(minutos!= 1?"s":"")} para que pudeas crear otro roz");
                 return BadRequest(ModelState);
             }else {
                 antiFlood.HaCreadoHilo(User.GetId());

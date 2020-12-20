@@ -598,13 +598,13 @@ a:hover {
   border-radius: 10px;
 } */
 
-button:hover {
+/* button:hover {
   background: white ;
   transform: scale(1.01);
 }
 button:active {
   transform: scale(0.99);
-}
+} */
 
 .formulario .invalid {
   outline: none;

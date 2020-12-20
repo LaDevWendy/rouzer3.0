@@ -7,15 +7,18 @@
     import {HubConnectionBuilder} from '@microsoft/signalr'
     import RChanClient from '../../RChanClient';
     import Signal from '../../signal';
+    import { localStore } from '../../localStore';
 
     export let hiloList
     export let noCargarNuevos = false
 
     hiloList.categoriasActivas == hiloList.categoriasActivas ??  $globalStore.categoriasActivas.includes(hilo.categoriaId)
 
+    $:hiloList.hilos = hiloList.hilos.filter(h => !estaOculto(h))
+    // let palabrasHideadasString = localStore("palabrasHideadas", "")
+    // $:if($pahi) {hiloList.hilos = hiloList.hilos.filter(h => !estaOculto(h))}
 
     let nuevoshilos = []
-    // let connection = new HubConnectionBuilder().withUrl("/hub").build();
 
     Signal.subscribirAHome()
     Signal.coneccion.on("HiloCreado", onHiloCreado)
@@ -25,12 +28,6 @@
         hiloList.hilos = hiloList.hilos.filter(h => !ids.includes(h.id))
         nuevoshilos = nuevoshilos.filter(h => !ids.includes(h.id))
     })
-
-    // connection.start().then(() => {
-    //     console.log("Conectado");
-    //     return connection.invoke("SubscribirAHome")
-        
-    // }).catch(console.error)
 
 
     function onHiloCreado(hilo) {
@@ -74,6 +71,22 @@
         } catch {
             complete()
         }
+    }
+
+    let palabrasHideadasStore = localStore("palabrasHideadas", "");
+    let palabrasHideadas = $palabrasHideadasStore
+        .toLowerCase()
+        .split(" ")
+        .map(p => p.trim())
+        .map(p => p.replace(/\_/g, " "))
+        .filter(p => p)
+    
+    function estaOculto(hilo) {
+        let titulo = hilo.titulo.toLowerCase()
+        for (const palabra of palabrasHideadas) {
+            if(titulo.includes(palabra)) return true;
+        }
+        return false
     }
 
     let tienaMas = true
