@@ -37,6 +37,24 @@ namespace WebApp
                 var wh = scope.ServiceProvider.GetService<IWebHostEnvironment>();
                 var comentarioService = scope.ServiceProvider.GetService<IComentarioService>();
                 var hash = scope.ServiceProvider.GetService<HashService>();
+
+                var migs = await ctx.Database.GetPendingMigrationsAsync();
+
+                if(migs.Count() != 0) 
+                {
+                    var migrations = ctx.Database.GetPendingMigrations();
+                    logger.LogInformation("Applicando migraciones pendientes");
+                    try
+                    {
+                        await ctx.Database.MigrateAsync();
+                    }
+                    catch (System.Exception)
+                    {
+                        
+                        logger.LogError("Error al applicar las migraciones");
+                    }
+                }
+                
                 var hiloService = scope.ServiceProvider.GetService<IHiloService>();
 
                 try
@@ -80,29 +98,6 @@ namespace WebApp
                 // }
                 // await ctx.SaveChangesAsync();
 
-
-                System.Console.WriteLine(opt.GetValue<string>("HCaptcha:SiteKey"));
-                System.Console.WriteLine(aspenv);
-                // await ctx.Database.EnsureCreatedAsync();
-
-                var migs = await ctx.Database.GetPendingMigrationsAsync();
-
-                if(migs.Count() != 0) 
-                {
-                    var migrations = ctx.Database.GetPendingMigrations();
-                    logger.LogInformation("Applicando migraciones pendientes");
-                    try
-                    {
-                        await ctx.Database.MigrateAsync();
-                    }
-                    catch (System.Exception)
-                    {
-                        
-                        logger.LogError("Error al applicar las migraciones");
-                    }
-
-                }
-                
 
                 var um = scope.ServiceProvider.GetService<SignInManager<UsuarioModel>>().UserManager;
                 

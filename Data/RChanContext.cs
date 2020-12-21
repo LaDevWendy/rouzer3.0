@@ -75,6 +75,11 @@ namespace Data
                 .WithMany()
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<AccionDeModeracion>()
+                .HasOne(a => a.Denuncia)
+                .WithMany()
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<AccionDeModeracion>()
                 .HasOne(a => a.Ban)

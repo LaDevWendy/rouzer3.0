@@ -59,9 +59,9 @@ namespace Modelos
 
         public string Color   {
             get {
-                var r = new Random(Id.GetHashCode() + (int) Creacion.UtcTicks + Creacion.Millisecond + Creacion.Second + Creacion.Minute + Creacion.Month);
+                var r = new Random(Id.GetHashCode());
 
-                if(r.Next(5000) == 9)
+                if(r.Next(10000) == 9)
                 {
                     r.Next();
                     return r.Next(4) switch {
