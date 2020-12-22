@@ -55,7 +55,7 @@
 <svelte:head>
     <title>{denunciasActivas.length != 0?`{${denunciasActivas.length}}!`:''} {document.title.split("!").pop()}</title>
 </svelte:head>
-{#if $globalStore.usuario?.esMod}
+{#if $globalStore.usuario.esMod}
 
     <span on:click={() => mostrar = !mostrar } class="nav-boton" style="height:100%;position:relative">
         <Ripple />

@@ -12,6 +12,9 @@
 
     export let denuncia
     let {hilo, comentario, usuario}  = denuncia
+    
+    usuario = usuario ||{id:'', userName:'Anonimo'}
+
     $: rechazada = denuncia.estado == EstadoDenuncia.Rechazada
     $: aceptada = denuncia.estado == EstadoDenuncia.Aceptada
 
@@ -39,7 +42,7 @@
         <span style="background:var(--color2); padding:2px; border-radius: 4px">
             <Tiempo date={denuncia.creacion}/>
         </span>
-        <a class="userlink" href="/Moderacion/HistorialDeUsuario/{usuario?.id}">{usuario?.userName || "anonimo"}</a>
+        <a class="userlink" href="/Moderacion/HistorialDeUsuario/{usuario.id}">{usuario.userName}</a>
          denuncio a 
          {#if denuncia.tipo == 0}
          <a class="userlink" href="/Moderacion/HistorialDeUsuario/{hilo.usuario.id}">{hilo.usuario.userName}</a>
@@ -51,7 +54,8 @@
 
     <div class="body">
         <Button  dense on:click={() => mostrarVistaPrevia = !mostrarVistaPrevia}>Previsualizar</Button>
-        <a href="/Hilo/{hilo.id}#{comentario?.id}">
+        <!-- <a href="/Hilo/{hilo.id}#{comentario?.id}"></a> -->
+        <a href="/Hilo/{hilo.id}#{comentario && comentario.id?comentario.id: ''}">
             <Button dense  >Ir</Button>
         </a>
         <Button dense  on:click={rechazar}>Rechazar</Button>

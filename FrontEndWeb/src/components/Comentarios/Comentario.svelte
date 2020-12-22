@@ -14,11 +14,13 @@
     import selectorStore from '../Moderacion/selectorStore'
 
     export let comentario;
-    export let hilo;
+    export let hilo = { id:null };
     export let comentariosDic = {   };
     export let resaltado = false
 
     export let esRespuesta = false
+
+    comentario.estado = comentario.estado || ComentarioEstado.normal
     
     let el
     let respuestas
@@ -86,7 +88,7 @@
     }
 
     function esOp(comentarioId) {
-        let  comentario = comentariosDic[comentarioId] ?? {esOp:false}
+        let  comentario = comentariosDic[comentarioId] || {esOp:false} //??quitado
         return comentario.esOp
     }
 
@@ -100,7 +102,7 @@
 <div bind:this={el}
     class:resaltado={comentario.resaltado  || resaltado|| $selectorStore.seleccionados.has(comentario.id)} 
     class="comentario {windowsWidh <= 400?"comentario-movil":""}" 
-    class:eliminado = {comentario?.estado  || 0 == ComentarioEstado.eliminado}
+    class:eliminado = {comentario.estado == ComentarioEstado.eliminado}
     class:comentarioMod = {comentario.rango > CreacionRango.Anon}
     r-id="{comentario.id}" id="{comentario.id}{esRespuesta?'-res':''}">
     <div  class="respuestas">
@@ -150,7 +152,7 @@
             <Menu>
                 <span slot="activador" on:click={() => mostrarMenu = true} class=""><i class="fe fe-more-vertical relative"></i></span>
                 <li on:click={() => toggle()}>{visible?'Ocultar':'Mostrar'}</li>
-                <li on:click={() => abrir.reporte(hilo?.id || comentario.hiloId, comentario.id)}>Reportar</li>
+                <li on:click={() => abrir.reporte(hilo.id || comentario.hiloId, comentario.id)}>Reportar</li>
                 {#if $globalStore.usuario.esMod}
                     <hr>
                     {#if comentario.hiloId}
@@ -158,7 +160,7 @@
                             <Menuitem>Ir</Menuitem>
                         </a>
                     {/if}
-                    <Menuitem on:click={() => abrir.ban(hilo?.id || comentario.hiloId, comentario.id)} >Banear</Menuitem>
+                    <Menuitem on:click={() => abrir.ban(hilo.id || comentario.hiloId, comentario.id)} >Banear</Menuitem>
                     {#if comentario.estado == ComentarioEstado.normal}
                     <Menuitem on:click={() => abrir.eliminarComentarios([comentario.id])}>Eliminar</Menuitem>
                     {:else}

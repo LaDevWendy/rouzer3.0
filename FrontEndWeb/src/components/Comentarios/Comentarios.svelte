@@ -92,7 +92,8 @@
     if(diccionarioComentarios[comentarioUrl]) {
         diccionarioComentarios[comentarioUrl].resaltado = true
         
-        document.getElementById(comentarioUrl)?.scrollIntoView()
+        let comentarioDOM = document.getElementById(comentarioUrl)
+        if(comentarioDOM) comentarioDOM.scrollIntoView()
     }
 
     let resaltadoIdUnico = false

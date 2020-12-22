@@ -97,7 +97,7 @@
             <div class="nav-botones" style="position: relative;">
 
 
-                {#if $globalStore?.usuario?.esMod}
+                {#if $globalStore.usuario.esMod}
                     <a href="/Moderacion">
                         <span style="height: 48px;display: flex;align-items: center;">
                             <!-- <icon class="fe fe-triangle"/>
@@ -109,7 +109,7 @@
                         </span>
                     </a>
                 {/if}
-                {#if $globalStore.usuario?.esMod}
+                {#if $globalStore.usuario.esMod}
                     <DenunciasNav/>
                 {/if}
 

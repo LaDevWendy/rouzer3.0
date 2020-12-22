@@ -8,7 +8,11 @@
     let terminos = false
     let captcha = ""
     let error = null
-    let codigo = window.model?.codigoDeInvitacion || ""
+    let codigo =  ""
+    
+    if(window.model && window.model.codigoDeInvitacion) {
+        codigo = window.model.codigoDeInvitacion
+    }
 
     async function accion(e) {
         console.log(captcha);

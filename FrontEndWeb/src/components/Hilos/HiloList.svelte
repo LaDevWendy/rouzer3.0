@@ -12,7 +12,7 @@
     export let hiloList
     export let noCargarNuevos = false
 
-    hiloList.categoriasActivas == hiloList.categoriasActivas ??  $globalStore.categoriasActivas.includes(hilo.categoriaId)
+    hiloList.categoriasActivas == hiloList.categoriasActivas ||  $globalStore.categoriasActivas.includes(hilo.categoriaId) //??quitado
 
     $:hiloList.hilos = hiloList.hilos.filter(h => !estaOculto(h))
     // let palabrasHideadasString = localStore("palabrasHideadas", "")

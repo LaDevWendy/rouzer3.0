@@ -9,7 +9,10 @@
     let password = ""
     let captcha = ""
     let error = null
-    let codigo = window.model?.codigoDeInvitacion || ""
+    let codigo =  ""
+    if(window.model && window.model.codigoDeInvitacion) {
+        codigo = window.model.codigoDeInvitacion
+    }
 
     export let modo = "login"
 
