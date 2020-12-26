@@ -260,8 +260,8 @@
         color: #ffffffe3;
         border-radius: 4px;
     }
-
-    .color-rojo::after, .color-multi::after, .comentarioMod .color::after, .color-navideño::after {
+    /* Gorritos */
+    /* .color-rojo::after, .color-multi::after, .comentarioMod .color::after, .color-navideño::after {
         content: '';
         background: url(/imagenes/colores/gorrito.png);
         position: absolute;
@@ -272,7 +272,7 @@
         background-size: 85%;
         background-repeat: no-repeat;
         transform: rotate(-4deg);
-    }
+    } */
 
     .comentario .header {
         grid-template-areas: color;

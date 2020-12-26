@@ -1,5 +1,5 @@
 <script>
-    import {Ripple} from 'svelte-mui'
+    import {Ripple, Button} from 'svelte-mui'
     import config from '../config'
     import FormularioHilo from './Hilos/FormularioHilo.svelte'
     import Notificaciones from './Notificaciones.svelte'
@@ -14,6 +14,7 @@
     import Subir from './Subir.svelte'
     import { onMount } from 'svelte';
     import NavCategorias from './NavCategorias.svelte'
+    import Lucesitas from './Lucesitas.svelte'
     
 
     export let notificaciones = window.notificaciones || []
@@ -59,21 +60,22 @@
     $: if(mostrarFormularioHilo && !$globalStore.usuario.estaAutenticado) {
         window.location = '/Inicio'
     }
-
-    let scrollY = 0
+    
+    let scrollY
 </script>
 
 <svelte:window  on:scroll={onScroll} bind:scrollY={scrollY}/>
+
 
 <header
     class:oculta
     class:protocoloMessi
     bind:offsetHeight={height}
 >
-    <nav
-    >
+    <nav>
+        <!-- <Lucesitas/> -->
         <div class="nav-principal" class:modoSticky={scrollY > 200}>
-            <span on:click={() => mostrarMenu = !mostrarMenu}>
+            <span on:click={() => mostrarMenu = !mostrarMenu} style="padding: 0 8px;">
                 <icon class="fe fe-menu"/>
                 <Ripple/>
             </span>
@@ -95,18 +97,19 @@
             {/if}
 
             <div class="nav-botones" style="position: relative;">
-
-
+                
                 {#if $globalStore.usuario.esMod}
                     <a href="/Moderacion">
-                        <span style="height: 48px;display: flex;align-items: center;">
+                        <!-- <span style="height: 48px;display: flex;align-items: center;"> -->
                             <!-- <icon class="fe fe-triangle"/>
                             -->
+                            <!-- <Ripple/> -->
+                        <!-- </span> -->
+                        <Button icon dense>
                             <span style="top: -1px;
                             font-size: 24px;
                             padding: 0 4px;">✡</span>
-                            <Ripple/>
-                        </span>
+                        </Button>
                     </a>
                 {/if}
                 {#if $globalStore.usuario.esMod}
@@ -114,15 +117,19 @@
                 {/if}
 
                 <a href="/Buscar"class="nav-boton"  style="height:100%">
-                    <Ripple/>
-                    <span class="fe fe-search"></span>
+                    <!-- <Ripple/> -->
+                    <Button icon dense>
+                        <span class="fe fe-search"></span>
+                    </Button>
                 </a>
                 {#if $globalStore.usuario.estaAutenticado}
                     <Notificaciones bind:notificaciones/>
                 {:else}
                     <a href="/Login"class="nav-boton"  style="height:100%">
-                        <Ripple/>
-                        <span class="fe fe-user"></span>
+                        <!-- <Ripple/> -->
+                        <Button icon dense>
+                            <span class="fe fe-user"></span>
+                        </Button>
                     </a>
                 {/if}
 
@@ -178,15 +185,19 @@
     flex: 1;
 }
 
-:global(.nav-boton), .nav-principal a, .nav-principal icon {
+/* :global(.nav-boton), .nav-principal a, .nav-principal icon {
     padding: 0 8px;
-}
+} */
 
 .nav-botones {
   margin-left: auto;
   align-self: center;
   font-size: 16px;
   display: flex;
+  margin-right: 16px;
+}
+.nav-botones :global(button) {
+    overflow: visible;
 }
 .crear-hilo-boton{
     height: 100%;
@@ -212,6 +223,7 @@ header {
     top: 0;
     width: 100vw;
     transition: linear 0.2s;
+    position: relative;
 }
 .compacta  .nav-categorias {
     margin: 0;
@@ -273,10 +285,13 @@ header {
 
 :global(.noti-cont) {
     position: absolute;
-    left: 19px;
+    left: 12px;
     width: auto;
-    top: 10px;
+    top: 2px;
     font-family: helvetica;
+}
+.nav-principal :global(.noti-cont span)  {
+    position: relative;
 }
 
 .estadisticas {
@@ -298,8 +313,8 @@ header {
     pointer-events: none; 
 
 }
-
-.rozed::after {
+/* Gorritos */
+/* .rozed::after {
     content: "";
     position: absolute;
     top: 5px;
@@ -309,7 +324,7 @@ header {
     transform: rotate(-4deg) scaleX(-1);
     background: url(/imagenes/colores/gorrito.png) 0% 0% / 85% no-repeat;
     background-repeat: no-repeat;
-}
+} */
 
 .modoSticky {
     position: fixed;

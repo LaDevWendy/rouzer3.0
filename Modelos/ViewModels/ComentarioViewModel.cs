@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Modelos;
 using Newtonsoft.Json;
 
@@ -8,6 +10,7 @@ namespace Modelos
 {
     public class ComentarioViewModel
     {
+        private static readonly MD5 md5 = MD5.Create();
         public ComentarioViewModel(ComentarioModel comentario)
         {
             this.Contenido = comentario.Contenido;
@@ -59,7 +62,7 @@ namespace Modelos
 
         public string Color   {
             get {
-                var r = new Random(Id.GetHashCode());
+                var r = new Random(Creacion.Millisecond + Creacion.Second * 60 + Creacion.Minute * 60 * 60 + Creacion.Hour * 60 * 60 * 60 + + Creacion.Day * 60 * 60 * 60 * 24);
 
                 if(r.Next(10000) == 9)
                 {
@@ -73,7 +76,7 @@ namespace Modelos
                     };
                 }
                 if(r.Next(2000) == 11) return "white";
-                if(r.Next(100) == 10) return "navideño";
+                // if(r.Next(100) == 10) return "navideño";
 
                 if(r.Next(200) == 2) 
                 {
@@ -104,7 +107,13 @@ namespace Modelos
             return new string(Enumerable.Repeat(chars, 3)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
-        
+
+        private int HashString(string str) 
+        {
+            var hashed = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
+            var ivalue = BitConverter.ToInt32(hashed, 0);
+            return ivalue;
+        }
         
     }
     public class ComentarioViewModelMod: ComentarioViewModel

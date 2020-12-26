@@ -141,9 +141,6 @@ h4 {
   gap: 10px;
 }
 
-.cargar-nuevos-hilos {
-
-}
 
 
 .contenido .media {
@@ -553,8 +550,8 @@ a:hover {
 }
 
 .noti-cont span, .badge span {
-  /* position: absolute; */
-  top: 1px;
+  /* position: relative; */
+  top: 4px;
 }
 .notificacion img {
   width: 42px;
@@ -851,18 +848,6 @@ justify-content: center;
     color: rgb(255 255 255 / 56%);
     padding: 0 16px;
     padding-right: 32px;
-  }
-
-  .cargar-nuevos-hilos {
-    position: fixed;
-    align-items: center;
-    z-index: 10;
-    bottom: 16px;
-    right: 16px;
-    padding: 0 16px;
-    display: flex;
-    height: 44px;
-    border-radius: 4px;
   }
 
 

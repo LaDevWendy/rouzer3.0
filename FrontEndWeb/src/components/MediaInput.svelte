@@ -73,6 +73,7 @@
         inputLink = ''
         mediaType = MediaType.Imagen
         estado = "vacio"
+        
     }
     
     onDestroy(() => {

@@ -109,3 +109,17 @@
     <div style="text-align:center" slot="noMore">No hay mas hilos padre, recargue la pagina</div>
     <div style="text-align:center" slot="noResults"></div>
 </InfiniteLoading>
+
+<style>
+    .cargar-nuevos-hilos {
+        position: fixed;
+        align-items: center;
+        z-index: 9;
+        bottom: 16px;
+        right: 16px;
+        padding: 0 16px;
+        display: flex;
+        height: 44px;
+        border-radius: 4px;
+    }
+</style>

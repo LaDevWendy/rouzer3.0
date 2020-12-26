@@ -1,5 +1,5 @@
 <script>
-    import { Ripple } from "svelte-mui";
+    import { Ripple, Button } from "svelte-mui";
     import { EstadoDenuncia } from "../../enums";
     import globalStore from "../../globalStore";
     import Signal from "../../signal";
@@ -57,15 +57,15 @@
 </svelte:head>
 {#if $globalStore.usuario.esMod}
 
-    <span on:click={() => mostrar = !mostrar } class="nav-boton" style="height:100%;position:relative">
-        <Ripple />
+    <Button icon dense on:click={() => mostrar = !mostrar } style="position:relative">
+        <!-- <Ripple /> -->
         <span class="fe fe-alert-circle" />
         {#if denuncias.filter(d => d.estado == EstadoDenuncia.NoRevisada).length != 0}
             <div class="noti-cont" style="position: absolute;">
                 <span>{denuncias.filter(d => d.estado == EstadoDenuncia.NoRevisada).length}</span>
             </div>
         {/if}
-    </span>
+    </Button>
 
     {#if mostrar}
         <div class="denuncias-nav">
@@ -104,5 +104,16 @@
     ul :global(.hilo img) 
     {
         height: fit-content;
+    }
+
+    @media(max-width:600px) {
+        .denuncias-nav {
+            left: 8px;
+            right: 0 !important;
+            max-width: calc(100vw - 16px);
+            width: 100vh;
+            min-width: initial;
+            position: fixed;
+        }
     }
 </style>

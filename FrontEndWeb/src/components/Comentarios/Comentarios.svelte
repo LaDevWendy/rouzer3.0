@@ -7,6 +7,7 @@
     import DialogoReporte from '../Dialogos/DialogoReporte.svelte';
     import Signal from '../../signal'
     import CarpetaMedia from './CarpetaMedia.svelte';
+import { onMount, tick } from 'svelte';
 
     export let hilo
     export let comentarios
@@ -89,12 +90,18 @@
 
     let comentarioUrl = window.location.hash.replace("#", "")
 
-    if(diccionarioComentarios[comentarioUrl]) {
-        diccionarioComentarios[comentarioUrl].resaltado = true
-        
-        let comentarioDOM = document.getElementById(comentarioUrl)
-        if(comentarioDOM) comentarioDOM.scrollIntoView()
+    async function irAComentario(comentarioId) {
+        if(diccionarioComentarios[comentarioId]) {
+            diccionarioComentarios[comentarioId].resaltado = true
+            
+            let comentarioDOM = document.getElementById(comentarioId)
+            await tick()
+            if(comentarioDOM) comentarioDOM.scrollIntoView({block:'center'})
+        }
     }
+
+    onMount(() =>irAComentario(comentarioUrl))
+    irAComentario(comentarioUrl)
 
     let resaltadoIdUnico = false
     function idUnicoClickeado(e) {
@@ -145,7 +152,7 @@
                 <Comentario 
                     on:colorClick={(e) => resaltarComentariosDeUsuario(e.detail.usuarioId || '') } 
                     hilo={hilo} 
-                    bind:comentario {comentarios} bind:comentariosDic = {diccionarioComentarios}
+                    bind:comentario bind:comentariosDic = {diccionarioComentarios}
                     on:tagClickeado={tagCliqueado}
                     on:idUnicoClickeado={idUnicoClickeado}
                     />
@@ -160,6 +167,7 @@
 <style>
     .espacio-vacio {
         height: 200px;   
+        /* scroll-snap-align: center; */
     }
     @media(max-width: 600px) {
         .espacio-vacio {display: none;}

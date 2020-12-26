@@ -1,7 +1,7 @@
 <script>
     import RChanClient from '../RChanClient'
     import { fade, blur, fly } from 'svelte/transition';
-    import {Ripple} from 'svelte-mui'
+    import {Ripple, Button} from 'svelte-mui'
     import Signal from '../signal';
 
     export let notificaciones
@@ -69,17 +69,18 @@
 	<title>{totalNotificaciones != 0?`(${totalNotificaciones})`:''} {titulo}</title>
 </svelte:head>
 
-<span class="nav-boton drop-btn" style="display: flex; align-items: center; postition:relative; margin-right:6px">
-    <span class="fe fe-bell" style="padding:16px;border-radius:4px" 
+<span style="position: relative;" >
+    <Button icon dense
         on:click={() => mostrar = !mostrar && totalNotificaciones != 0}
     >
+    <span class="fe fe-bell" ></span>
     {#if notificaciones.length != 0}
         <div class="noti-cont" style="position: absolute;">
             <span>{totalNotificaciones}</span>
         </div>
     {/if}
     <Ripple/>
-    </span>
+    </Button>
     {#if mostrar}
         <ul transition:fly={{x: -50, duration:150}} class="notis panel drop-menu abs lista-nav menu1"
             on:mouseleave={() => mostrar = false}
