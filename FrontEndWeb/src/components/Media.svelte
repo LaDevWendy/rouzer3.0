@@ -38,18 +38,18 @@
         <div style="height:64px;"></div>
     {:else if media.tipo  == MediaType.Imagen}
         {#if media.esGif}
-            <a href="/{media.url}" target="_blank">
-                <img src="/{media.url}" alt="" srcset="">
+            <a href="/Media/{media.url}" target="_blank">
+                <img src="/Media/{media.url}" alt="" srcset="">
             </a>
         {:else}
-            <a href="/{media.url}" target="_blank">
+            <a href="/Media/{media.url}" target="_blank">
                 <img src="{vistaPrevia}" alt="" srcset="">
             </a>
         {/if}
         {:else if media.tipo == MediaType.Video}
         
             {#if abierto}
-                <video muted bind:this={vid} loop controls  src="/{media.url}" style="margin-bottom: 16px;"></video>
+                <video muted bind:this={vid} loop controls  src="/Media/{media.url}" style="margin-bottom: 16px;"></video>
                 <Button on:click={() => abierto = false} class="cerrar" icon>
                     <i class="fe fe-x"></i> 
                 </Button>

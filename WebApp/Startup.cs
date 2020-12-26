@@ -192,6 +192,7 @@ namespace WebApp
             app.UseStaticFiles(new StaticFileOptions
             {
                 // RequestPath = "/Media",
+                RequestPath = "/Media",
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "Almacenamiento")
                 ),

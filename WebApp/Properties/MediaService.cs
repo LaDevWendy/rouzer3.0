@@ -102,8 +102,8 @@ namespace Servicios
             // Guardo las imagenes (original y miniatura) en el sistema de archivos
             using var salida = File.Create($"{CarpetaDeAlmacenamiento}/{media.Url}");
             await archivoStream.CopyToAsync(salida);
-            await thumbnail.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPrevia}");
-            await cuadradito.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadrado}");
+            await thumbnail.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaLocal}");
+            await cuadradito.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadradoLocal}");
 
             await imagenStream.DisposeAsync();
             await archivoStream.DisposeAsync();
@@ -179,11 +179,11 @@ namespace Servicios
                 Size = new Size(300)
             }));
             
-            using var vistaPreviaSalida = File.Create($"{CarpetaDeAlmacenamiento}/{media.VistaPrevia}");
+            using var vistaPreviaSalida = File.Create($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaLocal}");
             thumbnail.Seek(0, SeekOrigin.Begin);
 
             await thumbnail.CopyToAsync(vistaPreviaSalida);
-            await cuadradito.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadrado}");
+            await cuadradito.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadradoLocal}");
             
             return media;
         }
@@ -193,8 +193,8 @@ namespace Servicios
             var intentos = 25;
             var media = await context.Medias.FirstOrDefaultAsync(m => m.Id == id);
             var archivosAEliminar = new List<string> (new[]{
-                $"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadrado}",
-                $"{CarpetaDeAlmacenamiento}/{media.VistaPrevia}",
+                $"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadradoLocal}",
+                $"{CarpetaDeAlmacenamiento}/{media.VistaPreviaLocal}",
                 $"{CarpetaDeAlmacenamiento}/{media.Url}",
             });
 
