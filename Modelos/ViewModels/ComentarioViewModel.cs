@@ -75,8 +75,8 @@ namespace Modelos
                         _ => "",
                     };
                 }
+                if(r.Next(10000) == 10) return "navideño";
                 if(r.Next(2000) == 11) return "white";
-                // if(r.Next(100) == 10) return "navideño";
 
                 if(r.Next(200) == 2) 
                 {
