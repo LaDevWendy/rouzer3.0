@@ -200,6 +200,7 @@ namespace Servicios
             {
                 hilosStickies = await  _context.Stickies
                     .AsNoTracking()
+                    .Where( s => !_context.HiloAcciones.Any(a => a.HiloId ==  s.HiloId && a.UsuarioId == opciones.UserId && a.Hideado))
                     .Where(s => s.Global)
                     .Select(s => _context.Hilos.FirstOrDefault(h => h.Id == s.HiloId))
                     .AViewModel(_context).ToListAsync();
@@ -208,6 +209,7 @@ namespace Servicios
             {
                 hilosStickies = await  _context.Stickies
                     .AsNoTracking()
+                    .Where( s => !_context.HiloAcciones.Any(a => a.HiloId ==  s.HiloId && a.UsuarioId == opciones.UserId && a.Hideado))
                     .Where(s => !s.Global)
                     .Select(s => _context.Hilos.FirstOrDefault(h => h.Id == s.HiloId))
                     .Where(h => h.CategoriaId == opciones.CategoriasId[0])

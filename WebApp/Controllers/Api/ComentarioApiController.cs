@@ -68,8 +68,18 @@ namespace WebApp.Controllers
             {
                 ModelState.AddModelError("Para para", $"faltan {antiFlood.SegundosParaComentar(User).Seconds} para que pudeas comentar");
                 return BadRequest(ModelState);
-            }else {
+            }
+            else 
+            {
                 antiFlood.HaComentado(User.GetId());
+            }
+
+            var ids = comentarioService.GetIdsTageadas(vm.Contenido);
+
+            if(ids.Length > 5) 
+            {
+                ModelState.AddModelError("Jeje", "No podes taguear mas de 5 comentarios. Ok?");
+                return BadRequest(ModelState);
             }
 
             var ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();

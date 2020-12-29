@@ -100,10 +100,10 @@ namespace WebApp
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("Role", "admin mod".Split(" "));
                 });
-                options.AddPolicy("esJanitor", policy =>
+                options.AddPolicy("esAuxiliar", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("Role", "admin mod janitor".Split(" "));
+                    policy.RequireClaim("Role", "admin mod auxiliar".Split(" "));
                 });
             });
             services.AddRazorPages();
@@ -231,11 +231,11 @@ namespace WebApp
             return user.HasClaim("Role", "mod")
                 || user.HasClaim("Role", "admin");
         }
-        public static bool EsAyudante(this ClaimsPrincipal user)
+        public static bool EsAuxiliar(this ClaimsPrincipal user)
         {
             return user.HasClaim("Role", "mod")
                 || user.HasClaim("Role", "admin")
-                || user.HasClaim("Role", "ayudante");
+                || user.HasClaim("Role", "auxiliar");
         }
         public static string GetId(this ClaimsPrincipal user)
         {

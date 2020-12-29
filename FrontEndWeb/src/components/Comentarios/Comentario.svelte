@@ -153,7 +153,7 @@
                 <span slot="activador" on:click={() => mostrarMenu = true} class=""><i class="fe fe-more-vertical relative"></i></span>
                 <li on:click={() => toggle()}>{visible?'Ocultar':'Mostrar'}</li>
                 <li on:click={() => abrir.reporte(hilo.id || comentario.hiloId, comentario.id)}>Reportar</li>
-                {#if $globalStore.usuario.esMod}
+                {#if $globalStore.usuario.esAuxiliar}
                     <hr>
                     {#if comentario.hiloId}
                         <a href="/Hilo/{comentario.hiloId}#{comentario.id}" style="color:white!important">

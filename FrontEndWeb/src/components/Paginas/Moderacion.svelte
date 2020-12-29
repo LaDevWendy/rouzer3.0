@@ -22,9 +22,11 @@
     Sigal.coneccion.on("NuevoComentarioMod", comentario => {
         comentario.respuestas = []
         comentarios.unshift(comentario)
+        comentarios.pop()
         comentarios = comentarios
     })
     Sigal.coneccion.on("HiloCreadoMod", hilo => {
+        hilos.pop()
         hilos = [hilo, ...hilos]
     })
 

@@ -102,7 +102,7 @@ async function onTeaxtAreaFocus(params) {
         <FormularioEncuesta bind:opciones={encuesta}/>
 
         <textarea 
-            rows="5" 
+            rows="15" 
             style="background: var(--color4);" 
             bind:value={contenido} name="contenido" 
             on:focus={onTeaxtAreaFocus}
@@ -110,7 +110,7 @@ async function onTeaxtAreaFocus(params) {
         {#if escribiendoRedactazo}
         <div class="">
                 <textarea 
-                    rows="5" 
+                    rows="10" 
                     style="background: var(--color4);" 
                     bind:this={textarea2}
                     bind:value={contenido} name="contenido" 
@@ -168,10 +168,11 @@ async function onTeaxtAreaFocus(params) {
         max-width: unset;
         width: fit-content;
         position: relative;
+        width: 600px;
     }
     @media (min-width: 600px) {
     form {
-            min-width: 500px;
+            min-width: 600px;
         }
     }
     @media (max-width: 400px) {

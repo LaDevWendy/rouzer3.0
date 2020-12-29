@@ -1,8 +1,8 @@
 {
     "Categorias": [{
         "Id": 1,
-        "Nombre": "3D y CG",
-        "NombreCorto": "3D",
+        "Nombre": "General",
+        "NombreCorto": "GNRL",
         "Nsfw": false
     }, {
         "Id": 2,

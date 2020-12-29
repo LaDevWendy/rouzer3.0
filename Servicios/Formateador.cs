@@ -24,7 +24,7 @@ namespace Servicios
                 var esLink = false;
                 var esTag = false;
                 //Links
-                t = Regex.Replace(t, @"&gt;(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)", m => {
+                t = Regex.Replace(t, @"&gt;(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b(\S*)", m => {
                     var link = m.Value.Replace("&gt;", "");
                     esLink = true;
                     return $@"<a href=""{link}"" target=""_blank"">&gt;{link}</a>";
@@ -48,6 +48,13 @@ namespace Servicios
                 return t;
             }));
                 return sanitizer.Sanitize(ret);
+        }
+
+        public string[] GetIdsTageadas(string contenido) {
+            return Regex.Matches(contenido, @">>([A-Z0-9]{8})")
+                .Select(m => {
+                    return m.Groups[1].Value;
+                }).ToArray();
         }
     }
 }

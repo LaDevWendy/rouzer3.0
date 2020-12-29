@@ -147,10 +147,13 @@ namespace WebApp.Controllers
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
             string ip = HttpContext.GetIp();
-            if(await context.Bans.EstaBaneado(User.GetId(), ip))
+            
+            var banActivo = await context.Bans.BansActivos(User.GetId(), ip).FirstOrDefaultAsync();
+            if(banActivo != null)
             {
-                ModelState.AddModelError("Uff", "Esta ip esta baneada, no te podes registrar");
-                if(!ModelState.IsValid) return BadRequest(ModelState);
+                return this.RedirectJson($"/Domado/{banActivo.Id}");
+                // ModelState.AddModelError("Uff", "Esta ip esta baneada, no te podes registrar");
+                // if(!ModelState.IsValid) return BadRequest(ModelState);
             }
 
             // Checkear cuentas creadas desde esa ip
@@ -178,8 +181,13 @@ namespace WebApp.Controllers
         }
 
         [HttpGet, Route("/Token")]
-        public  ActionResult Token(string token) 
+        public  async Task<ActionResult> Token(string token) 
         {
+            if(string.IsNullOrWhiteSpace(token))
+            {
+                if(!User.Identity.IsAuthenticated) return this.Redirect("/Inicio");
+                token = (await userManager.GetUserAsync(User)).Token;
+            }
             return View("Token", new {token});
         }
 

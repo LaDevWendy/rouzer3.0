@@ -165,7 +165,7 @@ namespace WebApp.Controllers
                 UserName = User.Identity.Name,
                 EsAdmin = User.EsAdmin(),
                 EsMod = User.EsMod(),
-                EsAyudante = User.EsAyudante(),
+                EsAuxiliar= User.EsAuxiliar(),
             };
         }
 
@@ -198,7 +198,7 @@ class UsuarioVm
     public string UserName { get; set; }
     public bool EsAdmin { get; set; }
     public bool EsMod { get; set; }
-    public bool EsAyudante { get; set; }
+    public bool EsAuxiliar{ get; set; }
 }
 
 public class HiloListViewModel

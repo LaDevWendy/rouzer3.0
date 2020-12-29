@@ -10,12 +10,14 @@
         hilos: []
     } 
     let cargando = false
+    let sinResultados = false
 
     async function buscar() {
-        console.log("Buasaldfkj");
         try {
+            sinResultados = false
             let cargando = true
             let res = await RChanClient.buscar(cadenaDeBusqueda)
+            sinResultados = res.data.length == 0
             hiloList.hilos = res.data
         } catch (e){
             console.log(e);
@@ -42,6 +44,9 @@
         </form>
     
     </section>
+    {#if sinResultados}
+        <h3 style="text-align:center">No se encontraron rozs</h3>
+    {/if}
 
     <HiloList bind:hiloList={hiloList}></HiloList>
 

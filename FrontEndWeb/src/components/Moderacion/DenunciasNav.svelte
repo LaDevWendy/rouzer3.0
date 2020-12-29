@@ -55,7 +55,7 @@
 <svelte:head>
     <title>{denunciasActivas.length != 0?`{${denunciasActivas.length}}!`:''} {document.title.split("!").pop()}</title>
 </svelte:head>
-{#if $globalStore.usuario.esMod}
+{#if $globalStore.usuario.esAuxiliar}
 
     <Button icon dense on:click={() => mostrar = !mostrar } style="position:relative">
         <!-- <Ripple /> -->

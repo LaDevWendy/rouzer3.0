@@ -46,8 +46,6 @@
             <a href="/Inicio">
                 <li> <icon class="fe fe-user"/> Crear Sesion  <Ripple/></li>
             </a>
-            {:else}
-                <li on:click={desloguearse}> <icon class="fe fe-log-out"/> Salir  <Ripple/></li>
             {/if}
             <li on:click={() => mostrarCategorias = !mostrarCategorias}>
                 <icon class="fe fe-menu"/> Categorias 
@@ -92,6 +90,17 @@
             <a href="/reglas.html">
                 <li > <icon class="fe fe-align-justify"/> Reglas  <Ripple/></li>
             </a>
+            <hr>
+            {#if $globalStore.usuario.tieneToken}
+                <a href="/Token">
+                    <li> <icon class="fe fe-user-check"/> Ver token <Ripple/></li>
+                </a>
+            {/if}
+            {#if $globalStore.usuario.estaAutenticado}
+                <li on:click={desloguearse}> <icon class="fe fe-log-out"/> Salir  <Ripple/></li>
+            {/if}
+            <hr>
+
 
             
             {#if $globalStore.usuario.esMod}

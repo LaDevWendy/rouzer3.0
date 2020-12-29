@@ -40,6 +40,7 @@
 
 
     @{
+        UsuarioModel user = null;
         if (Context.User != null)
         {
             // The example uses base class, IdentityUser, yours may be called 
@@ -49,7 +50,7 @@
             var signInManager = Context.RequestServices
                 .GetRequiredService<SignInManager<UsuarioModel>>();
 
-            UsuarioModel user = await userManager.GetUserAsync(Context.User);
+            user = await userManager.GetUserAsync(Context.User);
 
             if(user is null)
             {
@@ -82,7 +83,8 @@
                 @* Role = User.Claims.FirstOrDefault(c => c.ValueType == "Role").Value, *@
                 EsAdmin = User.EsAdmin(),
                 EsMod = User.EsMod(),
-                EsAyudante = User.EsAyudante(),
+                EsAuxiliar = User.EsAuxiliar(),
+                TieneToken = !string.IsNullOrWhiteSpace(user?.Token)
             }
         };
 
@@ -112,7 +114,7 @@
     
     @{
         List<DenunciaModel> denuncias = null;
-        if (User?.EsMod() ?? false) {
+        if (User?.EsAuxiliar() ?? false) {
             denuncias =  await _context.Denuncias
             .Where(d => d.Estado == EstadoDenuncia.NoRevisada)
             .OrderByDescending(d => d.Creacion)

@@ -22,6 +22,7 @@ namespace Servicios
         Task<List<ComentarioViewModel>> DeHilo(string hiloId, string creadorId);
         Task Eliminar(params string[] ids) => Eliminar(ids, false);
         Task Eliminar(string[] ids, bool borrarMedias);
+        string[] GetIdsTageadas(string contenido);
     }
 
     public class ComentarioService : ContextService, IComentarioService
@@ -99,6 +100,7 @@ namespace Servicios
 
             int eliminados = await _context.SaveChangesAsync();
         }
+        public string[] GetIdsTageadas(string contenido) => formateador.GetIdsTageadas(contenido);
     }
 
 }

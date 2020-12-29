@@ -2,6 +2,7 @@
     import {Dialog, Ripple, Button} from 'svelte-mui'
     import globalStore from '../../globalStore';
     import RChanClient from '../../RChanClient';
+    import comentarioStore from '../Comentarios/comentarioStore';
     import Spinner from '../Spinner.svelte';
 
     export let encuesta
@@ -28,6 +29,7 @@
         try {
             votando = true
             let res = await RChanClient.votarEncuesta(hiloId, opcion)
+            $comentarioStore = `[${opcion}]\n\n` + $comentarioStore
         } catch (error) {
             
         }

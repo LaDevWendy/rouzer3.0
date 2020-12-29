@@ -12,6 +12,9 @@ import RChanClient from '../../RChanClient';
 import Dado from '../Dado.svelte'
 
 export let hilo
+
+if(!hilo.cantidadComentarios) hilo.cantidadComentarios = 0;
+
 let categorias = config.categorias
 let media = hilo.media
 let destellando = false
@@ -80,7 +83,8 @@ function onContextMenu(e) {
             </span>
             <li on:click={toggle}>{visible?'Ocultar':'Mostrar'} <Ripple/></li>
             <li on:click={() => abrir.reporte(hilo.id, "")}>Reportar <Ripple/></li>
-            {#if $globalStore.usuario.esMod}
+            {#if $globalStore.usuario.esAuxiliar}
+                <li on:click={() => abrir.cambiarCategoria(hilo.id)} >Categoria <Ripple/></li>
                 <li on:click={() => abrir.eliminarHilo(hilo.id, "")} >Eliminar <Ripple/></li>
                 <li on:click={() => abrir.ban(hilo.id)} >Banear <Ripple/></li>
             {/if}

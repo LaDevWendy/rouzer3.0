@@ -87,6 +87,13 @@ import Dialogo from '../Dialogo.svelte'
                 {#each model.mods as m (m.id)}
                     <li>{m.userName} <span class="sep"></span><Button on:click={() => eliminar(m.id, "mod")}>Eliminar</Button></li>
                 {/each}
+                <li class="header">Auxiliares(aux)</li>
+                <li class="noback">
+                    <input bind:value = {nickMod}  type="text" placeholder="Id o nick del usuario"> <Button on:click={() => añadir(nickMod, "auxiliar")}>Añadir</Button>
+                </li>
+                {#each model.auxiliares as m (m.id)}
+                    <li>{m.userName} <span class="sep"></span><Button on:click={() => eliminar(m.id, "auxiliar")}>Eliminar</Button></li>
+                {/each}
             </ul>
 
         </div>

@@ -45,29 +45,31 @@
 			<Encuesta bind:encuesta={hilo.encuestaData} hiloId={hilo.id}></Encuesta>
 		{/if}
 		
-		{#if $globalStore.usuario.esMod}
-		{#if hilo.estado == 2 }
-			<span style="color:red">Este roz esta eliminado y pronto sera borrado</span>
-		{/if}
+		{#if $globalStore.usuario.esAuxiliar}
+			{#if hilo.estado == 2 }
+				<span style="color:red">Este roz esta eliminado y pronto sera borrado</span>
+			{/if}
 			<div class="acciones-mod panel">
-
-				<Dialogo textoActivador="Sticky" titulo="Configurar Sticky" accion = {dialogs.sticky.accion}>
-					<div slot="body">
-						<p>(Los stickies no globales solo aparecen en su categoria)</p>
-						<Checkbox bind:checked={dialogs.sticky.global}>
-							<span>Global</span>
-						</Checkbox>
-						<p>(Un sticky de importancia 2 sale primero que un sticky de importancia 1 )</p>
-						<Textfield
-							autocomplete="off"
-							label="Importancia"
-							type="number"
-							required
-							bind:value = {dialogs.sticky.importancia}
-							message=""
-						/>
-					</div>
-				</Dialogo>
+			
+				{#if $globalStore.usuario.esMod}
+					<Dialogo textoActivador="Sticky" titulo="Configurar Sticky" accion = {dialogs.sticky.accion}>
+						<div slot="body">
+							<p>(Los stickies no globales solo aparecen en su categoria)</p>
+							<Checkbox bind:checked={dialogs.sticky.global}>
+								<span>Global</span>
+							</Checkbox>
+							<p>(Un sticky de importancia 2 sale primero que un sticky de importancia 1 )</p>
+							<Textfield
+								autocomplete="off"
+								label="Importancia"
+								type="number"
+								required
+								bind:value = {dialogs.sticky.importancia}
+								message=""
+							/>
+						</div>
+					</Dialogo>
+				{/if}
 				
 				<Dialogo textoActivador="Categoria" titulo="Cambiar categoria" accion = {() => RChanClient.cambiarCategoria(hilo.id, dialogs.categoria.categoriaId)}>
 					<div slot="body">
@@ -88,9 +90,11 @@
 					<Button on:click={() => abrir.restaurarHilo(hilo.id)} >Restaurar</Button>
 				{/if}
 				<Button on:click={() => abrir.ban(hilo.id)}>Banear</Button>
+				{#if $globalStore.usuario.esMod}
 				<a href="/Moderacion/HistorialDeUsuario/{usuario.id}">
 					<Button>Op</Button>
 				</a>
+				{/if}
 			</div>
 		{/if}
 
@@ -115,7 +119,7 @@
 	/* top: 10px; */
 	top: 60px;
 	position: -webkit-sticky;
-	max-height: 100vh;
+	max-height: calc(100vh - 75px);
     overflow: auto;
 }
 @media (max-width: 992px) {
@@ -131,7 +135,7 @@
 @media (max-width: 768px) {
 	.hilo-completo {
 		grid-template-columns: 100%;
-		margin-top: 50px;
+		margin-top: 10px;
 	}
 }
 @media (max-width: 600px) {

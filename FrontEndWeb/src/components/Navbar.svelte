@@ -80,7 +80,7 @@
                 <Ripple/>
             </span>
             <a href="/" style="font-family: euroFighter">
-                <h3 class="rozed">ROZED <span class="version"> {!protocoloMessi? `La red nini - Version Chad ${window.config.general.version}`:`Protocolo Messi activado - Version Chad ${window.config.general.version}`} </span></h3>
+                <h3 class="rozed">ROZED <span class="version"> {!protocoloMessi? `Union de Religiones - Version Chad ${window.config.general.version}`:`Protocolo Messi activado - Version Chad ${window.config.general.version}`} </span></h3>
 
                 <Ripple/>
             </a>
@@ -98,7 +98,7 @@
 
             <div class="nav-botones" style="position: relative;">
                 
-                {#if $globalStore.usuario.esMod}
+                {#if $globalStore.usuario.esAuxiliar}
                     <a href="/Moderacion">
                         <!-- <span style="height: 48px;display: flex;align-items: center;"> -->
                             <!-- <icon class="fe fe-triangle"/>
@@ -112,7 +112,7 @@
                         </Button>
                     </a>
                 {/if}
-                {#if $globalStore.usuario.esMod}
+                {#if $globalStore.usuario.esAuxiliar}
                     <DenunciasNav/>
                 {/if}
 
@@ -136,8 +136,8 @@
             </div>
             {#if !protocoloMessi || $globalStore.usuario.esMod}
                 <span class="nav-boton crear-hilo-boton" on:click={() => mostrarFormularioHilo = true}>
-                    <span style="width:max-content; margin-right: 6px;cursor: pointer;">Crear Roz</span>
-                    <span class="fe fe-plus"></span>
+                    <span style="width:max-content; margin-right: 6px;cursor: pointer;">Roz</span>
+                    <span class="fe fe-plus-square"></span>
                     <Ripple/>
                 </span>
             {/if}
@@ -202,18 +202,15 @@
 .crear-hilo-boton{
     height: 100%;
     background: var(--color5);
+    font-family: 'euroFighter';
+    font-size: 18px;
+    padding: 8px;
+    color: white;
 }
 :global(.nav-boton) {
   color: white;
   display: inline-flex;
   position: relative;
-}
-:global(.nav-boton) .fe:hover {
-  transform: scale(1.33);
-}
-
-:global(.nav-boton) .fe:active {
-  transform: scale(1.22);
 }
 
 header {

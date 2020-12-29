@@ -5,6 +5,7 @@
     import DialogoBan from './DialogoBan.svelte';
     import DialogoReporte from './DialogoReporte.svelte'
     import {Checkbox} from 'svelte-mui'
+    import config from '../../config';
 
     const dialogosStore = writable({
         dialogoAbierto: "ninguno",
@@ -13,6 +14,7 @@
         comentariosIds: [],
         usuarioId: "",
         mediaId:"",
+        categoriaId:"-1",
         eliminarMedia: false,
         mediaEliminarDependientes: true
     })
@@ -74,6 +76,13 @@
             return s
         })
     }
+    function abrirCambiarCategoria(hiloId) {
+        dialogosStore.update(s => {
+            s.dialogoAbierto = "cambiarCategoria"
+            s.hiloId = hiloId
+            return s
+        })
+    }
 
     export const abrir = {
         //  sticky : abrirDialogo("sticky"),
@@ -84,6 +93,7 @@
          restaurarHilo: abrirRestaurarHilo,
          restaurarComentario: abrirRestaurarComentario,
          eliminarMedia: abrirEliminarMedia,
+         cambiarCategoria: abrirCambiarCategoria,
         //  categoria : abrirDialogo("categoria"),
         //  eliminar : abrirDialogo("eliminar"),
     }
@@ -154,5 +164,22 @@
     <span slot="activador"></span>
     <div slot="body">
         <Checkbox bind:checked={$dialogosStore.mediaEliminarDependientes} right>Eliminar todos los elementos con este archivo?</Checkbox>
+    </div>
+</Dialogo>
+
+<Dialogo 
+    visible={$dialogosStore.dialogoAbierto == "cambiarCategoria"} 
+    titulo="Cambiar categoria" 
+    accion = {() => RChanClient.cambiarCategoria($dialogosStore.hiloId, $dialogosStore.categoriaId)}>
+    <span slot="activador"></span>
+    <div slot="body">
+        <span asp-validation-for="CategoriaId"></span>
+        <select bind:value={$dialogosStore.categoriaId}  name="categoria">
+            <option value="-1" selected="selected" disabled="disabled">Categoría</option>
+            {#each config.categorias as c}
+            <option value="{c.id}">{c.nombre}</option>
+            {/each}
+        </select>
+        
     </div>
 </Dialogo>

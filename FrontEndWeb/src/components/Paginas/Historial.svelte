@@ -9,22 +9,55 @@
     import RChanClient from '../../RChanClient';
     import Tiempo from '../Tiempo.svelte'
     import BarraModeracion from '../Moderacion/BarraModeracion.svelte';
+    import BanPreview from '../Moderacion/BanPreview.svelte';
     
     const historial = window.model.acciones
 
     let dialogoDesban = false
+
+    let filtro = {
+        usuario: '',
+        accion: ''
+    }
+
+    $: accionesFiltradas = historial.filter(a => {
+            let fUsuario = !filtro.usuario || a.usuario.userName == filtro.usuario
+            let fAccion = (filtro.accion === '') || a.tipo === filtro.accion
+            return fUsuario && fAccion
+    }) || filtro
+
+    let mods = Array.from(new Set(historial.map(a => a.usuario.userName)))
 </script>
 <main>
     <BarraModeracion/>
     <h3 style="text-align:center;margin-bottom: 10px;">Ultimas acciones</h3>
+    <div class="filtros" style="display: flex;width: fit-content;margin: 0 auto;align-items: baseline;">
+        <span>Filtrar: </span>
+        <select bind:value={filtro.usuario}>
+            <option value={''}>Usuario</option>
+            {#each mods as m}
+                <option value={m}>{m}</option>
+            {/each}
+        </select>
+        
+        <select bind:value={filtro.accion}>
+            <option value={''}>Accion</option>
+            {#each Object.keys(TipoAccion) as a}
+                <option value={TipoAccion[a]}>{a}</option>
+            {/each}
+        </select>
+    </div>
     <ul>
-        {#each historial as a (a.id)}
+        {#each accionesFiltradas as a (a.id)}
             <li class="accion">
                 <span style="background: var(--color3);">
                     <Tiempo date={a.creacion}/>
                 </span>
                 <span style="background: var(--color6);">{a.usuario.userName}</span>
                 <span style="background: var(--color5);">{TipoAccion.aString(a.tipo)}</span>
+                {#if a.tipo == TipoAccion.CategoriaCambiada}
+                    <span>{a.nota}</span>
+                {/if}
                 {#if a.hilo}
                     <a href="/Hilo/{a.hilo.id}">Roz
                         <div class="desplegable roz">
@@ -52,14 +85,7 @@
                     <a href="#" style="background: var(--color5);">
                         Ban
                         <div class="desplegable">
-                            <div class="ban">
-                                <p>Aclaracion {a.ban.aclaracion ||" "}</p>
-                                <p>Motivo: { MotivoDenuncia.aString(a.ban.motivo)}</p>
-                                <p>Fecha: {formatearTiempo(a.ban.creacion)}</p>
-                                <p>Duracion: {formatearTimeSpan(a.ban.duracion)}</p>
-                                <p>Id del ban: {a.ban.id}</p>
-                                
-                            </div>
+                            <BanPreview ban={a.ban}/>
                         </div>
                         <Dialogo textoActivador="Desbanear" titulo="Desbanear gordo" accion = {() => RChanClient.removerBan(a.ban.id)}>
                             <span slot="activador">desbanear</span>
@@ -117,10 +143,5 @@
         flex-direction: row;
         gap: 4px;
         background: var(--color7);
-    }
-    .ban {
-        background: var(--color5);
-        padding: 4px 10px;
-        border-radius: 13px;
     }
 </style>

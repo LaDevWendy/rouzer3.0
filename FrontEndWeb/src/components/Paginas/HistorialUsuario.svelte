@@ -4,10 +4,13 @@
     import ComentarioMod from '../Moderacion/ComentarioMod.svelte';
     import HiloPreviewMod from '../Moderacion/HiloPreviewMod.svelte';
     import { MotivoDenuncia } from '../../enums'
+    import { formatearTiempo, formatearTimeSpan } from '../../helper';
+import BanPreview from '../Moderacion/BanPreview.svelte';
 
     let hilos = window.model.hilos
     let comentarios = window.model.comentarios
     let usuario = window.model.usuario
+    let baneos = window.model.baneos
     // let denuncias = window.model.denuncias
 
     const motivo = Object.keys( MotivoDenuncia)
@@ -41,6 +44,14 @@
             <h3 style="height:40px">Ultimos comentarios</h3>
             {#each comentarios as c}
                 <ComentarioMod comentario={c}/>
+            {/each}
+        </ul>
+        <ul>
+            <h3 style="height:40px">Baneos</h3>
+            {#each baneos as ban}
+                <li style="margin-bottom:4px">
+                    <BanPreview {ban}/>
+                </li>
             {/each}
         </ul>
     </div>

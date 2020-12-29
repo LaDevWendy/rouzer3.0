@@ -22,7 +22,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApp.Controllers
 {
-    [Authorize("esMod")]
+    [Authorize("esAuxiliar")]
     [ApiController, Route("api/Moderacion/{action}/{id?}")]
     public class Moderacion : Controller
     {
@@ -115,7 +115,7 @@ namespace WebApp.Controllers
             return View(new { hilos, comentarios, denuncias, medias });
         }
 
-        [Route("/Moderacion/ListaDeUsuarios")]
+        [Route("/Moderacion/ListaDeUsuarios"), Authorize("esMod")]
         public async Task<ActionResult> ListaDeUsuarios()
         {
             var ultimosRegistros = await context.Users
@@ -135,7 +135,7 @@ namespace WebApp.Controllers
 
 
         [HttpGet]
-        [Route("/Moderacion/HistorialDeUsuario/{id}")]
+        [Route("/Moderacion/HistorialDeUsuario/{id}"), Authorize("esMod")]
         public async Task<ActionResult> HistorialDeUsuario(string id)
         {
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
@@ -154,16 +154,38 @@ namespace WebApp.Controllers
                 }).FirstOrDefaultAsync(u => u.Id == id),
 
                 Hilos = await context.Hilos
+                    .AsNoTracking()
                     .DeUsuario(id)
                     .Recientes()
                     .AViewModelMod(context)
                     .ToListAsync(),
 
                 Comentarios = await context.Comentarios
+                    .AsNoTracking()
                     .Recientes()
                     .DeUsuario(id)
                     .Take(150)
                     .AViewModelMod()
+                    .ToListAsync(),
+
+                Baneos = await context.Bans
+                    .AsNoTracking()
+                    .Recientes()
+                    .Where(b => b.UsuarioId == id)
+                    .Take(100)
+                    .Include(b => b.Hilo)
+                    .Include(b => b.Comentario)
+                    .Include(b => b.Hilo.Media)
+                    .Include(b => b.Comentario.Media)
+                    .Select(b => new {
+                        b.Aclaracion,
+                        Comentario = b.Comentario != null? new ComentarioViewModelMod(b.Comentario, b.Hilo): null,
+                        b.Creacion,
+                        b.Duracion,
+                        b.Id,
+                        b.Motivo,
+                        b.Hilo,
+                    })
                     .ToListAsync()
 
             });
@@ -188,7 +210,7 @@ namespace WebApp.Controllers
 
             return View(new { hilos, comentarios });
         }
-        [Route("/Moderacion/Historial")]
+        [Route("/Moderacion/Historial"), Authorize("esMod")]
         public async Task<ActionResult> Historial()
         {
             var antesDeAyer = DateTimeOffset.Now - TimeSpan.FromDays(2);
@@ -366,7 +388,7 @@ namespace WebApp.Controllers
             return Json(new ApiResponse($"comentario restaurado"));
         }
 
-        [HttpPost]
+        [HttpPost, Authorize("esMod")]
         public async Task<ActionResult> AñadirSticky(Sticky sticky)
         {
             var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == sticky.HiloId);

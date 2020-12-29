@@ -62,10 +62,12 @@ namespace WebApp.Controllers
         {
             var admins = await userManager.GetUsersForClaimAsync(new Claim("Role", "admin"));
             var mods = await userManager.GetUsersForClaimAsync(new Claim("Role", "mod"));
+            var auxiliares = await userManager.GetUsersForClaimAsync(new Claim("Role", "auxiliar"));
             var vm = new AdministracionVM
             {
                 Admins = admins.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray(),
                 Mods = mods.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray(),
+                Auxiliares  = auxiliares.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray(),
                 Config = config.Value
             };
             return View(vm);
@@ -98,7 +100,7 @@ namespace WebApp.Controllers
             var role = model.Role;
             var username = model.Username;
 
-            if (!new[] { "admin", "mod", "ayudante" }.Contains(role))
+            if (!new[] { "admin", "mod", "auxiliar" }.Contains(role))
                 ModelState.AddModelError("Rol", "Rol invalido");
 
 
@@ -129,7 +131,7 @@ namespace WebApp.Controllers
             var role = model.Role;
             var username = model.Username;
 
-            if (!new[] { "admin", "mod", "ayudante" }.Contains(role))
+            if (!new[] { "admin", "mod", "auxiliar" }.Contains(role))
                 ModelState.AddModelError("Rol", "Rol invalido");
 
 
@@ -197,6 +199,7 @@ public class AdministracionVM
 {
     public UsuarioVM[] Admins { get; set; }
     public UsuarioVM[] Mods { get; set; }
+    public UsuarioVM[] Auxiliares { get; set; }
     public GeneralOptions Config { get; internal set; }
 }
 
