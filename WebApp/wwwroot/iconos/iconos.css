@@ -266,7 +266,3 @@
 .fe-zap-off::before { content: ""; }
 .fe-zoom-in::before { content: ""; }
 .fe-zoom-out::before { content: ""; }
-body { background-size: cover; background-attachment: fixed; background-image: url("http://localhost:5000/P_pelTd8rdIaM.jpg") !important; }
-body { background-size: cover; background-attachment: fixed; background-image: url("http://localhost:5000/P_pelTd8rdIaM.jpg") !important; }
-body { background-size: cover; background-attachment: fixed; background-image: url("http://localhost:5000/P_pelTd8rdIaM.jpg") !important; }
-body { background-size: auto; background-attachment: fixed; background-image: url("http://localhost:5000/P_pelTd8rdIaM.jpg") !important; }

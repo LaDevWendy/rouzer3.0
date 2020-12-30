@@ -80,7 +80,7 @@
                 <Ripple/>
             </span>
             <a href="/" style="font-family: euroFighter">
-                <h3 class="rozed">ROZED <span class="version"> {!protocoloMessi? `Union de Religiones - Version Chad ${window.config.general.version}`:`Protocolo Messi activado - Version Chad ${window.config.general.version}`} </span></h3>
+                <h3 class="rozed">ROZED <span class="version"> {!protocoloMessi?`Union de Religiones - Version Chad ${window.config.general.version}`:`Protocolo Messi activado - Version Chad ${window.config.general.version}`} </span></h3>
 
                 <Ripple/>
             </a>

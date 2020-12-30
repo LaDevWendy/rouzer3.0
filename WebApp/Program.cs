@@ -48,10 +48,10 @@ namespace WebApp
                     {
                         await ctx.Database.MigrateAsync();
                     }
-                    catch (System.Exception)
+                    catch (Exception e)
                     {
-                        
                         logger.LogError("Error al applicar las migraciones");
+                        Console.WriteLine(e);
                     }
                 }
                 
