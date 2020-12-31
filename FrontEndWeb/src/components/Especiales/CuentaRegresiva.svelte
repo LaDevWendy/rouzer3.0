@@ -48,6 +48,7 @@ setInterval(countDown, 1000)
         position: absolute;
         padding-top: 4px;
         width: 100%;
+        pointer-events: none !important;
     }
 
     @media (max-width: 600px) {
