@@ -41,7 +41,7 @@
             <ErrorValidacion {error}/>
             <form on:submit|preventDefault={accion}>
             
-            <a style="color:var(--color5); text-align:center; display:block" target="_blank" href="/reglas.html">Ver reglas</a>
+            <a style="color:var(--color5); text-align:center; display:block;font-weight: bold;font-size: 19px;" target="_blank" href="/reglas.html">Ver reglas</a>
             <Checkbox right bind:checked={terminos}><div style="white-space: normal; text-align: center;">Yo Anon juro solemnemente seguir las reglas de Rozed </div></Checkbox>
             <Captcha visible={config.general.captchaRegistro}  bind:token={captcha}/>
 

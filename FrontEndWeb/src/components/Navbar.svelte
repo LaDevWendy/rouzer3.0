@@ -15,6 +15,8 @@
     import { onMount } from 'svelte';
     import NavCategorias from './NavCategorias.svelte'
     import Lucesitas from './Lucesitas.svelte'
+    import Cuetitos from './Especiales/Cuetitos.svelte'
+    import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
     
 
     export let notificaciones = window.notificaciones || []
@@ -75,6 +77,9 @@
     <nav>
         <!-- <Lucesitas/> -->
         <div class="nav-principal" class:modoSticky={scrollY > 200}>
+            <div class="fondo" style="position:absolute;left:0;top:0;">
+                <!-- <Cuetitos/> -->
+            </div>
             <span on:click={() => mostrarMenu = !mostrarMenu} style="padding: 0 8px;">
                 <icon class="fe fe-menu"/>
                 <Ripple/>
@@ -84,6 +89,7 @@
 
                 <Ripple/>
             </a>
+            <CuentaRegresiva/>
             <!-- <MensajeRotativo/> -->
             <div class="estadisticas">
                 <!-- {#if mostrarComputadorasConectadas}
@@ -169,6 +175,9 @@
     align-items: stretch !important;
     height: 48px;
     /* margin-bottom: 10px; */
+}
+.nav-principal .fondo {
+    height: 48px;
 }
 .nav-principal>*, .nav-principal nav-botones  span{
     /* height: 48px; */
@@ -336,6 +345,9 @@ header {
 }
 .modoSticky .version {
     display: none;
+}
+.modoSticky .fondo {
+    height: 36px;
 }
 
 /* .estadisticas span {
