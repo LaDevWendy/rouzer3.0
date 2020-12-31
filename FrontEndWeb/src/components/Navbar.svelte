@@ -78,7 +78,7 @@
         <!-- <Lucesitas/> -->
         <div class="nav-principal" class:modoSticky={scrollY > 200}>
             <div class="fondo" style="position:absolute;left:0;top:0;">
-                <!-- <Cuetitos/> -->
+                <Cuetitos/>
             </div>
             <span on:click={() => mostrarMenu = !mostrarMenu} style="padding: 0 8px;">
                 <icon class="fe fe-menu"/>
@@ -89,7 +89,7 @@
 
                 <Ripple/>
             </a>
-            <CuentaRegresiva/>
+            <!-- <CuentaRegresiva/> -->
             <!-- <MensajeRotativo/> -->
             <div class="estadisticas">
                 <!-- {#if mostrarComputadorasConectadas}

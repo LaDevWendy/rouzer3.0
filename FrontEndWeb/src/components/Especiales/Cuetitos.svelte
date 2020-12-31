@@ -1,5 +1,7 @@
 <script>
     import { onMount } from "svelte";
+    import CuentaRegresiva from "./CuentaRegresiva.svelte";
+    import {cuentaRegresivaStore} from "./CuentaRegresivaStore"
     
     let container = null
     let height = 0
@@ -8,9 +10,6 @@
     $:cw = width
     $:ch = height
     function windowResize() {
-        console.log(container);
-        console.log(container.offsetHeight);
-        console.log(container.offsetWidth);
         canvas.width = container.offsetWidth
         canvas.height = container.offsetHeight
     }
@@ -244,7 +243,13 @@
 
 
 <div bind:this={container} bind:offsetHeight={height} bind:offsetWidth={width} class="container">
-    <canvas bind:this= {canvas} id="canvas" height={height} width={width}/>    
+    <canvas
+    bind:this= {canvas} 
+    style={$cuentaRegresivaStore.fechaFutura < $cuentaRegresivaStore.fechaActual?'opacity:1':'opacity:0'}
+    id="canvas" 
+    height={height} 
+    width={width}/>  
+    <CuentaRegresiva/>  
 </div>
 <style>
     .container {
@@ -253,11 +258,13 @@
         left: 0;
         width: 100vw;
         height: 100%;
+        pointer-events: none !important;
     }
     canvas {
         position: absolute;
         top: 0;
         left: 0;
+        pointer-events: none !important;
     }
 </style>
 
