@@ -90,7 +90,8 @@ async function onTeaxtAreaFocus(params) {
 
         <MediaInput bind:media={media}></MediaInput>
 
-        <input bind:value={titulo} name="titulo" placeholder="Titulo">
+        <!-- svelte-ignore a11y-autofocus -->
+        <input autofocus bind:value={titulo} name="titulo" placeholder="Titulo">
 
         <select bind:value={categoria}  name="categoria">
             <option value="-1" selected="selected" disabled="disabled">Categoría</option>

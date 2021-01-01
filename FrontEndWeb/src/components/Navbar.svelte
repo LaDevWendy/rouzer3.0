@@ -15,7 +15,7 @@
     import { onMount } from 'svelte';
     import NavCategorias from './NavCategorias.svelte'
     import Lucesitas from './Lucesitas.svelte'
-    import Cuetitos from './Especiales/Cuetitos.svelte'
+    // import Cuetitos from './Especiales/Cuetitos.svelte'
     import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
     
 
@@ -77,8 +77,9 @@
     <nav>
         <!-- <Lucesitas/> -->
         <div class="nav-principal" class:modoSticky={scrollY > 200}>
-            <div class="fondo" style="position:absolute;left:0;top:0;">
-                <Cuetitos/>
+            <div class="fondo" style="position:absolute;left:0;top:0;width:100%">
+                <!-- <Cuetitos/> -->
+                <CuentaRegresiva/>
             </div>
             <span on:click={() => mostrarMenu = !mostrarMenu} style="padding: 0 8px;">
                 <icon class="fe fe-menu"/>

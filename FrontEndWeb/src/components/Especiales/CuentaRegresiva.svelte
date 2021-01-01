@@ -11,7 +11,7 @@
     // let fechaActual = new Date();
     let reproduciendoSoleado = false
 
-    let soleado  = new Audio("/audio/soleado.mp3")
+    // let soleado  = new Audio("/audio/soleado.mp3")
     let countDown = () => {
         $cuentaRegresivaStore.fechaActual = new Date();
         let myDate = $cuentaRegresivaStore.fechaFutura - $cuentaRegresivaStore.fechaActual;
@@ -21,16 +21,16 @@
         minutos = Math.floor(myDate / 1000 / 60  ) % 60;
         segundos = Math.floor(myDate / 1000 ) % 60;
 
-        if($cuentaRegresivaStore.fechaFutura < $cuentaRegresivaStore.fechaActual && !reproduciendoSoleado) {
-            soleado.currentTime = ($cuentaRegresivaStore.fechaActual.getTime() - $cuentaRegresivaStore.fechaFutura.getTime()) / 1000
-            try {
-                soleado.play()
-            } catch(e) {
-                console.log(e);
-            }
-            reproduciendoSoleado = true;
+        // if($cuentaRegresivaStore.fechaFutura < $cuentaRegresivaStore.fechaActual && !reproduciendoSoleado) {
+        //     soleado.currentTime = ($cuentaRegresivaStore.fechaActual.getTime() - $cuentaRegresivaStore.fechaFutura.getTime()) / 1000
+        //     try {
+        //         soleado.play()
+        //     } catch(e) {
+        //         console.log(e);
+        //     }
+        //     reproduciendoSoleado = true;
             
-        }
+        // }
     }
 
 
@@ -71,7 +71,8 @@
 
     @media (max-width: 600px) {
         .cuenta-regresiva {
-            font-size: 4px;
+            font-size: 4px !important;
+            height: 100%;
         }
     }
     :global(.modoSticky) .cuenta-regresiva {

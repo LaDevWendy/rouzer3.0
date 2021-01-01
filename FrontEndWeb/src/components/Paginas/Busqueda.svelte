@@ -33,9 +33,11 @@
     
     <section>
         <form on:submit|preventDefault={buscar} class="panel input-busqueda">
+            <!-- svelte-ignore a11y-autofocus -->
             <input
                 autocomplete="off"
                 placeholder="Alguna palabra en el titulo del roz"
+                autofocus
                 bind:value={cadenaDeBusqueda}
             />
             <Spinner {cargando}>
