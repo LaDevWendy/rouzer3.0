@@ -1,9 +1,15 @@
 <script>
     export let error = null
 
+    console.log(error)
+
 </script>
 
-{#if error && error.errors}
+{#if typeof error == 'string'}
+<div class="error-validacion">
+    <h3>Chocamo chocamo. Intenta  de nuevo</h3>
+    </div>
+{:else if error && error.errors}
 <div class="error-validacion">
     <h3>Ay no se!</h3>
     {#each Object.keys(error.errors) as key}
