@@ -28,16 +28,16 @@
         <div class="fe fe-circle"></div>
         <Ripple color="var(--color5)"/>
     </div>
-    <a href="/Favoritas" class="colapsar-categorias favorita" style="display: flex;align-items: center;"><span class="fe fe-home"></span></a>
-    <div class="colapsar-categorias fe fe-settings categoria favorita" on:click={() => configurando = true}></div>
+    <a href="/Favoritas" title="favoritas" class="colapsar-categorias favorita" style="display: flex;align-items: center;"><span class="fe fe-star"></span></a>
+    <div title="Configurar favoritas" class="colapsar-categorias fe fe-settings categoria favorita cpt" on:click={() => configurando = true}></div>
 
     {#each config.categorias.filter(c => favoritas.includes(c.id)) as c (c.id)}
         <a class="categoria favorita"href="/{c.nombreCorto}" title={c.nombre}>{c.nombreCorto}</a>
     {/each}
     <span class="categoria sep favorita" style="border-radius: 0 20px 20px 0;color:transparent; margin-right:4px">.</span>
-
+<!-- 
     <a class="categoria comunacha" href="/GOLD" title="GOLD"
-        style="border-radius: 20px; background: linear-gradient(45deg, #f59e00, #ffd383); margin-right: 4px; color: #7b5500;">GOLD </a>
+        style="border-radius: 20px; background: linear-gradient(45deg, #f59e00, #ffd383); margin-right: 4px; color: #7b5500;">GOLD </a> -->
     <span class="categoria sep" style="border-radius: 20px 0 0 20px;color:transparent">.</span>
     {#each config.categorias.filter(c => !favoritas.includes(c.id)) as c (c.id)}
         <a class="categoria comunacha" href="/{c.nombreCorto}" title={c.nombre}>{c.nombreCorto} </a>
@@ -49,14 +49,14 @@
     <Dialog width="600" bind:visible={visible}>
         <div slot="title">Categorias favoritas</div>
         <slot name="body">
-            <span style="color:var(--color5)">Favoritas:</span>
+            <span style="color:var(--color5)">Favoritas ({favoritas.length}):</span>
             <div class="favoritas container-categorias cpt">
                 {#each config.categorias.filter(c => favoritas.includes(c.id)) as c (c.id)}
-                <span class="categoria" style="background:#9407ff" href="/{c.nombreCorto}" on:click={() => $localConfig.favoritas = $localConfig.favoritas.filter(c1 => c1 != c.id )} title={c.nombre}>{c.nombreCorto}</span>
+                <span class="categoria favorita" href="/{c.nombreCorto}" on:click={() => $localConfig.favoritas = $localConfig.favoritas.filter(c1 => c1 != c.id )} title={c.nombre}>{c.nombreCorto}</span>
                 {/each}
             </div>
             
-            <span style="color:var(--color5)">Comunachas:</span>
+            <span style="color:var(--color5)">Comunachas ({ config.categorias.length - favoritas.length}):</span>
             <div class="no-favoritas container-categorias cpt" style="margin-top:10px">
                 {#each config.categorias.filter(c => !favoritas.includes(c.id)) as c (c.id)}
                     <span class="categoria" on:click={() => $localConfig.favoritas = [...$localConfig.favoritas, c.id]} title={c.nombre}>{c.nombreCorto}</span>
