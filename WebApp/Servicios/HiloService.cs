@@ -205,6 +205,10 @@ namespace Servicios
                     .Select(s => _context.Hilos.FirstOrDefault(h => h.Id == s.HiloId))
                     .AViewModel(_context).ToListAsync();
             }
+            else if(opciones.CategoriasId.Length == 0) 
+            {
+                return new List<HiloViewModel>();
+            }
             else 
             {
                 hilosStickies = await  _context.Stickies

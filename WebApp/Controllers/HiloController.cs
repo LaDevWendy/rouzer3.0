@@ -46,18 +46,6 @@ namespace WebApp.Controllers
 
             if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
             
-            // var hilos = await hiloService.GetHilosOrdenadosPorBump(new GetHilosOptions
-            // {
-            //     UserId = User.GetId(),
-            //     CategoriasId = categorias,
-            //     IncluirStickies = true
-            // });
-            
-            // return Json(new {
-            //     Hilos = hilos,
-            //     Usuario = GetUserInfo(),
-            //     Notificaciones = await GetNotis()
-            // });
             var vm = new HiloListViewModel
             {
                 Hilos = await hiloService.GetHilosOrdenadosPorBump(new GetHilosOptions
@@ -69,6 +57,28 @@ namespace WebApp.Controllers
                 CategoriasActivas = categorias.ToList()
             };
             return View(vm);
+        }
+
+        [HttpGet("/Favoritas")]
+        public async Task<IActionResult> Favoritas()
+        {
+            int[] categorias = new int[]{};
+
+            HttpContext.Request.Cookies.TryGetValue("categoriasFavoritas", out string categoriasActivas);
+
+            if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+            
+            var vm = new HiloListViewModel
+            {
+                Hilos = await hiloService.GetHilosOrdenadosPorBump(new GetHilosOptions
+                {
+                    UserId = User.GetId(),
+                    CategoriasId = categorias,
+                    IncluirStickies = true
+                }),
+                CategoriasActivas = categorias.ToList()
+            };
+            return View("Index", vm);
         }
 
         [HttpGet("Hilo/{id}")]
