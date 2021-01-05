@@ -35,6 +35,7 @@ namespace WebApp
         public RestriccionDeAcceso RestriccionDeAcceso { get; set; }
         public string MensajePaginaDeChoque { get; set; } = "Chocamo";
         public bool ModoMessi { get; set; }
+        public bool ModoSerenito { get; set; }
 
         public bool CaptchaHilo { get; set; }
         public bool CaptchaComentario { get; set; }

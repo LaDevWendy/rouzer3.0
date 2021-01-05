@@ -23,6 +23,7 @@ using Westwind.AspNetCore.LiveReload;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp
 {
@@ -44,8 +45,7 @@ namespace WebApp
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            
+        {   
             services.AddSingleton<CaptchaService>();
             services.AddScoped<AntiFloodService>();
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
@@ -88,6 +88,9 @@ namespace WebApp
                     await c.Response.WriteAsync("{\"redirect\":\"/Inicio\"}");
                 };
             });
+
+            services.AddScoped<IAuthorizationHandler, AuxiliarAuthorizationHandler>();
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("esAdmin", policy =>
@@ -103,6 +106,7 @@ namespace WebApp
                 options.AddPolicy("esAuxiliar", policy =>
                 {
                     policy.RequireAuthenticatedUser();
+                    policy.AddRequirements(new AuxiliarAuthorizationRequirement());
                     policy.RequireClaim("Role", "admin mod auxiliar".Split(" "));
                 });
             });
@@ -163,7 +167,7 @@ namespace WebApp
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                // app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 // app.UseLiveReload();
 
@@ -231,8 +235,9 @@ namespace WebApp
             return user.HasClaim("Role", "mod")
                 || user.HasClaim("Role", "admin");
         }
-        public static bool EsAuxiliar(this ClaimsPrincipal user)
+        public static bool EsAuxiliar(this ClaimsPrincipal user, bool modoSerenito=false)
         {
+            if(!modoSerenito && user.HasClaim("Role", "auxiliar")) return false;
             return user.HasClaim("Role", "mod")
                 || user.HasClaim("Role", "admin")
                 || user.HasClaim("Role", "auxiliar");

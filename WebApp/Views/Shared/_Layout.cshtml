@@ -83,7 +83,7 @@
                 @* Role = User.Claims.FirstOrDefault(c => c.ValueType == "Role").Value, *@
                 EsAdmin = User.EsAdmin(),
                 EsMod = User.EsMod(),
-                EsAuxiliar = User.EsAuxiliar(),
+                EsAuxiliar = User.EsAuxiliar(generalOptions.Value.ModoSerenito),
                 TieneToken = !string.IsNullOrWhiteSpace(user?.Token)
             }
         };
@@ -103,6 +103,7 @@
                 gnrlOpt.CaptchaRegistro,
                 gnrlOpt.Version,
                 gnrlOpt.ModoMessi,
+                gnrlOpt.ModoSerenito,
 
             } 
         };
@@ -114,7 +115,7 @@
     
     @{
         List<DenunciaModel> denuncias = null;
-        if (User?.EsAuxiliar() ?? false) {
+        if ((User?.EsAuxiliar() ?? false) || (User?.EsMod() ?? false)) {
             denuncias =  await _context.Denuncias
             .Where(d => d.Estado == EstadoDenuncia.NoRevisada)
             .OrderByDescending(d => d.Creacion)

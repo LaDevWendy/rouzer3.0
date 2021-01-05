@@ -62,7 +62,7 @@ namespace Servicios
 
             Stream imagenStream;
 
-            if(!esVideo)
+            if(!esVideo && !archivo.FileName.Contains(".gif"))
                 imagenStream = archivoStream;
             else
                 imagenStream = await GenerarImagenDesdeVideo(archivoStream, archivo.FileName);

@@ -144,6 +144,7 @@ import Dialogo from '../Dialogo.svelte'
         <div class="menu">
             <ul >
                 <li>Protocolo Messi<Checkbox bind:checked={model.config.modoMessi} right></Checkbox></li>
+                <li>Protocolo Serenito<Checkbox bind:checked={model.config.modoSerenito} right></Checkbox></li>
                 {#each Object.keys(restriccionesDeAcesso) as key}
                 <li>
                     <Radio right bind:group={model.config.restriccionDeAcceso} value={restriccionesDeAcesso[key]}>

@@ -25,6 +25,7 @@
     let mostrarFormularioHilo = false
     let computadorasConectadas = window.estadisticas.computadorasConectadas
     let protocoloMessi = window.config.general.modoMessi 
+    let protocoloSerenito = window.config.general.modoSerenito 
 
     let mostrarComputadorasConectadas = false
 
@@ -55,8 +56,11 @@
     //     } catch (error) {console.log(error)}
     // }
 
+    let style = window.document.styleSheets[0];
     if(protocoloMessi) {
-        document.body.style.setProperty("--color5", "rgb(28 185 208)")
+        style.insertRule("body {--color5:rgb(28 185 208)!important}", style.cssRules.length)
+    } else if(protocoloSerenito) {
+        style.insertRule("body {--color5:rgb(255 124 36)!important}", style.cssRules.length)
     }
 
     $: if(mostrarFormularioHilo && !$globalStore.usuario.estaAutenticado) {
@@ -64,6 +68,10 @@
     }
     
     let scrollY
+
+    let version = `Union de Religiones - Version Chad ${window.config.general.version}`
+    if(protocoloMessi) version = `Protocolo Messi activado - Version Chad ${window.config.general.version}`
+    else if(protocoloSerenito) version = `Protocolo Serenito activado - Version Chad ${window.config.general.version}`
 </script>
 
 <svelte:window  on:scroll={onScroll} bind:scrollY={scrollY}/>
@@ -72,6 +80,7 @@
 <header
     class:oculta
     class:protocoloMessi
+    class:protocoloSerenito
     bind:offsetHeight={height}
 >
     <nav>
@@ -86,7 +95,7 @@
                 <Ripple/>
             </span>
             <a href="/" style="font-family: euroFighter">
-                <h3 class="rozed">ROZED <span class="version"> {!protocoloMessi?`Union de Religiones - Version Chad ${window.config.general.version}`:`Protocolo Messi activado - Version Chad ${window.config.general.version}`} </span></h3>
+                <h3 class="rozed">ROZED <span class="version"> {version} </span></h3>
 
                 <Ripple/>
             </a>
@@ -101,11 +110,13 @@
             </div>
             {#if protocoloMessi}
                 <div class="messi"></div>
+            {:else if protocoloSerenito}
+                <!-- <div class="serenito"></div> -->
             {/if}
 
             <div class="nav-botones" style="position: relative;">
                 
-                {#if $globalStore.usuario.esAuxiliar}
+                {#if $globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar}
                     <a href="/Moderacion">
                         <!-- <span style="height: 48px;display: flex;align-items: center;"> -->
                             <!-- <icon class="fe fe-triangle"/>
@@ -119,7 +130,7 @@
                         </Button>
                     </a>
                 {/if}
-                {#if $globalStore.usuario.esAuxiliar}
+                {#if $globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar}
                     <DenunciasNav/>
                 {/if}
 
@@ -169,6 +180,11 @@
     /*NAVBAR*/
 .protocoloMessi  .nav-principal{
     background: rgb(0, 133, 241) !important;
+}
+.protocoloSerenito  .nav-principal{
+    background-image: url(/imagenes/serenito.gif) !important;
+    background-size: 98px !important;
+    background-position-y: center !important;
 }
 
 .nav-principal {
@@ -312,13 +328,13 @@ header {
 }
 .messi {
     background-image: url("/imagenes/messi.gif");
-    height: 48px;
+    height: 46px;
+    max-height: 100%;
     background-size: 70px;
     position: absolute;
     mix-blend-mode: overlay;
     width: 100%;
     pointer-events: none; 
-
 }
 /* Gorritos */
 /* .rozed::after {

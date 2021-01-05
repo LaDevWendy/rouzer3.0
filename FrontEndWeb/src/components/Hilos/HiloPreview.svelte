@@ -83,7 +83,7 @@ function onContextMenu(e) {
             </span>
             <li on:click={toggle}>{visible?'Ocultar':'Mostrar'} <Ripple/></li>
             <li on:click={() => abrir.reporte(hilo.id, "")}>Reportar <Ripple/></li>
-            {#if $globalStore.usuario.esAuxiliar}
+            {#if $globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar}
                 <li on:click={() => abrir.cambiarCategoria(hilo.id)} >Categoria <Ripple/></li>
                 <li on:click={() => abrir.eliminarHilo(hilo.id, "")} >Eliminar <Ripple/></li>
                 <li on:click={() => abrir.ban(hilo.id)} >Banear <Ripple/></li>

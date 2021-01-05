@@ -25,7 +25,7 @@ namespace WebApp
            await Groups.AddToGroupAsync(Context.ConnectionId, "home");
         }
 
-        [Authorize("esMod")]
+        [Authorize("esAuxiliar")]
         public async Task SubscribirAModeracion()
         {
            await Groups.AddToGroupAsync(Context.ConnectionId, "moderacion");
