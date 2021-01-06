@@ -20,7 +20,7 @@ namespace Modelos
     public enum CreacionRango
     {
         Anon,
-        Janitor,
+        Auxiliar,
         Mod,
         Admin,
     }

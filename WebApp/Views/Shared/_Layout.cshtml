@@ -115,7 +115,7 @@
     
     @{
         List<DenunciaModel> denuncias = null;
-        if ((User?.EsAuxiliar() ?? false) || (User?.EsMod() ?? false)) {
+        if ((User?.EsAuxiliar(gnrlOpt.ModoSerenito) ?? false) || (User?.EsMod() ?? false)) {
             denuncias =  await _context.Denuncias
             .Where(d => d.Estado == EstadoDenuncia.NoRevisada)
             .OrderByDescending(d => d.Creacion)

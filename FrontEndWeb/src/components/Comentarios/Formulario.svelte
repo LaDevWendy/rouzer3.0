@@ -29,10 +29,10 @@
 
         try {
             cargando = true
-            if(!$globalStore.usuario.esMod){
-                await RChanClient.crearComentario(hilo.id, $comentarioStore, media.archivo, media.link)
-            } else {
+            if($globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar && config.general.modoSerenito){
                 await RChanClient.crearComentario(hilo.id, $comentarioStore, media.archivo, media.link, "", mostrarNombre, mostrarRango)
+            } else {
+                await RChanClient.crearComentario(hilo.id, $comentarioStore, media.archivo, media.link)
             }
             if(!$globalStore.usuario.esMod) {
                 espera = config.general.tiempoEntreComentarios
@@ -68,7 +68,7 @@
         rows="10" placeholder="Que dificil discutir con pibes..."></textarea>
 
     <div class="acciones">
-        {#if $globalStore.usuario.esMod}
+        {#if $globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar && config.general.modoSerenito}
             <div style=" flex-direction:row; display:flex">
                 <Checkbox bind:checked={mostrarRango} right>Lucesitas</Checkbox>
                 <Checkbox bind:checked={mostrarNombre} right>Nombre</Checkbox>

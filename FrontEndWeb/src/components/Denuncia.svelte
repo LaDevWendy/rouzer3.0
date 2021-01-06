@@ -7,6 +7,7 @@
     import { createEventDispatcher } from 'svelte';
     import HiloPreviewMod from "./Moderacion/HiloPreviewMod.svelte";
     import {EstadoDenuncia, MotivoDenuncia} from "../enums"
+import globalStore from "../globalStore";
 
 	const dispatch = createEventDispatcher()
 
@@ -42,13 +43,19 @@
         <span style="background:var(--color2); padding:2px; border-radius: 4px">
             <Tiempo date={denuncia.creacion}/>
         </span>
-        <a class="userlink" href="/Moderacion/HistorialDeUsuario/{usuario.id}">{usuario.userName}</a>
-         denuncio a 
-         {#if denuncia.tipo == 0}
-         <a class="userlink" href="/Moderacion/HistorialDeUsuario/{hilo.usuario.id}">{hilo.usuario.userName}</a>
-         {:else}
-         <a class="userlink" href="/Moderacion/HistorialDeUsuario/{comentario.usuario.id}">{comentario.usuario.userName}</a>
-         {/if}
+        {#if $globalStore.usuario.esMod}
+            <a class="userlink" href="/Moderacion/HistorialDeUsuario/{usuario.id}">{usuario.userName}</a>
+            denuncio a 
+            {#if denuncia.tipo == 0}
+                <a class="userlink" href="/Moderacion/HistorialDeUsuario/{hilo.usuario.id}">{hilo.usuario.userName}</a>
+            {:else}
+                <a class="userlink" href="/Moderacion/HistorialDeUsuario/{comentario.usuario.id}">{comentario.usuario.userName}</a>
+            {/if}
+        {:else}
+            <span class="userlink" href="/#">Gordo</span>
+            denuncio a 
+            <span class="userlink" href="/#">Gordo</span>
+        {/if}
           por {motivos[denuncia.motivo]} {denuncia.aclaracion? `(${denuncia.aclaracion})`:''}
     </div>
 

@@ -103,7 +103,8 @@
     class:resaltado={comentario.resaltado  || resaltado|| $selectorStore.seleccionados.has(comentario.id)} 
     class="comentario {windowsWidh <= 400?"comentario-movil":""}" 
     class:eliminado = {comentario.estado == ComentarioEstado.eliminado}
-    class:comentarioMod = {comentario.rango > CreacionRango.Anon}
+    class:comentarioMod = {comentario.rango > CreacionRango.Auxliar}
+    class:comentarioAuxiliar = {comentario.rango == CreacionRango.Auxliar}
     r-id="{comentario.id}" id="{comentario.id}{esRespuesta?'-res':''}">
     <div  class="respuestas">
         {#each comentario.respuestas as r }
@@ -360,16 +361,33 @@
         animation: borde-luz 0.3s infinite alternate-reverse;
         
     }
+    
+    .comentarioMod >.color {
+        animation: luces 0.3s infinite alternate-reverse;
+        color: white !important;
+    }
+    .comentarioAuxiliar  {
+        border-top: solid 2px;
+        animation: borde-serenito 0.3s infinite alternate-reverse;
+        
+    }
+    .comentarioAuxiliar .color{
+        background: url(/imagenes/serenito.gif);
+        background-size: 161px;
+        color: transparent;
+        background-position: center;
+    }
+
     .nombreResaltado {
         color: var(--color6);
         font-weight: bold;
     }
 
-    .comentarioMod >.color {
-        animation: luces 0.3s infinite alternate-reverse;
-        color: white !important;
-    }
 
+    @keyframes borde-serenito {
+        0% {border-color: rgb(255, 136, 0);}
+        100% {border-color: transparent;}
+    }
     @keyframes borde-luz {
         0% {border-color: red;}
         100% {border-color: blue;}

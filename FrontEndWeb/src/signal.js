@@ -25,9 +25,10 @@ class Signal {
 }
 Signal.coneccion.start().then(() => {
     console.log("ConectandoSignal");
-    Signal.colaDeSubscripciones.forEach(s => {
-        s()
-    })
+    Promise.all(Signal.colaDeSubscripciones.map(s => s()))
+    // Signal.colaDeSubscripciones.forEach(s => {
+    //     s()
+    // })
     
 }).catch(console.error)
 

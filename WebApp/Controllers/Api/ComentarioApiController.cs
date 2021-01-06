@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.SignalR;
 using WebApp.Otros;
+using Microsoft.Extensions.Options;
 
 namespace WebApp.Controllers
 {
@@ -28,6 +29,7 @@ namespace WebApp.Controllers
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly NotificacioensService notificacioensService;
         private readonly AntiFloodService antiFlood;
+        private readonly IOptionsSnapshot<GeneralOptions> gnrlOpts;
         private readonly IMediaService mediaService;
 
         public ComentarioApiControlelr(
@@ -36,7 +38,8 @@ namespace WebApp.Controllers
             RChanContext chanContext,
             IHubContext<RChanHub> rchanHub,
             NotificacioensService notificacioensService,
-            AntiFloodService antiFlood
+            AntiFloodService antiFlood,
+            IOptionsSnapshot<GeneralOptions> gnrlOpts
         )
         {
             this.comentarioService = comentarioService;
@@ -44,6 +47,7 @@ namespace WebApp.Controllers
             this.rchanHub = rchanHub;
             this.notificacioensService = notificacioensService;
             this.antiFlood = antiFlood;
+            this.gnrlOpts = gnrlOpts;
             this.mediaService = mediaService;
         }
 
@@ -125,6 +129,11 @@ namespace WebApp.Controllers
             {
                 if(vm.MostrarNombre) comentario.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
                 if(vm.MostrarRango) comentario.Rango = CreacionRango.Mod;
+            }
+            if(!User.EsMod() && User.EsAuxiliar(gnrlOpts.Value.ModoSerenito))
+            {
+                if(vm.MostrarNombre) comentario.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
+                if(vm.MostrarRango) comentario.Rango = CreacionRango.Auxiliar;
             }
 
             await comentarioService.Guardar(comentario);

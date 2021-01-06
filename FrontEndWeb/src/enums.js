@@ -39,7 +39,7 @@ export class EstadoDenuncia
 export class CreacionRango 
 {
     static Anon = 0
-    static Janitor = 1
+    static Auxliar = 1
     static Mod = 2
     static Admin = 3
 

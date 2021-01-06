@@ -14,7 +14,7 @@
         mostrar = false
     }
 
-    if($globalStore.usuario.esMod) {
+    if($globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar) {
         Signal.subscribirAModeracion();
     }
 
