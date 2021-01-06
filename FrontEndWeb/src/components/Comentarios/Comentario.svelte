@@ -371,7 +371,7 @@
         animation: borde-serenito 0.3s infinite alternate-reverse;
         
     }
-    .comentarioAuxiliar .color{
+    .comentarioAuxiliar > .color{
         background: url(/imagenes/serenito.gif);
         background-size: 161px;
         color: transparent;

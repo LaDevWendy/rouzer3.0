@@ -12,10 +12,10 @@
     "RestriccionDeAcceso": 0,
     "MensajePaginaDeChoque": "Tinelli se meti\u00F3 en el orto a los meedz, tuvimos que cerrar rozed",
     "ModoMessi": false,
-    "ModoSerenito": false,
+    "ModoSerenito": true,
     "CaptchaHilo": false,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
-    "Version": "1.7.8"
+    "Version": "1.7.8F1"
   }
 }
