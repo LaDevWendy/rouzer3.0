@@ -14,6 +14,7 @@
     import Subir from './Subir.svelte'
     import { onMount } from 'svelte';
     import NavCategorias from './NavCategorias.svelte'
+    import NadieLoSabra from './Especiales/NadieLoSabra.svelte'
     // import Lucesitas from './Lucesitas.svelte'
     // import Cuetitos from './Especiales/Cuetitos.svelte'
     // import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
@@ -76,7 +77,7 @@
 
 <svelte:window  on:scroll={onScroll} bind:scrollY={scrollY}/>
 
-
+<NadieLoSabra/>
 <header
     class:oculta
     class:protocoloMessi
@@ -185,6 +186,9 @@
     background-image: url(/imagenes/serenito.gif) !important;
     background-size: 98px !important;
     background-position-y: center !important;
+}
+.protocoloSerenito :global(.noti-cont) {
+    background: #5f05fc !important;
 }
 
 .nav-principal {
