@@ -7,10 +7,12 @@
     import DialogoReporte from '../Dialogos/DialogoReporte.svelte';
     import Signal from '../../signal'
     import CarpetaMedia from './CarpetaMedia.svelte';
-import { onMount, tick } from 'svelte';
+    import { onMount, tick } from 'svelte';
+    import PilaRespuestas from './PilaRespuestas.svelte';
 
     export let hilo
     export let comentarios
+    let modoTelefono = true
     let nuevosComentarios = []
 
     function cargarNuevosComentarios() {
@@ -82,6 +84,11 @@ import { onMount, tick } from 'svelte';
     }
 
     function tagCliqueado(e) {
+        if(!diccionarioComentarios[e.detail]) return;
+        if(modoTelefono) {
+            e.preventDefault() 
+            historialRespuestas = [[diccionarioComentarios[e.detail]]]
+        }
         comentarios.forEach(c => c.resaltado = false)
         comentarios = comentarios
         diccionarioComentarios[e.detail].resaltado = true;
@@ -117,12 +124,15 @@ import { onMount, tick } from 'svelte';
     }
         
     let carpetaMedia = false
+    let historialRespuestas = []
 </script>
 <CarpetaMedia {comentarios} bind:visible={carpetaMedia}></CarpetaMedia>
 <div class="comentarios">
+    <PilaRespuestas {diccionarioComentarios} {diccionarioRespuestas} historial = {historialRespuestas}/>
     {#if !window.config.general.modoMessi || $globalStore.usuario.esMod}
         <Formulario {hilo}/>
     {/if}
+
     <div class="contador-comentarios panel">
         <h3>Comentarios ({comentarios.length}) 
         </h3>
@@ -155,6 +165,7 @@ import { onMount, tick } from 'svelte';
                     bind:comentario bind:comentariosDic = {diccionarioComentarios}
                     on:tagClickeado={tagCliqueado}
                     on:idUnicoClickeado={idUnicoClickeado}
+                    on:motrarRespuestas={(e)=>historialRespuestas=[diccionarioRespuestas[e.detail].map(c => diccionarioComentarios[c])]}
                     />
             </li>
             {/each}
@@ -170,7 +181,7 @@ import { onMount, tick } from 'svelte';
         /* scroll-snap-align: center; */
     }
     @media(max-width: 600px) {
-        .espacio-vacio {display: none;}
+        .espacio-vacio {height: 24px;}
     }
 
 </style>

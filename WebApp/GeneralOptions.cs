@@ -40,6 +40,8 @@ namespace WebApp
         public bool CaptchaHilo { get; set; }
         public bool CaptchaComentario { get; set; }
         public bool CaptchaRegistro { get; set; }
+
+        public string Flags { get; set; } = "";
         
         public string Version { get; set; }
 

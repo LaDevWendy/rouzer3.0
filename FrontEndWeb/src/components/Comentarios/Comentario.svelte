@@ -17,13 +17,14 @@
     export let hilo = { id:null };
     export let comentariosDic = {   };
     export let resaltado = false
+    export let prevenirScroll = false
+    export let respuetasCompactas = true
 
     export let esRespuesta = false
 
     comentario.estado = comentario.estado || ComentarioEstado.normal
     
     let el
-    let respuestas
     let mostrandoRespuesta = false
     let respuestaMostrada
 
@@ -35,17 +36,19 @@
     
     let dispatch = createEventDispatcher()
     
-    let mostrarMenu = false
-
-    
-
     onMount(() => {
 
         let respuestas = el.querySelectorAll(".restag")
         respuestas.forEach(r => {
             r.addEventListener("mouseover", () => mostrarRespuesta(r.getAttribute("r-id").trim()))
             r.addEventListener("mouseleave", ocultarRespuesta)
-            r.addEventListener("click", () => resaltarCliqueado(r.getAttribute("r-id").trim()))
+            r.addEventListener("click", (e) => {
+                resaltarCliqueado(r.getAttribute("r-id").trim())
+                if(prevenirScroll) {
+                    console.log("Scroll prevenido");
+                    e.preventDefault()
+                }
+            })
         })
     })
 
@@ -78,8 +81,6 @@
         selectorStore.selecionar(comentario.id)
     }
 
-    let mostrarReporte = true
-
     if(!Array.isArray(comentario.respuestas)) comentario.respuestas = []
 
     function tagear(id) {
@@ -106,14 +107,22 @@
     class:comentarioMod = {comentario.rango > CreacionRango.Auxliar}
     class:comentarioAuxiliar = {comentario.rango == CreacionRango.Auxliar}
     r-id="{comentario.id}" id="{comentario.id}{esRespuesta?'-res':''}">
-    <div  class="respuestas">
-        {#each comentario.respuestas as r }
-        <a href="#{r}" class="restag" r-id="{r}"
-            on:mouseover={() => mostrarRespuesta(r)}
-            on:mouseleave={ocultarRespuesta}
-        >&gt;&gt;{r}{esOp(r)?'(OP)' : ''} </a> 
-        {/each}
-    </div    >
+
+    {#if respuetasCompactas && comentario.respuestas.length > 0}
+        <div class="respuestas-compactas"
+            on:click={() => dispatch("motrarRespuestas", comentario.id)}>
+            R: {comentario.respuestas.length}
+        </div>
+    {:else}
+        <div  class="respuestas">
+            {#each comentario.respuestas as r }
+            <a href="#{r}" class="restag" r-id="{r}"
+                on:mouseover={() => mostrarRespuesta(r)}
+                on:mouseleave={ocultarRespuesta}
+            >&gt;&gt;{r}{esOp(r)?'(OP)' : ''} </a> 
+            {/each}
+        </div    >
+    {/if}
     <div on:click={() => dispatch("colorClick", comentario)} 
         class="color color-{comentario.color} ns"
         class:dado={comentario.dados != undefined && comentario.dados != -1}
@@ -208,6 +217,7 @@
         margin-bottom: 8px;
         text-underline-position: under;
         transition: 0.1s background-color linear;
+        position: relative;
     }
 
     .comentario .contenido {
@@ -229,13 +239,22 @@
     }
 
     .respuestas {
-        grid-row: 2;
         font-size: 0.7em;
         flex-wrap: wrap;
         display: flex;
         gap: 4px;
         flex-direction: row-reverse;
         justify-content: flex-end;
+    }
+    .respuestas-compactas {
+        grid-row: 2;
+        background: var(--color4);
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: 5px 10px;
+        border-radius: 10px 0 0 0px;
+        font-size: 12px;
     }
 
     .contenido .media {

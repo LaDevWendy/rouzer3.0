@@ -2,7 +2,7 @@
     import {Button, Checkbox,Radio} from 'svelte-mui'
     import config from '../../config'
     import RChanClient from '../../RChanClient'
-import Dialogo from '../Dialogo.svelte'
+    import Dialogo from '../Dialogo.svelte'
     import ErrorValidacion from '../ErrorValidacion.svelte'
 
     let model = window.model
@@ -154,6 +154,10 @@ import Dialogo from '../Dialogo.svelte'
                 {/each}
                 <li>Mensaje pagina de choque</li>
                 <textarea bind:value={model.config.mensajePaginaDeChoque} cols="30" rows="10"></textarea>
+                <li>
+                    Flags: 
+                    <input type="text" bind:value={model.config.flags}>
+                </li>
                 <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
             </ul>
         </div>

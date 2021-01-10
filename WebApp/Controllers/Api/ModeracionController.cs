@@ -333,13 +333,13 @@ namespace WebApp.Controllers
                 ModelState.AddModelError("Denuncia", "No se encontro la denuncia");
                 return BadRequest(ModelState);
             }
+            
             if(denuncia.Estado == EstadoDenuncia.Rechazada)
-            {
                 return Json(new ApiResponse("Denuncia rechazada"));
-            }
+            else if(denuncia.Estado == EstadoDenuncia.Aceptada)
+                return Json(new ApiResponse("No se puede rechazar una denuncia aceptada"));
 
             denuncia.Estado = EstadoDenuncia.Rechazada;
-
 
             await context.SaveChangesAsync();
 

@@ -33,14 +33,14 @@ namespace WebApp
 
             public override Task OnConnectedAsync()
         {
-            usuariosConectados.Add(Context.UserIdentifier);
+            usuariosConectados.Add(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
             Clients.All.SendAsync("estadisticas", RChanHub.NumeroDeUsuariosConectados);
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            usuariosConectados.Remove(Context.UserIdentifier);
+            usuariosConectados.Remove(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
             Clients.All.SendAsync("estadisticas", RChanHub.NumeroDeUsuariosConectados);
             return base.OnDisconnectedAsync(exception);
         }

@@ -44,6 +44,7 @@ namespace Modelos
                     IdUnico = GenerarIdUnico(hilo.Id, comentario.UsuarioId);
                 }
             }
+            Color = CalcularColor(hilo);
         }
         public ComentarioViewModel() {}
 
@@ -60,44 +61,61 @@ namespace Modelos
 
         public string IdUnico { get; set; } = "";
 
-        public string Color   {
-            get {
-                var r = new Random(Creacion.Millisecond + Creacion.Second * 60 + Creacion.Minute * 60 * 60 + Creacion.Hour * 60 * 60 * 60 + + Creacion.Day * 60 * 60 * 60 * 24);
+        public string Color { get; set; } = "naranja";
 
-                if(r.Next(10000) == 9)
+        private string CalcularColor(HiloModel hilo = null)
+        {
+            var r = new Random(Creacion.Millisecond + Creacion.Second * 60 + Creacion.Minute * 60 * 60 + Creacion.Hour * 60 * 60 * 60 + +Creacion.Day * 60 * 60 * 60 * 24);
+
+            // Black
+            const int categoriaParanormal = 15;
+            if(hilo != null && hilo.CategoriaId == categoriaParanormal)
+            {
+                var paraguayTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Paraguay Standard Time");
+		        var horaParaguay = TimeZoneInfo.ConvertTime(Creacion, paraguayTimeZone);
+
+                if(horaParaguay.Hour < 7 && horaParaguay.Hour >= 0 && r.Next(1000) == 666) 
+                    return "negro";
+            }
+
+            if (r.Next(10000) == 9)
+            {
+                r.Next();
+                return r.Next(4) switch
                 {
-                    r.Next();
-                    return r.Next(4) switch {
-                        0 => "rose-violeta",
-                        1 => "rose-castaña",
-                        2 => "rose-azul",
-                        3 => "rose-rubia",
-                        _ => "",
-                    };
-                }
-                if(r.Next(10000) == 10) return "navideño";
-                if(r.Next(2000) == 11) return "white";
-
-                if(r.Next(200) == 2) 
-                {
-                    return r.Next(2) switch {
-                        0 => "marron",
-                        1 => "rosa",
-                        _ => "",};
-                }
-
-                if(r.Next(20) == 10) return "multi";
-
-
-                return r.Next(4) switch {
-                    0 => "amarillo",
-                    1 => "azul",
-                    2 => "rojo",
-                    3 => "verde",
+                    0 => "rose-violeta",
+                    1 => "rose-castaña",
+                    2 => "rose-azul",
+                    3 => "rose-rubia",
                     _ => "",
                 };
             }
+            if (r.Next(10000) == 10) return "navideño";
+            if (r.Next(2000) == 11) return "white";
+
+            if (r.Next(200) == 2)
+            {
+                return r.Next(2) switch
+                {
+                    0 => "marron",
+                    1 => "rosa",
+                    _ => "",
+                };
+            }
+
+            if (r.Next(20) == 10) return "multi";
+
+
+            return r.Next(4) switch
+            {
+                0 => "amarillo",
+                1 => "azul",
+                2 => "rojo",
+                3 => "verde",
+                _ => "",
+            };
         }
+
         public int Dados { get; set; } = -1;
 
         static protected string GenerarIdUnico(string hiloId, string usuarioId)
