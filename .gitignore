@@ -10,6 +10,7 @@ Almacenamiento
 /static
 /UnitTests
 app.db
+/WebApp/estadisticas.json
 
 /WebApp/wwwroot/js/bundle.js
 /WebApp/wwwroot/js/bundle.js.map
