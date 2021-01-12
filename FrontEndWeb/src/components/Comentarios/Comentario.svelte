@@ -108,12 +108,11 @@
     class:comentarioAuxiliar = {comentario.rango == CreacionRango.Auxliar}
     r-id="{comentario.id}" id="{comentario.id}{esRespuesta?'-res':''}">
 
-    {#if respuetasCompactas && comentario.respuestas.length > 0}
+    {#if  comentario.respuestas.length > 0}
         <div class="respuestas-compactas"
             on:click={() => dispatch("motrarRespuestas", comentario.id)}>
             R: {comentario.respuestas.length}
         </div>
-    {:else}
         <div  class="respuestas">
             {#each comentario.respuestas as r }
             <a href="#{r}" class="restag" r-id="{r}"
