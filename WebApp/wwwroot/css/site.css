@@ -22,10 +22,12 @@ body {
    --color5: rgb(204 29 29);
    --color6: #fc9208;
    --color7:  rgb(53 78 103);
+   --color-texto1: white;
+   --color-texto2: rgb(255 255 255 / 56%);
    --primary:  var(--color5);
    --bg-panel: var(--color2) !important;
    --label: rgb(64 130 188 /30%) !important;
-   --color: white;
+   --color: var(--color-texto1);
    --bg-popover: var(--color2) !important;
    outline: none;
 }
@@ -81,7 +83,7 @@ body {
   background-color: #101923;
   font-family: Helvetica;
   font-weight: 200;
-  color: white;
+  color: var(--color-texto1);
   background-size: 130%;
   margin: 0;
   overflow-x: hidden;
@@ -107,7 +109,7 @@ ul {
 
 a {
   text-decoration: none;
-  color: white;
+  color: var(--color-texto1);
 }
 
 ul a {
@@ -130,7 +132,7 @@ h4 {
 .panel {
   padding: 10px;
   background: #0000001c;
-  color: white;
+  color: var(--color-texto1);
   border-radius: 4px;
 }
 
@@ -219,7 +221,7 @@ img {
 input,textarea,select,option {
   width: 100%;
   background: #741a1a00;
-  color: white;
+  color: var(--color-texto1);
   font-size: 16px;
   box-sizing: border-box;
   font-family: helvetica;
@@ -230,7 +232,7 @@ option {
   background: var(--color1);
   /* padding: 10px; */
   height: 20px;
-  color: white;
+  color: var(--color-texto1);
 }
 
 #form-comentario textarea{
@@ -845,7 +847,7 @@ justify-content: center;
     margin: 0;
 }
 .menu-principal li icon{
-    color: rgb(255 255 255 / 56%);
+    color: var(--color-texto2);
     padding: 0 16px;
     padding-right: 32px;
   }
@@ -878,4 +880,16 @@ input:-webkit-autofill:active  {
 }
 input:-webkit-autofill {
   -webkit-text-fill-color: white !important;
+}
+::placeholder { /* Most modern browsers support this now. */
+  color:   var(--color-texto2);
+}
+
+#fondo-global {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
 }

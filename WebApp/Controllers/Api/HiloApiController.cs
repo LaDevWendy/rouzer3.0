@@ -31,7 +31,7 @@ namespace WebApp.Controllers
         private readonly IOptionsSnapshot<GeneralOptions> generalOptions;
         private readonly CaptchaService captcha;
         private readonly AntiFloodService antiFlood;
-
+        private readonly EstadisticasService estadisticasService;
         private static readonly HashSet<string> denunciasIp = new HashSet<string>();
 
         #region constructor
@@ -44,7 +44,8 @@ namespace WebApp.Controllers
             IOptions<List<Categoria>> categoriasOpt,
             IOptionsSnapshot<GeneralOptions> generalOptions,
             CaptchaService captcha,
-            AntiFloodService antiFlood
+            AntiFloodService antiFlood,
+            EstadisticasService estadisticasService
         )
         {
             this.hiloService = hiloService;
@@ -56,6 +57,7 @@ namespace WebApp.Controllers
             this.generalOptions = generalOptions;
             this.captcha = captcha;
             this.antiFlood = antiFlood;
+            this.estadisticasService = estadisticasService;
         }
         #endregion
 
@@ -153,7 +155,8 @@ namespace WebApp.Controllers
             await rchanHub.Clients.Group("home").SendAsync("HiloCreado", viewModel);
             await rchanHub.Clients.Group("moderacion").SendAsync("HiloCreadoMod", viewModel);
 
-
+            await estadisticasService.RegistrarNuevoHilo();
+            
             return Created($"/Hilo/{id}", null);
         }
 

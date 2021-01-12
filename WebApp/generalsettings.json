@@ -16,7 +16,7 @@
     "CaptchaHilo": false,
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
-    "Flags": "jeje",
-    "Version": "1.7.8F2"
+    "Flags": "",
+    "Version": "1.8.0"
   }
 }

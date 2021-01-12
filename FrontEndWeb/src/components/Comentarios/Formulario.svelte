@@ -1,5 +1,5 @@
 <script>
-    import { fade, blur, fly } from 'svelte/transition';
+    import { createEventDispatcher } from 'svelte';
     import { Button, Checkbox} from 'svelte-mui'
     import comentarioStore from './comentarioStore'
     import RChanClient from '../../RChanClient'
@@ -8,12 +8,16 @@
     import Spinner from '../Spinner.svelte';
     import config from '../../config';
     import globalStore from '../../globalStore';
+
+    let dispatch = createEventDispatcher()
+
     export let hilo
 
     let cargando = false
 
     $comentarioStore
     let media
+    let mediaInput
 
     let mostrarRango = false
     let mostrarNombre = false
@@ -37,6 +41,8 @@
             if(!$globalStore.usuario.esMod) {
                 espera = config.general.tiempoEntreComentarios
             }
+            mediaInput.removerArchivo()
+            dispatch("comentarioCreado")
         } catch (e) {
             error = e.response.data
             cargando = false
@@ -60,7 +66,7 @@
 <form on:submit|preventDefault="" id="form-comentario" class="form-comentario panel">
     <ErrorValidacion {error}/>
 
-    <MediaInput bind:media={media} compacto={true}></MediaInput>
+    <MediaInput bind:this={mediaInput} bind:media={media} compacto={true}></MediaInput>
     <textarea 
         on:focus={onFocus} 
         bind:value={$comentarioStore} 

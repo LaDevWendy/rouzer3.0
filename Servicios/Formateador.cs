@@ -26,8 +26,9 @@ namespace Servicios
                 //Links
                 t = Regex.Replace(t, @"&gt;(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b(\S*)", m => {
                     var link = m.Value.Replace("&gt;", "");
+                    link = Regex.Replace(link, @"(http(s)?:\/\/)", "");
                     esLink = true;
-                    return $@"<a href=""{link}"" target=""_blank"">&gt;{link}</a>";
+                    return $@"<a href=""//{link}"" target=""_blank"">&gt;{link}</a>";
                 });
                 if(esLink) return t;
                 //Respuestas

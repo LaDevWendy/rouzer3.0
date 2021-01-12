@@ -9,6 +9,7 @@
 @inject IConfiguration config;
 @inject IOptionsSnapshot<GeneralOptions> generalOptions
 @inject IWebHostEnvironment env
+@inject EstadisticasService estadisticasService
 
 @{
     var version = generalOptions.Value.Version;
@@ -35,6 +36,8 @@
     <link rel="stylesheet" href="~/iconos/iconos.css?v=@version" />
     <link rel="stylesheet" href="~/css/site.css?v=@version" />
     <link rel="stylesheet" href="~/js/css/bundle.css?v=@version" />
+
+    <style id="skin"></style>
 
     <script src="https://hcaptcha.com/1/api.js" async defer></script>
 
@@ -136,7 +139,7 @@
         window.globalState = @Json.Serialize(globalState)
 
         window.denuncias = @Json.Serialize(denuncias);
-        window.estadisticas = @Json.Serialize(estadisticas);        
+        window.estadisticas = @Json.Serialize(await estadisticasService.GetEstadisticasAsync());        
     </script>
 
 </head>
@@ -194,7 +197,7 @@
 
     @* <partial name="_ValidationScriptsPartial" /> *@
     @* <script src="~/svelte/public/build/bundle.js"></script> *@
-
+    <div id="fondo-global"></div>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

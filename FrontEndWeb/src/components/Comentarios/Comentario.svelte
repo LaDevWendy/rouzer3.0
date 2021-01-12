@@ -18,7 +18,7 @@
     export let comentariosDic = {   };
     export let resaltado = false
     export let prevenirScroll = false
-    export let respuetasCompactas = true
+    export let respuetasCompactas = false
 
     export let esRespuesta = false
 
@@ -245,6 +245,7 @@
         gap: 4px;
         flex-direction: row-reverse;
         justify-content: flex-end;
+        grid-row: 2;
     }
     .respuestas-compactas {
         grid-row: 2;

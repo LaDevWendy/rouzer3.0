@@ -30,6 +30,10 @@
     }
     .cuerpo {
         padding: 0 10px;
+        direction: rtl;
+    }
+    .cuerpo * {
+        direction: ltr;
     }
     @media (max-width: 992px) {
 	.cuerpo :global(.media) {

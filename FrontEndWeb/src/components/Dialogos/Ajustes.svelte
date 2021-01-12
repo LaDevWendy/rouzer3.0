@@ -1,6 +1,7 @@
 <script>
-    import {Dialog, Button, Checkbox, ExpansionPanel} from 'svelte-mui'
+    import {Dialog, Button, Checkbox, ExpansionPanel, Ripple} from 'svelte-mui'
     import {localStore} from '../../localStore'
+import Skins from '../Personalizacion/Skins.svelte'
 
     export let visible = true
 
@@ -34,8 +35,8 @@
         let css = `
             body {
                 ${config.usarImagen?`background-image: url(${config.imagen})`: `background:${config.colorFondo}`}!important;
-                background-size:${config.modoCover?'cover':'auto'};
-                background-attachment: fixed;
+                background-size:${config.modoCover?'cover':'auto'} !important;
+                background-attachment: fixed !important;
             }
         `
         if(!config.fondoAburrido)
@@ -68,6 +69,7 @@
     let palabrasHideadas = localStore("palabrasHideadas", "")
 
     let group = '';
+
 </script>
 <div class="ajustes">
     <Dialog  width="500" bind:visible={visible}>
@@ -100,6 +102,9 @@
                 bind:value={$palabrasHideadas}
                 placeholder="Podes usar palabras y frases(palabras separadas guion bajo en vez de espacios). Ej sidoca huele tengo_un_video minubi insta se_le_da, etc"
                 cols="30" rows="10"></textarea>
+        </ExpansionPanel>
+        <ExpansionPanel bind:group name="Skins">
+           <Skins/>
         </ExpansionPanel>
         
         <div slot="actions" class="actions center">

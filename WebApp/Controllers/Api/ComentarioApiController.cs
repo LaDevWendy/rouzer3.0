@@ -30,6 +30,7 @@ namespace WebApp.Controllers
         private readonly NotificacioensService notificacioensService;
         private readonly AntiFloodService antiFlood;
         private readonly IOptionsSnapshot<GeneralOptions> gnrlOpts;
+        private readonly EstadisticasService estadisticasService;
         private readonly IMediaService mediaService;
 
         public ComentarioApiControlelr(
@@ -39,7 +40,8 @@ namespace WebApp.Controllers
             IHubContext<RChanHub> rchanHub,
             NotificacioensService notificacioensService,
             AntiFloodService antiFlood,
-            IOptionsSnapshot<GeneralOptions> gnrlOpts
+            IOptionsSnapshot<GeneralOptions> gnrlOpts,
+            EstadisticasService estadisticasService
         )
         {
             this.comentarioService = comentarioService;
@@ -48,6 +50,7 @@ namespace WebApp.Controllers
             this.notificacioensService = notificacioensService;
             this.antiFlood = antiFlood;
             this.gnrlOpts = gnrlOpts;
+            this.estadisticasService = estadisticasService;
             this.mediaService = mediaService;
         }
 
@@ -78,9 +81,9 @@ namespace WebApp.Controllers
                 antiFlood.HaComentado(User.GetId());
             }
 
-            var ids = comentarioService.GetIdsTageadas(vm.Contenido);
+            var comentariosIdsTageados = comentarioService.GetIdsTageadas(vm.Contenido);
 
-            if(ids.Length > 5) 
+            if(comentariosIdsTageados.Length > 5) 
             {
                 ModelState.AddModelError("Jeje", "No podes taguear mas de 5 comentarios. Ok?");
                 return BadRequest(ModelState);
@@ -148,10 +151,11 @@ namespace WebApp.Controllers
             var comentarioMod = new ComentarioViewModelMod(comentario){HiloId = hilo.Id};
             await rchanHub.Clients.Group("moderacion").SendAsync("NuevoComentarioMod", comentarioMod);
             
-            await notificacioensService.NotificarRespuestaAHilo(hilo, comentario);
-            await notificacioensService.NotificarRespuestaAComentarios(hilo, comentario);
+            await notificacioensService.Notificar(hilo, comentario);
 
             await context.SaveChangesAsync();
+
+            await estadisticasService.RegistrarNuevoComentario();
             return new ApiResponse("Comentario creado!");
         }
 

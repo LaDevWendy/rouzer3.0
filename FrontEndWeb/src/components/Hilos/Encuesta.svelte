@@ -159,7 +159,7 @@
     .opcion {
         flex: 2 1 0%;
         text-align: center;
-        color: #ffffffd1;
+        color: var(--color-texto1);
         /* font-weight: 600; */
         user-select: none;
     }

@@ -1,7 +1,11 @@
 <script>
     import { onMount } from "svelte";
+    import { configStore } from "../../config"
     let activo = false
-    let tembleque = Math.random() > 0.5 && activo
+
+    $: activo = $configStore.general.flags.includes("[3:33]")
+
+    $: tembleque = Math.random() > 0.5 && activo
 
     let audio = new Audio("/audio/re4regenerador.mp3")
     audio.loop = true
@@ -14,15 +18,8 @@
         }
     }
 
-    let horaCritica = new Date()
-    horaCritica.setHours(5,29,0,0)
-    
-    let horaTranquila = new Date()
-    horaTranquila.setHours(5,37,59,0)
-    
-    activo = new Date() > horaCritica && new Date() < horaTranquila
+
     setInterval(() => {
-        activo = new Date() > horaCritica && new Date() < horaTranquila
     },1000)
 
     

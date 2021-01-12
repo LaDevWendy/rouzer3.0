@@ -29,26 +29,9 @@ namespace Servicios
             this.context = context;
         }
 
-        public async Task NotificarRespuestaAHilo(HiloModel hilo, ComentarioModel comentario)
+        public async Task Notificar(HiloModel hilo, ComentarioModel comentario) 
         {
-            var notis = await context.HiloAcciones
-                .SeguidoresDeHilo(hilo.Id, context)
-                .Where(u => u.Id != comentario.UsuarioId)
-                .Select(u => new UserNoti(context.Notificaciones.FirstOrDefault(n => n.UsuarioId == u.Id && n.HiloId == comentario.HiloId && n.Tipo == NotificacionType.Comentario), u.Id))
-                .ToListAsync();
-
-            ActualizarNotificaciones(notis, comentario, NotificacionType.Comentario);
-
-            await context.SaveChangesAsync();
-
-            var ids = notis.Select(u => u.UsuarioId).ToList();
-            await EnviarNotificacionTiempoReal(hilo, comentario, ids, NotificacionType.Comentario);
-        }
-
-
-        public async Task NotificarRespuestaAComentarios(HiloModel hilo, ComentarioModel comentario)
-        {
-             var comentariosRespondidos = Regex.Matches(comentario.Contenido, @"&gt;&gt;([A-Z0-9]{8})")
+            var comentariosRespondidos = Regex.Matches(comentario.Contenido, @"&gt;&gt;([A-Z0-9]{8})")
                 .Select( m => m.Groups[1].Value)
                 .Distinct() 
                 .ToList();
@@ -63,6 +46,24 @@ namespace Servicios
             var ids = notis.Select(u => u.UsuarioId).ToList();
             await EnviarNotificacionTiempoReal(hilo, comentario, ids, NotificacionType.Respuesta);
             ActualizarNotificaciones(notis, comentario, NotificacionType.Respuesta);
+
+            notis = await context.HiloAcciones
+                .SeguidoresDeHilo(hilo.Id, context)
+                .Where(u => !context.Comentarios.Any(c => comentariosRespondidos.Contains(c.Id) && c.UsuarioId == u.Id))
+                .Where(u => u.Id != comentario.UsuarioId)
+                .Select(u => new UserNoti(context.Notificaciones.FirstOrDefault(n => n.UsuarioId == u.Id && n.HiloId == comentario.HiloId && n.Tipo == NotificacionType.Comentario), u.Id))
+                .ToListAsync();
+            //Cuando un usuario comenta, se buscan todos los usuarios a los que le respondio, por cada uno crea una notificacion
+            // Tambien crea una notificacion para todos los que siguen el roz
+            // Pero no deberia crear una notificacion de respuesta a roz sin se envio una de respuesta a comentario
+            // Osea tengo que ver los usuarios a los cuales les envie una noti por respuesta y filtrarlos de las lista de noti por comentario en roz
+
+            ActualizarNotificaciones(notis, comentario, NotificacionType.Comentario);
+
+            await context.SaveChangesAsync();
+
+            ids = notis.Select(u => u.UsuarioId).ToList();
+            await EnviarNotificacionTiempoReal(hilo, comentario, ids, NotificacionType.Comentario);
 
             await context.SaveChangesAsync();
         }

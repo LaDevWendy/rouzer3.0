@@ -65,7 +65,7 @@
 
     }
 
-    function removerArchivo() {
+    export function removerArchivo() {
         media.archivo = null
         media.link = ''
         archivoBlob = null
@@ -102,7 +102,7 @@
 <div 
     bind:this={el} 
     class:compacto class="video-preview media-input"
-    style="{ (media.archivo || media.link)&& mediaType != MediaType.Video?`background:url(${archivoBlob || media})`: 'background:url(/imagenes/rose2.jpg)'};overflow:hidden;">
+    style="{ (media.archivo || media.link)&& mediaType != MediaType.Video?`background:url(${archivoBlob || media})!important`: 'background:url(/imagenes/rose2.jpg)'};overflow:hidden;">
 
     {#if mediaType == MediaType.Video && media.archivo}
         <video src="{archivoBlob}"></video>

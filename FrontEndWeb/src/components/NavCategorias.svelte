@@ -28,7 +28,7 @@
         <div class="fe fe-circle"></div>
         <Ripple color="var(--color5)"/>
     </div>
-    <a href="/Favoritas" title="favoritas" class="colapsar-categorias favorita" style="display: flex;align-items: center;"><span class="fe fe-star"></span></a>
+    <a href="/Favoritas" title="favoritas" class="colapsar-categorias favorita categoria" style="display: flex;align-items: center;"><span class="fe fe-star"></span></a>
     <div title="Configurar favoritas" class="colapsar-categorias fe fe-settings categoria favorita cpt" on:click={() => configurando = true}></div>
 
     {#each config.categorias.filter(c => favoritas.includes(c.id)) as c (c.id)}
@@ -86,7 +86,7 @@
         grid-column: 1/21;
         padding: 2px 8px;
         font-size: 14px;
-        color: rgb(236, 244, 255);
+        color: var(--color-texto1);
         display: flex;
         align-items: center;
         height: fit-content;
@@ -142,6 +142,6 @@
         justify-content: center;
     }
     .favorita {
-        background:  #5F05F7;
+        background:  var(--color7);
     }
 </style>

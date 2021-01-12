@@ -111,7 +111,17 @@ namespace WebApp
                     }
                     pepe = um.Users.FirstOrDefault(u =>u.UserName == "pepe");
                     await um.AddClaimAsync(pepe, new Claim("Role", "admin"));
-                } 
+                }
+
+                // Inicializar estadisticas
+                var estadisticasService = scope.ServiceProvider.GetService<EstadisticasService>();
+                
+                await estadisticasService.Inicializar(new Estadisticas 
+                    {
+                        ComentariosCreados = ctx.Comentarios.Count(),
+                        HilosCreados = ctx.Hilos.Count(),
+                    }
+                );
             }
 
             host.Run();

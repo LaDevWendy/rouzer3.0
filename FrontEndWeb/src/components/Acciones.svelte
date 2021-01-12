@@ -24,12 +24,12 @@
 </script>
 
 <div class="panel acciones">
-    <Button bind:active={acciones.seguido} on:click={seguir} color={acciones.seguido?'var(--color5)':'grey'}  shaped  ><i class="fe fe-eye"></i>Seg</Button>
-    <Button bind:active={acciones.favorito} on:click={favoritear} color={acciones.favorito?'var(--color5)':'grey'}  shaped  ><i class="fe fe-star"></i>Fav</Button>
-    <Button bind:active={acciones.hideado} on:click={ocultar} color={acciones.hideado?'var(--color5)':'grey'}  shaped  ><i class="fe fe-eye-off"></i>Hide</Button>
+    <Button bind:active={acciones.seguido} on:click={seguir} color={acciones.seguido?'var(--color5)':'var(--color-texto2)'}  shaped  ><i class="fe fe-eye"></i>Seg</Button>
+    <Button bind:active={acciones.favorito} on:click={favoritear} color={acciones.favorito?'var(--color5)':'var(--color-texto2)'}  shaped  ><i class="fe fe-star"></i>Fav</Button>
+    <Button bind:active={acciones.hideado} on:click={ocultar} color={acciones.hideado?'var(--color5)':'var(--color-texto2)'}  shaped  ><i class="fe fe-eye-off"></i>Hide</Button>
 
     <Button  on:click={() => mostrarReporte = true} shaped color="red" ><i class="fe fe-flag"></i>Denunciar</Button>
-    <Button  color="white"  shaped  disabled ><i class="fe fe-clock"></i><Tiempo date={hilo.creacion} /></Button>
+    <Button  color="var(--color-texto1)"  shaped  disabled ><i class="fe fe-clock"></i><Tiempo date={hilo.creacion} /></Button>
 
     {#if hilo.rango > CreacionRango.Anon || hilo.nombre}
         <span class="mod">

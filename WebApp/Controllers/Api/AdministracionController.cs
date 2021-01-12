@@ -77,6 +77,21 @@ namespace WebApp.Controllers
         public async Task<ActionResult> ActualizarConfiguracion(GeneralOptions config, [FromServices] IWebHostEnvironment host) 
         {
             await config.Guardar(Path.Combine(host.ContentRootPath, "generalsettings.json"));
+
+            // Juntar con el layout
+            await rchanHub.Clients.Groups("rozed").SendAsync("configuracionActualizada", new {
+                config.TiempoEntreComentarios,
+                config.TiempoEntreHilos,
+                config.LimiteArchivo,
+                config.RegistroAbierto,
+                config.CaptchaHilo,
+                config.CaptchaComentario,
+                config.CaptchaRegistro,
+                config.Version,
+                config.ModoMessi,
+                config.ModoSerenito,
+                config.Flags});
+
             return Json(new ApiResponse("Configuracion actualizada"));
         }
 

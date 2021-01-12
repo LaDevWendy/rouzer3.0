@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 
 namespace WebApp
 {
@@ -137,6 +138,14 @@ namespace WebApp
                 return new MediaService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env, logger);
             });
             services.AddSingleton<FormateadorService>();
+
+            // Estadisticas
+            services.AddSingleton((sp)  => {
+                string ubicacionDeArchivo = Path.Join(sp.GetService<IWebHostEnvironment>().ContentRootPath, "estadisticas.json");
+                var estadisticas = new EstadisticasService(ubicacionDeArchivo, sp.GetService<IHubContext<RChanHub>>());
+                return estadisticas;
+
+            });
 
             services.AddAntiforgery(options => 
             {

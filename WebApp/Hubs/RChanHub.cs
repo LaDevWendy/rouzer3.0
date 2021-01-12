@@ -7,14 +7,21 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System;
+using Servicios;
 
 namespace WebApp
 {
     public class RChanHub : Hub
     {
         public static HashSet<string> usuariosConectados = new HashSet<string>();
+        private readonly EstadisticasService estadisticasService;
 
         public static int NumeroDeUsuariosConectados => RChanHub.usuariosConectados.Count;
+
+        public RChanHub(EstadisticasService estadisticasService)
+        {
+            this.estadisticasService = estadisticasService;
+        }
 
         public async Task SubscribirseAHilo(string hiloId)
         {
@@ -31,18 +38,24 @@ namespace WebApp
            await Groups.AddToGroupAsync(Context.ConnectionId, "moderacion");
         }
 
-            public override Task OnConnectedAsync()
+        [AllowAnonymous]
+        public async Task SubscribirARozed()
         {
-            usuariosConectados.Add(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
-            Clients.All.SendAsync("estadisticas", RChanHub.NumeroDeUsuariosConectados);
-            return base.OnConnectedAsync();
+           await Groups.AddToGroupAsync(Context.ConnectionId, "rozed");
         }
 
-        public override Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnConnectedAsync()
+        {
+            usuariosConectados.Add(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
+            await Clients.All.SendAsync("estadisticasActualizadas", await estadisticasService.GetEstadisticasAsync());
+            await base.OnConnectedAsync();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
             usuariosConectados.Remove(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
-            Clients.All.SendAsync("estadisticas", RChanHub.NumeroDeUsuariosConectados);
-            return base.OnDisconnectedAsync(exception);
+            await Clients.All.SendAsync("estadisticasActualizadas", await estadisticasService.GetEstadisticasAsync());
+            await base.OnDisconnectedAsync(exception);
         }
 
     }

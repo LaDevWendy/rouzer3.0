@@ -9,11 +9,13 @@
     import CarpetaMedia from './CarpetaMedia.svelte';
     import { onMount, tick } from 'svelte';
     import PilaRespuestas from './PilaRespuestas.svelte';
+    import {configStore} from '../../config'
 
     export let hilo
     export let comentarios
-    let modoTelefono = true
+    let modoTelefono = $globalStore.esCelular
     let nuevosComentarios = []
+    let modoVivo = false
 
     function cargarNuevosComentarios() {
         comentarios = [...nuevosComentarios, ...comentarios]
@@ -21,9 +23,6 @@
         comentarios.forEach(agregarComentarioADiccionario)
         comentarios.forEach(cargarRespuestas)
         // Añadir el restag a los comentarios tageados por este comentario
-        
-        agregarComentarioADiccionario(comentario)
-        cargarRespuestas(comentario)
         comentarios = comentarios;
     }
 
@@ -56,6 +55,7 @@
     function onComentarioCreado(comentario) {
         nuevosComentarios = [comentario, ...nuevosComentarios]
         comentario.respuestas = []
+        if(modoVivo) cargarNuevosComentarios()
     }
 
      Signal.coneccion.on("NuevoComentario", onComentarioCreado)
@@ -129,8 +129,8 @@
 <CarpetaMedia {comentarios} bind:visible={carpetaMedia}></CarpetaMedia>
 <div class="comentarios">
     <PilaRespuestas {diccionarioComentarios} {diccionarioRespuestas} historial = {historialRespuestas}/>
-    {#if !window.config.general.modoMessi || $globalStore.usuario.esMod}
-        <Formulario {hilo}/>
+    {#if !$configStore.general.modoMessi || $globalStore.usuario.esMod}
+        <Formulario {hilo} on:comentarioCreado={cargarNuevosComentarios}/>
     {/if}
 
     <div class="contador-comentarios panel">
@@ -143,6 +143,9 @@
         {/if}
         <div class="acciones-comentario">
             <!-- <i on:click={() => carpetaMedia = !carpetaMedia} class="fe fe-folder"></i> -->
+            <Button on:click={() => modoVivo = !modoVivo} 
+                dense icon> <div class="boton-modo-vivo" style={modoVivo?'background:var(--color5);':'background:white'}></div>
+            </Button>
             <Button on:click={() => carpetaMedia = !carpetaMedia} 
                 dense icon><icon class="fe fe-folder"></icon>
             </Button>
@@ -163,6 +166,7 @@
                     on:colorClick={(e) => resaltarComentariosDeUsuario(e.detail.usuarioId || '') } 
                     hilo={hilo} 
                     bind:comentario bind:comentariosDic = {diccionarioComentarios}
+                    respuetasCompactas={modoTelefono}
                     on:tagClickeado={tagCliqueado}
                     on:idUnicoClickeado={idUnicoClickeado}
                     on:motrarRespuestas={(e)=>historialRespuestas=[diccionarioRespuestas[e.detail].map(c => diccionarioComentarios[c])]}
@@ -179,6 +183,12 @@
     .espacio-vacio {
         height: 200px;   
         /* scroll-snap-align: center; */
+    }
+    .boton-modo-vivo {
+        width:8px;
+        height:8px;
+        border-radius:8px;
+        transition: background 0.2s;
     }
     @media(max-width: 600px) {
         .espacio-vacio {height: 24px;}

@@ -1,6 +1,6 @@
 <script>
     import {Ripple, Button} from 'svelte-mui'
-    import config from '../config'
+    import config, {configStore} from '../config'
     import FormularioHilo from './Hilos/FormularioHilo.svelte'
     import Notificaciones from './Notificaciones.svelte'
     import MenuPrincipal from './MenuPrincipal.svelte'
@@ -15,6 +15,7 @@
     import { onMount } from 'svelte';
     import NavCategorias from './NavCategorias.svelte'
     import NadieLoSabra from './Especiales/NadieLoSabra.svelte'
+    import Estadisticas from './Estadisticas.svelte';
     // import Lucesitas from './Lucesitas.svelte'
     // import Cuetitos from './Especiales/Cuetitos.svelte'
     // import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
@@ -25,15 +26,13 @@
     let mostrarMenu = false
     let mostrarFormularioHilo = false
     let computadorasConectadas = window.estadisticas.computadorasConectadas
-    let protocoloMessi = window.config.general.modoMessi 
-    let protocoloSerenito = window.config.general.modoSerenito 
+
+    let  protocoloMessi = false
+    $: protocoloMessi =  $configStore.general.modoMessi 
+    let  protocoloSerenito = false
+    $: protocoloSerenito =  $configStore.general.modoSerenito 
 
     let mostrarComputadorasConectadas = false
-
-    Signal.coneccion.on("estadisticas", e => {
-        computadorasConectadas = e
-        mostrarComputadorasConectadas = true;
-    })
 
     let oculta
     let ocultarCategorias = false
@@ -58,7 +57,7 @@
     // }
 
     let style = window.document.styleSheets[0];
-    if(protocoloMessi) {
+    $: if(protocoloMessi) {
         style.insertRule("body {--color5:rgb(28 185 208)!important}", style.cssRules.length)
     } else if(protocoloSerenito) {
         style.insertRule("body {--color5:rgb(255 124 36)!important}", style.cssRules.length)
@@ -90,6 +89,7 @@
             <div class="fondo" style="position:absolute;left:0;top:0;width:100%">
                 <!-- <Cuetitos/> -->
                 <!-- <CuentaRegresiva/> -->
+                <Estadisticas/>
             </div>
             <span on:click={() => mostrarMenu = !mostrarMenu} style="padding: 0 8px;">
                 <icon class="fe fe-menu"/>
@@ -235,10 +235,10 @@
     font-family: 'euroFighter';
     font-size: 18px;
     padding: 8px;
-    color: white;
+    color: var(--color-texto1);
 }
 :global(.nav-boton) {
-  color: white;
+  color: var(--color-texto1);
   display: inline-flex;
   position: relative;
 }

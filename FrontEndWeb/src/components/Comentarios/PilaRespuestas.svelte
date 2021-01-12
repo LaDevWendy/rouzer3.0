@@ -1,6 +1,6 @@
 <script>
     import Comentario from "./Comentario.svelte";
-    import {fade} from "svelte/transition"
+    import {fly} from "svelte/transition"
     import {Button} from 'svelte-mui'
 
     export let diccionarioRespuestas = {}
@@ -9,26 +9,22 @@
     let diccionarioComentariosMap = new Map(Object.keys(diccionarioComentarios).map(k => [k, diccionarioComentarios[k]]))
     let diccionarioRespuestasMap = new Map(Object.keys(diccionarioRespuestas).map(k => [k, diccionarioRespuestas[k]]))
 
-    export let historial = [
-        [diccionarioComentariosMap.get("OTQ5H6O8")]
-    ]
-    let comentariosMostrados = []
-
+    export let historial = []
 
     function atras() {
         historial.pop()
         historial = historial
     }
+
     function agregarComentariosAPila(comentarios) {
         comentarios = comentarios.filter(c => c && c.id)
         historial = [...historial, comentarios]
     }
 
-
 </script>
 {#if historial.length != 0}
-    <div transition:fade={{duration:200}} class="fondo" on:click={atras}>
-        <div class="pila-respuestas" on:click|stopPropagation>
+    <div class="fondo" on:click={atras}>
+        <div transition:fly={{duration:200, x:100}} class="pila-respuestas" on:click|stopPropagation>
             <div class="acciones">
                 <Button on:click={atras}>Atras</Button>
                 <Button on:click={() => historial = []}>Cerrar</Button>
@@ -39,6 +35,7 @@
                         <Comentario
                             prevenirScroll = {true}
                             comentario={c}
+                            respuetasCompactas={true}
                             on:tagClickeado={(e) => agregarComentariosAPila([diccionarioComentariosMap.get(e.detail)])}
                             on:motrarRespuestas={(e) => agregarComentariosAPila(diccionarioRespuestasMap.get(e.detail).map(  id => diccionarioComentariosMap.get(id)))}/>
                     </li>

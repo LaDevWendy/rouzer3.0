@@ -10,7 +10,7 @@ namespace WebApp
 
         public int HilosMaximosPorCategoria { get; set; }
         public bool ModoPrivado { get; set; }
-
+        
         public async Task Guardar(string ubicacion) {
             var configActualizado = new {
                 General = this

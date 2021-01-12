@@ -15,6 +15,10 @@ import EliminadosYDesactivados from './components/Paginas/EliminadosYDesactivado
 import MediaHome from './components/Paginas/MediaHome.svelte';
 import Historial from './components/Paginas/Historial.svelte';
 
+import skinStore from './components/Personalizacion/skinsStore'
+
+skinStore.applicarEstilo()
+
 // const app = new App({
 // 	target: document.body,
 // 	props: {
