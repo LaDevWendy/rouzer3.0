@@ -71,8 +71,8 @@ namespace Modelos
             const int categoriaParanormal = 15;
             if(hilo != null && hilo.CategoriaId == categoriaParanormal)
             {
-                var paraguayTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Paraguay Standard Time");
-		        var horaParaguay = TimeZoneInfo.ConvertTime(Creacion, paraguayTimeZone);
+                // var paraguayTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Paraguay Standard Time");
+		        var horaParaguay = Creacion.ToUniversalTime().AddHours(-3);
 
                 if(horaParaguay.Hour < 7 && horaParaguay.Hour >= 0 && r.Next(1000) == 666) 
                     return "negro";

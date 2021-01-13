@@ -109,8 +109,8 @@
     .media :global(.play) {
         position: absolute;
         top:50%;
-        left:50%;
-        transform: translateX(-50%) translateY(-50%) scale(2);
+        transform: translateX(50%) translateY(-50%) scale(2);
+        right: 50%;
     }
 
     .youtube-container {
