@@ -14,13 +14,11 @@ namespace WebApp
     public class RChanHub : Hub
     {
         public static HashSet<string> usuariosConectados = new HashSet<string>();
-        private readonly EstadisticasService estadisticasService;
 
         public static int NumeroDeUsuariosConectados => RChanHub.usuariosConectados.Count;
 
-        public RChanHub(EstadisticasService estadisticasService)
+        public RChanHub()
         {
-            this.estadisticasService = estadisticasService;
         }
 
         public async Task SubscribirseAHilo(string hiloId)
@@ -47,14 +45,12 @@ namespace WebApp
         public override async Task OnConnectedAsync()
         {
             usuariosConectados.Add(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
-            await Clients.All.SendAsync("estadisticasActualizadas", await estadisticasService.GetEstadisticasAsync());
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             usuariosConectados.Remove(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
-            await Clients.All.SendAsync("estadisticasActualizadas", await estadisticasService.GetEstadisticasAsync());
             await base.OnDisconnectedAsync(exception);
         }
 

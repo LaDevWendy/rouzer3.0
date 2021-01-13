@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,15 @@ namespace Servicios
         {
             this.ubicacionDeArchivo = ubicacionDeArchivo;
             this.rchanHub = rchanHub;
+
+            Task.Run(async () => {
+                var r = new Random();
+                while (true)
+                {
+                    await rchanHub.Clients.Group("rozed").SendAsync("estadisticasActualizadas", estadisticas);
+                    await Task.Delay(r.Next(7) * 1000);
+                }
+            });
         }
 
         public async Task Guardar()
@@ -37,10 +47,7 @@ namespace Servicios
 
         public async Task<Estadisticas> GetEstadisticasAsync()
         {
-            if (estadisticas is null)
-            {
-                estadisticas = JsonSerializer.Deserialize<Estadisticas>(await File.ReadAllTextAsync(ubicacionDeArchivo));
-            }
+            estadisticas = JsonSerializer.Deserialize<Estadisticas>(await File.ReadAllTextAsync(ubicacionDeArchivo));
             estadisticas.ComputadorasConectadas = RChanHub.NumeroDeUsuariosConectados;
             return estadisticas;
         }
@@ -48,14 +55,12 @@ namespace Servicios
         public async Task RegistrarNuevoHilo()
         {
             estadisticas.HilosCreados++;
-            await rchanHub.Clients.Group("rozed").SendAsync("estadisticasActualizadas", estadisticas);
             await Guardar();
         }
 
         public async Task RegistrarNuevoComentario()
         {
             estadisticas.ComentariosCreados++;
-            await rchanHub.Clients.Group("rozed").SendAsync("estadisticasActualizadas", estadisticas);
             await Guardar();
         }
 

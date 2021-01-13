@@ -9,7 +9,10 @@
     import CarpetaMedia from './CarpetaMedia.svelte';
     import { onMount, tick } from 'svelte';
     import PilaRespuestas from './PilaRespuestas.svelte';
-    import {configStore} from '../../config'
+    import config, {configStore} from '../../config'
+    import ajustesConfigStore from '../Dialogos/ajustesConfigStore'
+
+
 
     export let hilo
     export let comentarios
@@ -85,7 +88,7 @@
 
     function tagCliqueado(e) {
         if(!diccionarioComentarios[e.detail]) return;
-        if(modoTelefono) {
+        if(modoTelefono && !$ajustesConfigStore.tagClasico) {
             e.preventDefault() 
             historialRespuestas = [[diccionarioComentarios[e.detail]]]
         }

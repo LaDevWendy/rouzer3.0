@@ -106,7 +106,9 @@
     class:eliminado = {comentario.estado == ComentarioEstado.eliminado}
     class:comentarioMod = {comentario.rango > CreacionRango.Auxliar}
     class:comentarioAuxiliar = {comentario.rango == CreacionRango.Auxliar}
-    r-id="{comentario.id}" id="{comentario.id}{esRespuesta?'-res':''}">
+    r-id="{comentario.id}" id="{comentario.id}{esRespuesta?'-res':''}"
+    style={(comentario.respuestas.length > 0)?'padding-bottom: 20px': ''}
+    >
 
     {#if  comentario.respuestas.length > 0}
         <div class="respuestas-compactas"
@@ -255,6 +257,7 @@
         padding: 5px 10px;
         border-radius: 10px 0 0 0px;
         font-size: 12px;
+        color: var(--color5);
     }
 
     .contenido .media {
@@ -436,7 +439,7 @@
    color: var(--color5)
 }
 @media (max-width: 600px) {
-  .comentario :global(.restag) {
+  .comentario :global(.restag), .respuestas-compactas {
       font-weight: bold !important;
   }
   .comentario :global(a) {font-weight: bold !important;}
