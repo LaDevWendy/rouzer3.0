@@ -336,8 +336,6 @@ namespace Servicios
             var baneos = await _context.Bans.Where(d => d.HiloId == hilo.Id).ToListAsync();
             var acciones = await _context.HiloAcciones.Where(d => d.HiloId == hilo.Id).ToListAsync();
             var notis = await _context.Notificaciones.Where( n => n.HiloId == hilo.Id).ToListAsync();
-
-            var comentarios = await _context.Comentarios.Where(c => c.HiloId == hilo.Id).ToListAsync();
             var denuncias = await _context.Denuncias.Where(d => d.HiloId == hilo.Id).ToListAsync();
             
             _context.RemoveRange(acciones);
@@ -348,6 +346,14 @@ namespace Servicios
             {
                 _context.Remove(hilo);
             } 
+            else 
+            {
+                var comentarios = await  _context.Comentarios
+                    .Where(c => c.Hilo.Id == hilo.Id)
+                    .Where(c => !_context.Bans.Any(b => b.ComentarioId == c.Id))
+                    .ToListAsync();
+                _context.RemoveRange(comentarios);
+            }
             await _context.SaveChangesAsync();
         }
 

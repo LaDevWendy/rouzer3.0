@@ -30,10 +30,10 @@ namespace Servicios
 
     public class MediaService : IMediaService
     {
-        private string CarpetaDeAlmacenamiento { get; }
-        private readonly RChanContext context;
-        private readonly IWebHostEnvironment env;
-        private readonly ILogger<MediaService> logger;
+        protected string CarpetaDeAlmacenamiento { get; }
+        protected readonly RChanContext context;
+        protected readonly IWebHostEnvironment env;
+        protected readonly ILogger<MediaService> logger;
 
         public MediaService(string carpetaDeAlmacenamiento, RChanContext context, IWebHostEnvironment env, ILogger<MediaService> logger
 )
@@ -54,7 +54,7 @@ namespace Servicios
             return Uri.EscapeUriString(filenames[new Random().Next(filenames.Count())]);
         }
 
-        public async Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo)
+        public virtual async Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo)
         {
             bool esVideo = archivo.ContentType.Contains("video");
 
@@ -188,7 +188,7 @@ namespace Servicios
             return media;
         }
 
-        public async Task<bool> Eliminar(string id) 
+        public virtual async Task<bool> Eliminar(string id) 
         {
             var intentos = 25;
             var media = await context.Medias.FirstOrDefaultAsync(m => m.Id == id);

@@ -37,16 +37,16 @@ namespace WebApp
             Configuration = configuration;
         }
 
-        public Startup(IConfiguration configuration) 
+        public Startup(IConfiguration configuration)
         {
             this.Configuration = configuration;
-               
+
         }
                 public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {   
+        {
             services.AddSingleton<CaptchaService>();
             services.AddScoped<AntiFloodService>();
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
@@ -131,11 +131,17 @@ namespace WebApp
             // services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<HashService>();
             services.AddScoped<AccionesDeModeracionService>();
-            services.AddScoped<IMediaService, MediaService>(s =>
+            services.AddScoped<IMediaService, MediaTgService>(s =>
             {
                 var env = s.GetService<IWebHostEnvironment>();
-                var logger = s.GetService<ILogger<MediaService>>();
-                return new MediaService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env, logger);
+                var logger = s.GetService<ILogger<MediaTgService>>();
+                return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env, logger);
+            });
+            services.AddScoped(s =>
+            {
+                var env = s.GetService<IWebHostEnvironment>();
+                var logger = s.GetService<ILogger<MediaTgService>>();
+                return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env, logger);
             });
             services.AddSingleton<FormateadorService>();
 
@@ -147,7 +153,7 @@ namespace WebApp
 
             });
 
-            services.AddAntiforgery(options => 
+            services.AddAntiforgery(options =>
             {
                 // Set Cookie properties using CookieBuilder properties†.
                 // options.HeaderName = "X-CSRF-TOKEN-ROZED";
@@ -157,7 +163,7 @@ namespace WebApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MediaTgService mediaTgService)
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
@@ -202,6 +208,7 @@ namespace WebApp
             app.UseStaticFiles(
                 new StaticFileOptions { OnPrepareResponse = ConfigurarCache }
             );
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 // RequestPath = "/Media",
@@ -210,6 +217,9 @@ namespace WebApp
                     Path.Combine(Directory.GetCurrentDirectory(), "Almacenamiento")
                 ),
                 OnPrepareResponse = ConfigurarCache
+            });
+            app.Map("/Media", (app) => {
+                app.UseMiddleware<TelegramMediaHostingMiddleare>();
             });
 
             app.UseRouting();
