@@ -14,6 +14,7 @@
 	import {abrir} from './components/Dialogos/Dialogos.svelte'
 	import Encuesta from './components/Hilos/Encuesta.svelte'
 	import { HiloEstado } from './enums'
+import { onMount, tick } from 'svelte';
 
 
 	let data = window.data || dataEjemplo
@@ -29,8 +30,6 @@
 		},
 		categoria: {categoriaId: hilo.categoriaId}
 	}
-
-	let selected = true
 </script>
 
 <div class="hilo-completo" r-id={hilo.id}>

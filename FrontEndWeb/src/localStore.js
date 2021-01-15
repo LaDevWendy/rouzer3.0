@@ -17,7 +17,7 @@ export const localStore = (key, initial) => {                 // receives the ke
     subscribe,
     set: (value) => {
         // console.log(value)
-        localStorage.setItem(key, toString(Object.assign(initial, value)))              // save also to local storage as a string
+        localStorage.setItem(key, toString(Object.assign(value, initial)))              // save also to local storage as a string
         return set(value)
     },
     update

@@ -22,11 +22,12 @@
     align-self: center;
     font-family: eurofighter;
     color: white;
+    background: var(--color2);
 }
 
 span {
     position: relative;
-    left: 1px;
+    left: 4px;
     top: 4px;
 }
 

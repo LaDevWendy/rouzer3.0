@@ -96,8 +96,8 @@
                 <Ripple/>
             </span>
             <a href="/" style="font-family: euroFighter">
-                <h3 class="rozed">ROZED <span class="version"> {version} </span></h3>
-
+                <h3 class="rozed">ROZED <span class="version"> {version} </span>
+                </h3>
                 <Ripple/>
             </a>
             <!-- <CuentaRegresiva/> -->
@@ -370,7 +370,16 @@ header {
 .modoSticky .fondo {
     height: 36px;
 }
-
+.luto {
+    background: url(/imagenes/luto.png);
+    width: 16px;
+    height: 50px;
+    background-size: 100%;
+    position: absolute;
+    top: 11px;
+    background-repeat: no-repeat;
+    left: 78px;
+}
 /* .estadisticas span {
     animation: baja 5s infinite linear;
 }

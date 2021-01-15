@@ -11,6 +11,7 @@ export default [
             --color-texto1: black;
             --color-texto2: orangered;
             --color4: orangered;
+            --color7: #ffc253ed;
         }
         
         .media-input {
@@ -21,7 +22,7 @@ export default [
             background: black !important;
         }
         
-        .crear-hilo-boton, .categoria, .comentario .tag, comentario, .media-input, .cuerpo {
+        .crear-hilo-boton, .categoria, .comentario .tag, comentario, .media-input, .cuerpo, .respuestas-compactas {
             color: white !important;
         }
         
@@ -42,18 +43,10 @@ export default [
         }
         
         #fondo-global {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            background: #e3fdff4d;
-            height: 100vh;
-            
-            z-index: -1;
-        }
-        body{
             background-image: url(https://www.carpixel.net/w/4ea482b90e147057f9d64b18d765772e/porsche-911-gt3-r-hybrid-wallpaper-hd-49401.jpg) !important;
+            
         }
+
         .media-input, .menu-principal-header {
             background-image: url(https://www.carpixel.net/w/4ea482b90e147057f9d64b18d765772e/porsche-911-gt3-r-hybrid-wallpaper-hd-49401.jpg) !important;
             background-size: cover !important;

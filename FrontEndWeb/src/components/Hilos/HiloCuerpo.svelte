@@ -18,7 +18,7 @@
         flex-wrap: wrap;
     }
 
-    .mediaExpandido h1 {
+    .mediaExpandido h1, .mediaExpandido .texto {
         width: 100%;
     }
 

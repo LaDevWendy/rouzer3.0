@@ -84,12 +84,12 @@ body {
   font-family: Helvetica;
   font-weight: 200;
   color: var(--color-texto1);
-  background-size: 130%;
+  /* background-size: 130%; */
   margin: 0;
   overflow-x: hidden;
   backdrop-filter: none;
-  background-attachment: fixed;
-  background-size: contain;
+  /* background-attachment: fixed;
+  background-size: contain; */
 }
 .ns {
   user-select: none;
@@ -892,4 +892,6 @@ input:-webkit-autofill {
   width: 100vw;
   height: 100vh;
   z-index: -1;
+  transform:translatez(0);
+  -webkit-transform:translatez(0);
 }

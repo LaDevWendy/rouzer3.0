@@ -11,6 +11,8 @@
     import PilaRespuestas from './PilaRespuestas.svelte';
     import config, {configStore} from '../../config'
     import ajustesConfigStore from '../Dialogos/ajustesConfigStore'
+    import Spinner from '../Spinner.svelte';
+    import { localStore} from '../../localStore'
 
 
 
@@ -18,7 +20,7 @@
     export let comentarios
     let modoTelefono = $globalStore.esCelular
     let nuevosComentarios = []
-    let modoVivo = false
+    let modoVivo = localStore("Comentarios_modovivo", false);
 
     function cargarNuevosComentarios() {
         comentarios = [...nuevosComentarios, ...comentarios]
@@ -58,7 +60,7 @@
     function onComentarioCreado(comentario) {
         nuevosComentarios = [comentario, ...nuevosComentarios]
         comentario.respuestas = []
-        if(modoVivo) cargarNuevosComentarios()
+        if($modoVivo) cargarNuevosComentarios()
     }
 
      Signal.coneccion.on("NuevoComentario", onComentarioCreado)
@@ -128,6 +130,10 @@
         
     let carpetaMedia = false
     let historialRespuestas = []
+
+    let cargarComentarios = false;
+    onMount(() => setTimeout(() => cargarComentarios = true, 120))
+    
 </script>
 <CarpetaMedia {comentarios} bind:visible={carpetaMedia}></CarpetaMedia>
 <div class="comentarios">
@@ -146,8 +152,9 @@
         {/if}
         <div class="acciones-comentario">
             <!-- <i on:click={() => carpetaMedia = !carpetaMedia} class="fe fe-folder"></i> -->
-            <Button on:click={() => modoVivo = !modoVivo} 
-                dense icon> <div class="boton-modo-vivo" style={modoVivo?'background:var(--color5);':'background:white'}></div>
+            <Button on:click={() => $modoVivo = !$modoVivo} 
+                title="Comentarios en vivo (se cargan automaticamente)"
+                dense icon> <div class="boton-modo-vivo" style={$modoVivo?'background:var(--color5);':'background:white'}></div>
             </Button>
             <Button on:click={() => carpetaMedia = !carpetaMedia} 
                 dense icon><icon class="fe fe-folder"></icon>
@@ -162,20 +169,21 @@
         </div>
     </div>
     <div class="lista-comentarios">
-        {#each comentarios as comentario (comentario.id)}
-            <li transition:fly|local={{y: -50, duration:250}}>
-
-                <Comentario 
-                    on:colorClick={(e) => resaltarComentariosDeUsuario(e.detail.usuarioId || '') } 
-                    hilo={hilo} 
-                    bind:comentario bind:comentariosDic = {diccionarioComentarios}
-                    respuetasCompactas={modoTelefono}
-                    on:tagClickeado={tagCliqueado}
-                    on:idUnicoClickeado={idUnicoClickeado}
-                    on:motrarRespuestas={(e)=>historialRespuestas=[diccionarioRespuestas[e.detail].map(c => diccionarioComentarios[c])]}
-                    />
-            </li>
+        <Spinner cargando={!cargarComentarios}>
+            {#each comentarios as comentario (comentario.id)}
+                <li transition:fly|local={{y: -50, duration:250}}>
+                    <Comentario 
+                        on:colorClick={(e) => resaltarComentariosDeUsuario(e.detail.usuarioId || '') } 
+                        hilo={hilo} 
+                        bind:comentario bind:comentariosDic = {diccionarioComentarios}
+                        respuetasCompactas={modoTelefono}
+                        on:tagClickeado={tagCliqueado}
+                        on:idUnicoClickeado={idUnicoClickeado}
+                        on:motrarRespuestas={(e)=>historialRespuestas=[diccionarioRespuestas[e.detail].map(c => diccionarioComentarios[c])]}
+                        />
+                </li>
             {/each}
+        </Spinner>
             
         </div>
         <div class="espacio-vacio"></div>
@@ -195,6 +203,9 @@
     }
     @media(max-width: 600px) {
         .espacio-vacio {height: 24px;}
+    }
+    :global(.loader) {
+        margin: 0 auto;
     }
 
 </style>

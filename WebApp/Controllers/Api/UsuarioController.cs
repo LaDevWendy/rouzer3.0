@@ -214,7 +214,7 @@ namespace WebApp.Controllers
 
             if(ban != null) return this.RedirectJson($"/Domado/{ban.Id}");
 
-            await signInManager.RefreshSignInAsync(user);
+            await signInManager.SignInAsync(user, true);
             return this.RedirectJson("/");
         }
 

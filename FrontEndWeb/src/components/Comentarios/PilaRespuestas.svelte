@@ -18,6 +18,7 @@
 
     function agregarComentariosAPila(comentarios) {
         comentarios = comentarios.filter(c => c && c.id)
+        comentarios = [...new Set(comentarios)]
         historial = [...historial, comentarios]
     }
 

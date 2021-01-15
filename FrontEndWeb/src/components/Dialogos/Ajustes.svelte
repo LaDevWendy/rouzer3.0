@@ -11,19 +11,17 @@
     setTimeout(actualizarConfiguracion, 1)
     function actualizarConfiguracion() {
         let css = `
-            body {
-                ${$ajustesConfigStore.usarImagen?`background-image: url(${$ajustesConfigStore.imagen})`: `background:${$ajustesConfigStore.colorFondo}`}!important;
-                background-size:${$ajustesConfigStore.modoCover?'cover':'auto'} !important;
-                background-attachment: fixed !important;
+            #fondo-global {
+                ${$ajustesConfigStore.usarImagen?`background-image: url(${$ajustesConfigStore.imagen})`: `background:${$ajustesConfigStore.colorFondo}`};
+                background-size:${$ajustesConfigStore.modoCover?'cover':'auto'} ;
             }
         `
         if(!$ajustesConfigStore.fondoAburrido)
         {
             css = `
-            body {
-                background-image: url(/imagenes/rosed.png) !important;
-                background-size:auto !important;
-                background-attachment: contain !important;
+            #fondo-global {
+                background-image: url(/imagenes/rosed.png) ;
+                background-size:auto ;
             }
         `
         }
