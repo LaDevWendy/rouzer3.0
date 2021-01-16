@@ -37,11 +37,11 @@ public class TelegramMediaHostingMiddleare
             ctx.Response.Headers["cache-control"] = "public, max-age=31536000";
             ctx.Response.Headers["content-length"] = archivoInfo.FileSize.ToString();
 
-            if (ext == "mp4" || ext == "webm")
-            {
-                ctx.Response.StatusCode = 206;
-                ctx.Response.Headers["content-range"] = $"bytes 0-{archivoInfo.FileSize - 1}/{archivoInfo.FileSize}";
-            }
+            // if (ext == "mp4" || ext == "webm")
+            // {
+            //     ctx.Response.StatusCode = 206;
+            //     ctx.Response.Headers["content-range"] = $"bytes 0-{archivoInfo.FileSize - 1}/{archivoInfo.FileSize}";
+            // }
 
             await mediaTgService.DescargarArchivoTg(archivoId, ctx.Response.Body);
         }
