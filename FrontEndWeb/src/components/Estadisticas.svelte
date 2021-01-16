@@ -8,7 +8,7 @@
     let rozCreados = window.estadisticas.hilosCreados;
     let comentariosCreados = window.estadisticas.comentariosCreados;
     let estabilidad = window.estadisticas.estabilidad;
-    let visible = localStore("Estadisticas_visiible", false);
+    let estadisticasStore = localStore("Estadisticas", {visible: false});
 
     function formatear(numero) {
         if (numero >= 1000) return `${(numero / 1000).toFixed(2)}K`;
@@ -22,12 +22,12 @@
     })
 </script>
 
-{#if $visible}
+{#if $estadisticasStore.visible}
     <div
         class="container"
         transition:fly={{ opacity: 1, y: -48, duration:300 }}
         style="position:absolute; width:100vw;z-index: 1;height: 100%; pointer-events: none !important;">
-        <div class="estadisticas " on:click={() => ($visible = false)}>
+        <div class="estadisticas " on:click={() => ($estadisticasStore.visible = false)}>
             <span
                 style="right: 68%;"
                 title="Computadoras conectadas">{formatear(computadorasConectadas)}</span>
@@ -44,7 +44,7 @@
     </div>
 {/if}
 
-<div on:click={() => ($visible = true)} class="desplegar-estadisticas">
+<div on:click={() => ($estadisticasStore.visible = true)} class="desplegar-estadisticas">
     <span class="fe fe-bar-chart-2" />
     <Ripple />
 </div>

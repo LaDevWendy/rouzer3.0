@@ -20,7 +20,7 @@
     export let comentarios
     let modoTelefono = $globalStore.esCelular
     let nuevosComentarios = []
-    let modoVivo = localStore("Comentarios_modovivo", false);
+    let comentariosStore = localStore("Comentarios", {modoVivo : false});
 
     function cargarNuevosComentarios() {
         comentarios = [...nuevosComentarios, ...comentarios]
@@ -60,7 +60,7 @@
     function onComentarioCreado(comentario) {
         nuevosComentarios = [comentario, ...nuevosComentarios]
         comentario.respuestas = []
-        if($modoVivo) cargarNuevosComentarios()
+        if($comentariosStore.modoVivo) cargarNuevosComentarios()
     }
 
      Signal.coneccion.on("NuevoComentario", onComentarioCreado)
@@ -152,9 +152,9 @@
         {/if}
         <div class="acciones-comentario">
             <!-- <i on:click={() => carpetaMedia = !carpetaMedia} class="fe fe-folder"></i> -->
-            <Button on:click={() => $modoVivo = !$modoVivo} 
+            <Button on:click={() => $comentariosStore.modoVivo = !$comentariosStore.modoVivo} 
                 title="Comentarios en vivo (se cargan automaticamente)"
-                dense icon> <div class="boton-modo-vivo" style={$modoVivo?'background:var(--color5);':'background:white'}></div>
+                dense icon> <div class="boton-modo-vivo" style={$comentariosStore.modoVivo?'background:var(--color5);':'background:white'}></div>
             </Button>
             <Button on:click={() => carpetaMedia = !carpetaMedia} 
                 dense icon><icon class="fe fe-folder"></icon>

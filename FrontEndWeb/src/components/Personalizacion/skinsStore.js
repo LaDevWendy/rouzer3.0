@@ -19,6 +19,7 @@ store.restaurarSkins = function restaurarSkins() {
             activo:'Classic',
             skins: skinsPorDefecto
         }
+        console.log(skins)
         document.getElementById("skin")
             .innerHTML = skins.skins.filter(s => s.nombre == skins.activo)[0].style
         return skins;

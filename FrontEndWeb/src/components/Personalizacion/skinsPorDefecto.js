@@ -179,7 +179,7 @@ export default [
         style: ``
     },
     {
-        nombre: 'Skin de usuario 4',
+        nombre: 'Skin de usuario 5',
         style: ``
     }
 ]
