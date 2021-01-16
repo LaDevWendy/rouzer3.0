@@ -32,7 +32,7 @@ public class TelegramMediaHostingMiddleare
                 return;
             }
 
-            string ext = archivoInfo.FilePath.Split(".").Last();
+            string ext = ctx.Request.Path.Value.Split(".").Last();
             ctx.Response.Headers["content-type"] = $"{("mp4 webm".Split(" ").Contains(ext) ? "video" : "image")}/{ext}";
             ctx.Response.Headers["cache-control"] = "public, max-age=31536000";
             ctx.Response.Headers["content-length"] = archivoInfo.FileSize.ToString();
