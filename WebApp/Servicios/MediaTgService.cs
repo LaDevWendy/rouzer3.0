@@ -82,9 +82,9 @@ namespace Servicios
             // Guardo las imagenes en tg
             var tgMedia = new TgMedia();
 
-            var msg = await bot.SendDocumentAsync(chat, new InputOnlineFile(archivoStream, media.Url));
+            var msg = await bot.SendDocumentAsync(chat, new InputOnlineFile(archivoStream, "img"));
             tgMedia.UrlTgId = msg.Document.FileId;
-            media.Url = media.Url + $"?t={msg.Document.FileId}";
+            media.Url += $"?t={msg.Document.FileId}";
 
             tgMedia.VistaPreviaCuadradoTgId = await SubirImagenATg(cuadradito);
             tgMedia.VistaPreviaTgId = await SubirImagenATg(thumbnail);

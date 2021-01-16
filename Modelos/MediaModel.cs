@@ -15,7 +15,7 @@ namespace Modelos
         public string VistaPreviaCuadradoLocal =>  Tipo != MediaType.Eliminado? $"/PC_{Hash}.jpg": "";
         public string Hash { get; set; }
         public MediaType Tipo { get; set; } = MediaType.Imagen;
-        public bool EsGif => Path.GetExtension(Url) == ".gif";
+        public bool EsGif => Url.Contains(".gif");
 
         public TgMedia TgMedia { get; set; }
     }
