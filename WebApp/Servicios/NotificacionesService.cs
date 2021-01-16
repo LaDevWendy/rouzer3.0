@@ -79,7 +79,7 @@ namespace Servicios
                                 Tipo = tipo,
                                 Contenido = comentario.Contenido,
                                 HiloTitulo = hilo.Titulo,
-                                HiloImagen = new MediaModel { Hash = hilo.MediaId }.VistaPreviaCuadrado
+                                HiloImagen = hilo.Media.VistaPreviaCuadrado
                             });
         }
 

@@ -132,7 +132,11 @@
     let historialRespuestas = []
 
     let cargarComentarios = false;
-    onMount(() => setTimeout(() => cargarComentarios = true, 120))
+    onMount(async() => setTimeout( async () => {
+        cargarComentarios = true
+        await tick();
+        irAComentario(comentarioUrl)
+    }, 120))
     
 </script>
 <CarpetaMedia {comentarios} bind:visible={carpetaMedia}></CarpetaMedia>

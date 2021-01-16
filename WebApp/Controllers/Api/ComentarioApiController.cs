@@ -62,7 +62,10 @@ namespace WebApp.Controllers
                 ModelState.AddModelError("uy!", "El comentario no puede estar vacio padre");
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
-            var hilo = await context.Hilos.FirstOrDefaultAsync(c => c.Id == vm.HiloId);
+            var hilo = await context.Hilos
+                .Include(h => h.Media)
+                .FirstOrDefaultAsync(c => c.Id == vm.HiloId);
+                
             if(hilo is null) return NotFound();
 
             if(hilo.Estado != HiloEstado.Normal) 

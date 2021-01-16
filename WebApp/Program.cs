@@ -55,19 +55,19 @@ namespace WebApp
                     }
                 }
                 
-                var hiloService = scope.ServiceProvider.GetService<IHiloService>();
+                // var hiloService = scope.ServiceProvider.GetService<IHiloService>();
 
-                try
-                {
-                    logger.LogInformation("Intentando limpiar los hilos viejos");
-                    await hiloService.LimpiarHilosViejos();
+                // try
+                // {
+                //     logger.LogInformation("Intentando limpiar los hilos viejos");
+                //     await hiloService.LimpiarHilosViejos();
                     
-                }
-                catch (Exception e)
-                {
-                    logger.LogInformation("Hubo un error al limpiar los hilos viejos");
-                    logger.LogError(e.ToString());
-                }
+                // }
+                // catch (Exception e)
+                // {
+                //     logger.LogInformation("Hubo un error al limpiar los hilos viejos");
+                //     logger.LogError(e.ToString());
+                // }
 
 
                 // //Prueba limpiar roz

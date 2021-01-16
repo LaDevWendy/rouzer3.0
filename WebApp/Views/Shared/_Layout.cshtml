@@ -166,7 +166,7 @@
                         Id = n.Id,
                         HiloId = n.HiloId,
                         HiloTitulo = _context.Hilos.First(h => h.Id == n.HiloId).Titulo,
-                        HiloImagen = _context.Medias.First(m => m.Id == _context.Hilos.First(h => h.Id == n.HiloId).MediaId).VistaPreviaCuadrado,
+                        HiloImagen = n.Hilo.Media.VistaPreviaCuadrado,
                         ComentarioId = n.ComentarioId,
                         Tipo = n.Tipo,
                         Conteo = n.Conteo,
