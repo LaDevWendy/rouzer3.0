@@ -69,7 +69,7 @@
     
     let scrollY
 
-    let version = `Union de Religiones - Version Chad ${window.config.general.version}`
+    let version = `La infaltable - Version Chad ${window.config.general.version}`
     if(protocoloMessi) version = `Protocolo Messi activado - Version Chad ${window.config.general.version}`
     else if(protocoloSerenito) version = `Protocolo Serenito activado - Version Chad ${window.config.general.version}`
 </script>
@@ -96,7 +96,7 @@
                 <Ripple/>
             </span>
             <a href="/" style="font-family: euroFighter">
-                <h3 class="rozed">ROZED <span class="version"> {version} </span>
+                <h3 class="rozed">ROZED <span class="version">{version} </span>
                 </h3>
                 <Ripple/>
             </a>
