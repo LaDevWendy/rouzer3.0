@@ -102,7 +102,11 @@ namespace Servicios
         public override async Task<bool> Eliminar(string id)
         {
             var media = await context.Medias.FirstOrDefaultAsync(m => m.Id == id);
-            if(media.TgMedia != null) return true;
+            if(media.TgMedia != null) {
+                media.Tipo = MediaType.Eliminado;
+                await context.SaveChangesAsync();
+                return true;
+            };
 
             return await base.Eliminar(id);
         }
