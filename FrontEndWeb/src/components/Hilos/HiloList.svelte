@@ -8,11 +8,13 @@
     import RChanClient from '../../RChanClient';
     import Signal from '../../signal';
     import { localStore } from '../../localStore';
+    import ajustesConfigStore from '../Dialogos/ajustesConfigStore'
+
 
     export let hiloList
     export let noCargarNuevos = false
 
-    hiloList.categoriasActivas == hiloList.categoriasActivas ||  $globalStore.categoriasActivas.includes(hilo.categoriaId) //??quitado
+    hiloList.categoriasActivas == hiloList.categoriasActivas ||  $ajustesConfigStore.palabrasHideadasglobalStore.categoriasActivas.includes(hilo.categoriaId) //??quitado
 
     $:hiloList.hilos = hiloList.hilos.filter(h => !estaOculto(h))
     // let palabrasHideadasString = localStore("palabrasHideadas", "")
@@ -73,8 +75,8 @@
         }
     }
 
-    let palabrasHideadasStore = localStore("palabrasHideadas", "");
-    let palabrasHideadas = $palabrasHideadasStore
+    if(!$ajustesConfigStore.palabrasHideadas) $ajustesConfigStore.palabrasHideadas = ""
+    let palabrasHideadas = $ajustesConfigStore.palabrasHideadas
         .toLowerCase()
         .split(" ")
         .map(p => p.trim())

@@ -41,8 +41,6 @@
         visible = false
     }
 
-    let palabrasHideadas = localStore("palabrasHideadas", "")
-
     let group = '';
 
 </script>
@@ -75,7 +73,7 @@
             <textarea 
                 style=" background: var(--color3);" 
                 spellcheck="false"
-                bind:value={$palabrasHideadas}
+                bind:value={$ajustesConfigStore.palabrasHideadas}
                 placeholder="Podes usar palabras y frases(palabras separadas guion bajo en vez de espacios). Ej sidoca huele tengo_un_video minubi insta se_le_da, etc"
                 cols="30" rows="10"></textarea>
         </ExpansionPanel>

@@ -7,6 +7,7 @@ let configInicial = {
     modoCover: true,
     scrollAncho: false,
     tagClasico: false,
+    palabrasHideadas: ""
 }
 
 // Cargo configuracion gudardada

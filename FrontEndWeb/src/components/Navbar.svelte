@@ -69,7 +69,7 @@
     
     let scrollY
 
-    let version = `La infaltable - Version Chad ${window.config.general.version}`
+    let version = `Union de religiones - Version Chad ${window.config.general.version}`
     if(protocoloMessi) version = `Protocolo Messi activado - Version Chad ${window.config.general.version}`
     else if(protocoloSerenito) version = `Protocolo Serenito activado - Version Chad ${window.config.general.version}`
 </script>
