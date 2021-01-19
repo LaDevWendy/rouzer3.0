@@ -54,6 +54,6 @@ export function formatearTimeSpan(timespan)
     let ret = ""
     if(dias > 0) ret += `${dias}D `
     if(horas > 0) ret += `${horas}H `
-    if(minutos > 0) ret += `${minutos}M `
+    if(minutos > 0) ret += `${minutos} min `
     return ret
 }
