@@ -368,7 +368,7 @@ namespace Servicios
             var hilosALimpiar = await _context.Hilos
                 .Where(h => h.Estado == HiloEstado.Archivado || h.Estado == HiloEstado.Eliminado)
                 .Where(h => h.Creacion < dosDiasAtras)
-                .Where(h => !_context.Bans.Any(b => b.HiloId == h.Id))
+                .Where(h => !_context.Bans.Any(b => b.HiloId == h.Id && b.ComentarioId == null))
                 .ToListAsync();
             
             int total = hilosALimpiar.Count();

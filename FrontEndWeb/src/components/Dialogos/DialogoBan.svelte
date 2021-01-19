@@ -9,7 +9,7 @@
     let motivo
     let duracion
     let aclaracion
-    let eliminarElemento = true
+    let eliminarElemento = false
     let eliminarAdjunto = false
     let desaparecer = false
     $: tipo = (comentarioId == "" || !comentarioId)? 0:1
