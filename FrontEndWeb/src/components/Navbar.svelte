@@ -96,7 +96,7 @@
                 <Ripple/>
             </span>
             <a href="/" style="font-family: euroFighter">
-                <h3 class="rozed">ROZED <span class="version">{version} </span>
+                <h3 class="rozed">{window.config.general.nombre.toUpperCase()} <span class="version">{version} </span>
                 </h3>
                 <Ripple/>
             </a>

@@ -45,6 +45,8 @@ namespace WebApp
         
         public string Version { get; set; }
 
+        public string Nombre { get; set; } = "Rozed";
+
     }
 
     public enum RestriccionDeAcceso

@@ -4,6 +4,7 @@ using Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Modelos;
 using SixLabors.ImageSharp;
@@ -17,15 +18,18 @@ namespace Servicios
 {
     public class MediaTgService : MediaService
     {
-        private TelegramBotClient bot = new TelegramBotClient("1590323753:AAE6uQgefJehRw3DEM1bvFsFB81z42EEgyY");
-        private static ChatId chat = new ChatId(-1001405071098);
+        private TelegramBotClient bot;
+        private static ChatId chat;
 
         public MediaTgService(
             string carpetaDeAlmacenamiento, 
             RChanContext context, 
             IWebHostEnvironment env, 
-            ILogger<MediaService> logger) : base(carpetaDeAlmacenamiento, context, env, logger)
+            ILogger<MediaService> logger,
+            IConfiguration conf) : base(carpetaDeAlmacenamiento, context, env, logger)
         {
+            bot = new TelegramBotClient(conf.GetValue<string>("Telegram:BotId"));
+            chat = new ChatId(conf.GetValue<long>("Telegram:ChatId"));
         }
 
         public override async Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo)

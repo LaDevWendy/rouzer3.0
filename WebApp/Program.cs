@@ -54,50 +54,6 @@ namespace WebApp
                         Console.WriteLine(e);
                     }
                 }
-                
-                // var hiloService = scope.ServiceProvider.GetService<IHiloService>();
-
-                // try
-                // {
-                //     logger.LogInformation("Intentando limpiar los hilos viejos");
-                //     await hiloService.LimpiarHilosViejos();
-                    
-                // }
-                // catch (Exception e)
-                // {
-                //     logger.LogInformation("Hubo un error al limpiar los hilos viejos");
-                //     logger.LogError(e.ToString());
-                // }
-
-
-                // //Prueba limpiar roz
-                // var hiloId = "7CTLRORYX0GS02KOME8R";
-                // var hilo = await ctx.Hilos.FirstOrDefaultAsync(h => h.Id == hiloId);
-                // var acciones = await ctx.HiloAcciones.Where(d => d.HiloId == hiloId).ToListAsync();
-                // var notis = await ctx.Notificaciones.Where( n => n.HiloId == hiloId).ToListAsync();
-
-                // ctx.Remove(hilo);
-                // ctx.RemoveRange(acciones);
-                // ctx.RemoveRange(notis);
-                // await ctx.SaveChangesAsync();
-
-                // var comentarios = await ctx.Comentarios.Where(c => c.HiloId == hiloId).ToListAsync();
-                // var denuncias = await ctx.Denuncias.Where(d => d.HiloId == hiloId).ToListAsync();
-                // var baneos = await ctx.Bans.Where(d => d.HiloId == hiloId).ToListAsync();
-
-                // for (int i = 0; i < 50 ; i--)
-                // {
-                //     ctx.Add(new ComentarioModel {
-                //         Contenido = "alsdfkj",
-                //         HiloId = "DU1CVRC0WN220LPKTWFI",
-                //         UsuarioId = "b21f6ba5-2019-4937-833b-22beb0d26d42",
-                //         Id = hash.Random(8) + "d"
-                //     });
-                //     System.Console.WriteLine(new Random().Next(2000));
-                    
-                // }
-                // await ctx.SaveChangesAsync();
-
 
                 var um = scope.ServiceProvider.GetService<SignInManager<UsuarioModel>>().UserManager;
                 

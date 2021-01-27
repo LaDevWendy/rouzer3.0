@@ -38,7 +38,7 @@ namespace Data
             base.OnConfiguring(optionsBuilder);
             if(!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql(connectionString ?? "Server=127.0.0.1;Port=5433;Database=RozedBack;User Id=postgres;Password=jejetabien;");
+                optionsBuilder.UseNpgsql(connectionString ?? "Server=127.0.0.1;Port=5433;Database=RozedEnd;User Id=postgres;Password=jejetabien;");
             }
             if (!string.IsNullOrEmpty(connectionString))
             {
@@ -55,15 +55,14 @@ namespace Data
             modelBuilder.Entity<HiloModel>()
                 .HasIndex(h => h.Bump);
 
+            var jsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
             modelBuilder.Entity<HiloModel>()
                 .Property(h => h.Encuesta)
                 .HasConversion(
-                     v => JsonConvert.SerializeObject(v, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }),
-                    v => JsonConvert.DeserializeObject<Encuesta>(v, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })
+                    v => JsonConvert.SerializeObject(v, jsonSettings),
+                    v => JsonConvert.DeserializeObject<Encuesta>(v, jsonSettings)
                 );
-            // modelBuilder.Entity<BaneoModel>()
-            //     .HasOne(b => b.Comentario)
-            //     .WithOne(c => c.)
+
             modelBuilder.Entity<AccionDeModeracion>()
                 .HasOne(a => a.Comentario)
                 .WithMany()

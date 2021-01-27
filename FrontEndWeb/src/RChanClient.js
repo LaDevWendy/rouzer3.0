@@ -136,6 +136,9 @@ export default class RChanClient {
             borrarMedia
         })
     }
+    static borrarHilo(id, borrarMedia = false) {
+        return RChanClient.borrarHilos([id], borrarMedia)
+    }
     static cambiarCategoria(hiloId, categoriaId) {
         return axios.post("/api/Moderacion/CambiarCategoria", {
             hiloId,

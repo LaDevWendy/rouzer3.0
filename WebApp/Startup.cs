@@ -135,13 +135,14 @@ namespace WebApp
             {
                 var env = s.GetService<IWebHostEnvironment>();
                 var logger = s.GetService<ILogger<MediaTgService>>();
-                return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env, logger);
+                return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), 
+                s.GetService<RChanContext>(), env, logger, s.GetService<IConfiguration>());
             });
             services.AddScoped(s =>
             {
                 var env = s.GetService<IWebHostEnvironment>();
                 var logger = s.GetService<ILogger<MediaTgService>>();
-                return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env, logger);
+                return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env, logger, s.GetService<IConfiguration>());
             });
             services.AddSingleton<FormateadorService>();
 
@@ -226,11 +227,6 @@ namespace WebApp
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            // app.RestriccionDeAccesoMiddleware();
-            // app.UseBanMiddleware();
-
-            //Domo a los baneados
 
             app.UseEndpoints(endpoints =>
             {

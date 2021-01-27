@@ -6,6 +6,7 @@ import config from "../../config"
 import globalStore from '../../globalStore'
 import MediaType from "../../MediaType"
 import {fly} from "svelte/transition"
+import { createEventDispatcher } from 'svelte';
 
 import more from '../../icons/more-vertical.svg'
 import RChanClient from '../../RChanClient';
@@ -13,6 +14,7 @@ import Dado from '../Dado.svelte'
 
 export let hilo
 
+let dispatch = createEventDispatcher();
 if(!hilo.cantidadComentarios) hilo.cantidadComentarios = 0;
 
 let categorias = config.categorias
@@ -48,6 +50,7 @@ async function toggle() {
 //     hilo.cantidadComentarios+=1
 // }, Math.random() * 5000 + 4000);
 function onClick(e) {
+    dispatch("click")
     console.log(e.target.nodeName);
     if(e.target.nodeName == 'A' || e.target.nodeName == 'H3') {
         window.location = `/Hilo/${hilo.id}`

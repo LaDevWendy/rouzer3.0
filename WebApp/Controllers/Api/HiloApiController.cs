@@ -296,8 +296,8 @@ namespace WebApp.Controllers
                 .FiltrarNoActivos()
                 .Where(h => EF.Functions.ILike(h.Titulo, $"%{busqueda}%"))
                 .OrdenadosPorBump()
-                .AViewModel(context)
                 .Take(32)
+                .AViewModel(context)
                 .ToListAsync();
             resultados.ForEach(h => h.Contenido = "");
 

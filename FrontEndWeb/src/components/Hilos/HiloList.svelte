@@ -9,6 +9,7 @@
     import Signal from '../../signal';
     import { localStore } from '../../localStore';
     import ajustesConfigStore from '../Dialogos/ajustesConfigStore'
+    // import AccionesRapidas from '../Moderacion/AccionesRapidas.svelte';
 
 
     export let hiloList
@@ -92,9 +93,15 @@
     }
 
     let tienaMas = true
+    let accionesRapidas = null
+
+    function hiloCliqueado(params) {
+        
+    }
 
 </script>
 
+<!-- <AccionesRapidas bind:this={accionesRapidas}/> -->
 <ul class="hilo-list">
     {#if nuevoshilos.length > 0}
         <div class="cargar-nuevos-hilos" on:click={cargarNuevos} transition:fly|local={{x:100}}>
@@ -104,7 +111,7 @@
         </div>
     {/if}
     {#each hiloList.hilos as hilo (hilo.id)}
-        <HiloPreview bind:hilo={hilo} />
+        <HiloPreview bind:hilo={hilo} on:click={hiloCliqueado}/>
     {/each}
 </ul>
 <InfiniteLoading on:infinite={cargarViejos} distance={600}>

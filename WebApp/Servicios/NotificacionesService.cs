@@ -53,10 +53,6 @@ namespace Servicios
                 .Where(u => u.Id != comentario.UsuarioId)
                 .Select(u => new UserNoti(context.Notificaciones.FirstOrDefault(n => n.UsuarioId == u.Id && n.HiloId == comentario.HiloId && n.Tipo == NotificacionType.Comentario), u.Id))
                 .ToListAsync();
-            //Cuando un usuario comenta, se buscan todos los usuarios a los que le respondio, por cada uno crea una notificacion
-            // Tambien crea una notificacion para todos los que siguen el roz
-            // Pero no deberia crear una notificacion de respuesta a roz sin se envio una de respuesta a comentario
-            // Osea tengo que ver los usuarios a los cuales les envie una noti por respuesta y filtrarlos de las lista de noti por comentario en roz
 
             ActualizarNotificaciones(notis, comentario, NotificacionType.Comentario);
 

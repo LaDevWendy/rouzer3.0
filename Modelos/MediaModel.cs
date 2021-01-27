@@ -17,6 +17,7 @@ namespace Modelos
         public MediaType Tipo { get; set; } = MediaType.Imagen;
         public bool EsGif => Url.Contains(".gif");
 
+        [JsonIgnore]
         public TgMedia TgMedia { get; set; }
     }
       public enum MediaType
