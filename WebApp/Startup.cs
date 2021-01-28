@@ -131,19 +131,35 @@ namespace WebApp
             // services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<HashService>();
             services.AddScoped<AccionesDeModeracionService>();
-            services.AddScoped<IMediaService, MediaTgService>(s =>
+
+            if(Configuration.GetValue<bool>("Telegram:UsarTelegram"))
             {
-                var env = s.GetService<IWebHostEnvironment>();
-                var logger = s.GetService<ILogger<MediaTgService>>();
-                return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), 
-                s.GetService<RChanContext>(), env, logger, s.GetService<IConfiguration>());
-            });
-            services.AddScoped(s =>
+                services.AddScoped<IMediaService, MediaTgService>(s =>
+                {
+                    var env = s.GetService<IWebHostEnvironment>();
+                    var logger = s.GetService<ILogger<MediaTgService>>();
+                    return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), 
+                    s.GetService<RChanContext>(), env, logger, s.GetService<IConfiguration>());
+                });
+
+                services.AddScoped(s =>
+                {
+                    var env = s.GetService<IWebHostEnvironment>();
+                    var logger = s.GetService<ILogger<MediaTgService>>();
+                    return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env, logger, s.GetService<IConfiguration>());
+                });
+            }
+            else 
             {
-                var env = s.GetService<IWebHostEnvironment>();
-                var logger = s.GetService<ILogger<MediaTgService>>();
-                return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env, logger, s.GetService<IConfiguration>());
-            });
+                services.AddScoped<IMediaService>(s =>
+                {
+                    var env = s.GetService<IWebHostEnvironment>();
+                    var logger = s.GetService<ILogger<MediaTgService>>();
+                    return new MediaService(Path.Combine(env.ContentRootPath, "Almacenamiento"), 
+                    s.GetService<RChanContext>(), env, logger);
+                });
+            }
+            
             services.AddSingleton<FormateadorService>();
 
             // Estadisticas
@@ -165,7 +181,7 @@ namespace WebApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MediaTgService mediaTgService)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IConfiguration conf)
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
@@ -221,7 +237,10 @@ namespace WebApp
                 OnPrepareResponse = ConfigurarCache
             });
             app.Map("/Media", (app) => {
-                app.UseMiddleware<TelegramMediaHostingMiddleare>();
+                if(conf.GetValue<bool>("Telegram:UsarTelegram"))
+                {
+                    app.UseMiddleware<TelegramMediaHostingMiddleare>();
+                }
             });
 
             app.UseRouting();
