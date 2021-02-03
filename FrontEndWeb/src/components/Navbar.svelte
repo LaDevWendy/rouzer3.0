@@ -305,7 +305,7 @@ header {
     font-size: 10px;
     position: absolute;
     bottom: 1px;
-    left:4px;
+    left: 0;
     font-family: sans-serif;
     width: max-content;
 }

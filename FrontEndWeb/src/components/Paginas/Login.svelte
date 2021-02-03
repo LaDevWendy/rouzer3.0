@@ -44,7 +44,7 @@
     <section >
          <ErrorValidacion {error}/>
         <h1>Hola anon!</h1>
-        <h2>Para crear y responder rozes en Rozed debes iniciar una sesion</h2>
+        <h2>Para crear y responder rozes en {config.nombre} debes iniciar una sesion</h2>
         <h3>No tenes un token o una cuenta? Enfermo!,  podes <a href="/Inicio"style="color:var(--color5) ">Iniciar Sesion</a> o <a href="/Registro"style="color:var(--color5) ">registrate</a> </h3>
 
         

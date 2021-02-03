@@ -35,14 +35,14 @@
 
     <section >
         {#if config.general.registroAbierto || codigo}
-            <h2>Para usar Rozed debes leer y aceptar las reglas</h2>
+            <h2>Para usar {config.nombre} debes leer y aceptar las reglas</h2>
             <h4>Tu ip esta a salvo, desde ya que si</h4>
             <h4>Preferis crear una sesion con usuario y contraseña?   <a style="color:var(--color5); text-align:center;"  href="/Registro">Registro</a></h4>
             <ErrorValidacion {error}/>
             <form on:submit|preventDefault={accion}>
             
             <a style="color:var(--color5); text-align:center; display:block;font-weight: bold;font-size: 19px;" target="_blank" href="/reglas.html">Ver reglas</a>
-            <Checkbox right bind:checked={terminos}><div style="white-space: normal; text-align: center;">Yo Anon juro solemnemente seguir las reglas de Rozed </div></Checkbox>
+            <Checkbox right bind:checked={terminos}><div style="white-space: normal; text-align: center;">Yo Anon juro solemnemente seguir las reglas de {config.nombre} </div></Checkbox>
             <Captcha visible={config.general.captchaRegistro}  bind:token={captcha}/>
 
             <div style="display:flex; justify-content: center; margin-top: 8px">

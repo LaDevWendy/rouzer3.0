@@ -245,4 +245,8 @@ export default class RChanClient {
         return axios.post(`/api/Hilo/VotarEncuesta`, {hiloId, opcion})
     }
 
+    static hackYoutube(link) {
+        return axios.get(`/api/Otros/YoutubeAArchivo?url=${link}`)
+    }
+
 }

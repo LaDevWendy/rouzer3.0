@@ -167,6 +167,18 @@ namespace WebApp.Controllers
             return View();         
         }
 
+        [HttpGet("/Archivo")]
+        public async Task<IActionResult> ArchivoAsync() 
+        {
+            var archivados = await context.Hilos
+                .Where(h => h.Estado == HiloEstado.Archivado)
+                .OrderByDescending(h => h.Bump)
+                .Select(h => new {h.Titulo, h.Id, h.Estado, h.Bump, Historico = h.Flags.Contains("h")})
+                .Take(3000)
+                .ToListAsync();
+            return View(archivados);         
+        }
+
         private UsuarioVm GetUserInfo()
         {
             return new UsuarioVm

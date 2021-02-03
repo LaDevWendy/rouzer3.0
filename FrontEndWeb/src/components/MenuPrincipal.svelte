@@ -32,7 +32,7 @@
     <section class="menu-principal">
         <div class="menu-principal-header">
             <a href="/">
-                <h1 style="font-family: 'euroFighter';">ROZED</h1>
+                <h1 style="font-family: 'euroFighter';">{window.config.general.nombre.toUpperCase()}</h1>
             </a>
             {#if usuario.estaAutenticado}
             <span style="display: block;text-align: center;">Hola {usuario.userName}!</span>
@@ -83,8 +83,12 @@
                 <a href="/Mis/Ocultos">
                     <li> <icon class="fe fe-eye-off"/> Ocultos  <Ripple/></li>
                 </a>
-                <hr>
             {/if}
+            <hr>
+                <a href="/Archivo">
+                    <li> <icon class="fe fe-book"/> Archivo  <Ripple/></li>
+                </a>
+            <hr>
 
             <li on:click={() => mostrarAjustes = true}> <icon class="fe fe-settings"/> Ajustes  <Ripple/></li>
             <a href="/reglas.html">

@@ -145,7 +145,7 @@ namespace Servicios
             return imgStream;
         }
 
-        public async Task<MediaModel> GenerarMediaDesdeLink(string url) 
+        public virtual async Task<MediaModel> GenerarMediaDesdeYouTube(string url) 
         {
             var match = Regex.Match(url, @"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})");
             if(!match.Success) return null;
@@ -186,6 +186,12 @@ namespace Servicios
             await cuadradito.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadradoLocal}");
             
             return media;
+        }
+        public virtual async Task<MediaModel> GenerarMediaDesdeLink(string url) 
+        {
+            var match = Regex.Match(url, @"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})");
+            if(!match.Success) return null;
+            else return await GenerarMediaDesdeYouTube(url);
         }
 
         public virtual async Task<bool> Eliminar(string id) 
@@ -251,6 +257,11 @@ namespace Servicios
 
             context.RemoveRange(eliminados);
             return await context.SaveChangesAsync();
+        }
+
+        protected bool EsFormatoValido(string contentType) 
+        {
+            return Regex.IsMatch(contentType, @"(jpeg|png|gif|jpg|mp4|webm)");
         }
     }
 }

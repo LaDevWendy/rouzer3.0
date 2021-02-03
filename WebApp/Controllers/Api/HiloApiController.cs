@@ -345,7 +345,7 @@ namespace WebApp.Controllers
             public string HiloId { get; set; } = "";
             public string Opcion { get; set; } = "";
         }
-          async public Task<ActionResult> VotarEncuesta(VotarEncuestaVm model) 
+        async public Task<ActionResult> VotarEncuesta(VotarEncuestaVm model) 
         {
             var hilo = await context.Hilos.PorId(model.HiloId);
 
@@ -377,7 +377,19 @@ namespace WebApp.Controllers
             await context.SaveChangesAsync();
 
             return Ok(new ApiResponse("Encuesta votada"));
-        
+        }
+
+        [Authorize("esMod")]
+        [HttpPost]
+        async public Task<ActionResult> ToggleHistorico(AccionVM model) 
+        {
+            var hilo = await context.Hilos.PorId(model.HiloId);
+            if(hilo is null) return NotFound();
+
+            if(hilo.Flags.Contains("h")) hilo.Flags = hilo.Flags.Replace("h", "");
+            else hilo.Flags += "h";
+
+            return Ok();      
         }
     }
     

@@ -56,7 +56,7 @@
                     message="Si te la olvidas, domado"
                 />
                 <a style="color:var(--color5); text-align:center; display:block;font-weight: bold;font-size: 19px;" target="_blanck" href="/reglas.html">Ver reglas</a>
-                <Checkbox right bind:checked={terminos}><div style="white-space: normal; text-align: center;">Yo Anon juro solemnemente seguir las reglas de Rozed </div></Checkbox>
+                <Checkbox right bind:checked={terminos}><div style="white-space: normal; text-align: center;">Yo Anon juro solemnemente seguir las reglas de {config.nombre} </div></Checkbox>
                 <Captcha visible={config.general.captchaRegistro}  bind:token={captcha}/>
 
                 <div style="display:flex; justify-content: center; margin-top: 8px">

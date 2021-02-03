@@ -14,7 +14,7 @@
 	import {abrir} from './components/Dialogos/Dialogos.svelte'
 	import Encuesta from './components/Hilos/Encuesta.svelte'
 	import { HiloEstado } from './enums'
-import { onMount, tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 
 
 	let data = window.data || dataEjemplo
@@ -35,7 +35,7 @@ import { onMount, tick } from 'svelte';
 <div class="hilo-completo" r-id={hilo.id}>
 	<div class="contenido">
 		<div class="panel">
-			<a href="/">Rozed</a>
+			<a href="/">{config.nombre}</a>
 			<a href="/{config.categoriaPorId(hilo.categoriaId).nombreCorto}">/{config.categoriaPorId(hilo.categoriaId).nombre}</a>
 		</div>
 

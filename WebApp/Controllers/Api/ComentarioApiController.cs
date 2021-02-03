@@ -156,9 +156,21 @@ namespace WebApp.Controllers
             
             await notificacioensService.Notificar(hilo, comentario);
 
-            await context.SaveChangesAsync();
 
             await estadisticasService.RegistrarNuevoComentario();
+
+            // Checkear si es historico
+            if(!hilo.Flags.Contains("h"))
+            {
+                var cantidadComentarios = await context.Comentarios
+                    .Where(c => c.Estado == ComentarioEstado.Normal)
+                    .Where(c => c.HiloId == hilo.Id)
+                    .CountAsync();
+                if(cantidadComentarios >= 1000) hilo.Flags += "h";
+            }
+            
+            await context.SaveChangesAsync();
+            
             return new ApiResponse("Comentario creado!");
         }
 

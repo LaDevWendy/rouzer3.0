@@ -14,6 +14,7 @@ import Busqueda from './components/Paginas/Busqueda.svelte';
 import EliminadosYDesactivados from './components/Paginas/EliminadosYDesactivados.svelte';
 import MediaHome from './components/Paginas/MediaHome.svelte';
 import Historial from './components/Paginas/Historial.svelte';
+import Archivo from './components/Paginas/Archivo.svelte';
 
 import skinStore from './components/Personalizacion/skinsStore'
 
@@ -43,6 +44,7 @@ let componentes = [
 	["#svelte-media-home", MediaHome, {}],
 	["#svelte-busqueda", Busqueda, {}],
 	["#svelte-historial", Historial, {}],
+	["#svelte-archivo", Archivo, {}],
 ]
 
 for (const c of componentes) {

@@ -53,14 +53,34 @@
         let id = inputLink.match(youtubeRegex)
         console.log(id);
         if(!id) {
-            inputLink = "Link invalido"
+            importarArchivo()
             return
+            inputLink = "Link invalido"
         }
         mediaType = MediaType.Youtube
         vistaPreviaYoutube = `https://img.youtube.com/vi/${id[1]}/hqdefault.jpg`
         videoUrl = inputLink
         archivoBlob = `https://img.youtube.com/vi/${id[1]}/hqdefault.jpg`
         media.link = videoUrl
+        estado = "cargado"
+
+    }
+    async function importarArchivo() {
+        let match = inputLink.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi)
+        console.log(match);
+        if(!match || match.length == 0) {
+            inputLink = "Link invalido"
+            return
+        }
+       // Chekear si el link es valido
+        if(inputLink.includes(".webm") ||  inputLink.includes("mp4"))
+            mediaType = MediaType.Video
+            else
+            mediaType = MediaType.Imagen
+            
+        archivoBlob = inputLink
+        media.link = inputLink
+        media.archivo = inputLink
         estado = "cargado"
 
     }
@@ -73,7 +93,7 @@
         inputLink = ''
         mediaType = MediaType.Imagen
         estado = "vacio"
-        
+        inputLink= ''
     }
     
     onDestroy(() => {
@@ -102,7 +122,7 @@
 <div 
     bind:this={el} 
     class:compacto class="video-preview media-input"
-    style="{ (media.archivo || media.link)&& mediaType != MediaType.Video?`background:url(${archivoBlob || media})!important`: 'background:url(/imagenes/rose2.jpg)'};overflow:hidden;">
+    style="{ (media.archivo || media.link)&& mediaType != MediaType.Video?`background-image:url(${archivoBlob || media})!important`: 'background-image:url(/imagenes/rose2.jpg)'};overflow:hidden;">
 
     {#if mediaType == MediaType.Video && media.archivo}
         <video src="{archivoBlob}"></video>
@@ -110,13 +130,15 @@
 
     {#if estado=="importarLink"}
     <div class="link-input">
-        <input type="text" bind:value={inputLink} placeholder="Ingrese link de iutube">
+        <input type="text" bind:value={inputLink} placeholder="Importar video, imagen o link de youtube">
+        <ButtonGroup>
             <Button  outlined shaped={true} on:click={importarVideo}> 
                     <icon>OK</icon>
             </Button>
             <Button  outlined shaped={true} on:click={() => estado = "vacio" }> 
                     <icon>x</icon>
             </Button>
+        </ButtonGroup>
     </div>
     {/if}
     {#if !media.archivo && estado=="vacio"}
@@ -127,7 +149,7 @@
                      <icon class="fe fe-upload"></icon>
                 </Button>
                 <Button  icon outlined shaped={true} on:click={() => estado="importarLink"}> 
-                     <icon class="fe fe-youtube"></icon>
+                     <icon class="fe fe-link-2"></icon>
                 </Button>
             </ButtonGroup>
         </span>
@@ -181,5 +203,8 @@
         position: absolute;
         right: 16px;
         top: 16px;
+    }
+    .media-input :global(.button-group) {
+        flex-wrap:  nowrap !important;
     }
 </style>

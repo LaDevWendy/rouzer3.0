@@ -223,8 +223,9 @@ namespace Servicios
             var stickies = await _context.Stickies.ToListAsync();
             
             hilosStickies.ForEach(h => h.Sticky = stickies.First(s => s.HiloId == h.Id).Importancia);
-
-            return  hilosStickies.OrderByDescending(h => h.Sticky).Concat(hilos).ToList();
+            var hilosRet = hilosStickies.OrderByDescending(h => h.Sticky).Concat(hilos).ToList();
+            hilosRet.ForEach(h => h.Contenido = "");
+            return  hilosRet;
         }
 
         public async Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId="", int cantidad = 16)
@@ -367,6 +368,7 @@ namespace Servicios
             var dosDiasAtras = DateTimeOffset.Now - TimeSpan.FromDays(2);
             var hilosALimpiar = await _context.Hilos
                 .Where(h => h.Estado == HiloEstado.Archivado || h.Estado == HiloEstado.Eliminado)
+                .Where(h => !h.Flags.Contains("h") & h.Estado == HiloEstado.Archivado)
                 .Where(h => h.Creacion < dosDiasAtras)
                 .Where(h => !_context.Bans.Any(b => b.HiloId == h.Id && b.ComentarioId == null))
                 .ToListAsync();
@@ -410,6 +412,7 @@ namespace Servicios
                     Titulo = h.Titulo,
                     Estado = h.Estado,
                     Dados = h.Flags.Contains("d"),
+                    Historico = h.Flags.Contains("h"),
                     Encuesta = h.Encuesta != null,
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count()
                 });

@@ -19,6 +19,7 @@ namespace Modelos
             this.Rango = hilo.Rango;
             this.Nombre = hilo.Nombre;
             this.Dados = hilo.Flags.Contains("d");
+            this.Historico = hilo.Flags.Contains("h");
             this.Encuesta = hilo.Encuesta != null;
         }
 
@@ -40,6 +41,7 @@ namespace Modelos
         public bool Dados { get; set; }
         public bool Encuesta { get; set; }
         public EncuestaViewModel EncuestaData { get; set; }
+        public bool Historico { get; set; }
     }
 
     public class HiloViewModelMod : HiloViewModel

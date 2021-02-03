@@ -11,6 +11,8 @@ let categoriasOrdenadas = [...sfw, ...nsfw]
 export default class config {
     static categorias =  categoriasOrdenadas
 
+    static nombre = window.config.general.nombre
+
     static categoriaPorId(id)
     {
         return config.categorias.filter(c => c.id==id)[0]

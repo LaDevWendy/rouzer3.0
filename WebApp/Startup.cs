@@ -193,7 +193,7 @@ namespace WebApp
                 context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
                 context.Response.Headers.Add("X-Xss-Protection", "1; mode=block");
                 context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-                context.Response.Headers.Add("Referrer-Policy", "no-referrer");
+                context.Response.Headers.Add("Referrer-Policy", "no-referrer-when-downgrade");
                 context.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", "none");
                 await next();
             });

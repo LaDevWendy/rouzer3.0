@@ -48,10 +48,10 @@
         <h1>Hola anon</h1>
         <h1>El registro esta desactivado</h1>
         {:else if !modoRegistro}
-            <h2>Para crear y responder rozes en Rozed debes iniciar una sesion</h2>
+            <h2>Para crear y responder rozes en {config.nombre} debes iniciar una sesion</h2>
             <h3>No tenes cuenta? Enfermo!, <a on:click="{()=> modoRegistro=true}" href="#Registro"style="color:var(--color5) ">Registrate ahora mismo aca</a> </h3>
         {:else}
-            <h2>Para crear y responder rozes en Rozed debes iniciar una sesion</h2>
+            <h2>Para crear y responder rozes en {config.nombre} debes iniciar una sesion</h2>
             <h2>Registrate con cofianza</h2>
             <h4>Tu ip esta a salvo, desde ya que si</h4>
         {/if}

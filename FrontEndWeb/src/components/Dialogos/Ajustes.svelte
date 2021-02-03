@@ -34,6 +34,12 @@
                 width: 10px !important;
             }`,style.cssRules.length)
         }
+        if($ajustesConfigStore.usarColorPersonalizado) {
+            style.insertRule(`
+            body {
+                --color5: ${$ajustesConfigStore.colorPersonalizado} !important;
+            }`,style.cssRules.length)
+        }
     }
 
     function actualizarYCerrar() {
@@ -50,14 +56,15 @@
         <ExpansionPanel bind:group name="Personalizacion">
             <Checkbox  bind:checked={$ajustesConfigStore.scrollAncho} right>Scroll ancho</Checkbox>  
             <Checkbox  bind:checked={$ajustesConfigStore.tagClasico} right>Tag clasico</Checkbox>  
+            <hr>
             <Checkbox  bind:checked={$ajustesConfigStore.fondoAburrido} right>Fondo personalizado</Checkbox>
             {#if $ajustesConfigStore.fondoAburrido}
                 <Checkbox  bind:checked={$ajustesConfigStore.usarImagen} right>Usar imagen</Checkbox>
                 {/if}
                 {#if $ajustesConfigStore.fondoAburrido && !$ajustesConfigStore.usarImagen}
                 <div style="display:flex"> 
-                    <label  for="color">Color:</label>  
-                    <input bind:value={$ajustesConfigStore.colorFondo}  class="colorpicker" type="color" name="color">
+                    <label  for="color-fondo">Color Fondo:</label>  
+                    <input bind:value={$ajustesConfigStore.colorFondo}  class="colorpicker" type="color" name="color-fondo">
                 </div>
                 {/if}
                 {#if $ajustesConfigStore.fondoAburrido && $ajustesConfigStore.usarImagen}
@@ -66,6 +73,14 @@
                     <input style="background: var(--color4);" bind:value={$ajustesConfigStore.imagen}  type="text" name="imagen">
                 </div>
                 <Checkbox  bind:checked={$ajustesConfigStore.modoCover} right>Modo Cover</Checkbox>
+            {/if}
+            <hr>
+            <Checkbox  bind:checked={$ajustesConfigStore.usarColorPersonalizado} right>Color personalizado</Checkbox>
+            {#if $ajustesConfigStore.usarColorPersonalizado}
+                <div class="" style="display:flex">
+                    <label for="">Color Personalizado: </label>
+                    <input class="colorpicker" bind:value={$ajustesConfigStore.colorPersonalizado} name="color" type="color"> 
+                </div>
             {/if}
         </ExpansionPanel>
     
@@ -104,5 +119,8 @@
 
     .ajustes :global(.content ) {
         padding: 0px 8px;
+    }
+    hr {
+        border-color: var(--color4);
     }
 </style>

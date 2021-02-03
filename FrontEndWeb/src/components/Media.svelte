@@ -2,6 +2,7 @@
     import MediaType from "../MediaType";
     import {onMount} from "svelte/";
     import {Icon, Button, Ripple} from "svelte-mui"
+    import RChanClient from "../RChanClient";
 
     export let media
     export let modoCuadrado = false
@@ -19,6 +20,16 @@
         setTimeout(async () => {
             vid.play()
         }, 1)
+    }
+
+    let hackYoutubeActivo = false
+    let hackYoutubeLink = ""
+
+    async function hackYoutube() {
+        var res = await RChanClient.hackYoutube(media.url)
+        hackYoutubeLink = res.data.link;
+        hackYoutubeActivo = true;
+        abrirVideo()
     }
 
 </script>
@@ -62,25 +73,38 @@
         {:else if media.tipo == MediaType.Youtube}
         
             {#if abierto}
-                <div class="youtube-container">
-                    <iframe title="youtube" allowfullscreen src="https://www.youtube.com/embed/{media.id}?autoplay=1"> </iframe>
-                </div>
+                {#if !hackYoutubeActivo}
+                    <div class="youtube-container">
+                        <iframe title="youtube" allowfullscreen src="https://www.youtube.com/embed/{media.id}?autoplay=1"> </iframe>
+                    </div>
+                {:else}
+                <video bind:this={vid} loop controls  src="{hackYoutubeLink}"></video>
+
+                {/if}
                 <Button on:click={() => abierto = false} class="cerrar" icon>
                     <i class="fe fe-x"></i> 
                 </Button>
-                {:else}
+            {:else}
                 <img on:click={abrirVideo} src="{vistaPrevia}" alt="" srcset="">
                 <Button on:click={abrirVideo}  color="red" class="play" icon>
                     <i class="fe fe-youtube" style="position: relative;left: 1px;"></i> 
                 </Button>
-                {/if}
-                <a 
-                    class="medialink" 
-                    target="_blanck" 
-                    href="https://www.youtube.com/watch/{media.id}">
-                    Abrir en Yeutube 
-                    <Ripple/>
-                </a>
+            {/if}
+                <div class="youtube-footer">
+                    {#if !hackYoutubeActivo}
+                        <span class="medialink cpt" on:click={hackYoutube}
+                            title="Sirve para reproducir el video en el sitio aunque este bloqueado"
+                            > Hack <Ripple/></span>
+                        {:else}
+                        <span class="medialink cpt" on:click={() => hackYoutubeActivo = false}> Volver <Ripple/></span>
+                    {/if}
+                    <a  class="medialink" 
+                        target="_blanck" 
+                        href="https://www.youtube.com/watch/{media.id}">
+                        Abrir en Jewtube 
+                        <Ripple/>
+                    </a>
+                </div>
     {/if}
 </div>
 
@@ -130,7 +154,9 @@
         border-radius: 4px;
     }
 
-    .medialink{
+    .youtube-footer {
+        display: flex;
+        justify-content: space-between;
         background: var(--color1);
         width: 100%;
         text-align: center;
@@ -141,9 +167,8 @@
         font-size: 12px;
         color: #ffffffe3 !important;
     }
-    a {
-        width: 100%;
-    }
+
+    .youtube-footer .medialink { flex:1 }
 
     .media .ocultar {
         display: none;

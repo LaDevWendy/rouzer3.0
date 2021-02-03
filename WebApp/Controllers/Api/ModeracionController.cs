@@ -215,6 +215,7 @@ namespace WebApp.Controllers
         {
             var antesDeAyer = DateTimeOffset.Now - TimeSpan.FromDays(2);
             var acciones = await context.AccionesDeModeracion
+                .AsNoTracking()
                 .OrderByDescending(a => a.Creacion)
                 .Where(a => a.Creacion > antesDeAyer)
                 .Include(a => a.Usuario)
