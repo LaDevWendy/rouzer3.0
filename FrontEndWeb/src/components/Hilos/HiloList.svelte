@@ -31,6 +31,16 @@
         hiloList.hilos = hiloList.hilos.filter(h => !ids.includes(h.id))
         nuevoshilos = nuevoshilos.filter(h => !ids.includes(h.id))
     })
+    Signal.coneccion.on("categoriaCambiada", (data) => {
+        var hilo = hiloList.hilos.filter(h => h.id == data.hiloId)
+        if(hilo.length != 0) {
+            hilo[0].categoriaId = data.categoriaId
+            hiloList.hilos = hiloList.hilos;
+        }
+        if(!hiloList.categoriasActivas.includes(data.categoriaId)) {
+            hiloList.hilos = hiloList.hilos.filter(h => h.id != data.hiloId)
+        }
+    })
 
 
     function onHiloCreado(hilo) {
@@ -41,7 +51,7 @@
         }
     }
     function onHiloComentado(id, comentario) {
-        let hiloComentado = hiloList.hilos.filter(h => h.id == id)
+        let hiloComentado = [...hiloList.hilos, ...nuevoshilos].filter(h => h.id == id)
         if(hiloComentado.length != 0) {
             hiloComentado[0].cantidadComentarios += 1
         }
@@ -67,7 +77,7 @@
         if(hiloList.hilos.length == 0) complete()
 
         try {
-            let {data} = await RChanClient.cargarMasHilos(hiloList.hilos[hiloList.hilos.length -1].bump, hiloList.categoriasActivas)
+            let {data} = await RChanClient.cargarMasHilos(hiloList.hilos[hiloList.hilos.length -1].bump, hiloList.categoriasActivas, hiloList.serios)
             hiloList.hilos = [...hiloList.hilos, ...data]
             if(data.length == 0) complete()
             loaded()

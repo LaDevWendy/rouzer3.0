@@ -29,6 +29,7 @@ body {
    --label: rgb(64 130 188 /30%) !important;
    --color: var(--color-texto1);
    --bg-popover: var(--color2) !important;
+   /* --color2: #151524; */
    outline: none;
 }
 .fondo1, .hilo-completo {
@@ -846,7 +847,7 @@ justify-content: center;
     border-top: 3px solid #ffffff14;
     margin: 0;
 }
-.menu-principal li icon{
+.menu-principal li icon, .menu-principal li .icon{
     color: var(--color-texto2);
     padding: 0 16px;
     padding-right: 32px;
@@ -894,4 +895,14 @@ input:-webkit-autofill {
   z-index: -1;
   transform:translatez(0);
   -webkit-transform:translatez(0);
+}
+
+.hilo-completo .texto img {
+  width: fit-content !important;
+  display: flex !important;
+  margin: 0 auto;
+  max-width: -webkit-fill-available;
+}
+.hilo-completo .texto hr {
+  border-color: var(--color5) !important;
 }

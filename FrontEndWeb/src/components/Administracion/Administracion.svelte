@@ -99,44 +99,46 @@
         </div>
     </section>
 
-    <section >
-        <h3>Configuracion</h3>
-        <ErrorValidacion error={error}/>
-        <div class="menu">
-            <ul >
-                <li>Limite bump <input bind:value={model.config.limiteBump} type="number"></li>
-                <li>Tiempo entre comentario <input bind:value={model.config.tiempoEntreComentarios} type="number"></li>
-                <li>Tiempo entre hilos<input bind:value={model.config.tiempoEntreHilos} type="number"></li>
-                <li>Hilos maximos por categoria<input bind:value={model.config.hilosMaximosPorCategoria} type="number"></li>
-                <li>Limite archivo<input bind:value={model.config.limiteArchivo} type="number"></li>
-                <li>Captcha registro <Checkbox bind:checked={model.config.captchaRegistro} right></Checkbox></li>
-                <li>Captcha hilo <Checkbox bind:checked={model.config.captchaHilo} right></Checkbox></li>
-                <li>Captcha comentario <Checkbox bind:checked={model.config.captchaComentario} right></Checkbox></li>
-                <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
-            </ul>
-        </div>
-    </section>
-    <section >
-        <h3>Registro</h3>
-        <ErrorValidacion error={error}/>
-        <div class="menu">
-            <ul >
-                <li>Registros maximos por ip<input bind:value={model.config.numeroMaximoDeCuentasPorIp} type="number"></li>
-                <li>Registro publico <Checkbox bind:checked={model.config.registroAbierto} right></Checkbox></li>
-             
-                {#if !model.config.registroAbierto}
-                    <li>
-                            <h4>Link de invitacion</h4>
-                    </li>
-                    <li>
-                        <a style="color:var(--color5)" href="/Registro?codigoDeInvitacion={model.config.linkDeInvitacion}">/Registro?codigoDeInvitacion={model.config.linkDeInvitacion}</a>
-
-                    </li>
-                    <Button on:click={generarLink}>Nuevo link</Button>
-                {/if}
-                <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
-            </ul>
-        </div>
+    <section>
+        <section style="width:fit-content" >
+            <h3>Configuracion</h3>
+            <ErrorValidacion error={error}/>
+            <div class="menu">
+                <ul >
+                    <li>Limite bump <input bind:value={model.config.limiteBump} type="number"></li>
+                    <li>Tiempo entre comentario <input bind:value={model.config.tiempoEntreComentarios} type="number"></li>
+                    <li>Tiempo entre hilos<input bind:value={model.config.tiempoEntreHilos} type="number"></li>
+                    <li>Hilos maximos por categoria<input bind:value={model.config.hilosMaximosPorCategoria} type="number"></li>
+                    <li>Limite archivo<input bind:value={model.config.limiteArchivo} type="number"></li>
+                    <li>Captcha registro <Checkbox bind:checked={model.config.captchaRegistro} right></Checkbox></li>
+                    <li>Captcha hilo <Checkbox bind:checked={model.config.captchaHilo} right></Checkbox></li>
+                    <li>Captcha comentario <Checkbox bind:checked={model.config.captchaComentario} right></Checkbox></li>
+                    <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
+                </ul>
+            </div>
+        </section>
+        <section  style="width:fit-content; margin-top:10px">
+            <h3>Registro</h3>
+            <ErrorValidacion error={error}/>
+            <div class="menu">
+                <ul >
+                    <li>Registros maximos por ip<input bind:value={model.config.numeroMaximoDeCuentasPorIp} type="number"></li>
+                    <li>Registro publico <Checkbox bind:checked={model.config.registroAbierto} right></Checkbox></li>
+                 
+                    {#if !model.config.registroAbierto}
+                        <li>
+                                <h4>Link de invitacion</h4>
+                        </li>
+                        <li>
+                            <a style="color:var(--color5)" href="/Registro?codigoDeInvitacion={model.config.linkDeInvitacion}">/Registro?codigoDeInvitacion={model.config.linkDeInvitacion}</a>
+    
+                        </li>
+                        <Button on:click={generarLink}>Nuevo link</Button>
+                    {/if}
+                    <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
+                </ul>
+            </div>
+        </section>
     </section>
     <section >
         <h3>Acceso</h3>
@@ -163,21 +165,15 @@
         </div>
     </section>
     <section >
-        <h3>Mantenimiento</h3>
-        <ErrorValidacion error={error}/>
+        <h3>Otros</h3>
         <div class="menu">
-            <ul >
-               <Dialogo accion={() => RChanClient.limpiarRozesViejos()}
-                titulo={'Limpiar rozes viejos'}
-                textoActivador={'Limpiar rozes viejos'}>
-                    <div slot="body">
-                        Eliminar los rozs con mas de 48 horas de su  eliminados o archivacion
-                    </div>
-               </Dialogo>
+            <ul>
+                <a href="/Administracion/Spams">
+                    <li>RozPams</li>
+                </a>
             </ul>
         </div>
     </section>
-
 </main>
 
 <style>

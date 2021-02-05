@@ -6,6 +6,7 @@ using Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
@@ -49,17 +50,26 @@ namespace WebApp
 
                 if(banNoVisto != null)
                 {
-                    ctx.Response.Redirect("/Domado");
+                    DomadoRedirect(context);
                     return;
                 }
 
-                if(banActivo != null &&  ctx.User.Identity.IsAuthenticated)
+                if(banActivo != null &&  ctx.User.Identity.IsAuthenticated && ctx.Request.Method == HttpMethods.Post)
                 {
-                    await sm.SignOutAsync();
+                    DomadoRedirect(context);
                     return;
                 }
             }
             await next();
+        }
+
+        private void DomadoRedirect (ActionExecutingContext context) {
+            if((context.HttpContext.Request.Headers["Accept"].FirstOrDefault() ?? "").Contains("json"))
+            {
+                context.Result = new JsonResult(new {Redirect = "/Domado"});
+                return;
+            }
+            context.HttpContext.Response.Redirect("/Domado");
         }
     }
 

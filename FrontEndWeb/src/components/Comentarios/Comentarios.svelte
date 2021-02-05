@@ -13,11 +13,13 @@
     import ajustesConfigStore from '../Dialogos/ajustesConfigStore'
     import Spinner from '../Spinner.svelte';
     import { localStore} from '../../localStore'
-
-
+    import comentarioStore from './comentarioStore';
+    import SpamList from '../SpamList.svelte';
 
     export let hilo
     export let comentarios
+    export let spams
+
     let modoTelefono = $globalStore.esCelular
     let nuevosComentarios = []
     let comentariosStore = localStore("Comentarios", {modoVivo : false});
@@ -137,14 +139,23 @@
         await tick();
         irAComentario(comentarioUrl)
     }, 120))
-    
+
+    let mostrarFormularioFlotante = false
+
+    let scrollY = 0
+    $: mostrarFormularioFlotante = $comentarioStore && comentarioStore.length != 0
+
 </script>
+
+<svelte:window   bind:scrollY={scrollY} ></svelte:window>
 <CarpetaMedia {comentarios} bind:visible={carpetaMedia}></CarpetaMedia>
 <div class="comentarios">
     <PilaRespuestas {diccionarioComentarios} {diccionarioRespuestas} historial = {historialRespuestas}/>
     {#if !$configStore.general.modoMessi || $globalStore.usuario.esMod}
         <Formulario {hilo} on:comentarioCreado={cargarNuevosComentarios}/>
     {/if}
+
+    <SpamList {spams} />
 
     <div class="contador-comentarios panel">
         <h3>Comentarios ({comentarios.length}) 
@@ -188,6 +199,15 @@
                 </li>
             {/each}
         </Spinner>
+
+        {#if mostrarFormularioFlotante && !$globalStore.esCelular && scrollY > 300}  
+            <div class="formulario-flotante"  transition:fly|local={{x: -50, duration:100}} >
+                <Formulario {hilo} on:comentarioCreado={cargarNuevosComentarios}/>
+                <div class="cerrar-comentario-flotante cpt" on:click={() => mostrarFormularioFlotante = false}>
+                    <span class="fe fe-x"></span>
+                </div>
+            </div>
+        {/if}
             
         </div>
         <div class="espacio-vacio"></div>
@@ -210,6 +230,32 @@
     }
     :global(.loader) {
         margin: 0 auto;
+    }
+
+    .formulario-flotante {
+        bottom: 20vh;
+        width: calc(50vw - 10px);
+        right: calc(50vw + 10px);
+        position: fixed;
+        max-width: 600px;
+    }
+    .cerrar-comentario-flotante {
+        position: absolute;
+        top:1px;
+        right:4px;
+
+        color: var(--color-texto2);
+    }
+    @media (max-width: 992px) {
+        .formulario-flotante {
+            width: calc(40vw - 10px);
+            right: calc(60vw + 10px);
+        }
+    }
+    @media (max-width: 768px) {
+        .formulario-flotante {
+            display: none;
+        }
     }
 
 </style>

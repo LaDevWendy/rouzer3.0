@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using Ganss.XSS;
+using Markdig;
 
 namespace Servicios 
 {
@@ -18,6 +19,15 @@ namespace Servicios
         }
 
         public string Parsear(string contenido) {
+            if(contenido.Contains(">>md")) {
+                contenido = contenido.Replace(">>md", "");
+                return Markdown.ToHtml(contenido,  
+                    new MarkdownPipelineBuilder().UseAdvancedExtensions()
+                        .UseAutoLinks(new Markdig.Extensions.AutoLinks.AutoLinkOptions(){OpenInNewWindow = true})
+                        .DisableHtml()
+                        .Build());
+            }
+
             var tags = new List<string>();
             string ret =  string.Join("\n", contenido.Split("\n").Select(t => {
                 t = encoder.Encode(t);

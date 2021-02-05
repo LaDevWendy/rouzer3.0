@@ -18,7 +18,7 @@
 
 
 	let data = window.data || dataEjemplo
-	let {hilo, comentarios, acciones, usuario} = data;
+	let {hilo, comentarios, acciones, usuario, spams} = data;
 
 	let dialogs =  {
 		sticky : {
@@ -69,19 +69,7 @@
 						</div>
 					</Dialogo>
 				{/if}
-				
-				<Dialogo textoActivador="Categoria" titulo="Cambiar categoria" accion = {() => RChanClient.cambiarCategoria(hilo.id, dialogs.categoria.categoriaId)}>
-					<div slot="body">
-						<span asp-validation-for="CategoriaId"></span>
-						<select bind:value={dialogs.categoria.categoriaId}  name="categoria">
-							<option value="-1" selected="selected" disabled="disabled">Categoría</option>
-							{#each config.categorias as c}
-							<option value="{c.id}">{c.nombre}</option>
-							{/each}
-						</select>
-						
-					</div>
-				</Dialogo>
+				<Button on:click={() => abrir.cambiarCategoria(hilo.id)} >Categoria</Button>
 				{#if hilo.estado != HiloEstado.eliminado}
 					<Button on:click={() => abrir.eliminarHilo(hilo.id)} >Eliminar</Button>
 				{/if}
@@ -99,7 +87,7 @@
 
 	<HiloCuerpo {hilo}/>
 	</div>
-	<Comentarios bind:comentarios {hilo}/>
+	<Comentarios bind:comentarios {hilo} {spams}/>
 </div>
 
 

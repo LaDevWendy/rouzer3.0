@@ -70,7 +70,7 @@ namespace WebApp.Controllers
 
             if(hilo.Estado != HiloEstado.Normal) 
             {
-                ModelState.AddModelError("Jeje", "Este roz no esta activo");
+                ModelState.AddModelError("Jeje", hilo.Estado == HiloEstado.Archivado? "Este roz esta archivado": "El roz fue domado");
                 return BadRequest(ModelState);
             }
 
@@ -167,6 +167,27 @@ namespace WebApp.Controllers
                     .Where(c => c.HiloId == hilo.Id)
                     .CountAsync();
                 if(cantidadComentarios >= 1000) hilo.Flags += "h";
+            }
+            //Roz de concentracion
+            if(hilo.Flags.Contains("c"))
+            {
+                var cantidadComentarios = await context.Comentarios
+                    .Where(c => c.Estado == ComentarioEstado.Normal)
+                    .Where(c => c.HiloId == hilo.Id)
+                    .CountAsync();
+
+                if(cantidadComentarios >= 500) 
+                {
+                    var comentarioBorrar = await context.Comentarios
+                        .Where(c => c.HiloId == hilo.Id)
+                        .Where(c => !context.Bans.Any(b => b.ComentarioId == c.Id))
+                        .Where(c => c.Estado == ComentarioEstado.Normal)
+                        .OrderByDescending(c => c.Creacion)
+                        .Skip(10)
+                        .ToListAsync();
+
+                    context.Comentarios.RemoveRange(comentarioBorrar);
+                };
             }
             
             await context.SaveChangesAsync();

@@ -54,6 +54,7 @@
         media.archivo = null
         error = null
     }
+
     function onFocus() {
         error = null
         if(!$globalStore.usuario.estaAutenticado) {
@@ -63,7 +64,7 @@
 
 </script>
 
-<form on:submit|preventDefault="" id="form-comentario" class="form-comentario panel">
+<form on:submit|preventDefault="" id="form-comentario" class="form-comentario panel" on:blur={() => focus = false}>
     <ErrorValidacion {error}/>
 
     <MediaInput bind:this={mediaInput} bind:media={media} compacto={true}></MediaInput>

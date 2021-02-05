@@ -35,4 +35,6 @@ Signal.coneccion.start().then(() => {
     
 }).catch(console.error)
 
+Signal.coneccion.on("domado", () => window.location.href = "/Domado")
+
 export default  Signal

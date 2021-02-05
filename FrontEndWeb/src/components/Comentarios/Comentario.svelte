@@ -12,6 +12,8 @@
     import {abrir} from '../Dialogos/Dialogos.svelte'
     import { ComentarioEstado, CreacionRango } from '../../enums';
     import selectorStore from '../Moderacion/selectorStore'
+import teclas from '../../shorcuts';
+import RChanClient from '../../RChanClient';
 
     export let comentario;
     export let hilo = { id:null };
@@ -98,6 +100,13 @@
         let n = comentario.idUnico.charCodeAt(0) + comentario.idUnico.charCodeAt(1) + comentario.idUnico.charCodeAt(2);
         return coloresPosibles[n % coloresPosibles.length - 1]
     }
+
+    async function onContexMenu(e) {
+        if(teclas.estaPresionada("x") && $globalStore.usuario.esMod) {
+            e.preventDefault()
+            RChanClient.eliminarComentarios([comentario.id])
+        }
+    }
 </script>
 
 <div bind:this={el}
@@ -108,6 +117,7 @@
     class:comentarioAuxiliar = {comentario.rango == CreacionRango.Auxliar}
     r-id="{comentario.id}" id="{comentario.id}{esRespuesta?'-res':''}"
     style={(comentario.respuestas.length > 0)?'padding-bottom: 20px': ''}
+    on:contextmenu={onContexMenu}
     >
 
     {#if  comentario.respuestas.length > 0}
@@ -354,6 +364,7 @@
     .color-rose-azul {background: url(/imagenes/colores/rose-azul.jpg); background-size: 100%; color:transparent;}
     .color-rose-castaña {background: url(/imagenes/colores/rose-castaña.jpg); background-size: 100%; color:transparent;}
     .color-rose-violeta {background: url(/imagenes/colores/rose-violeta.jpg); background-size: 100%; color:transparent;}
+    .color-serio {background: #354e67}
 
     .color-multi {
         background: linear-gradient(#ffc400    25%, #00408a  25%, #00408a  50%, #53a538   50%, #53a538   75%, #dd3226  75%, #dd3226  100%);

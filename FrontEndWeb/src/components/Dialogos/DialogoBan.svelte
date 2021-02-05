@@ -52,9 +52,12 @@
             <option value="-1" selected="selected" disabled="disabled">Duracion</option>
             <option value="0">0 min (Advertencia)</option>
             <option value="5">5 min</option>
+            <option value="10">10 min</option>
             <option value="30">30 min</option>
             <option value="60">1 hora</option>
+            <option value="360">6 horas</option>
             <option value="1440">1 dia</option>
+            <option value="4320">3 dia</option>
             <option value="10080">1 semana</option>
             <option value="40320">1 mes</option>
             <option value="99999999">Permanente</option>

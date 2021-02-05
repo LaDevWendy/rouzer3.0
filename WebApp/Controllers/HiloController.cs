@@ -88,10 +88,10 @@ namespace WebApp.Controllers
              IHiloFullView hilo;
              if(User.EsMod())
              {
-                 hilo =  await hiloService.GetHiloFullMod(id, User.GetId(), true);
+                hilo =  await hiloService.GetHiloFullMod(id, User.GetId(), true);
              }
              else {
-                 hilo =  await hiloService.GetHiloFull(id, User.GetId());
+                hilo =  await hiloService.GetHiloFull(id, User.GetId());
              }
             if (hilo is null) return NotFound();
             // return Json(new {
@@ -178,6 +178,26 @@ namespace WebApp.Controllers
                 .ToListAsync();
             return View(archivados);         
         }
+        [HttpGet("/Serios")]
+        public async Task<IActionResult> SeriosAsync() 
+        {
+            int[] categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
+            HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
+            if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+
+            var hilos = await context.Hilos
+                .AsNoTracking()
+                .OrdenadosPorBump()
+                .FiltrarNoActivos()
+                .FiltrarOcultosDeUsuario(User.GetId(), context)
+                .FiltrarPorCategoria(categorias)
+                .Where(h => !context.Stickies.Any(s => s.HiloId == h.Id && !s.Global))
+                .Where(h =>h.Flags.Contains("s"))
+                .Take(32)
+                .AViewModel(context)
+                .ToListAsync();
+            return View("Index", new HiloListViewModel{Hilos = hilos, CategoriasActivas = categorias.ToList(), Serios = true});         
+        }
 
         private UsuarioVm GetUserInfo()
         {
@@ -227,4 +247,5 @@ public class HiloListViewModel
 {
     public List<HiloViewModel> Hilos { get; set; }
     public List<int> CategoriasActivas { get; set; }
+    public bool Serios { get; set; } = false;
 }

@@ -5,17 +5,19 @@ axios.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     if(response && response.data && response.data.redirect){ //??quitado
+        console.log(response.data.redirect);
         window.location.href = response.data.redirect
-        throw new Error("Redirigido")
+        // throw new Error("Redirigido")
+        return
     }
     // if(response?.data?.redirect || false){ //??quitado
     //     window.location.href = response.data.redirect
     //     throw new Error("Redirigido")
     // }
-    if(response.request.responseURL && response.request.responseURL.indexOf("/Domad") != -1) {
-        window.location = response.request.responseURL
-    }
-    if(response.data.redirect) window.location = response.data.redirect;
+    // if(response.request.responseURL && response.request.responseURL.indexOf("/Domad") != -1) {
+    //     window.location = response.request.responseURL
+    // }
+    // if(response.data.redirect) window.location = response.data.redirect;
     return response
   }, function (error) {
       
@@ -139,10 +141,11 @@ export default class RChanClient {
     static borrarHilo(id, borrarMedia = false) {
         return RChanClient.borrarHilos([id], borrarMedia)
     }
-    static cambiarCategoria(hiloId, categoriaId) {
+    static cambiarCategoria(hiloId, categoriaId, advertencia = true) {
         return axios.post("/api/Moderacion/CambiarCategoria", {
             hiloId,
             categoriaId,
+            advertencia,
         })
     }
 
@@ -172,11 +175,12 @@ export default class RChanClient {
         })
     }
 
-    static cargarMasHilos(ultimoBump, categorias){
+    static cargarMasHilos(ultimoBump, categorias, serios = false){
         return axios.get('api/Hilo/CargarMas', {
             params:{
                 ultimoBump,
-                categorias: categorias.join(",")
+                categorias: categorias.join(","),
+                serios,
             }
         })
     }
@@ -247,6 +251,19 @@ export default class RChanClient {
 
     static hackYoutube(link) {
         return axios.get(`/api/Otros/YoutubeAArchivo?url=${link}`)
+    }
+
+    static crearSpam(urlImagen, link, duracion) {
+        return axios.post('/api/Administracion/CrearSpam', {
+            urlImagen,
+            link,
+            duracion
+        })
+    }
+    static eliminarSpam(id) {
+        return axios.post('/api/Administracion/EliminarSpam', {
+            id
+        })
     }
 
 }

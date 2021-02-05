@@ -6,7 +6,7 @@
 
 </script>
 
-<div class="cuerpo" class:mediaExpandido>
+<div class="cuerpo markdown-body" class:mediaExpandido>
     <Media media={hilo.media} bind:abierto={mediaExpandido}/>
     <h1 style="margin-bottom:16px">{hilo.titulo}</h1>
     <div class="texto" style="white-space: pre-wrap;word-break: break-word;">{@html hilo.contenido}</div>
@@ -50,6 +50,5 @@
             font-weight: bold !important;
         }
     }
-
 }
 </style>

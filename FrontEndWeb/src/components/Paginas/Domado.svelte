@@ -3,21 +3,28 @@
     import config from '../../config';
     import {formatearTiempo, formatearTimeSpan} from '../../helper'
     const ban = window.model.ban
+    const esAdvertencia = ban.duracion.includes("00:00:00")
 
 </script>
 <div class="fondo">
-    <div class="ban">
-        <h1>Has sido domado!</h1>
-        <h2 style="margin-bottom:10px">Fuiste baneado por romper las reglas de {config.nombre} {ban.tipo== 0? `en el roz "${ban.hilo}"`:`en un comentario en el roz "${ban.hilo}"`}</h2>
+    <div class="ban" class:advertencia={esAdvertencia}>
+        <h1>Has sido {esAdvertencia?'advertido':'baneado'}!</h1>
+        <h2 style="margin-bottom:10px">Fuiste {esAdvertencia?'advertido':'baneado'} por romper las reglas de {config.nombre} {ban.tipo== 0? `en el roz "${ban.hilo}"`:`en un comentario en el roz "${ban.hilo}"`}</h2>
         <h3>Aclaracion: <strong>{ban.aclaracion ||" "}</strong> </h3>
         <p>Motivo: {ban.motivo}</p>
         <p>Fecha: {formatearTiempo(ban.creacion)}</p>
-        <p>Duracion: {formatearTimeSpan(ban.duracion)}</p>
-        <p>Expira el: {formatearTiempo(ban.expiracion)}</p>
-        <p>Id del ban: {ban.id}</p>
+
+        {#if !esAdvertencia}
+            <p>Duracion: {formatearTimeSpan(ban.duracion)}</p>
+            <p>Expira el: {formatearTiempo(ban.expiracion)}</p>
+            <p>Id del ban: {ban.id}</p>
+        {/if}
         
         <a href="/">
             <Button>Aceptar</Button>
+        </a>
+        <a href="/reglas.html">
+            <Button>Ver reglas</Button>
         </a>
     </div>
 </div>
@@ -33,6 +40,9 @@
         top: calc(22vw - 50px);
         max-width: 400px;
         padding: 2px;
+    }
+    .advertencia {
+        background: var(--color6)
     }
     .fondo {
         background-size: 100vw !important;

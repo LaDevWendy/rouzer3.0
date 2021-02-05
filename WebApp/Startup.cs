@@ -131,6 +131,7 @@ namespace WebApp
             // services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<HashService>();
             services.AddScoped<AccionesDeModeracionService>();
+            services.AddScoped<SpamService>();
 
             if(Configuration.GetValue<bool>("Telegram:UsarTelegram"))
             {

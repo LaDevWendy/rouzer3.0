@@ -12,6 +12,8 @@ import more from '../../icons/more-vertical.svg'
 import RChanClient from '../../RChanClient';
 import Dado from '../Dado.svelte'
 
+import shortcuts from '../../shorcuts'
+
 export let hilo
 
 let dispatch = createEventDispatcher();
@@ -58,7 +60,22 @@ function onClick(e) {
 }
 
 
-function onContextMenu(e) {
+async function onContextMenu(e) {
+    if(shortcuts.estaPresionada("x") &&  $globalStore.usuario.esMod) {
+        e.preventDefault()
+        await RChanClient.borrarHilo(hilo.id)
+        return;
+    }
+    if(shortcuts.estaPresionada("c") &&  $globalStore.usuario.esMod) {
+        e.preventDefault()
+        abrir.cambiarCategoria(hilo.id)
+        return;
+    }
+    if(shortcuts.estaPresionada("v") &&  $globalStore.usuario.esMod) {
+        e.preventDefault()
+        abrir.ban(hilo.id)
+        return;
+    }
     if(!e.ctrlKey)return;
     e.preventDefault()
     toggle()
@@ -101,14 +118,22 @@ function onContextMenu(e) {
             <!-- <img src={media.vistaPreviaCuadrado} alt="{hilo.titulo}" class="imghilo"> -->
             <div class="infos">
                 {#if hilo.sticky > 0} <div class="info sticky-info"><Icon size="17" path="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12M8.8,14L10,12.8V4H14V12.8L15.2,14H8.8Z" /></div>{/if}
-                {#if hilo.historico} <div class="info svelte-12j5r62 fe fe-anchor" style="background: var(--color6);"></div> {/if}
                 {#if hilo.nuevo} <div class="info" style="background:#18222D">NUEVO</div>{/if}
                 <div class="info" style="">{(config.categoriaPorId(hilo.categoriaId)|| {nombreCorto:"??"}).nombreCorto}</div> <!--//??quitado-->
                 {#if media.tipo == MediaType.Video} <div class="info" style="background:#18222D"><span class="fe fe-play"></span></div>{/if}
                 {#if media.tipo == MediaType.Youtube} <div class="info" style="var(--color5)"><span class="fe fe-play"></span></div>{/if}
                 {#if hilo.encuesta} <div class="info encuesta" ><span class="fe fe-bar-chart-2"></span></div>{/if}
                 {#if hilo.dados}<Dado></Dado>{/if}
-
+                {#if hilo.concentracion} <div class="info" style="padding: 0px 0 !important;
+                border-radius: 4px !important;
+                margin: 0 2px;
+                background: var(--color3);"><span class="fe fe-puas"></span></div>{/if}
+                {#if hilo.serio} <div class="info" style="padding: 0px 0 !important;
+                border-radius: 4px !important;
+                margin: 0 2px;
+                background: var(--color3);"><span class="fe fe-serio"></span></div>{/if}
+                {#if hilo.historico} <div class="info svelte-12j5r62 fe fe-anchor" style="background: var(--color6);"></div> {/if}
+                
                 <div class="info">{hilo.cantidadComentarios}</div>
                 
             </div>
@@ -165,4 +190,20 @@ function onContextMenu(e) {
         border-radius: 0 0px 7px 0!important;
     }
      */
+    .fe-puas {
+        background: url("/iconos/puas.svg");
+        height: 100%;
+        width: 22px;
+        position: relative;
+        top: -2px;
+        background-size: 100%;
+    }
+    .fe-serio {
+        background: url("/iconos/serio.svg");
+        height: 100%;
+        width: 22px;
+        position: relative;
+        top: -2px;
+        background-size: 100%;
+    }
 </style>

@@ -43,6 +43,7 @@ namespace Servicios
         private readonly IMediaService mediaService;
         private readonly AccionesDeModeracionService historial;
         private readonly ILogger<HiloService> logger;
+        private readonly SpamService spamService;
 
         public HiloService(RChanContext context,
             HashService hashService,
@@ -52,7 +53,8 @@ namespace Servicios
             IHubContext<RChanHub> rchanHub, 
             IMediaService mediaService,
             AccionesDeModeracionService historial,
-            ILogger<HiloService> logger
+            ILogger<HiloService> logger,
+            SpamService spamService
             )
         : base(context, hashService)
         {
@@ -63,6 +65,7 @@ namespace Servicios
             this.mediaService = mediaService;
             this.historial = historial;
             this.logger = logger;
+            this.spamService = spamService;
         }
 
         public async Task ActualizarHilo(HiloModel Hilo)
@@ -121,6 +124,7 @@ namespace Servicios
              
              hiloFullView.Acciones ??= new HiloAccionModel();
 
+            hiloFullView.Spams =  await spamService.GetSpamsActivos();
             return hiloFullView;
 
         }
@@ -166,8 +170,8 @@ namespace Servicios
              
              hiloFullView.Acciones ??= new HiloAccionModel();
 
+            hiloFullView.Spams = await spamService.GetSpamsActivos();
             return hiloFullView;
-
         }
 
         public Task<List<HiloViewModel>> GetHilosOrdenadosPorBump()
@@ -189,7 +193,7 @@ namespace Servicios
             }
 
             var hilos = await query.FiltrarNoActivos()
-                .Where( h => !_context.Stickies.Any( s => s.HiloId == h.Id && !s.Global))
+                .Where( h => !_context.Stickies.Any( s => s.HiloId == h.Id && s.Global))
                 .OrderByDescending(h => h.Bump)
                 .Take(opciones.Cantidad)
                 .AViewModel(_context).ToListAsync();
@@ -286,7 +290,8 @@ namespace Servicios
             // Flags
             if(hilo.Contenido.Contains(">>dados")) hilo.Flags += "d";
             if(hilo.Contenido.Contains(">>idunico")) hilo.Flags += "i";
-
+            if(hilo.Contenido.Contains(">>serio")) hilo.Flags += "s";
+            
             hilo.Contenido = formateador.Parsear(hilo.Contenido);
             await _context.SaveChangesAsync();
             return hilo.Id;
@@ -413,6 +418,8 @@ namespace Servicios
                     Estado = h.Estado,
                     Dados = h.Flags.Contains("d"),
                     Historico = h.Flags.Contains("h"),
+                    Serio = h.Flags.Contains("s"),
+                    Concentracion = h.Flags.Contains("c"),
                     Encuesta = h.Encuesta != null,
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count()
                 });
@@ -429,6 +436,9 @@ namespace Servicios
                     Estado = h.Estado,
                     Usuario = h.Usuario,
                     Dados = h.Flags.Contains("d"),
+                    Historico = h.Flags.Contains("h"),
+                    Serio = h.Flags.Contains("s"),
+                    Concentracion = h.Flags.Contains("c"),
                     Encuesta = h.Encuesta != null,
                     CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                     UsuarioId = h.UsuarioId,

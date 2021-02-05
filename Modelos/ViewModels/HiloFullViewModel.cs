@@ -8,6 +8,8 @@ namespace Modelos
         HiloViewModel Hilo { get; set; }
         List<ComentarioViewModel> Comentarios { get; set; }
         HiloAccionModel Acciones { get; set; }
+        List<SpamModel> Spams { get; set; }
+
     }
 
     public class HiloFullViewModel : IHiloFullView
@@ -16,6 +18,7 @@ namespace Modelos
         public List<ComentarioViewModel> Comentarios { get; set; }
         public HiloAccionModel Acciones { get; set; }
         public CreacionRango Rango { get; set; }
+        public List<SpamModel> Spams { get; set; }
         public string Nombre { get; set; }
     }
     public class HiloFullViewModelMod :HiloFullViewModel

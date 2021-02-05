@@ -196,6 +196,7 @@
     align-items: stretch !important;
     height: 48px;
     /* margin-bottom: 10px; */
+    background: linear-gradient(90deg, rgb(11 16 22), var(--color2), rgb(39 28 43)) !important;
 }
 .nav-principal .fondo {
     height: 48px;

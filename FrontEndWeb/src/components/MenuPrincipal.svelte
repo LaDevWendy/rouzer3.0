@@ -1,15 +1,18 @@
 <script>
-    import { Ripple, Sidepanel, Checkbox } from 'svelte-mui';
+    import { Ripple, Sidepanel, Checkbox, Icon } from 'svelte-mui';
     import {fly} from 'svelte/transition'
     import config from '../config';
     import globalStore from '../globalStore'
     import RChanClient from '../RChanClient';
     import Dialogo from './Dialogo.svelte';
     import Ajustes from './Dialogos/Ajustes.svelte';
-    $:usuario = $globalStore.usuario
 
+    import more from '../icons/more-vertical.svg'
+    import serio from '../icons/serio.svg'
+    
     export let mostrar = true
-
+    
+    $:usuario = $globalStore.usuario
     let mostrarCategorias = false
     let mostrarAjustes = false
 
@@ -70,6 +73,13 @@
                 </div>
             {/if}
             <hr>
+            <a href="/Archivo">
+                <li> <icon class="fe fe-book"/> Archivo  <Ripple/></li>
+            </a>
+            <a href="/Serios">
+                <li><Icon color="var(--color-texto2)" ><svelte:component this={serio} /></Icon>  Serios  <Ripple/></li>
+            </a>
+            <hr>
             {#if $globalStore.usuario.estaAutenticado}
                 <a href="/Mis/Creados">
                     <li> <icon class="fe fe-target"/> Creados  <Ripple/></li>
@@ -83,13 +93,9 @@
                 <a href="/Mis/Ocultos">
                     <li> <icon class="fe fe-eye-off"/> Ocultos  <Ripple/></li>
                 </a>
-            {/if}
+            {/if
+            }
             <hr>
-                <a href="/Archivo">
-                    <li> <icon class="fe fe-book"/> Archivo  <Ripple/></li>
-                </a>
-            <hr>
-
             <li on:click={() => mostrarAjustes = true}> <icon class="fe fe-settings"/> Ajustes  <Ripple/></li>
             <a href="/reglas.html">
                 <li > <icon class="fe fe-align-justify"/> Reglas  <Ripple/></li>
@@ -104,8 +110,6 @@
                 <li on:click={desloguearse}> <icon class="fe fe-log-out"/> Salir  <Ripple/></li>
             {/if}
             <hr>
-
-
             
             {#if $globalStore.usuario.esMod}
             <a href="/Moderacion">
@@ -133,5 +137,10 @@
         height: 100%;
         display: flex;
         align-items: center;
+    }
+
+    .menu-principal :global(.icon) {
+        opacity: 0.7;
+        padding-right: 23px;
     }
 </style>

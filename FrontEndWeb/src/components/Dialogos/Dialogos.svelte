@@ -15,6 +15,7 @@
         usuarioId: "",
         mediaId:"",
         categoriaId:"-1",
+        advertenciaCategoria: false,
         eliminarMedia: false,
         mediaEliminarDependientes: true
     })
@@ -168,18 +169,18 @@
 </Dialogo>
 
 <Dialogo 
-    visible={$dialogosStore.dialogoAbierto == "cambiarCategoria"} 
-    titulo="Cambiar categoria" 
-    accion = {() => RChanClient.cambiarCategoria($dialogosStore.hiloId, $dialogosStore.categoriaId)}>
-    <span slot="activador"></span>
-    <div slot="body">
-        <span asp-validation-for="CategoriaId"></span>
-        <select bind:value={$dialogosStore.categoriaId}  name="categoria">
-            <option value="-1" selected="selected" disabled="disabled">Categoría</option>
-            {#each config.categorias as c}
+visible={$dialogosStore.dialogoAbierto == "cambiarCategoria"} 
+titulo="Cambiar categoria" 
+accion = {() => RChanClient.cambiarCategoria($dialogosStore.hiloId, $dialogosStore.categoriaId, $dialogosStore.advertenciaCategoria)}>
+<span slot="activador"></span>
+<div slot="body">
+    <span asp-validation-for="CategoriaId"></span>
+    <select bind:value={$dialogosStore.categoriaId}  name="categoria">
+        <option value="-1" selected="selected" disabled="disabled">Categoría</option>
+        {#each config.categorias as c}
             <option value="{c.id}">{c.nombre}</option>
-            {/each}
-        </select>
-        
-    </div>
+        {/each}
+    </select>
+    <Checkbox bind:checked={$dialogosStore.advertenciaCategoria} right>Advertencia</Checkbox>
+</div>
 </Dialogo>

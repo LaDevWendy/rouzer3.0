@@ -229,7 +229,7 @@ namespace WebApp.Controllers
             string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             var ban = await context.Bans
                 .OrderByDescending(b => b.Expiracion)
-                .Where(b => !b.Visto)
+                // .Where(b => !b.Visto)
                 .Include(b => b.Hilo)
                 .Include(b => b.Comentario)
                 .FirstOrDefaultAsync(b => b.UsuarioId == User.GetId() || b.Ip == ip);

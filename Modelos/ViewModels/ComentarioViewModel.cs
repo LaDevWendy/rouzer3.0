@@ -67,6 +67,9 @@ namespace Modelos
         {
             var r = new Random(Creacion.Millisecond + Creacion.Second * 60 + Creacion.Minute * 60 * 60 + Creacion.Hour * 60 * 60 * 60 + +Creacion.Day * 60 * 60 * 60 * 24);
 
+            //Serio
+            if(hilo != null && hilo.Flags.Contains("s")) return "serio";
+
             // Black
             const int categoriaParanormal = 15;
             if(hilo != null && hilo.CategoriaId == categoriaParanormal)

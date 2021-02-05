@@ -308,6 +308,9 @@ namespace WebApp.Controllers
             }
             await context.SaveChangesAsync();
             await historial.RegistrarBan(User.GetId(), ban);
+
+            // Aviso ban tiempo real
+            await rchanHub.Clients.User(ban.UsuarioId).SendAsync("domado");
             return Json(new ApiResponse($"Usuario Baneado {(mediaEliminado ? "; imagen/video eliminado" : "")} {(model.Desaparecer ? "; Usuario desaparecido" : "")}"));
         }
 
@@ -422,6 +425,7 @@ namespace WebApp.Controllers
         {
             public string HiloId { get; set; }
             public int CategoriaId { get; set; }
+            public bool Advertencia { get; set; } = true;
         }
 
         [HttpPost]
@@ -448,8 +452,31 @@ namespace WebApp.Controllers
             await rchanHub.Clients.Group("moderacion")
                 .SendAsync("denunciasAceptadas", denunciasPorCategoriaIncorrecta.Select(d => d.Id).ToArray());
 
-            await context.SaveChangesAsync();
+
+            // Advertencia por categoria incorrecta
+            if (vm.Advertencia) 
+            {
+                var advertencia = new BaneoModel
+                {
+                    Id = hashService.Random(),
+                    Aclaracion = $"El roz fue movido de {categoriasOpt.Value.First(c => c.Id == vm.CategoriaId).Nombre} a {categoriasOpt.Value.First(c => c.Id == categoriaAntigua).Nombre}",
+                    Creacion = DateTimeOffset.Now,
+                    Expiracion = DateTimeOffset.Now + TimeSpan.FromSeconds(0),
+                    ModId = User.GetId(),
+                    Motivo = MotivoDenuncia.CategoriaIncorrecta,
+                    Tipo = TipoElemento.Hilo,
+                    HiloId = hilo.Id,
+                    Ip = hilo.Ip,
+                    UsuarioId = hilo.UsuarioId,
+                };
+                await context.SaveChangesAsync();
+                await rchanHub.Clients.User(advertencia.UsuarioId).SendAsync("domado");
+            }
+
             await historial.RegistrarCambioDeCategoria(User.GetId(), hilo.Id, categoriaAntigua, hilo.CategoriaId);
+
+            // Cambio de categoria tiempo real
+            await rchanHub.Clients.Group("home").SendAsync("categoriaCambiada", new {HiloId = hilo.Id, CategoriaId = vm.CategoriaId});
             return Json(new ApiResponse("Categoria cambiada!"));
         }
 

@@ -133,6 +133,12 @@ namespace WebApp.Controllers
             hilo.Media = media;
             hilo.MediaId = media.Id;
 
+            // MarkDown solo para mods
+            if(!User.EsMod()) hilo.Contenido = hilo.Contenido.Replace(">>md", "");
+
+            if(hilo.Contenido.Contains(">>concentracion") && User.EsMod()) hilo.Flags += "c";
+            if(hilo.Contenido.Contains(">>serio") && User.EsMod()) hilo.Flags += "si";
+
             string id = await hiloService.GuardarHilo(hilo);
             
             // El op sigue a su hilo
@@ -271,7 +277,7 @@ namespace WebApp.Controllers
         }
 
         [AllowAnonymous]
-        async public Task<ActionResult> CargarMas([FromQuery]DateTimeOffset ultimoBump, [FromQuery] string categorias) 
+        async public Task<ActionResult> CargarMas([FromQuery]DateTimeOffset ultimoBump, [FromQuery] string categorias, [FromQuery] bool serios=false) 
         {    
             var hilos = await context.Hilos
                 .AsNoTracking()
@@ -281,6 +287,7 @@ namespace WebApp.Controllers
                 .FiltrarPorCategoria(categorias.Split(",").Select(c => Convert.ToInt32(c)).ToArray())
                 .Where(h => !context.Stickies.Any(s => s.HiloId == h.Id && !s.Global))
                 .Where(h => h.Bump < ultimoBump)
+                .Where(h => !serios || h.Flags.Contains("s"))
                 .Take(16)
                 .AViewModel(context)
                 .ToListAsync();

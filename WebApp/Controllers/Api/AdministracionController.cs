@@ -18,6 +18,7 @@ using System.Security.Claims;
 using System.IO;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApp.Controllers
 {
@@ -34,6 +35,7 @@ namespace WebApp.Controllers
         private readonly SignInManager<UsuarioModel> signInManager;
         private readonly IOptions<GeneralOptions> config;
         private readonly IOptions<List<Categoria>> categoriasOpt;
+        private readonly SpamService spamService;
 
         public Administracion(
             IHiloService hiloService,
@@ -44,7 +46,8 @@ namespace WebApp.Controllers
             UserManager<UsuarioModel> userManager,
             SignInManager<UsuarioModel> signInManager,
             IOptionsSnapshot<GeneralOptions> config,
-            IOptions<List<Categoria>> categoriasOpt
+            IOptions<List<Categoria>> categoriasOpt,
+            SpamService spamService
         )
         {
             this.hiloService = hiloService;
@@ -56,6 +59,7 @@ namespace WebApp.Controllers
             this.signInManager = signInManager;
             this.config = config;
             this.categoriasOpt = categoriasOpt;
+            this.spamService = spamService;
         }
         [Route("/Administracion")]
         public async Task<ActionResult> Index()
@@ -207,6 +211,35 @@ namespace WebApp.Controllers
                 return Json(new ApiResponse($"{hilosALimpiar.Count()} hilos limpiados y {ArchivosLimpiados} archivos limpiados"));
 
         } 
+
+        [Route("/Administracion/Spams")]
+        public async Task<ActionResult> Spams() 
+        {
+            return View( new {
+                Spams = await spamService.GetSpamsActivos()
+            });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CrearSpam(CrearSpamVM model)
+        {
+            if(!ModelState.IsValid) 
+            {
+                return BadRequest(ModelState);
+            }
+            await spamService.Agregar( new SpamModel {
+                Link = model.Link,
+                UrlImagen = model.UrlImagen,
+                Duracion = TimeSpan.FromMinutes(model.Duracion),
+            });
+            return Ok(new ApiResponse("RozPam reado"));
+        }
+
+        public async Task<ActionResult> EliminarSpam(SpamModel spam)
+        {
+            await spamService.Remover(spam.Id);
+            return Ok(new ApiResponse("RozPam Removido"));
+        }
     }
 }
 
@@ -222,5 +255,12 @@ public class UsuarioVM
 {
     public string Id { get; set; }
     public string UserName { get; set; }
+}
+public class CrearSpamVM
+{
+    public string Link { get; set; }
+    public string UrlImagen { get; set; }
+    [Required]
+    public int Duracion { get; set; }
 }
 

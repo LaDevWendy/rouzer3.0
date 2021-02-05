@@ -171,10 +171,11 @@
     .youtube-footer .medialink { flex:1 }
 
     .media .ocultar {
-        display: none;
+        opacity: 0;
+        transition: 0.2s;
     }
     .media:hover .ocultar {
-        display: block  ;
+        opacity: 1;
     }
     .youtube, iframe, .youtube img {
         border-radius: 4px 4px 0 0 !important;
@@ -186,5 +187,12 @@
     .modoCuadrado {
         width: 100%;
         max-width: 100%;
+    }
+
+    .ocultar :global(button) {
+        top: 0;
+        right: 0;
+        border-radius: 50px 0px 0 50px;
+        background-color: #1a212c63 !important;
     }
 </style>

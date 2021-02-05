@@ -32,6 +32,7 @@ namespace Data
         public DbSet<Sticky> Stickies { get; set; }
         public DbSet<BaneoModel> Bans { get; set; }
         public DbSet<AccionDeModeracion> AccionesDeModeracion { get; set; }
+        public DbSet<SpamModel> Spams { get; set; }
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
