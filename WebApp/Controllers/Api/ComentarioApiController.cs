@@ -176,7 +176,7 @@ namespace WebApp.Controllers
                     .Where(c => c.HiloId == hilo.Id)
                     .CountAsync();
 
-                if(cantidadComentarios >= 20) 
+                if(cantidadComentarios >= 500) 
                 {
                     var comentarioEliminar = await context.Comentarios
                         .Where(c => c.HiloId == hilo.Id)
