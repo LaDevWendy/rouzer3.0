@@ -39,7 +39,7 @@ namespace Modelos
                     var random = new Random(comentario.Creacion.Millisecond + Creacion.Second);
                     this.Dados = random.Next(10);
                 }
-                if(hilo.Flags.Contains("i"))
+                if(hilo.Flags.Contains("i") || hilo.Flags.Contains("s"))
                 {
                     IdUnico = GenerarIdUnico(hilo.Id, comentario.UsuarioId);
                 }

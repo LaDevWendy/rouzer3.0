@@ -107,6 +107,7 @@ import RChanClient from '../../RChanClient';
             RChanClient.eliminarComentarios([comentario.id])
         }
     }
+
 </script>
 
 <div bind:this={el}
@@ -116,14 +117,14 @@ import RChanClient from '../../RChanClient';
     class:comentarioMod = {comentario.rango > CreacionRango.Auxliar}
     class:comentarioAuxiliar = {comentario.rango == CreacionRango.Auxliar}
     r-id="{comentario.id}" id="{comentario.id}{esRespuesta?'-res':''}"
-    style={(comentario.respuestas.length > 0)?'padding-bottom: 20px': ''}
+    style={(comentario.respuestas && comentario.respuestas.length > 0)?'padding-bottom: 20px': ''}
     on:contextmenu={onContexMenu}
     >
 
-    {#if  comentario.respuestas.length > 0}
+    {#if comentario.respuestas && comentario.respuestas.length > 0}
         <div class="respuestas-compactas"
             on:click={() => dispatch("motrarRespuestas", comentario.id)}>
-            R: {comentario.respuestas.length}
+            R: {comentario.respuestas && comentario.respuestas.length}
         </div>
         <div  class="respuestas">
             {#each comentario.respuestas as r }

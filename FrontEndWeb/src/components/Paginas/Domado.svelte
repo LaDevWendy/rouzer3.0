@@ -3,7 +3,7 @@
     import config from '../../config';
     import {formatearTiempo, formatearTimeSpan} from '../../helper'
     const ban = window.model.ban
-    const esAdvertencia = ban.duracion.includes("00:00:00")
+    const esAdvertencia = ban.duracion.includes("00:00:00") && (ban.duracion.length == 16 || ban.duracion.length == 8)
 
 </script>
 <div class="fondo">

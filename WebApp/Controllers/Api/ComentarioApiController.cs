@@ -176,11 +176,20 @@ namespace WebApp.Controllers
                     .Where(c => c.HiloId == hilo.Id)
                     .CountAsync();
 
-                if(cantidadComentarios >= 500) 
+                if(cantidadComentarios >= 20) 
                 {
+                    var comentarioEliminar = await context.Comentarios
+                        .Where(c => c.HiloId == hilo.Id)
+                        .Where(c => c.Estado == ComentarioEstado.Normal)
+                        .OrderByDescending(c => c.Creacion)
+                        .Skip(10)
+                        .ToListAsync();
+                    comentarioEliminar.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
+                    
                     var comentarioBorrar = await context.Comentarios
                         .Where(c => c.HiloId == hilo.Id)
                         .Where(c => !context.Bans.Any(b => b.ComentarioId == c.Id))
+                        .Where(c => !context.Denuncias.Any(b => b.ComentarioId == c.Id))
                         .Where(c => c.Estado == ComentarioEstado.Normal)
                         .OrderByDescending(c => c.Creacion)
                         .Skip(10)

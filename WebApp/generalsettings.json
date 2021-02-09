@@ -1,12 +1,12 @@
 {
   "General": {
     "LimiteBump": 500,
-    "HilosMaximosPorCategoria": 50,
+    "HilosMaximosPorCategoria": 60,
     "ModoPrivado": true,
     "TiempoEntreComentarios": 2,
     "TiempoEntreHilos": 150,
     "LimiteArchivo": 0,
-    "RegistroAbierto": true,
+    "RegistroAbierto": false,
     "NumeroMaximoDeCuentasPorIp": 4,
     "LinkDeInvitacion": "B193UL4W",
     "RestriccionDeAcceso": 0,
@@ -17,7 +17,7 @@
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
     "Flags": "",
-    "Version": "2.0",
+    "Version": "2.0.1",
     "Nombre": "Rouzed"
   }
 }
