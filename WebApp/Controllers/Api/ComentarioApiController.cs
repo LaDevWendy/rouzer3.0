@@ -190,6 +190,7 @@ namespace WebApp.Controllers
                         .Where(c => c.HiloId == hilo.Id)
                         .Where(c => !context.Bans.Any(b => b.ComentarioId == c.Id))
                         .Where(c => !context.Denuncias.Any(b => b.ComentarioId == c.Id))
+                        .Where(c => !context.Notificaciones.Any(b => b.ComentarioId == c.Id))
                         .Where(c => c.Estado == ComentarioEstado.Normal)
                         .OrderByDescending(c => c.Creacion)
                         .Skip(10)

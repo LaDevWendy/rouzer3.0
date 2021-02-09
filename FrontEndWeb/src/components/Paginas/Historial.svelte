@@ -86,6 +86,8 @@
     .vista-previa {
         width: 500px;
         height: 100%;
+        position: sticky;
+        top: 60px;
     }
 </style>
 
