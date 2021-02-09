@@ -115,7 +115,9 @@
     <div class="container">
             <ul>
                 {#each accionesFiltradas as a (a.id)}
-                    <li class="accion" on:mouseenter={() => accionVista = a}>
+                    <li class="accion" on:mouseenter={() => accionVista = a}
+                        style="{a == accionVista?'background: var(--color6);':''}"
+                        >
                         <span style="background: var(--color3);">
                             <Tiempo date={a.creacion} />
                         </span>
@@ -127,9 +129,9 @@
                             <span>{a.nota}</span>
                         {/if}
                         {#if a.hilo}
-                            <a href="/Hilo/{a.hilo.id}">Roz</a>
+                            <a href="/Hilo/{a.hilo.id}">{a.hilo.titulo}</a>
                         {/if}
-                        {#if a.comentario}
+                        <!-- {#if a.comentario}
                             <a href="/Hilo/{a.comentario.hiloId}#{a.comentario.id}"> Comentario</a>
                         {/if}
                         {#if a.denuncia}
@@ -137,13 +139,14 @@
                         {/if}
                         {#if a.ban}
                             <a href="#" style="background: var(--color5);"> Ban </a>
-                        {/if}
+                        {/if} -->
                     </li>
                 {/each}
             </ul>
         
             <div class="vista-previa panel">
-                {#if accionVista}
+                {#if accionVista != null }
+                {#key accionVista}
                     {#if accionVista.tipo == TipoAccion.CategoriaCambiada}
                         <span>{accionVista.nota}</span>
                     {/if}
@@ -166,6 +169,7 @@
                             <div slot="body">Remover ban?</div>
                         </Dialogo>
                     {/if}
+                {/key}
                 {/if}
             </div>
     </div>
