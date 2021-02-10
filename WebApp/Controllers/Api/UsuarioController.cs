@@ -217,7 +217,6 @@ namespace WebApp.Controllers
             await signInManager.SignInAsync(user, true);
             return this.RedirectJson("/");
         }
-
         [HttpGet, Route("/Inicio")]
         public  ActionResult Inicio(string codigoDeInvitacion) 
         {
@@ -242,7 +241,11 @@ namespace WebApp.Controllers
             }
 
             if(ban is null) return Redirect("/");
-            
+
+            var bans = await context.Bans
+                    .Where(b => b.UsuarioId == User.GetId() || b.Ip == ip)
+                    .ToListAsync();
+            bans.ForEach(b => b.Visto = true);
             ban.Visto = true;
             await context.SaveChangesAsync();
 
