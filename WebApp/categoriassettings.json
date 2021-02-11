@@ -107,7 +107,7 @@
         "Nsfw": false
     },{
         "Id": 22,
-        "Nombre": "ROZED",
+        "Nombre": "Rouzed",
         "NombreCorto": "RZD",
         "Nsfw": false
     }, {
@@ -191,5 +191,10 @@
         "Nombre": "Programacion",
         "NombreCorto": "PROG",
         "Nsfw": false
+    },{
+        "Id": 39,
+        "Nombre": "Goringa",
+        "NombreCorto": "GORE",
+        "Nsfw": true
     }]
 }
