@@ -378,6 +378,15 @@ namespace Servicios
                 .Where(h => !_context.Bans.Any(b => b.HiloId == h.Id && b.ComentarioId == null))
                 .ToListAsync();
             
+            // Marcar  hilos archivados con mas de dos dias como eliminados
+            var hilosArchivadosConBaneo = await _context.Hilos
+                .Where(h => h.Estado == HiloEstado.Archivado)
+                .Where(h => _context.Bans.Any(b => b.HiloId == h.Id))
+                .Where(h => h.Creacion < dosDiasAtras)
+                .ToListAsync();
+            
+            hilosArchivadosConBaneo.ForEach(h => h.Estado = HiloEstado.Eliminado);
+            
             int total = hilosALimpiar.Count();
             int limpiados = 0;
             foreach (var h in hilosALimpiar)
