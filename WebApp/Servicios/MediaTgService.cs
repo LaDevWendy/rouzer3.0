@@ -234,6 +234,7 @@ namespace Servicios
         }
         public async Task<File> DescargarArchivoTg(string id, Stream stream)
         {
+            var f = await bot.GetFileAsync(id);
             return await bot.GetInfoAndDownloadFileAsync(id, stream);
         }
         public async Task<File> GetInfoArchivoTg(string id)

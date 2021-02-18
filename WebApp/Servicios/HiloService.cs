@@ -370,11 +370,11 @@ namespace Servicios
         }
         public async Task LimpiarHilosViejos () 
         {
-            var dosDiasAtras = DateTimeOffset.Now - TimeSpan.FromDays(2);
+            var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromDays(1);
             var hilosALimpiar = await _context.Hilos
                 .Where(h => h.Estado == HiloEstado.Archivado || h.Estado == HiloEstado.Eliminado)
                 .Where(h => !h.Flags.Contains("h") & h.Estado == HiloEstado.Archivado)
-                .Where(h => h.Creacion < dosDiasAtras)
+                .Where(h => h.Creacion < tiempoMinimoDeVida)
                 .Where(h => !_context.Bans.Any(b => b.HiloId == h.Id && b.ComentarioId == null))
                 .ToListAsync();
             
@@ -382,7 +382,7 @@ namespace Servicios
             var hilosArchivadosConBaneo = await _context.Hilos
                 .Where(h => h.Estado == HiloEstado.Archivado)
                 .Where(h => _context.Bans.Any(b => b.HiloId == h.Id))
-                .Where(h => h.Creacion < dosDiasAtras)
+                .Where(h => h.Creacion < tiempoMinimoDeVida)
                 .ToListAsync();
             
             hilosArchivadosConBaneo.ForEach(h => h.Estado = HiloEstado.Eliminado);
