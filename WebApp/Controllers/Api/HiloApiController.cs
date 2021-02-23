@@ -244,7 +244,7 @@ namespace WebApp.Controllers
             string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             yaDenuncio = yaDenuncio || denunciasIp.Contains(vm.HiloId + vm.ComentarioId?? "" + ip);
 
-            if(yaDenuncio) ModelState.AddModelError("hilo", "Ya denunciaste esto");
+            if(yaDenuncio) ModelState.AddModelError("hilo", "Ya fue denunciado");
 
             if(User != null) {
 

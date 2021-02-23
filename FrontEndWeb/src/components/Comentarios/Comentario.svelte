@@ -152,7 +152,7 @@ import RChanClient from '../../RChanClient';
         <span 
             on:click={seleccionar}
             class:nombreResaltado = {comentario.nombre} 
-            class="nick nombre cptr">{comentario.nombre ||'Gordo'}
+            class="nick nombre cptr">{comentario.nombre ||'Miserable'}
         </span>
         {#if comentario.idUnico}
             <span 

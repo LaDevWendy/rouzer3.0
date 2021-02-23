@@ -46,6 +46,7 @@ namespace WebApp
         public string Version { get; set; }
 
         public string Nombre { get; set; } = "Rozed";
+        public string Mensaje { get; set; } = "Union de miserables";
 
     }
 
