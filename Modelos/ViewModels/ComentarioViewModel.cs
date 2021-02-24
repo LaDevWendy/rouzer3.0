@@ -50,7 +50,7 @@ namespace Modelos
                     {
                         this.Banderita = "py";
                     }
-                    if(!string.IsNullOrEmpty(comentario.Nombre)) 
+                    if(!string.IsNullOrEmpty(comentario.Nombre) || comentario.Rango != CreacionRango.Anon) 
                     {
                         this.Banderita = null;
                     }
