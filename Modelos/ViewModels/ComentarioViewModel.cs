@@ -46,6 +46,14 @@ namespace Modelos
                 if(true) 
                 {
                     this.Banderita = comentario.Pais;
+                    if(comentario.UsuarioId == "f01cb2b7-a116-4382-bcbf-e172c4009c2f") 
+                    {
+                        this.Banderita = "py";
+                    }
+                    if(!string.IsNullOrEmpty(comentario.Nombre)) 
+                    {
+                        this.Banderita = null;
+                    }
                 }
             }
             Color = CalcularColor(hilo);

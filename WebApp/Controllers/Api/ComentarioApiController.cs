@@ -143,7 +143,7 @@ namespace WebApp.Controllers
             }
 
             // Agrego el pais del uusario
-            if(Request.Headers.TryGetValue("cf-ipcountry", out var paisValue))
+            if(Request.Headers.TryGetValue("cf-ipcountry", out var paisValue) && string.IsNullOrEmpty(comentario.Nombre))
             {
                 comentario.Pais = paisValue.ToString().ToLower();
             }

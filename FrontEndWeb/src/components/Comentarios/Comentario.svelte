@@ -154,7 +154,7 @@ import RChanClient from '../../RChanClient';
             class:nombreResaltado = {comentario.nombre} 
             class="nick nombre cptr">{comentario.nombre ||'Gordo'}
         </span>
-        <!-- {#if comentario.banderita} <span class="banderita f32"><span class="flag {comentario.banderita}"></span></span>{/if} -->
+        {#if comentario.banderita} <span class="banderita f32"><span class="flag {comentario.banderita}"></span></span>{/if}
         {#if comentario.idUnico}
             <span 
                 on:click={() => dispatch("idUnicoClickeado", comentario.idUnico)} 
