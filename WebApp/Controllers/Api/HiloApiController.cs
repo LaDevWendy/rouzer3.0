@@ -140,7 +140,6 @@ namespace WebApp.Controllers
             if(hilo.Contenido.Contains(">>serio") && User.EsMod()) hilo.Flags += "si";
 
             // Agrego el pais del uusario
-            Request.Headers["cf-ipcountry"] = "br";
             if(Request.Headers.TryGetValue("cf-ipcountry", out var paisValue))
             {
                 hilo.Pais = paisValue.ToString().ToLower();
