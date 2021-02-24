@@ -8,14 +8,16 @@ using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System;
 using Servicios;
+using System.Collections.Concurrent;
+using System.Linq;
 
 namespace WebApp
 {
     public class RChanHub : Hub
     {
-        public static HashSet<string> usuariosConectados = new HashSet<string>();
+        public static ConcurrentDictionary<string, bool> usuariosConectados = new ConcurrentDictionary<string, bool>();
 
-        public static int NumeroDeUsuariosConectados => RChanHub.usuariosConectados.Count;
+        public static int NumeroDeUsuariosConectados => usuariosConectados.Count;
 
         public RChanHub()
         {
@@ -44,13 +46,18 @@ namespace WebApp
 
         public override async Task OnConnectedAsync()
         {
-            usuariosConectados.Add(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
+            var ip = Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString();
+            if (!usuariosConectados.Keys.Any(x => x == ip))
+            {
+                usuariosConectados.TryAdd(ip, true);
+            }
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            usuariosConectados.Remove(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
+            var ip = Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString();
+            usuariosConectados.TryRemove(ip, out var jeje);
             await base.OnDisconnectedAsync(exception);
         }
 
