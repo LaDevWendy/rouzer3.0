@@ -43,31 +43,35 @@ namespace Modelos
                 {
                     IdUnico = GenerarIdUnico(hilo.Id, comentario.UsuarioId);
                 }
+                if(true) 
+                {
+                    this.Banderita = comentario.Pais;
+                }
             }
             Color = CalcularColor(hilo);
 
             var creadorId = comentario.UsuarioId;
-            var r = new Random(BitConverter.GetBytes(creadorId[0])[0]);
-            Banderita = "fi";
-            // Banderita =  r.Next(7) switch
+            // var r = new Random(BitConverter.GetBytes(creadorId[0])[0]);
+            // Banderita = "fi";
+            // // Banderita =  r.Next(7) switch
+            // //     {
+            // //         0  => "ar",
+            // //         1 => "bo",
+            // //         2 => "cl",  
+            // //         3 => "mx",
+            // //         4 => "il",
+            // //         5 => "uy",
+            // //         6 => "ve",
+            // //         _ => "",
+            // //     };
+            // if(r.Next(10) == 5) Banderita = r.Next(4) switch
             //     {
-            //         0  => "ar",
-            //         1 => "bo",
-            //         2 => "cl",  
-            //         3 => "mx",
-            //         4 => "il",
-            //         5 => "uy",
-            //         6 => "ve",
+            //         0  => "il",
+            //         1 => "il",
+            //         2 => "il",  
+            //         3 => "il",
             //         _ => "",
             //     };
-            if(r.Next(10) == 5) Banderita = r.Next(4) switch
-                {
-                    0  => "il",
-                    1 => "il",
-                    2 => "il",  
-                    3 => "il",
-                    _ => "",
-                };
         }
         public ComentarioViewModel() {}
 

@@ -15,6 +15,7 @@ namespace Modelos
         public string MediaId { get; set; }
         [JsonIgnore]
         public string Ip { get; set; }
+        public string Pais { get; set; }
     }
     
     public enum CreacionRango

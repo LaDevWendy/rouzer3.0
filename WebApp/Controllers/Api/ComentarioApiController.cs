@@ -130,7 +130,7 @@ namespace WebApp.Controllers
                 comentario.MediaId = media.Id;
             }
 
-            //Agrego rango y nombre
+            // Agrego rango y nombre
             if(User.EsMod())
             {
                 if(vm.MostrarNombre) comentario.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
@@ -140,6 +140,13 @@ namespace WebApp.Controllers
             {
                 if(vm.MostrarNombre) comentario.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
                 if(vm.MostrarRango) comentario.Rango = CreacionRango.Auxiliar;
+            }
+
+            // Agrego el pais del uusario
+            Request.Headers["cf-ipcountry"] = "br";
+            if(Request.Headers.TryGetValue("cf-ipcountry", out var paisValue))
+            {
+                comentario.Pais = paisValue.ToString().ToLower();
             }
 
             await comentarioService.Guardar(comentario);
