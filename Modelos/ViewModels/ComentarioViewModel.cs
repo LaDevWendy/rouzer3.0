@@ -48,7 +48,7 @@ namespace Modelos
 
             var creadorId = comentario.UsuarioId;
             var r = new Random(BitConverter.GetBytes(creadorId[0])[0]);
-            Banderita = "il";
+            Banderita = "fi";
             // Banderita =  r.Next(7) switch
             //     {
             //         0  => "ar",
@@ -62,10 +62,10 @@ namespace Modelos
             //     };
             if(r.Next(10) == 5) Banderita = r.Next(4) switch
                 {
-                    0  => "sa",
-                    1 => "ir",
-                    2 => "ps",  
-                    3 => "iq",
+                    0  => "il",
+                    1 => "il",
+                    2 => "il",  
+                    3 => "il",
                     _ => "",
                 };
         }
