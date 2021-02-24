@@ -1,7 +1,7 @@
 {
   "General": {
     "LimiteBump": 500,
-    "HilosMaximosPorCategoria": 40,
+    "HilosMaximosPorCategoria": 120,
     "ModoPrivado": true,
     "TiempoEntreComentarios": 2,
     "TiempoEntreHilos": 150,
@@ -17,7 +17,7 @@
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
     "Flags": "",
-    "Version": "2.0.6",
+    "Version": "2.1.0",
     "Nombre": "Rouzed",
     "Mensaje": "Union de religiones"
   }

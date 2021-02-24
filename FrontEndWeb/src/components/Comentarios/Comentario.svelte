@@ -154,6 +154,7 @@ import RChanClient from '../../RChanClient';
             class:nombreResaltado = {comentario.nombre} 
             class="nick nombre cptr">{comentario.nombre ||'Gordo'}
         </span>
+        {#if comentario.banderita} <span class="banderita f32"><span class="flag {comentario.banderita}"></span></span>{/if}
         {#if comentario.idUnico}
             <span 
                 on:click={() => dispatch("idUnicoClickeado", comentario.idUnico)} 
@@ -455,6 +456,19 @@ import RChanClient from '../../RChanClient';
       font-weight: bold !important;
   }
   .comentario :global(a) {font-weight: bold !important;}
+}
+.banderita {
+    width: 19px;
+    overflow: hidden;
+    height: 16px;
+    position: relative;
+    border-radius: 2px;
+}
+.banderita .flag {
+    position: absolute;
+    transform: scale(0.69);
+    top: -8px;
+    right: -17px;
 }
     /* @media(max-width >600px) {} */
 

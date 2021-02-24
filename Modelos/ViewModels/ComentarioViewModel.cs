@@ -45,6 +45,21 @@ namespace Modelos
                 }
             }
             Color = CalcularColor(hilo);
+
+            var creadorId = comentario.UsuarioId;
+            var r = new Random(BitConverter.GetBytes(creadorId[0])[0]);
+              Banderita =  r.Next(7) switch
+                {
+                    0  => "ar",
+                    1 => "bo",
+                    2 => "cl",  
+                    3 => "mx",
+                    4 => "il",
+                    5 => "uy",
+                    6 => "ve",
+                    _ => "",
+                };
+            if(r.Next(100) == 66) Banderita = "de";
         }
         public ComentarioViewModel() {}
 
@@ -120,6 +135,7 @@ namespace Modelos
         }
 
         public int Dados { get; set; } = -1;
+        public string Banderita { get; set; }
 
         static protected string GenerarIdUnico(string hiloId, string usuarioId)
         {
