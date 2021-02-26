@@ -43,7 +43,7 @@ namespace Modelos
                 {
                     IdUnico = GenerarIdUnico(hilo.Id, comentario.UsuarioId);
                 }
-                if(true) 
+                if(hilo.Flags.Contains("b") && !hilo.Flags.Contains("s")) 
                 {
                     this.Banderita = comentario.Pais;
                     if(comentario.UsuarioId == "f01cb2b7-a116-4382-bcbf-e172c4009c2f") 

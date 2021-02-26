@@ -138,12 +138,13 @@ namespace WebApp.Controllers
 
             if(hilo.Contenido.Contains(">>concentracion") && User.EsMod()) hilo.Flags += "c";
             if(hilo.Contenido.Contains(">>serio") && User.EsMod()) hilo.Flags += "si";
+            if(hilo.Contenido.Contains(">>banderitas")) hilo.Flags += "b";
 
             // Agrego el pais del uusario
-            if(Request.Headers.TryGetValue("cf-ipcountry", out var paisValue))
-            {
-                hilo.Pais = paisValue.ToString().ToLower();
-            }
+            // if(Request.Headers.TryGetValue("cf-ipcountry", out var paisValue))
+            // {
+            //     hilo.Pais = paisValue.ToString().ToLower();
+            // }
             
             string id = await hiloService.GuardarHilo(hilo);
             
