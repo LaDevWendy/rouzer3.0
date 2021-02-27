@@ -11,6 +11,7 @@
     let estadisticasStore = localStore("Estadisticas", {visible: false});
 
     function formatear(numero) {
+        if (numero >= 1000000) return `${(numero / 1000000).toFixed(2)}M`;
         if (numero >= 1000) return `${(numero / 1000).toFixed(2)}K`;
         return numero;
     }
