@@ -16,4 +16,10 @@
         height: 60px;
         background-size: contain;
     }
+
+    .rozpams {
+        display: flex;
+        flex-direction: column;
+        gap: 10px
+    }
 </style>

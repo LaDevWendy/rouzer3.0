@@ -44,7 +44,7 @@ namespace Servicios
             rChanContext.Add(spam);
 
             var expirados = await rChanContext.Spams
-                .Where(s =>(s.Creacion + s.Duracion) > DateTime.Now)
+                .Where(s =>(s.Creacion + s.Duracion) < DateTime.Now)
                 .ToListAsync();
 
             rChanContext.RemoveRange(expirados);
