@@ -37,7 +37,7 @@ namespace Servicios
                 .ToList();
 
             var notis = await context.Comentarios
-                .Where(c => comentariosRespondidos.Contains(c.Id))
+                .Where(c => comentariosRespondidos.Contains(c.Id) && c.HiloId == hilo.Id)
                 .Where(c => c.UsuarioId != comentario.UsuarioId)
                 .Select(c => new UserNoti(context.Notificaciones.FirstOrDefault(n => n.UsuarioId == c.UsuarioId && n.HiloId == comentario.HiloId && n.Tipo == NotificacionType.Respuesta), c.UsuarioId))
                 .ToListAsync();
