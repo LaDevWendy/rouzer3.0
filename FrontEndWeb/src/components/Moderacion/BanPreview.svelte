@@ -8,6 +8,7 @@
 </script>
 
 <div class="ban">
+    <p>Mod: <a style="color:var(--color6)" href="/HistorialDeUsuario/{ban.modId}">{ban.modId}</a></p>
     <p>Aclaracion: {ban.aclaracion ||" "}</p>
     <p>Motivo: { MotivoDenuncia.aString(ban.motivo)}</p>
     <p>Fecha: {formatearTiempo(ban.creacion)}</p>

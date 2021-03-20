@@ -128,6 +128,10 @@ namespace WebApp.Controllers
             var ultimosBaneos = await context.Bans
                 .OrderByDescending(u => u.Creacion)
                 .Include(b => b.Usuario)
+                .Include(b => b.Hilo)
+                .Include(b => b.Comentario)
+                .Include(b => b.Comentario.Media)
+                .Include(b => b.Hilo.Media)
                 .Where(b => b.Expiracion > DateTime.Now)
                 .ToListAsync();
             return View(new { ultimosRegistros, ultimosBaneos, cantidadDeUsuarios });
