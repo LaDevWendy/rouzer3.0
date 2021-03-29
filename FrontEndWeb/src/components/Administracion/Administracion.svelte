@@ -113,6 +113,7 @@
                     <li>Captcha registro <Checkbox bind:checked={model.config.captchaRegistro} right></Checkbox></li>
                     <li>Captcha hilo <Checkbox bind:checked={model.config.captchaHilo} right></Checkbox></li>
                     <li>Captcha comentario <Checkbox bind:checked={model.config.captchaComentario} right></Checkbox></li>
+                    <li>Ignorar denuncias anonimas<Checkbox bind:checked={model.config.ignorarDenunciasAnonimas} right></Checkbox></li>
                     <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
                 </ul>
             </div>

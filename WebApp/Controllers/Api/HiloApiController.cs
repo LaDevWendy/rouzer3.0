@@ -225,9 +225,13 @@ namespace WebApp.Controllers
         [AllowAnonymous]
         async public Task<ActionResult<ApiResponse>> Denunciar( DenunciaVM vm)
         {
+            if(generalOptions.Value.IgnorarDenunciasAnonimas && !User.Identity.IsAuthenticated)
+             {
+                 return new ApiResponse("Denuncia enviada");
+             }
             if(generalOptions.Value.RestriccionDeAcceso != RestriccionDeAcceso.Publico && !User.Identity.IsAuthenticated)
             {
-                ModelState.AddModelError("Error", "Error al denuciar");
+                ModelState.AddModelError("Error", "Error al denunciar");
                 return BadRequest(ModelState);
             }
             var denuncia = new DenunciaModel

@@ -36,6 +36,7 @@ namespace WebApp
         public string MensajePaginaDeChoque { get; set; } = "Chocamo";
         public bool ModoMessi { get; set; }
         public bool ModoSerenito { get; set; }
+        public bool IgnorarDenunciasAnonimas { get; set; } = false;
 
         public bool CaptchaHilo { get; set; }
         public bool CaptchaComentario { get; set; }
