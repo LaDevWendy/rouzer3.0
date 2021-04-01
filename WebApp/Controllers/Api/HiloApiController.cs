@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace WebApp.Controllers
 {
@@ -281,7 +282,24 @@ namespace WebApp.Controllers
                 .Include(d => d.Hilo.Usuario)
                 .SingleAsync(d => d.Id == denuncia.Id);
 
-            await rchanHub.Clients.Group("moderacion").SendAsync("nuevaDenuncia", denuncia);
+            await rchanHub.Clients.Group("moderacion").SendAsync("nuevaDenuncia", new {
+                Hilo = new HiloViewModelMod(denuncia.Hilo){Usuario = new UsuarioModel{UserName = denuncia.Hilo.Usuario.UserName, Id = denuncia.Hilo.Usuario.Id}},
+                Comentario = denuncia.Comentario != null? new ComentarioViewModelMod(denuncia.Comentario) {
+                    Usuario = new UsuarioModel {Id = denuncia.Comentario.Usuario.Id, UserName = denuncia.Comentario.Usuario.UserName}
+                }: null,
+                denuncia.Estado,
+                denuncia.Aclaracion,
+                denuncia.Id,
+                denuncia.Tipo,
+                denuncia.UsuarioId,
+                denuncia.Creacion,
+                denuncia.HiloId,
+                denuncia.ComentarioId,
+                Usuario = new {
+                    denuncia.Usuario.UserName,
+                    denuncia.Usuario.Id,
+                }
+            });
 
             
             return new ApiResponse("Denuncia enviada");
@@ -326,7 +344,7 @@ namespace WebApp.Controllers
             string[] opcionesEncuesta =  null;
             try
             {
-                opcionesEncuesta = Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(vm.Encuesta);
+                opcionesEncuesta = JsonConvert.DeserializeObject<string[]>(vm.Encuesta);
             }
             catch (Exception e)
             {

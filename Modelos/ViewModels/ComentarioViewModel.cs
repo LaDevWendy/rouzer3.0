@@ -21,7 +21,8 @@ namespace Modelos
             this.Rango = comentario.Rango;
 
         }
-        public ComentarioViewModel(ComentarioModel comentario, HiloModel hilo = null)
+
+        public ComentarioViewModel(ComentarioModel comentario, HiloModel hilo = null, string requestUsuarioId = null)
         {
             this.Contenido = comentario.Contenido;
             this.Id = comentario.Id;
@@ -29,6 +30,7 @@ namespace Modelos
             this.Media = comentario.Media;
             this.Nombre = comentario?.Nombre ?? "";
             this.Rango = comentario.Rango;
+            this.Propio = requestUsuarioId == comentario.UsuarioId;
 
             if (hilo != null)
             {
@@ -129,7 +131,8 @@ namespace Modelos
                 };
             }
             if (r.Next(10000) == 10) return "navideño";
-            if (r.Next(2000) == 11) return "white";
+            if (r.Next(5000) == 13) return "blanco";
+            if (r.Next(2000) == 11) return "ario";
 
             if (r.Next(200) == 2)
             {
@@ -156,6 +159,7 @@ namespace Modelos
 
         public int Dados { get; set; } = -1;
         public string Banderita { get; set; }
+        public bool Propio { get; set; }
 
         static protected string GenerarIdUnico(string hiloId, string usuarioId)
         {
@@ -180,7 +184,7 @@ namespace Modelos
         {
             UsuarioId = comentario.UsuarioId;
         }
-        public ComentarioViewModelMod(ComentarioModel comentario, HiloModel hilo):base(comentario, hilo)
+        public ComentarioViewModelMod(ComentarioModel comentario, HiloModel hilo, string clientUsuarioId = null):base(comentario, hilo, clientUsuarioId)
         {
             UsuarioId = comentario.UsuarioId;
             Estado = comentario.Estado;
@@ -190,5 +194,6 @@ namespace Modelos
         public string UsuarioId { get; set; }
         public ComentarioEstado Estado { get; set; }
         public string Username { get; set; }
+        public UsuarioModel Usuario { get; set; }
     }
 }   

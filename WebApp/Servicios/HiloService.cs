@@ -113,7 +113,7 @@ namespace Servicios
                 .Where(c => c.Estado == ComentarioEstado.Normal)
                 .OrderByDescending(c => c.Creacion)
                 .Include(c => c.Media)
-                .Select(c => new ComentarioViewModel(c, hilo))
+                .Select(c => new ComentarioViewModel(c, hilo,null))
                 .ToListAsync();
 
              if (!string.IsNullOrEmpty(userId))
@@ -159,8 +159,10 @@ namespace Servicios
                 .Where(c => c.Estado != ComentarioEstado.Eliminado || mostrarOcultos)
                 .OrderByDescending(c => c.Creacion)
                 .Include(c => c.Media)
-                .Select(c => new ComentarioViewModelMod(c, hilo))
+                .Select(c => new ComentarioViewModelMod(c, hilo, userId))
                 .ToListAsync();
+            
+            hiloFullView.Comentarios.ForEach(c => c.Propio = c.UsuarioId == userId);
 
              if (!string.IsNullOrEmpty(userId))
              {

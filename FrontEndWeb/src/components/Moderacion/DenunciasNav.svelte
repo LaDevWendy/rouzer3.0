@@ -4,6 +4,7 @@
     import globalStore from "../../globalStore";
     import Signal from "../../signal";
     import Denuncia from "../Denuncia.svelte";
+    import ajustesConfigModStore from '../Dialogos/ajustesConfigModStore'
 
     let denuncias = window.denuncias || [];
     $: denunciasActivas = denuncias.filter(d => d.estado == EstadoDenuncia.NoRevisada)
@@ -21,11 +22,16 @@
     const underAttack = new Audio("/audio/underAttack.mp3")
     const toing = new Audio("/audio/toing.mp3")
 
+    const denunciasVolumen = $ajustesConfigModStore.mutearDenuncias? 0 : 0.03
+    
+    underAttack.volume = denunciasVolumen
+    toing.volume = denunciasVolumen
+
     Signal.coneccion.on("nuevaDenuncia", (denuncia) => {
         underAttack.play()
-
+        console.log(denuncia)
         denuncias = [denuncia, ...denuncias]
-        mostrar = true;
+        mostrar = $ajustesConfigModStore.autoDesplegarDenuncias;
     })
 
     Signal.coneccion.on("denunciasRechazadas", (ids) => {

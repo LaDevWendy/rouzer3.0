@@ -7,7 +7,7 @@
     import { createEventDispatcher } from 'svelte';
     import HiloPreviewMod from "./Moderacion/HiloPreviewMod.svelte";
     import {EstadoDenuncia, MotivoDenuncia} from "../enums"
-import globalStore from "../globalStore";
+    import globalStore from "../globalStore";
 
 	const dispatch = createEventDispatcher()
 

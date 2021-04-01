@@ -19,7 +19,6 @@ using System.IO;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
 using System.ComponentModel.DataAnnotations;
-
 namespace WebApp.Controllers
 {
     [Authorize("esAuxiliar")]
@@ -183,7 +182,7 @@ namespace WebApp.Controllers
                     .Include(b => b.Comentario.Media)
                     .Select(b => new {
                         b.Aclaracion,
-                        Comentario = b.Comentario != null? new ComentarioViewModelMod(b.Comentario, b.Hilo): null,
+                        Comentario = b.Comentario != null? new ComentarioViewModelMod(b.Comentario, b.Hilo, null): null,
                         b.Creacion,
                         b.Duracion,
                         b.Id,
@@ -366,8 +365,10 @@ namespace WebApp.Controllers
                 .Where(c => c.Estado != ComentarioEstado.Eliminado)
                 .ToListAsync();
 
-            var his = comentarios.Select(c => historial.RegistrarEliminacion(User.GetId(), c.HiloId, c.Id));
-            await Task.WhenAll(his);
+            foreach (var c in comentarios)
+            {
+                await historial.RegistrarEliminacion(User.GetId(), c.HiloId, c.Id);
+            }
 
             await comentarioService.Eliminar(model.Ids, model.BorrarMedia);
             return Json(new ApiResponse($"comentarios domados!"));

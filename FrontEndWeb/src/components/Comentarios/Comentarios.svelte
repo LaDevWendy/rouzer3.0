@@ -15,6 +15,7 @@
     import { localStore} from '../../localStore'
     import comentarioStore from './comentarioStore';
     import SpamList from '../SpamList.svelte';
+    import selectorStore from '../Moderacion/selectorStore'
 
     export let hilo
     export let comentarios
@@ -73,19 +74,25 @@
      })
 
     let resaltando = false;
+
     function resaltarComentariosDeUsuario(usuarioId) {
+
+
         if(!$globalStore.usuario.esMod) return;
         if(resaltando) {
-            comentarios.forEach(c => c.resaltado = false)
-            comentarios = comentarios   
+            // comentarios.forEach(c => c.resaltado = false)
+            // comentarios = comentarios   
             resaltando = false
+            $selectorStore.seleccionados = new Set()
             return;
         }
         comentarios.forEach(c => {
-            if(c.usuarioId == c.usuarioId) {
+            if(c.usuarioId == usuarioId) {
                 resaltando = true;
+                $selectorStore.seleccionados.add(c.id)
+                $selectorStore.seleccionados = $selectorStore.seleccionados
             }
-            c.resaltado = usuarioId == c.usuarioId
+            // c.resaltado = usuarioId == c.usuarioId
         })
         comentarios = comentarios
     }

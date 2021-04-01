@@ -1,10 +1,13 @@
 <script>
     import {Dialog, Button, Checkbox, ExpansionPanel, Ripple} from 'svelte-mui'
-    import {localStore} from '../../localStore'
+    import globalStore from '../../globalStore'
     import Skins from '../Personalizacion/Skins.svelte'
     import ajustesConfigStore from './ajustesConfigStore'
+    import ajustesConfigModStore from './ajustesConfigModStore'
 
     export let visible = true
+
+  
 
     $: if($ajustesConfigStore) actualizarConfiguracion()
 
@@ -95,6 +98,13 @@
         <ExpansionPanel bind:group name="Skins">
            <Skins/>
         </ExpansionPanel>
+
+        {#if $globalStore.usuario.esAuxiliar}
+            <ExpansionPanel bind:group name="Mod">
+                <Checkbox  bind:checked={$ajustesConfigModStore.mutearDenuncias} right>Mutear denuncias</Checkbox>  
+                <Checkbox  bind:checked={$ajustesConfigModStore.autoDesplegarDenuncias} right>Auto desplegar denuncias</Checkbox>  
+            </ExpansionPanel>
+        {/if}
         
         <div slot="actions" class="actions center">
             <Button color="primary" on:click={actualizarYCerrar}>Lito</Button>

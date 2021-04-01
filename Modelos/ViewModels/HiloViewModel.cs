@@ -50,6 +50,11 @@ namespace Modelos
 
     public class HiloViewModelMod : HiloViewModel
     {
+        public HiloViewModelMod(){}
+        public HiloViewModelMod(HiloModel hilo) :base(hilo)
+        {
+            UsuarioId = hilo.UsuarioId;
+        }
         public string UsuarioId { get; set; }
         public string UserName { get; set; }
         public UsuarioModel Usuario { get; set; }

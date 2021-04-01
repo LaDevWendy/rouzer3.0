@@ -906,3 +906,13 @@ input:-webkit-autofill {
 .hilo-completo .texto hr {
   border-color: var(--color5) !important;
 }
+
+/* Ash */
+
+.video-preview.media-input.svelte-11jtip2 {
+  background-image: url(https://imgur.com/MHJPKgw.jpg) !important;
+}
+
+#fondo-global {
+  background-image: url(https://i.imgur.com/uyPJfRn.png) !important
+}

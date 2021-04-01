@@ -83,9 +83,9 @@
     class:protocoloSerenito
     bind:offsetHeight={height}
 >
-    <nav>
+    <nav style="height:0">
         <!-- <Lucesitas/> -->
-        <div class="nav-principal" class:modoSticky={scrollY > 200}>
+        <div class="nav-principal" class:modoSticky={scrollY > 50}>
             <div class="fondo" style="position:absolute;left:0;top:0;width:100%">
                 <!-- <Cuetitos/> -->
                 <!-- <CuentaRegresiva/> -->
@@ -155,7 +155,7 @@
             </div>
             {#if !protocoloMessi || $globalStore.usuario.esMod}
                 <span class="nav-boton crear-hilo-boton" on:click={() => mostrarFormularioHilo = true}>
-                    <span style="width:max-content; margin-right: 6px;cursor: pointer;">Roz</span>
+                    <span style="width:max-content; margin-right: 6px;cursor: pointer;">ASH</span>
                     <span class="fe fe-plus-square"></span>
                     <Ripple/>
                 </span>
@@ -164,8 +164,10 @@
             <FormularioHilo bind:mostrar ={mostrarFormularioHilo}/>
             <FormularioLogin/>
         </nav>
+        <div class="separador" style="height:48px"></div>
        <NavCategorias visible={!ocultarCategorias}></NavCategorias>
 </header>
+
 <MenuPrincipal bind:mostrar={mostrarMenu}/>
 
 

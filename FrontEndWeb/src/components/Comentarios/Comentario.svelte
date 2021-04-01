@@ -12,8 +12,8 @@
     import {abrir} from '../Dialogos/Dialogos.svelte'
     import { ComentarioEstado, CreacionRango } from '../../enums';
     import selectorStore from '../Moderacion/selectorStore'
-import teclas from '../../shorcuts';
-import RChanClient from '../../RChanClient';
+    import teclas from '../../shorcuts';
+    import RChanClient from '../../RChanClient';
 
     export let comentario;
     export let hilo = { id:null };
@@ -116,6 +116,7 @@ import RChanClient from '../../RChanClient';
     class:eliminado = {comentario.estado == ComentarioEstado.eliminado}
     class:comentarioMod = {comentario.rango > CreacionRango.Auxliar}
     class:comentarioAuxiliar = {comentario.rango == CreacionRango.Auxliar}
+    class:propio = {comentario.propio}
     r-id="{comentario.id}" id="{comentario.id}{esRespuesta?'-res':''}"
     style={(comentario.respuestas && comentario.respuestas.length > 0)?'padding-bottom: 20px': ''}
     on:contextmenu={onContexMenu}
@@ -175,6 +176,9 @@ import RChanClient from '../../RChanClient';
             <Menu>
                 <span slot="activador" on:click={() => mostrarMenu = true} class=""><i class="fe fe-more-vertical relative"></i></span>
                 <li on:click={() => toggle()}>{visible?'Ocultar':'Mostrar'}</li>
+                {#if comentario.propio }
+                    <li on:click={() => toggle()}>Ignorar</li>
+                {/if}
                 <li on:click={() => abrir.reporte(hilo.id || comentario.hiloId, comentario.id)}>Reportar</li>
                 {#if $globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar}
                     <hr>
@@ -360,7 +364,8 @@ import RChanClient from '../../RChanClient';
     .color-rosa {background: #ff74c1;}
     .color-negro {background: #000000;}
     .color-marron {background: #492916;}
-    .color-white {color: #00abec;border-top: solid 4px #ffc400; background: white;}
+    .color-ario {color: #00abec;border-top: solid 4px #ffc400; background: white;}
+    .color-blanco {color: black; background: white;}
 
     .color-rose-rubia {background: url(/imagenes/colores/rose-rubia.jpg); background-size: 100%; color:transparent;}
     .color-rose-azul {background: url(/imagenes/colores/rose-azul.jpg); background-size: 100%; color:transparent;}
@@ -469,6 +474,9 @@ import RChanClient from '../../RChanClient';
     transform: scale(0.69);
     top: -8px;
     right: -17px;
+}
+.propio {
+    border-bottom: solid 2px var(--color7);
 }
     /* @media(max-width >600px) {} */
 
