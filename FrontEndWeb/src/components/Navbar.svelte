@@ -155,7 +155,7 @@
             </div>
             {#if !protocoloMessi || $globalStore.usuario.esMod}
                 <span class="nav-boton crear-hilo-boton" on:click={() => mostrarFormularioHilo = true}>
-                    <span style="width:max-content; margin-right: 6px;cursor: pointer;">ASH</span>
+                    <span style="width:max-content; margin-right: 6px;cursor: pointer;">ROZ</span>
                     <span class="fe fe-plus-square"></span>
                     <Ripple/>
                 </span>
