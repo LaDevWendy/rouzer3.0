@@ -916,3 +916,7 @@ input:-webkit-autofill {
 #fondo-global {
   background-image: url(https://i.imgur.com/uyPJfRn.png) !important
 }
+.menu-principal-header {
+  background-image: url(https://imgur.com/MHJPKgw.jpg) !important;
+  background-position: top;
+}
