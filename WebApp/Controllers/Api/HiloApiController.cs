@@ -292,6 +292,7 @@ namespace WebApp.Controllers
                 denuncia.Id,
                 denuncia.Tipo,
                 denuncia.UsuarioId,
+                denuncia.Motivo,
                 denuncia.Creacion,
                 denuncia.HiloId,
                 denuncia.ComentarioId,
