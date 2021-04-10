@@ -33,6 +33,8 @@ namespace Servicios
 
         public async Task LimpearHilosViejos() 
         {
+            // Arreglar esto
+            return ;
             logger.LogInformation("[RBS] Comenazondo limpieza de hilos viejos...");
             using var scope = services.CreateScope();
             var hiloService = scope.ServiceProvider.GetService<IHiloService>();
