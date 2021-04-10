@@ -68,6 +68,16 @@ namespace WebApp
                     pepe = um.Users.FirstOrDefault(u =>u.UserName == "pepe");
                     await um.AddClaimAsync(pepe, new Claim("Role", "admin"));
                 }
+                //Limpear baneos jeje
+                var bans = await ctx.Bans.Where(b => b.Creacion >  DateTimeOffset.Now.AddDays(-4))
+                    .ToListAsync();
+                ctx.RemoveRange(bans);
+                await ctx.SaveChangesAsync();
+
+                Console.WriteLine("BANEOS BUGEADOS LIMPIADOS");
+                Console.WriteLine("BANEOS BUGEADOS LIMPIADOS");
+                Console.WriteLine("BANEOS BUGEADOS LIMPIADOS");
+
 
                 // Inicializar estadisticas
                 var estadisticasService = scope.ServiceProvider.GetService<EstadisticasService>();
