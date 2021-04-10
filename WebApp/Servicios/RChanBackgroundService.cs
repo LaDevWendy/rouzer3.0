@@ -33,11 +33,19 @@ namespace Servicios
 
         public async Task LimpearHilosViejos() 
         {
-            logger.LogInformation("[RBS] Comenazondo limpieza de hilos viejos...");
-            using var scope = services.CreateScope();
-            var hiloService = scope.ServiceProvider.GetService<IHiloService>();
-            await hiloService.LimpiarHilosViejos();
-            logger.LogInformation("[RBS] Limpieza terminada");
+            try
+            {
+                logger.LogInformation("[RBS] Comenazondo limpieza de hilos viejos...");
+                using var scope = services.CreateScope();
+                var hiloService = scope.ServiceProvider.GetService<IHiloService>();
+                await hiloService.LimpiarHilosViejos();
+                logger.LogInformation("[RBS] Limpieza terminada");
+            }
+            catch (Exception e)
+            {
+                logger.LogError("Error al limpiar los hilos viejos");
+                logger.LogError(e.Message, e);
+            }
         }
 
         public void Dispose()
