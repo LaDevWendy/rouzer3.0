@@ -394,8 +394,16 @@ namespace Servicios
             foreach (var h in hilosALimpiar)
             {
                 logger.LogInformation($"Limpeando hilo {h.Titulo}({limpiados}/{total})");
-                await LimpiarHilo(h);
-                limpiados++;
+                try
+                {
+                    await LimpiarHilo(h);
+                    limpiados++;
+                }
+                catch (Exception e)
+                {
+                    logger.LogInformation($"No se pudo limpear el hilo hilo {h.Titulo}({limpiados}/{total})");
+                    logger.LogError(e.Message,e);
+                }
             }
             await _context.SaveChangesAsync();
             var ArchivosLimpiados = await mediaService.LimpiarMediasHuerfanos();
