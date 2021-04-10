@@ -69,7 +69,8 @@ namespace WebApp
                     await um.AddClaimAsync(pepe, new Claim("Role", "admin"));
                 }
                 //Limpear baneos jeje
-                var bans = await ctx.Bans.Where(b => b.Creacion >  DateTimeOffset.Now.AddHours(-4))
+                var cincoHorasAtras = DateTimeOffset.Now.AddHours(-5);
+                var bans = await ctx.Bans.Where(b => b.Creacion > cincoHorasAtras )
                     .ToListAsync();
                 ctx.RemoveRange(bans);
                 await ctx.SaveChangesAsync();
