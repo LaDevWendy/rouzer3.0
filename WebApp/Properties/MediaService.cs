@@ -244,17 +244,15 @@ namespace Servicios
             {
                 try
                 {
-                    logger.LogInformation($"Limpiando {m.Id}");
                     await Eliminar(m.Id);
                     eliminados.Add(m);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("No se puedo eliminar el archivo " + m.Url);
                     Console.WriteLine(e);
                 }
             }
-
+            logger.LogInformation($"${eliminados.Count} archivos multimedia eliminados");
             context.RemoveRange(eliminados);
             return await context.SaveChangesAsync();
         }

@@ -36,6 +36,7 @@ namespace WebApp
                 var opt = scope.ServiceProvider.GetService<IConfiguration>();
                 var wh = scope.ServiceProvider.GetService<IWebHostEnvironment>();
                 var comentarioService = scope.ServiceProvider.GetService<IComentarioService>();
+                var hiloService = scope.ServiceProvider.GetService<IHiloService>();
                 var hash = scope.ServiceProvider.GetService<HashService>();
 
                 var migs = await ctx.Database.GetPendingMigrationsAsync();

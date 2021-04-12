@@ -345,10 +345,15 @@ namespace Servicios
             var acciones = await _context.HiloAcciones.Where(d => d.HiloId == hilo.Id).ToListAsync();
             var notis = await _context.Notificaciones.Where( n => n.HiloId == hilo.Id).ToListAsync();
             var denuncias = await _context.Denuncias.Where(d => d.HiloId == hilo.Id).ToListAsync();
+            var accionesDeModeracion = await _context.AccionesDeModeracion.Where(d => d.HiloId == hilo.Id).ToListAsync();
+
+            var baneosBugeados = await _context.Bans.Where(b => b.HiloId == null).ToListAsync();
+            _context.RemoveRange(baneosBugeados);
             
             _context.RemoveRange(acciones);
             _context.RemoveRange(notis);
             _context.RemoveRange(denuncias);
+            _context.RemoveRange(accionesDeModeracion);
 
             if(baneos.Count == 0) 
             {
@@ -372,7 +377,7 @@ namespace Servicios
         }
         public async Task LimpiarHilosViejos () 
         {
-            var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromDays(1);
+            var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromDays(2);
             var hilosALimpiar = await _context.Hilos
                 .Where(h => h.Estado == HiloEstado.Archivado || h.Estado == HiloEstado.Eliminado)
                 .Where(h => !h.Flags.Contains("h") & h.Estado == HiloEstado.Archivado)
@@ -392,7 +397,7 @@ namespace Servicios
             int total = hilosALimpiar.Count();
             int limpiados = 0;
             foreach (var h in hilosALimpiar)
-            {
+            {   
                 logger.LogInformation($"Limpeando hilo {h.Titulo}({limpiados}/{total})");
                 try
                 {
@@ -401,6 +406,7 @@ namespace Servicios
                 }
                 catch (Exception e)
                 {
+                    throw e;
                     logger.LogInformation($"No se pudo limpear el hilo hilo {h.Titulo}({limpiados}/{total})");
                     logger.LogError(e.Message,e);
                 }
