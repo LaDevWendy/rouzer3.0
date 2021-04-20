@@ -196,5 +196,11 @@
         "Nombre": "Goringa",
         "NombreCorto": "GORE",
         "Nsfw": true
+    },
+    {
+        "Id": 40,
+        "Nombre": "Criptos",
+        "NombreCorto": "BAT",
+        "Nsfw": true
     }]
 }

@@ -179,6 +179,10 @@ namespace WebApp
             });
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddHostedService<RChanBackgroundService>();
+
+            services.AddMiniProfiler(opts => {
+
+            }).AddEntityFramework();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -243,6 +247,8 @@ namespace WebApp
                     app.UseMiddleware<TelegramMediaHostingMiddleare>();
                 }
             });
+
+            // app.UseMiniProfiler();
 
             app.UseRouting();
             app.UseAuthentication();
