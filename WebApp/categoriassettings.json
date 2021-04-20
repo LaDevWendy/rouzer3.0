@@ -201,6 +201,6 @@
         "Id": 40,
         "Nombre": "Criptos",
         "NombreCorto": "BAT",
-        "Nsfw": true
+        "Nsfw": false
     }]
 }
