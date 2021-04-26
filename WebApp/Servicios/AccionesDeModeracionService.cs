@@ -15,13 +15,13 @@ namespace Servicios
         private readonly RChanContext context;
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly HashService hashService;
-        private readonly IOptions<List<Categoria>> categorias;
+        private readonly IOptionsSnapshot<List<Categoria>> categorias;
 
         public AccionesDeModeracionService(
             RChanContext context,  
             IHubContext<RChanHub> rchanHub,
             HashService hashService,
-            IOptions<List<Categoria>> categorias
+            IOptionsSnapshot<List<Categoria>> categorias
         )
         {
             this.context = context;

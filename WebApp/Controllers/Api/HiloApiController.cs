@@ -28,7 +28,7 @@ namespace WebApp.Controllers
         private readonly HashService hashService;
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly RChanContext context;
-        private readonly IOptions<List<Categoria>> categoriasOpt;
+        private readonly IOptionsSnapshot<List<Categoria>> categoriasOpt;
         private readonly IOptionsSnapshot<GeneralOptions> generalOptions;
         private readonly CaptchaService captcha;
         private readonly AntiFloodService antiFlood;
@@ -42,7 +42,7 @@ namespace WebApp.Controllers
             HashService hashService,
             IHubContext<RChanHub> rchanHub,
             RChanContext context,
-            IOptions<List<Categoria>> categoriasOpt,
+            IOptionsSnapshot<List<Categoria>> categoriasOpt,
             IOptionsSnapshot<GeneralOptions> generalOptions,
             CaptchaService captcha,
             AntiFloodService antiFlood,
@@ -227,6 +227,12 @@ namespace WebApp.Controllers
         async public Task<ActionResult<ApiResponse>> Denunciar( DenunciaVM vm)
         {
             if(generalOptions.Value.IgnorarDenunciasAnonimas && !User.Identity.IsAuthenticated)
+             {
+                 return new ApiResponse("Denuncia enviada");
+             }
+             // Se ignora la denuncia de los usuarios sin comentarios ni hilos
+            var numeroHilosComentarios = await context.Hilos.DeUsuario(User.GetId()).CountAsync() + await context.Comentarios.DeUsuario(User.GetId()).CountAsync();
+            if(generalOptions.Value.IgnorarDenunciasAnonimas && numeroHilosComentarios == 0)
              {
                  return new ApiResponse("Denuncia enviada");
              }

@@ -5,7 +5,7 @@
 @using Microsoft.AspNetCore.SignalR;
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @inject RChanContext _context;
-@inject IOptions<List<Categoria>> categoriasOpt;
+@inject IOptionsSnapshot<List<Categoria>> categoriasOpt;
 @inject IConfiguration config;
 @inject IOptionsSnapshot<GeneralOptions> generalOptions
 @inject IWebHostEnvironment env

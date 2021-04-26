@@ -34,7 +34,7 @@ namespace WebApp.Controllers
         private readonly UserManager<UsuarioModel> userManager;
         private readonly SignInManager<UsuarioModel> signInManager;
         private readonly IOptions<GeneralOptions> config;
-        private readonly IOptions<List<Categoria>> categoriasOpt;
+        private readonly IOptionsSnapshot<List<Categoria>> categoriasOpt;
         private readonly AccionesDeModeracionService historial;
 
         public Moderacion(
@@ -47,7 +47,7 @@ namespace WebApp.Controllers
             UserManager<UsuarioModel> userManager,
             SignInManager<UsuarioModel> signInManager,
             IOptionsSnapshot<GeneralOptions> config,
-            IOptions<List<Categoria>> categoriasOpt,
+            IOptionsSnapshot<List<Categoria>> categoriasOpt,
             AccionesDeModeracionService historial
         )
         {

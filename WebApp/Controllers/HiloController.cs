@@ -20,7 +20,7 @@ namespace WebApp.Controllers
         private readonly ILogger<HiloController> _logger;
         private readonly IHiloService hiloService;
         private readonly RChanContext context;
-        private readonly IOptions<List<Categoria>> categoriasOpts;
+        private readonly IOptionsSnapshot<List<Categoria>> categoriasOpts;
 
         public IMediaService MediaService { get; }
 
@@ -28,7 +28,7 @@ namespace WebApp.Controllers
             ILogger<HiloController> logger,
             IHiloService hiloService,
             RChanContext context,
-            IOptions<List<Categoria>> categoriasOpts,
+            IOptionsSnapshot<List<Categoria>> categoriasOpts,
             IMediaService mediaService)
         {
             _logger = logger;

@@ -202,5 +202,11 @@
         "Nombre": "Criptos",
         "NombreCorto": "BAT",
         "Nsfw": false
+    },
+    {
+        "Id": 41,
+        "Nombre": "\"Trapitos\"",
+        "NombreCorto": "HMO2",
+        "Nsfw": true
     }]
 }
