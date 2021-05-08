@@ -17,7 +17,7 @@
     import NadieLoSabra from './Especiales/NadieLoSabra.svelte'
     import Estadisticas from './Estadisticas.svelte';
     // import Lucesitas from './Lucesitas.svelte'
-    // import Cuetitos from './Especiales/Cuetitos.svelte'
+    import Cuetitos from './Especiales/Cuetitos.svelte'
     // import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
     
 
@@ -87,7 +87,7 @@
         <!-- <Lucesitas/> -->
         <div class="nav-principal" class:modoSticky={scrollY > 50}>
             <div class="fondo" style="position:absolute;left:0;top:0;width:100%">
-                <!-- <Cuetitos/> -->
+                <Cuetitos/>
                 <!-- <CuentaRegresiva/> -->
                 <Estadisticas/>
             </div>
@@ -96,7 +96,7 @@
                 <Ripple/>
             </span>
             <a href="/" style="font-family: euroFighter">
-                <h3 class="rozed">{window.config.general.nombre.toUpperCase()} <span class="version">{version} </span>
+                <h3 class="rozed">{window.config.general.nombre.toUpperCase()} <span style="color:gold">100!</span> <span class="version">{version} </span>
                 </h3>
                 <Ripple/>
             </a>

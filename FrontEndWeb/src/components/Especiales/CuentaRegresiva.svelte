@@ -52,8 +52,8 @@
             <span>Segundo{segundos != 1 ?'s':''}</span>
         </div>
     {:else}
-        <div>Feliz año nuevo!</div>
-        <div>2021</div>
+        <!-- <div>Feliz dia 100</div> -->
+        <!-- <div>2021</div> -->
     {/if}
 </div>
 
@@ -61,7 +61,7 @@
     .cuenta-regresiva {
         font-family: 'euroFighter';
         font-size: 20px;
-        color: #cc1d1d;
+        color: gold;
         text-align: center;
         position: absolute;
         padding-top: 4px;
