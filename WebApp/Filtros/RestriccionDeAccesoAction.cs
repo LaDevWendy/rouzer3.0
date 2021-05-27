@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,9 @@ public class RestriccionDeAccesoAction : IAsyncActionFilter
     {
         var ctx = context.HttpContext;
         string url = ctx.Request.Path.ToString().ToLower();
-        if (url.Contains("hocamo") || url.Contains("hub") || url.Contains("omado") || url.Contains("ogin") || url.Contains("inicio"))
+
+        var accionesPermitidas = new string[]{"chocamo", "hub", "domado", "login", "inicio", "restaurarsesion", "registro"};
+        if (accionesPermitidas.Where(a => url.Contains(a)).Any())
         {
             await next();
             return;

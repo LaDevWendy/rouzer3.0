@@ -9,8 +9,8 @@
     "RegistroAbierto": true,
     "NumeroMaximoDeCuentasPorIp": 7,
     "LinkDeInvitacion": "B193UL4W",
-    "RestriccionDeAcceso": 0,
-    "MensajePaginaDeChoque": "Tinelli se metio en el orto a los meedz, tuvimos que cerrar rouzed",
+    "RestriccionDeAcceso": 1,
+    "MensajePaginaDeChoque": "a\u00F1a memby",
     "ModoMessi": false,
     "ModoSerenito": false,
     "IgnorarDenunciasAnonimas": true,
@@ -18,8 +18,8 @@
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
     "Flags": "",
-    "Version": "2.1.8",
+    "Version": "2.1.8b",
     "Nombre": "Rouzed",
-    "Mensaje": "Un viaje al borda"
+    "Mensaje": "Don\u0027t forget: you\u0027re here forever."
   }
 }
