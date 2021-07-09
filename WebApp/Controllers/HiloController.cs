@@ -12,6 +12,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
+using System;
+using WebApp.Otros;
+using Microsoft.Extensions.Hosting;
 
 namespace WebApp.Controllers
 {
@@ -21,6 +24,8 @@ namespace WebApp.Controllers
         private readonly IHiloService hiloService;
         private readonly RChanContext context;
         private readonly IOptionsSnapshot<List<Categoria>> categoriasOpts;
+        private readonly RChanCacheService rchanCacheService;
+        private static  Cache<List<HiloViewModel>> hilosCache;
 
         public IMediaService MediaService { get; }
 
@@ -29,12 +34,14 @@ namespace WebApp.Controllers
             IHiloService hiloService,
             RChanContext context,
             IOptionsSnapshot<List<Categoria>> categoriasOpts,
+            RChanCacheService rchanCacheService,
             IMediaService mediaService)
         {
             _logger = logger;
             this.hiloService = hiloService;
             this.context = context;
             this.categoriasOpts = categoriasOpts;
+            this.rchanCacheService = rchanCacheService;
             MediaService = mediaService;
         }
 
@@ -46,14 +53,16 @@ namespace WebApp.Controllers
 
             if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
             
+            var ocultos = (await context.HiloAcciones
+                .Where(a  => a.UsuarioId == User.GetId() && a.Hideado)
+                .Select(a => a.HiloId)
+                .ToArrayAsync())
+                .ToHashSet();
+
             var vm = new HiloListViewModel
             {
-                Hilos = await hiloService.GetHilosOrdenadosPorBump(new GetHilosOptions
-                {
-                    UserId = User.GetId(),
-                    CategoriasId = categorias,
-                    IncluirStickies = true
-                }),
+   
+                Hilos = rchanCacheService.hilosIndex.Where(h => !ocultos.Contains(h.Id) && categorias.Contains(h.CategoriaId)).Take(16).ToList(),
                 CategoriasActivas = categorias.ToList()
             };
             return View(vm);

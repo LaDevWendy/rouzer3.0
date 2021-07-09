@@ -179,6 +179,9 @@ namespace WebApp
             });
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddHostedService<RChanBackgroundService>();
+            
+            services.AddSingleton<RChanCacheService>();
+            services.AddHostedService<RChanCacheService>(provider => provider.GetService<RChanCacheService>());
 
             services.AddMiniProfiler(opts => {
 
@@ -248,7 +251,7 @@ namespace WebApp
                 }
             });
 
-            // app.UseMiniProfiler();
+            app.UseMiniProfiler();
 
             app.UseRouting();
             app.UseAuthentication();

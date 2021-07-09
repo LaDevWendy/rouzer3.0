@@ -9,7 +9,7 @@
     "RegistroAbierto": true,
     "NumeroMaximoDeCuentasPorIp": 7,
     "LinkDeInvitacion": "B193UL4W",
-    "RestriccionDeAcceso": 1,
+    "RestriccionDeAcceso": 0,
     "MensajePaginaDeChoque": "a\u00F1a memby",
     "ModoMessi": false,
     "ModoSerenito": false,

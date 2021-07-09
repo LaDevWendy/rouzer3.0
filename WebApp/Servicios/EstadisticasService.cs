@@ -33,6 +33,14 @@ namespace Servicios
                     await Task.Delay(r.Next(7) * 1000);
                 }
             });
+            
+            Task.Run(async () => {
+                while (true)
+                {
+                    estadisticas = JsonSerializer.Deserialize<Estadisticas>(await File.ReadAllTextAsync(ubicacionDeArchivo));
+                    await Task.Delay(1000);
+                }
+            });
         }
 
         public async Task Guardar()
@@ -47,7 +55,6 @@ namespace Servicios
 
         public async Task<Estadisticas> GetEstadisticasAsync()
         {
-            estadisticas = JsonSerializer.Deserialize<Estadisticas>(await File.ReadAllTextAsync(ubicacionDeArchivo));
             estadisticas.ComputadorasConectadas = RChanHub.NumeroDeUsuariosConectados;
             return estadisticas;
         }

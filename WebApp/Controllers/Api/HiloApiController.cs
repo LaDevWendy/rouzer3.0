@@ -33,6 +33,7 @@ namespace WebApp.Controllers
         private readonly CaptchaService captcha;
         private readonly AntiFloodService antiFlood;
         private readonly EstadisticasService estadisticasService;
+        private readonly RChanCacheService rchanCacheService;
         private static readonly HashSet<string> denunciasIp = new HashSet<string>();
 
         #region constructor
@@ -46,7 +47,8 @@ namespace WebApp.Controllers
             IOptionsSnapshot<GeneralOptions> generalOptions,
             CaptchaService captcha,
             AntiFloodService antiFlood,
-            EstadisticasService estadisticasService
+            EstadisticasService estadisticasService,
+            RChanCacheService rchanCacheService
         )
         {
             this.hiloService = hiloService;
@@ -59,6 +61,7 @@ namespace WebApp.Controllers
             this.captcha = captcha;
             this.antiFlood = antiFlood;
             this.estadisticasService = estadisticasService;
+            this.rchanCacheService = rchanCacheService;
         }
         #endregion
 
@@ -314,19 +317,30 @@ namespace WebApp.Controllers
 
         [AllowAnonymous]
         async public Task<ActionResult> CargarMas([FromQuery]DateTimeOffset ultimoBump, [FromQuery] string categorias, [FromQuery] bool serios=false) 
-        {    
-            var hilos = await context.Hilos
-                .AsNoTracking()
-                .OrdenadosPorBump()
-                .FiltrarNoActivos()
-                .FiltrarOcultosDeUsuario(User.GetId(), context)
-                .FiltrarPorCategoria(categorias.Split(",").Select(c => Convert.ToInt32(c)).ToArray())
-                .Where(h => !context.Stickies.Any(s => s.HiloId == h.Id && !s.Global))
+        {   
+            var categoriasActivas = categorias.Split(",").Select(c => Convert.ToInt32(c)).ToHashSet();
+            var ocultos = (await context.HiloAcciones
+                .Where(a  => a.UsuarioId == User.GetId() && a.Hideado)
+                .Select(a => a.HiloId)
+                .ToArrayAsync())
+                .ToHashSet();
+            // var hilos = await context.Hilos
+            //     .AsNoTracking()
+            //     .OrdenadosPorBump()
+            //     .FiltrarNoActivos()
+            //     .FiltrarOcultosDeUsuario(User.GetId(), context)
+            //     .FiltrarPorCategoria(categoriasActivas)
+            //     .Where(h => !context.Stickies.Any(s => s.HiloId == h.Id && !s.Global))
+            //     .Where(h => h.Bump < ultimoBump)
+            //     .Where(h => !serios || h.Flags.Contains("s"))
+            //     .Take(16)
+            //     .AViewModel(context)
+            //     .ToListAsync();
+            var hilos = rchanCacheService.hilosIndex
+                .Where(h => categoriasActivas.Contains(h.CategoriaId) &&  !ocultos.Contains(h.Id) && h.Sticky == 0)
                 .Where(h => h.Bump < ultimoBump)
-                .Where(h => !serios || h.Flags.Contains("s"))
-                .Take(16)
-                .AViewModel(context)
-                .ToListAsync();
+                .Take(16);
+
 
             return Ok(hilos);
         }

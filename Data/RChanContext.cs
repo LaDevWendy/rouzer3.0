@@ -86,6 +86,10 @@ namespace Data
                 .WithMany()
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+
+
+            modelBuilder.Entity<BaneoModel>().HasIndex(b => b.Expiracion);
+            modelBuilder.Entity<BaneoModel>().HasIndex(b => b.Ip);
         }
     }
 }

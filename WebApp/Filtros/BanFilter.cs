@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using Servicios;
 
 namespace WebApp
 {
@@ -17,24 +18,28 @@ namespace WebApp
     {
         private readonly SignInManager<UsuarioModel> sm;
         private readonly RChanContext dbContext;
+        private readonly RChanCacheService cacheService;
 
-        public BanFilter(SignInManager<UsuarioModel> sm, RChanContext dbContext)
+        public BanFilter(SignInManager<UsuarioModel> sm, RChanContext dbContext, RChanCacheService cacheService)
         {
+            this.cacheService = cacheService;
             this.sm = sm;
             this.dbContext = dbContext;
         }
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var ctx = context.HttpContext;
-            if(Regex.IsMatch(ctx.Request.Path, @"^/Domado") || ctx.Request.Path.Value.Contains("omado"))  
+            if (Regex.IsMatch(ctx.Request.Path, @"^/Domado") || ctx.Request.Path.Value.Contains("omado"))
             {
                 await next();
                 return;
             }
 
-            if(ctx.User != null)
+            string ip = ctx.Connection.RemoteIpAddress.MapToIPv4().ToString();
+
+            if (ctx.User != null && 
+                (cacheService.banCache.IpsBaneadas.Contains(ip) || cacheService.banCache.IdsBaneadas.Contains(ctx.User.GetId())))
             {
-                string ip = ctx.Connection.RemoteIpAddress.MapToIPv4().ToString();
 
                 var banNoVisto = await dbContext.Bans
                     .OrderByDescending(b => b.Expiracion)
@@ -48,13 +53,13 @@ namespace WebApp
                     .Where(b => b.Expiracion > ahora)
                     .FirstOrDefaultAsync(b => b.UsuarioId == ctx.User.GetId() || b.Ip == ip);
 
-                if(banNoVisto != null)
+                if (banNoVisto != null)
                 {
                     DomadoRedirect(context);
                     return;
                 }
 
-                if(banActivo != null &&  ctx.User.Identity.IsAuthenticated && ctx.Request.Method == HttpMethods.Post)
+                if (banActivo != null && ctx.User.Identity.IsAuthenticated && ctx.Request.Method == HttpMethods.Post)
                 {
                     DomadoRedirect(context);
                     return;
@@ -63,10 +68,11 @@ namespace WebApp
             await next();
         }
 
-        private void DomadoRedirect (ActionExecutingContext context) {
-            if((context.HttpContext.Request.Headers["Accept"].FirstOrDefault() ?? "").Contains("json"))
+        private void DomadoRedirect(ActionExecutingContext context)
+        {
+            if ((context.HttpContext.Request.Headers["Accept"].FirstOrDefault() ?? "").Contains("json"))
             {
-                context.Result = new JsonResult(new {Redirect = "/Domado"});
+                context.Result = new JsonResult(new { Redirect = "/Domado" });
                 return;
             }
             context.HttpContext.Response.Redirect("/Domado");
