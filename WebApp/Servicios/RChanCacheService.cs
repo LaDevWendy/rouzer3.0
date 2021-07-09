@@ -42,7 +42,7 @@ namespace Servicios
                     // Console.WriteLine("Cache actualizado en " + (DateTimeOffset.Now - t1).TotalMilliseconds);
                     await ActualizarBaneos();
                 }, 
-                null, 0, (int) TimeSpan.FromSeconds(3).TotalMilliseconds);
+                null, 0, (int) TimeSpan.FromSeconds(4).TotalMilliseconds);
             return Task.CompletedTask;
         }
 
