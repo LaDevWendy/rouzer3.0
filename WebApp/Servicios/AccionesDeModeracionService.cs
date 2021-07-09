@@ -114,5 +114,30 @@ namespace Servicios
             context.AccionesDeModeracion.Add(accion);
             await context.SaveChangesAsync();
         }
+        async public Task RegistrarHiloStickeado(string usuarioId, HiloModel hilo)
+        {
+            var accion  = new AccionDeModeracion {
+                Id = hashService.Random(),
+                UsuarioId = usuarioId,
+                HiloId = hilo.Id,
+                TipoElemento = TipoElemento.Hilo,
+                Tipo =  TipoAccion.HiloStickeado,
+            };
+            context.AccionesDeModeracion.Add(accion);
+            await context.SaveChangesAsync();
+        }
+        
+        async public Task RegistrarHiloDeestickeado(string usuarioId, HiloModel hilo)
+        {
+            var accion  = new AccionDeModeracion {
+                Id = hashService.Random(),
+                UsuarioId = usuarioId,
+                HiloId = hilo.Id,
+                TipoElemento = TipoElemento.Hilo,
+                Tipo =  TipoAccion.HiloDestickeado,
+            };
+            context.AccionesDeModeracion.Add(accion);
+            await context.SaveChangesAsync();
+        }
     }
 }

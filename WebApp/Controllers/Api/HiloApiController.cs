@@ -17,6 +17,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using WebApp.Otros;
 
 namespace WebApp.Controllers
 {
@@ -172,8 +173,7 @@ namespace WebApp.Controllers
             await rchanHub.Clients.Group("home").SendAsync("HiloCreado", viewModel);
             await rchanHub.Clients.Group("moderacion").SendAsync("HiloCreadoMod", viewModel);
 
-            await estadisticasService.RegistrarNuevoHilo();
-            
+            await estadisticasService.RegistrarNuevoHilo();            
             return Created($"/Hilo/{id}", null);
         }
 
@@ -448,6 +448,13 @@ namespace WebApp.Controllers
 
             return Ok();      
         }
+
+        [AllowAnonymous]
+        async public Task<ActionResult> Todos() 
+        {
+            return Ok(rchanCacheService.hilosIndex.Take(160));
+        } 
+
     }
     
 

@@ -63,6 +63,8 @@ export class TipoAccion
     static UsuarioDesbaneado = 5
     static ComentarioRestaurado = 6
     static HiloRestaurado = 7
+    static HiloStickeado = 8
+    static HiloDeestickeado = 9
 
     static aString(rango) 
     {

@@ -35,6 +35,8 @@ namespace Modelos
         UsuarioDesbaneado,
         ComentarioRestaurado,
         HiloRestaurado,
+        HiloStickeado,
+        HiloDestickeado,
     }
 
 }

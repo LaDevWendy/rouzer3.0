@@ -37,10 +37,12 @@ namespace Servicios
         public Task StartAsync(CancellationToken cancellationToken)
         {
             timer = new Timer(async (state) => {
-                await ActualizarHilos();
-                await ActualizarBaneos();
+                    var t1 = DateTimeOffset.Now;
+                    await ActualizarHilos();
+                    // Console.WriteLine("Cache actualizado en " + (DateTimeOffset.Now - t1).TotalMilliseconds);
+                    await ActualizarBaneos();
                 }, 
-                null, 0, (int) TimeSpan.FromSeconds(10).TotalMilliseconds);
+                null, 0, (int) TimeSpan.FromSeconds(3).TotalMilliseconds);
             return Task.CompletedTask;
         }
 

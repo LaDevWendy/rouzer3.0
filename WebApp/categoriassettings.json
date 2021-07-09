@@ -208,5 +208,17 @@
         "Nombre": "\"Trapitos\"",
         "NombreCorto": "HMO2",
         "Nsfw": true
+    },
+    {
+        "Id": 43,
+        "Nombre": "Espiritualidad",
+        "NombreCorto": "ESP",
+        "Nsfw": false
+    },
+    {
+        "Id": 42,
+        "Nombre": "Lugares e idiomas",
+        "NombreCorto": "LEI",
+        "Nsfw": false
     }]
 }
