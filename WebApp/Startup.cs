@@ -184,9 +184,9 @@ namespace WebApp
             services.AddSingleton<RChanCacheService>();
             services.AddHostedService<RChanCacheService>(provider => provider.GetService<RChanCacheService>());
 
-            services.AddMiniProfiler(opts => {
+            // services.AddMiniProfiler(opts => {
 
-            }).AddEntityFramework();
+            // }).AddEntityFramework();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
