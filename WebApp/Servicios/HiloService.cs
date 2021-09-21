@@ -295,6 +295,7 @@ namespace Servicios
             if(hilo.Contenido.Contains(">>serio")) hilo.Flags += "s";
             
             hilo.Contenido = formateador.Parsear(hilo.Contenido);
+            logger.LogInformation($"Se creó el hilo {hilo.Id}: {hilo.Titulo}");
             await _context.SaveChangesAsync();
             return hilo.Id;
         }
@@ -377,10 +378,9 @@ namespace Servicios
         }
         public async Task LimpiarHilosViejos () 
         {
-            var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromDays(2);
+            var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromSeconds(60);
             var hilosALimpiar = await _context.Hilos
-                .Where(h => h.Estado == HiloEstado.Archivado || h.Estado == HiloEstado.Eliminado)
-                .Where(h => !h.Flags.Contains("h") & h.Estado == HiloEstado.Archivado)
+                .Where(h => (!h.Flags.Contains("h") & h.Estado == HiloEstado.Archivado) || h.Estado == HiloEstado.Eliminado)
                 .Where(h => h.Creacion < tiempoMinimoDeVida)
                 .Where(h => !_context.Bans.Any(b => b.HiloId == h.Id && b.ComentarioId == null))
                 .ToListAsync();

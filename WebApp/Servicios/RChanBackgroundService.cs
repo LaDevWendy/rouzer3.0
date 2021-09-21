@@ -21,7 +21,7 @@ namespace Servicios
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            timer = new Timer(async (state) => await LimpearHilosViejos(), null, 0, (int) TimeSpan.FromHours(1).TotalMilliseconds);
+            timer = new Timer(async (state) => await LimpearHilosViejos(), null, 0, (int) TimeSpan.FromSeconds(60).TotalMilliseconds);
             return Task.CompletedTask;
         }
 

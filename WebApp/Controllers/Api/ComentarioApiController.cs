@@ -172,7 +172,7 @@ namespace WebApp.Controllers
                     .Where(c => c.Estado == ComentarioEstado.Normal)
                     .Where(c => c.HiloId == hilo.Id)
                     .CountAsync();
-                if(cantidadComentarios >= 1000) hilo.Flags += "h";
+                if(cantidadComentarios >= 10) hilo.Flags += "h";
             }
             //Roz de concentracion
             if(hilo.Flags.Contains("c"))

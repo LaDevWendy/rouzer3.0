@@ -102,8 +102,8 @@
         "Nsfw": false
     }, {
         "Id": 21,
-        "Nombre": "Redes",
-        "NombreCorto": "RDS",
+        "Nombre": "Normis",
+        "NombreCorto": "NPC",
         "Nsfw": false
     },{
         "Id": 22,
@@ -219,6 +219,12 @@
         "Id": 42,
         "Nombre": "Lugares e idiomas",
         "NombreCorto": "LEI",
+        "Nsfw": false
+    },
+    {
+        "Id": 44,
+        "Nombre": "Jewtubers",
+        "NombreCorto": "JTB",
         "Nsfw": false
     }]
 }

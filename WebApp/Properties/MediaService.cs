@@ -239,22 +239,23 @@ namespace Servicios
             
             logger.LogInformation($"Limpiando medias viejos {mediasABorrar.Count()}");
             
-            var eliminados = new List<MediaModel>();
+            var eliminados = 0;
             foreach (var m in mediasABorrar)
             {
                 try
                 {
                     await Eliminar(m.Id);
-                    eliminados.Add(m);
+                    await context.RemoveAsync(m);
+                    // await context.SaveChangesAsync();
+                    eliminados++;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                 }
             }
-            logger.LogInformation($"${eliminados.Count} archivos multimedia eliminados");
-            context.RemoveRange(eliminados);
-            return await context.SaveChangesAsync();
+            logger.LogInformation($"${eliminados} archivos multimedia eliminados");
+            return 0;
         }
 
         protected bool EsFormatoValido(string contentType) 
