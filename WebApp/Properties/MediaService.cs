@@ -245,8 +245,8 @@ namespace Servicios
                 try
                 {
                     await Eliminar(m.Id);
-                    await context.RemoveAsync(m);
-                    // await context.SaveChangesAsync();
+                    context.Remove(m);
+                    await context.SaveChangesAsync();
                     eliminados++;
                 }
                 catch (Exception e)
@@ -255,7 +255,7 @@ namespace Servicios
                 }
             }
             logger.LogInformation($"${eliminados} archivos multimedia eliminados");
-            return 0;
+            return eliminados;
         }
 
         protected bool EsFormatoValido(string contentType) 
