@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Modelos;
 using WebApp;
 using System.Linq;
+using System.Collections.Concurrent;
 
 namespace Servicios
 {
@@ -47,8 +48,8 @@ namespace Servicios
             var admins = await userManager.GetUsersForClaimAsync(new Claim("Role", "admin"));
             var mods = await userManager.GetUsersForClaimAsync(new Claim("Role", "mod"));
             var auxiliares = await userManager.GetUsersForClaimAsync(new Claim("Role", "auxiliar"));
-            
-            var usuariosConectados = RChanHub.NombresUsuariosConectados;
+
+            ConcurrentDictionary<string, int> usuariosConectados = RChanHub.NombresUsuariosConectados;
             
             var adms = admins.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
             
@@ -59,24 +60,41 @@ namespace Servicios
             var onlines = new List<UsuarioVM>();
             
             foreach (UsuarioVM a in adms){
-                if (usuariosConectados.Any(item => item == a.UserName)){
+                int n = usuariosConectados.GetOrAdd(a.UserName, 0);
+                if (n > 0)
+                {
                     onlines.Add(a);
                 }
-            }
-            
-            foreach (UsuarioVM m in meds){
-                if (usuariosConectados.Any(item => item == m.UserName)){
-                    onlines.Add(m);
+                else
+                {
+                    onlines.Remove(a);
                 }
             }
             
-            foreach (UsuarioVM x in auxs){
-                if (usuariosConectados.Any(item => item == x.UserName)){
-                    onlines.Add(x);
+            foreach (UsuarioVM a in meds){
+                int n = usuariosConectados.GetOrAdd(a.UserName, 0);
+                if (n > 0)
+                {
+                    onlines.Add(a);
+                }
+                else
+                {
+                    onlines.Remove(a);
+                }
+            }
+            
+            foreach (UsuarioVM a in auxs){
+                int n = usuariosConectados.GetOrAdd(a.UserName, 0);
+                if (n > 0)
+                {
+                    onlines.Add(a);
+                }
+                else {
+                    onlines.Remove(a);
                 }
             }
 
-            await rChanHub.Clients.Group("administracion").SendAsync("RefrescarOnlines", onlines);
+            await rChanHub.Clients.Group("administracion").SendAsync("RefrescarOnlines", onlines.ToArray());
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

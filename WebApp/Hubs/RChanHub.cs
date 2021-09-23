@@ -17,9 +17,9 @@ namespace WebApp
     {
         public static ConcurrentDictionary<string, bool> usuariosConectados = new ConcurrentDictionary<string, bool>();
         
-        public static ConcurrentDictionary<string, bool> nombreUsuariosConectados = new ConcurrentDictionary<string, bool>();
+        public static ConcurrentDictionary<string, int> nombreUsuariosConectados = new ConcurrentDictionary<string, int>();
 
-        public static string[] NombresUsuariosConectados => nombreUsuariosConectados.Keys.ToArray();
+        public static ConcurrentDictionary<string, int> NombresUsuariosConectados => nombreUsuariosConectados;
         
         public static int NumeroDeUsuariosConectados => usuariosConectados.Count;
 
@@ -64,10 +64,15 @@ namespace WebApp
             }
             
             var nombre = Context.User.Identity.Name;
-            Console.WriteLine($"{nombre} se conectó");
             if (!nombreUsuariosConectados.Keys.Any(x => x == nombre))
             {
-                nombreUsuariosConectados.TryAdd(nombre, true);
+                nombreUsuariosConectados.TryAdd(nombre, 1);
+            }
+            else 
+            {
+                int n = nombreUsuariosConectados[nombre];
+                n++;
+                nombreUsuariosConectados[nombre] = n;
             }
 
             await base.OnConnectedAsync();
@@ -80,8 +85,13 @@ namespace WebApp
             usuariosConectados.TryRemove(ip, out var jeje);
             
             var nombre = Context.User.Identity.Name;
-            Console.WriteLine($"{nombre} se desconectó");
-            nombreUsuariosConectados.TryRemove(nombre, out var jijo);
+            
+            if (nombreUsuariosConectados.Keys.Any(x => x == nombre))
+            {
+                int n = nombreUsuariosConectados[nombre];
+                n--;
+                nombreUsuariosConectados[nombre] = n;
+            }
             
             await base.OnDisconnectedAsync(exception);
         }
