@@ -19,6 +19,9 @@ class Signal {
     static subscribirAHome() {
         this.colaDeSubscripciones.push(() => this.coneccion.invoke("SubscribirAHome"))
     }
+    static subscribirAAdministracion() {
+        this.colaDeSubscripciones.push(() => this.coneccion.invoke("SubscribirAAdministracion"))
+    }
     static subscribirAModeracion() {
         this.colaDeSubscripciones.push(() => this.coneccion.invoke("SubscribirAModeracion"))
     }

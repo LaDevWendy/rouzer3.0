@@ -16,7 +16,11 @@ namespace WebApp
     public class RChanHub : Hub
     {
         public static ConcurrentDictionary<string, bool> usuariosConectados = new ConcurrentDictionary<string, bool>();
+        
+        public static ConcurrentDictionary<string, bool> nombreUsuariosConectados = new ConcurrentDictionary<string, bool>();
 
+        public static string[] NombresUsuariosConectados => nombreUsuariosConectados.Keys.ToArray();
+        
         public static int NumeroDeUsuariosConectados => usuariosConectados.Count;
 
         public RChanHub()
@@ -32,6 +36,12 @@ namespace WebApp
            await Groups.AddToGroupAsync(Context.ConnectionId, "home");
         }
 
+        [Authorize("esAdmin")]
+        public async Task SubscribirAAdministracion()
+        {
+           await Groups.AddToGroupAsync(Context.ConnectionId, "administracion");
+        }
+        
         [Authorize("esAuxiliar")]
         public async Task SubscribirAModeracion()
         {
@@ -47,21 +57,32 @@ namespace WebApp
         public override async Task OnConnectedAsync()
         {
             var ip = Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString();
-            var name = Context.User.Identity.Name;
-            Console.WriteLine($"{name} se conectó");
+            
             if (!usuariosConectados.Keys.Any(x => x == ip))
             {
                 usuariosConectados.TryAdd(ip, true);
             }
+            
+            var nombre = Context.User.Identity.Name;
+            Console.WriteLine($"{nombre} se conectó");
+            if (!nombreUsuariosConectados.Keys.Any(x => x == nombre))
+            {
+                nombreUsuariosConectados.TryAdd(nombre, true);
+            }
+
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             var ip = Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString();
-            var name = Context.User.Identity.Name;
-            Console.WriteLine($"{name} se desconectó");
+            
             usuariosConectados.TryRemove(ip, out var jeje);
+            
+            var nombre = Context.User.Identity.Name;
+            Console.WriteLine($"{nombre} se desconectó");
+            nombreUsuariosConectados.TryRemove(nombre, out var jijo);
+            
             await base.OnDisconnectedAsync(exception);
         }
 

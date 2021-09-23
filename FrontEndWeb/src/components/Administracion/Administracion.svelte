@@ -4,6 +4,7 @@
     import RChanClient from '../../RChanClient'
     import Dialogo from '../Dialogo.svelte'
     import ErrorValidacion from '../ErrorValidacion.svelte'
+    import Sigal from '../../signal'
 
     let model = window.model
     let error = null
@@ -56,6 +57,13 @@
             
         }
     }
+    
+    
+    let onlines = model.onlines;
+    Sigal.subscribirAAdministracion();
+    Sigal.coneccion.on("RefrescarOnlines", ons => {
+        onlines = ons
+    });
 
     let restriccionDeAcesso = 2;
     let restriccionesDeAcesso = {
@@ -80,7 +88,7 @@
                     <li>{a.userName} <span class="sep"></span><Button on:click={() => eliminar(a.id, "admin")}>Eliminar</Button></li>
                 {/each}
                 <hr>
-                <li class="header">Moderadores(medz)</li>
+                <li class="header">Moderadores(mods)</li>
                 <li class="noback">
                     <input bind:value = {nickMod}  type="text" placeholder="Id o nick del usuario"> <Button on:click={() => añadir(nickMod, "mod")}>Añadir</Button>
                 </li>
@@ -93,6 +101,10 @@
                 </li>
                 {#each model.auxiliares as m (m.id)}
                     <li>{m.userName} <span class="sep"></span><Button on:click={() => eliminar(m.id, "auxiliar")}>Eliminar</Button></li>
+                {/each}
+                <li class="header">Onlines</li>
+                {#each onlines as m (m.id)}
+                    <li>{m.userName}</li>
                 {/each}
             </ul>
 

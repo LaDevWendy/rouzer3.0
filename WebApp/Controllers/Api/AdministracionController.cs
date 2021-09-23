@@ -67,11 +67,41 @@ namespace WebApp.Controllers
             var admins = await userManager.GetUsersForClaimAsync(new Claim("Role", "admin"));
             var mods = await userManager.GetUsersForClaimAsync(new Claim("Role", "mod"));
             var auxiliares = await userManager.GetUsersForClaimAsync(new Claim("Role", "auxiliar"));
+            
+            var usuariosConectados = RChanHub.NombresUsuariosConectados;
+            
+            var adms = admins.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
+            
+            var meds = mods.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
+            
+            var auxs = auxiliares.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
+            
+            var onlines = new List<UsuarioVM>();
+            
+            foreach (UsuarioVM a in adms){
+                if (usuariosConectados.Any(item => item == a.UserName)){
+                    onlines.Add(a);
+                }
+            }
+            
+            foreach (UsuarioVM m in meds){
+                if (usuariosConectados.Any(item => item == m.UserName)){
+                    onlines.Add(m);
+                }
+            }
+            
+            foreach (UsuarioVM x in auxs){
+                if (usuariosConectados.Any(item => item == x.UserName)){
+                    onlines.Add(x);
+                }
+            }
+            
             var vm = new AdministracionVM
             {
-                Admins = admins.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray(),
-                Mods = mods.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray(),
-                Auxiliares  = auxiliares.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray(),
+                Admins = adms,
+                Mods = meds,
+                Auxiliares  = auxs,
+                Onlines = onlines.ToArray(),
                 Config = config.Value
             };
             return View(vm);
@@ -248,6 +278,7 @@ public class AdministracionVM
     public UsuarioVM[] Admins { get; set; }
     public UsuarioVM[] Mods { get; set; }
     public UsuarioVM[] Auxiliares { get; set; }
+    public UsuarioVM[] Onlines { get; set; }
     public GeneralOptions Config { get; internal set; }
 }
 
