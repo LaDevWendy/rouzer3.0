@@ -47,6 +47,8 @@ namespace WebApp
         public override async Task OnConnectedAsync()
         {
             var ip = Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString();
+            var name = Context.User.Identity.Name;
+            Console.WriteLine($"{name} se conectó");
             if (!usuariosConectados.Keys.Any(x => x == ip))
             {
                 usuariosConectados.TryAdd(ip, true);
@@ -57,6 +59,8 @@ namespace WebApp
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             var ip = Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString();
+            var name = Context.User.Identity.Name;
+            Console.WriteLine($"{name} se desconectó");
             usuariosConectados.TryRemove(ip, out var jeje);
             await base.OnDisconnectedAsync(exception);
         }
