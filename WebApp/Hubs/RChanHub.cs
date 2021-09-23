@@ -63,16 +63,23 @@ namespace WebApp
                 usuariosConectados.TryAdd(ip, true);
             }
             
-            var nombre = Context.User.Identity.Name;
-            if (!nombreUsuariosConectados.Keys.Any(x => x == nombre))
-            {
-                nombreUsuariosConectados.TryAdd(nombre, 1);
+            try {
+                var nombre = Context.User.Identity.Name;
+                if (!string.IsNullOrEmpty(nombre)){
+                    if (!nombreUsuariosConectados.Keys.Any(x => x == nombre))
+                    {
+                        nombreUsuariosConectados.TryAdd(nombre, 1);
+                    }
+                    else 
+                    {
+                        int n = nombreUsuariosConectados[nombre];
+                        n++;
+                        nombreUsuariosConectados[nombre] = n;
+                    }
+                }
             }
-            else 
-            {
-                int n = nombreUsuariosConectados[nombre];
-                n++;
-                nombreUsuariosConectados[nombre] = n;
+            catch (Exception e){
+                
             }
 
             await base.OnConnectedAsync();
@@ -84,13 +91,23 @@ namespace WebApp
             
             usuariosConectados.TryRemove(ip, out var jeje);
             
-            var nombre = Context.User.Identity.Name;
-            
-            if (nombreUsuariosConectados.Keys.Any(x => x == nombre))
-            {
-                int n = nombreUsuariosConectados[nombre];
-                n--;
-                nombreUsuariosConectados[nombre] = n;
+            try {
+                var nombre = Context.User.Identity.Name;
+                if (!string.IsNullOrEmpty(nombre)){
+                    if (nombreUsuariosConectados.Keys.Any(x => x == nombre))
+                    {
+                        int n = nombreUsuariosConectados[nombre];
+                        n--;
+                        if (n <= 0){
+                            nombreUsuariosConectados.TryRemove(nombre, out var jijo);
+                        } else {
+                            nombreUsuariosConectados[nombre] = n;
+                        }
+                    }
+                }
+            } 
+            catch (Exception e){
+                
             }
             
             await base.OnDisconnectedAsync(exception);
