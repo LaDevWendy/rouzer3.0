@@ -66,6 +66,26 @@ async function onContextMenu(e) {
         await RChanClient.borrarHilo(hilo.id)
         return;
     }
+    if(shortcuts.estaPresionada("d") &&  $globalStore.usuario.esMod) {
+        e.preventDefault()
+        console.log((await RChanClient.cambiarCategoria(hilo.id, 16, false)).data.mensaje)
+        return;
+    }
+    if(shortcuts.estaPresionada("u") &&  $globalStore.usuario.esMod) {
+        e.preventDefault()
+        console.log((await RChanClient.cambiarCategoria(hilo.id, 26, false)).data.mensaje)
+        return;
+    }
+    if(shortcuts.estaPresionada("m") &&  $globalStore.usuario.esMod) {
+        e.preventDefault()
+        console.log((await RChanClient.cambiarCategoria(hilo.id, 13, false)).data.mensaje)
+        return;
+    }
+    if(shortcuts.estaPresionada("a") &&  $globalStore.usuario.esMod) {
+        e.preventDefault()
+        console.log((await RChanClient.cambiarCategoria(hilo.id, 2, false)).data.mensaje)
+        return;
+    }    
     if(shortcuts.estaPresionada("c") &&  $globalStore.usuario.esMod) {
         e.preventDefault()
         abrir.cambiarCategoria(hilo.id)
