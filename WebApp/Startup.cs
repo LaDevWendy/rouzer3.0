@@ -50,6 +50,7 @@ namespace WebApp
         {
             services.AddSingleton<CaptchaService>();
             services.AddScoped<AntiFloodService>();
+            services.AddScoped<CensorService>();
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
             services.Configure<List<Categoria>>(Configuration.GetSection("Categorias"));
             // services.AddLiveReload(config =>

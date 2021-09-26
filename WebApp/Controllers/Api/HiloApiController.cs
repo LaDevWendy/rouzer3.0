@@ -35,6 +35,7 @@ namespace WebApp.Controllers
         private readonly AntiFloodService antiFlood;
         private readonly EstadisticasService estadisticasService;
         private readonly RChanCacheService rchanCacheService;
+        private readonly CensorService censorService;
         private static readonly HashSet<string> denunciasIp = new HashSet<string>();
 
         #region constructor
@@ -49,7 +50,8 @@ namespace WebApp.Controllers
             CaptchaService captcha,
             AntiFloodService antiFlood,
             EstadisticasService estadisticasService,
-            RChanCacheService rchanCacheService
+            RChanCacheService rchanCacheService,
+            CensorService censorService
         )
         {
             this.hiloService = hiloService;
@@ -63,6 +65,7 @@ namespace WebApp.Controllers
             this.antiFlood = antiFlood;
             this.estadisticasService = estadisticasService;
             this.rchanCacheService = rchanCacheService;
+            this.censorService = censorService;
         }
         #endregion
 
@@ -71,24 +74,26 @@ namespace WebApp.Controllers
         {
             bool existeLaCategoria = categoriasOpt.Value.Any(c => c.Id == vm.CategoriaId);
 
-            if(!existeLaCategoria) ModelState.AddModelError("Categoria", "Ay no existe la categoria");
-            if(vm.Archivo is null && string.IsNullOrWhiteSpace(vm.Link))
+            if (!existeLaCategoria) ModelState.AddModelError("Categoria", "Ay no existe la categoria");
+            if (vm.Archivo is null && string.IsNullOrWhiteSpace(vm.Link))
                 ModelState.AddModelError("adjunto", "Para crear un roz tenes que adjuntar un archivo o un link");
 
-            var pasoElCaptcha= await captcha.Verificar(vm.Captcha);
-            if(!pasoElCaptcha && generalOptions.Value.CaptchaHilo && !User.EsMod())
+            var pasoElCaptcha = await captcha.Verificar(vm.Captcha);
+            if (!pasoElCaptcha && generalOptions.Value.CaptchaHilo && !User.EsMod())
             {
-                 ModelState.AddModelError("Captcha", "Incorrecto");
+                ModelState.AddModelError("Captcha", "Incorrecto");
             }
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             // Chequeuear si es flood
-            if(antiFlood.SegundosParaHilo(User)  != new TimeSpan(0))
+            if (antiFlood.SegundosParaHilo(User) != new TimeSpan(0))
             {
                 var minutos = antiFlood.SegundosParaHilo(User).Minutes;
-                ModelState.AddModelError("Para para", $"faltan {minutos} minuto{(minutos!= 1?"s":"")} para que pudeas crear otro roz");
+                ModelState.AddModelError("Para para", $"faltan {minutos} minuto{(minutos != 1 ? "s" : "")} para que pudeas crear otro roz");
                 return BadRequest(ModelState);
-            }else {
+            }
+            else
+            {
                 antiFlood.HaCreadoHilo(User.GetId());
             }
 
@@ -106,30 +111,33 @@ namespace WebApp.Controllers
 
             //Encuestas
             var result = AgregarEncuesta(vm, hilo);
-            if(result != null) return result;
+            if (result != null) return result;
 
             MediaModel media = null;
-            try {
+            try
+            {
                 if (vm.Archivo != null)
                 {
-                    if(!new []{"jpeg", "jpg", "gif", "mp4", "webm", "png"}.Contains(vm.Archivo.ContentType.Split("/")[1]))
+                    if (!new[] { "jpeg", "jpg", "gif", "mp4", "webm", "png" }.Contains(vm.Archivo.ContentType.Split("/")[1]))
                     {
                         ModelState.AddModelError("Archivo invalido", "");
                         return BadRequest(ModelState);
                     }
-                        media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
+                    media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
                 }
-                else  if (!string.IsNullOrWhiteSpace(vm.Link))
+                else if (!string.IsNullOrWhiteSpace(vm.Link))
                 {
                     media = await mediaService.GenerarMediaDesdeLink(vm.Link);
                 }
-            } catch(Exception e) {
+            }
+            catch (Exception e)
+            {
                 ModelState.AddModelError("El  formato del archivo no es soportado", "");
                 Console.WriteLine(e);
                 return BadRequest(ModelState);
             }
 
-            if(media is null)
+            if (media is null)
             {
                 ModelState.AddModelError("Chocamo", "No se pudo subir el archivo o importar el link");
                 return BadRequest(ModelState);
@@ -139,22 +147,23 @@ namespace WebApp.Controllers
             hilo.MediaId = media.Id;
 
             // MarkDown solo para mods
-            if(!User.EsMod()) hilo.Contenido = hilo.Contenido.Replace(">>md", "");
+            if (!User.EsMod()) hilo.Contenido = hilo.Contenido.Replace(">>md", "");
 
-            if(hilo.Contenido.Contains(">>concentracion") && User.EsMod()) hilo.Flags += "c";
-            if(hilo.Contenido.Contains(">>serio") && User.EsMod()) hilo.Flags += "si";
-            if(hilo.Contenido.Contains(">>banderitas")) hilo.Flags += "b";
+            if (hilo.Contenido.Contains(">>concentracion") && User.EsMod()) hilo.Flags += "c";
+            if (hilo.Contenido.Contains(">>serio") && User.EsMod()) hilo.Flags += "si";
+            if (hilo.Contenido.Contains(">>banderitas")) hilo.Flags += "b";
 
             // Agrego el pais del uusario
             // if(Request.Headers.TryGetValue("cf-ipcountry", out var paisValue))
             // {
             //     hilo.Pais = paisValue.ToString().ToLower();
             // }
-            
+
             string id = await hiloService.GuardarHilo(hilo);
-            
+
             // El op sigue a su hilo
-            context.HiloAcciones.Add( new HiloAccionModel {
+            context.HiloAcciones.Add(new HiloAccionModel
+            {
                 Id = hashService.Random(),
                 Seguido = true,
                 UsuarioId = hilo.UsuarioId,
@@ -162,10 +171,10 @@ namespace WebApp.Controllers
             });
 
             //Agrego rango y nombre
-            if(User.EsMod())
+            if (User.EsMod())
             {
-                if(vm.MostrarNombre) hilo.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
-                if(vm.MostrarRango) hilo.Rango = CreacionRango.Mod;
+                if (vm.MostrarNombre) hilo.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
+                if (vm.MostrarRango) hilo.Rango = CreacionRango.Mod;
             }
 
             await context.SaveChangesAsync();
@@ -173,7 +182,18 @@ namespace WebApp.Controllers
             await rchanHub.Clients.Group("home").SendAsync("HiloCreado", viewModel);
             await rchanHub.Clients.Group("moderacion").SendAsync("HiloCreadoMod", viewModel);
 
-            await estadisticasService.RegistrarNuevoHilo();            
+            await estadisticasService.RegistrarNuevoHilo();
+
+            if (censorService.BuscarPalabras(hilo.Titulo) || censorService.BuscarPalabras(hilo.Contenido))
+            {
+                DenunciaVM denunciaAutomatica = new DenunciaVM();
+                denunciaAutomatica.Tipo = TipoElemento.Hilo;
+                denunciaAutomatica.Motivo = MotivoDenuncia.CoentenidoIlegal;
+                denunciaAutomatica.HiloId = id;
+                denunciaAutomatica.Aclaracion = "[Denuncia automática] Se mencionó palabra en la lista negra";
+                await AutoDenunciar(denunciaAutomatica);
+            }
+
             return Created($"/Hilo/{id}", null);
         }
 
@@ -210,7 +230,7 @@ namespace WebApp.Controllers
             }
 
             await context.SaveChangesAsync();
-            return new ApiResponse($"{(añadido? "añadido a" : "removido de")} {model.Accion}");
+            return new ApiResponse($"{(añadido ? "añadido a" : "removido de")} {model.Accion}");
         }
 
         [Produces("application/json")]
@@ -227,19 +247,19 @@ namespace WebApp.Controllers
         }
 
         [AllowAnonymous]
-        async public Task<ActionResult<ApiResponse>> Denunciar( DenunciaVM vm)
+        async public Task<ActionResult<ApiResponse>> Denunciar(DenunciaVM vm)
         {
-            if(generalOptions.Value.IgnorarDenunciasAnonimas && !User.Identity.IsAuthenticated)
-             {
-                 return new ApiResponse("Denuncia enviada");
-             }
-             // Se ignora la denuncia de los usuarios sin comentarios ni hilos
+            if (generalOptions.Value.IgnorarDenunciasAnonimas && !User.Identity.IsAuthenticated)
+            {
+                return new ApiResponse("Denuncia enviada");
+            }
+            // Se ignora la denuncia de los usuarios sin comentarios ni hilos
             var numeroHilosComentarios = await context.Hilos.DeUsuario(User.GetId()).CountAsync() + await context.Comentarios.DeUsuario(User.GetId()).CountAsync();
-            if(generalOptions.Value.IgnorarDenunciasAnonimas && numeroHilosComentarios == 0)
-             {
-                 return new ApiResponse("Denuncia enviada");
-             }
-            if(generalOptions.Value.RestriccionDeAcceso != RestriccionDeAcceso.Publico && !User.Identity.IsAuthenticated)
+            if (generalOptions.Value.IgnorarDenunciasAnonimas && numeroHilosComentarios == 0)
+            {
+                return new ApiResponse("Denuncia enviada");
+            }
+            if (generalOptions.Value.RestriccionDeAcceso != RestriccionDeAcceso.Publico && !User.Identity.IsAuthenticated)
             {
                 ModelState.AddModelError("Error", "Error al denunciar");
                 return BadRequest(ModelState);
@@ -252,33 +272,34 @@ namespace WebApp.Controllers
                 Motivo = vm.Motivo,
                 Aclaracion = vm.Aclaracion,
             };
-            if(denuncia.ComentarioId == "") denuncia.ComentarioId = null;
+            if (denuncia.ComentarioId == "") denuncia.ComentarioId = null;
             denuncia.Id = hashService.Random();
-            if(await context.Hilos.AnyAsync(h => h.Id == denuncia.HiloId && h.Estado ==  HiloEstado.Eliminado))
+            if (await context.Hilos.AnyAsync(h => h.Id == denuncia.HiloId && h.Estado == HiloEstado.Eliminado))
             {
                 ModelState.AddModelError("hilo", "No se encontro el hilo");
             }
             bool yaDenuncio = await context.Denuncias
-                .AnyAsync(d => d.UsuarioId == (User.GetId()?? "Anonimo") &&
+                .AnyAsync(d => d.UsuarioId == (User.GetId() ?? "Anonimo") &&
                     d.Tipo == denuncia.Tipo && denuncia.HiloId == d.HiloId && d.ComentarioId == denuncia.ComentarioId);
-            
+
             string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            yaDenuncio = yaDenuncio || denunciasIp.Contains(vm.HiloId + vm.ComentarioId?? "" + ip);
+            yaDenuncio = yaDenuncio || denunciasIp.Contains(vm.HiloId + vm.ComentarioId ?? "" + ip);
 
-            if(yaDenuncio) ModelState.AddModelError("hilo", "Ya fue denunciado");
+            if (yaDenuncio) ModelState.AddModelError("hilo", "Ya fue denunciado");
 
-            if(User != null) {
+            if (User != null)
+            {
 
                 denuncia.UsuarioId = User.GetId();
             }
-            if(!ModelState.IsValid) return BadRequest(ModelState);
-            
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             denuncia.Estado = EstadoDenuncia.NoRevisada;
             context.Denuncias.Add(denuncia);
-            
+
             await context.SaveChangesAsync();
 
-            denunciasIp.Add(vm.HiloId + vm.ComentarioId?? "" + ip);
+            denunciasIp.Add(vm.HiloId + vm.ComentarioId ?? "" + ip);
 
             //Mandar denuncia a los medz
             denuncia = await context.Denuncias
@@ -291,11 +312,13 @@ namespace WebApp.Controllers
                 .Include(d => d.Hilo.Usuario)
                 .SingleAsync(d => d.Id == denuncia.Id);
 
-            await rchanHub.Clients.Group("moderacion").SendAsync("nuevaDenuncia", new {
-                Hilo = new HiloViewModelMod(denuncia.Hilo){Usuario = new UsuarioModel{UserName = denuncia.Hilo.Usuario.UserName, Id = denuncia.Hilo.Usuario.Id}},
-                Comentario = denuncia.Comentario != null? new ComentarioViewModelMod(denuncia.Comentario) {
-                    Usuario = new UsuarioModel {Id = denuncia.Comentario.Usuario.Id, UserName = denuncia.Comentario.Usuario.UserName}
-                }: null,
+            await rchanHub.Clients.Group("moderacion").SendAsync("nuevaDenuncia", new
+            {
+                Hilo = new HiloViewModelMod(denuncia.Hilo) { Usuario = new UsuarioModel { UserName = denuncia.Hilo.Usuario.UserName, Id = denuncia.Hilo.Usuario.Id } },
+                Comentario = denuncia.Comentario != null ? new ComentarioViewModelMod(denuncia.Comentario)
+                {
+                    Usuario = new UsuarioModel { Id = denuncia.Comentario.Usuario.Id, UserName = denuncia.Comentario.Usuario.UserName }
+                } : null,
                 denuncia.Estado,
                 denuncia.Aclaracion,
                 denuncia.Id,
@@ -305,22 +328,78 @@ namespace WebApp.Controllers
                 denuncia.Creacion,
                 denuncia.HiloId,
                 denuncia.ComentarioId,
-                Usuario = new {
+                Usuario = new
+                {
                     denuncia.Usuario.UserName,
                     denuncia.Usuario.Id,
                 }
             });
 
-            
+
+            return new ApiResponse("Denuncia enviada");
+        }
+
+        async private Task<ActionResult<ApiResponse>> AutoDenunciar(DenunciaVM vm)
+        {
+            var denuncia = new DenunciaModel
+            {
+                Tipo = vm.Tipo,
+                HiloId = vm.HiloId,
+                ComentarioId = vm.ComentarioId,
+                Motivo = vm.Motivo,
+                Aclaracion = vm.Aclaracion,
+            };
+
+            denuncia.Id = hashService.Random();
+            denuncia.UsuarioId = User.GetId();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            denuncia.Estado = EstadoDenuncia.NoRevisada;
+            context.Denuncias.Add(denuncia);
+            await context.SaveChangesAsync();
+
+            //Mandar denuncia a los medz
+            denuncia = await context.Denuncias
+                .Include(d => d.Hilo)
+                .Include(d => d.Usuario)
+                .Include(d => d.Comentario)
+                .Include(d => d.Comentario.Media)
+                .Include(d => d.Comentario.Usuario)
+                .Include(d => d.Hilo.Media)
+                .Include(d => d.Hilo.Usuario)
+                .SingleAsync(d => d.Id == denuncia.Id);
+
+            await rchanHub.Clients.Group("moderacion").SendAsync("nuevaDenuncia", new
+            {
+                Hilo = new HiloViewModelMod(denuncia.Hilo) { Usuario = new UsuarioModel { UserName = denuncia.Hilo.Usuario.UserName, Id = denuncia.Hilo.Usuario.Id } },
+                Comentario = denuncia.Comentario != null ? new ComentarioViewModelMod(denuncia.Comentario)
+                {
+                    Usuario = new UsuarioModel { Id = denuncia.Comentario.Usuario.Id, UserName = denuncia.Comentario.Usuario.UserName }
+                } : null,
+                denuncia.Estado,
+                denuncia.Aclaracion,
+                denuncia.Id,
+                denuncia.Tipo,
+                denuncia.UsuarioId,
+                denuncia.Motivo,
+                denuncia.Creacion,
+                denuncia.HiloId,
+                denuncia.ComentarioId,
+                Usuario = new
+                {
+                    denuncia.Usuario.UserName,
+                    denuncia.Usuario.Id,
+                }
+            });
+
             return new ApiResponse("Denuncia enviada");
         }
 
         [AllowAnonymous]
-        async public Task<ActionResult> CargarMas([FromQuery]DateTimeOffset ultimoBump, [FromQuery] string categorias, [FromQuery] bool serios=false) 
-        {   
+        async public Task<ActionResult> CargarMas([FromQuery] DateTimeOffset ultimoBump, [FromQuery] string categorias, [FromQuery] bool serios = false)
+        {
             var categoriasActivas = categorias.Split(",").Select(c => Convert.ToInt32(c)).ToHashSet();
             var ocultos = (await context.HiloAcciones
-                .Where(a  => a.UsuarioId == User.GetId() && a.Hideado)
+                .Where(a => a.UsuarioId == User.GetId() && a.Hideado)
                 .Select(a => a.HiloId)
                 .ToArrayAsync())
                 .ToHashSet();
@@ -337,7 +416,7 @@ namespace WebApp.Controllers
             //     .AViewModel(context)
             //     .ToListAsync();
             var hilos = rchanCacheService.hilosIndex
-                .Where(h => categoriasActivas.Contains(h.CategoriaId) &&  !ocultos.Contains(h.Id) && h.Sticky == 0)
+                .Where(h => categoriasActivas.Contains(h.CategoriaId) && !ocultos.Contains(h.Id) && h.Sticky == 0)
                 .Where(h => h.Bump < ultimoBump)
                 .Take(16);
 
@@ -345,9 +424,10 @@ namespace WebApp.Controllers
             return Ok(hilos);
         }
         [AllowAnonymous]
-        async public Task<ActionResult> Buscar(string busqueda="") {
-            if(string.IsNullOrWhiteSpace(busqueda)) busqueda = "";
-            busqueda = string.Join("",busqueda.Take(15));
+        async public Task<ActionResult> Buscar(string busqueda = "")
+        {
+            if (string.IsNullOrWhiteSpace(busqueda)) busqueda = "";
+            busqueda = string.Join("", busqueda.Take(15));
             var resultados = await context.Hilos
                 .AsNoTracking()
                 .FiltrarNoActivos()
@@ -361,8 +441,9 @@ namespace WebApp.Controllers
             return Ok(resultados);
         }
 
-        private ActionResult AgregarEncuesta(CrearHiloViewModel vm, HiloModel hilo) {
-            string[] opcionesEncuesta =  null;
+        private ActionResult AgregarEncuesta(CrearHiloViewModel vm, HiloModel hilo)
+        {
+            string[] opcionesEncuesta = null;
             try
             {
                 opcionesEncuesta = JsonConvert.DeserializeObject<string[]>(vm.Encuesta);
@@ -370,27 +451,28 @@ namespace WebApp.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ModelState.AddModelError("","No se pudeo agregar la encuesta");
+                ModelState.AddModelError("", "No se pudeo agregar la encuesta");
                 return BadRequest(ModelState);
             }
-            if(opcionesEncuesta.Length < 2) 
+            if (opcionesEncuesta.Length < 2)
             {
                 hilo.Encuesta = null;
                 return null;
             }
-            if(opcionesEncuesta.Length >= 10)
+            if (opcionesEncuesta.Length >= 10)
             {
                 ModelState.AddModelError("", "El maximo de opciones para una encuesta des de 10");
                 return BadRequest(ModelState);
             }
-            if(opcionesEncuesta.Where(o => o.Length > 64).Any())
+            if (opcionesEncuesta.Where(o => o.Length > 64).Any())
             {
                 ModelState.AddModelError("", "Las opcione de la encuesta no puede tener mas de 32 caracteres");
                 return BadRequest(ModelState);
             }
 
-            var encuesta = new Encuesta {
-                Opciones = opcionesEncuesta.Select(o => new OpcionEncuesta {Nombre = o, Votos = 0 }).ToList()
+            var encuesta = new Encuesta
+            {
+                Opciones = opcionesEncuesta.Select(o => new OpcionEncuesta { Nombre = o, Votos = 0 }).ToList()
             };
 
             hilo.Encuesta = encuesta;
@@ -402,11 +484,11 @@ namespace WebApp.Controllers
             public string HiloId { get; set; } = "";
             public string Opcion { get; set; } = "";
         }
-        async public Task<ActionResult> VotarEncuesta(VotarEncuestaVm model) 
+        async public Task<ActionResult> VotarEncuesta(VotarEncuestaVm model)
         {
             var hilo = await context.Hilos.PorId(model.HiloId);
 
-            if(hilo is null || hilo.Encuesta is null) 
+            if (hilo is null || hilo.Encuesta is null)
             {
                 ModelState.AddModelError("jeje", "No se encontro la encuesta");
                 return BadRequest(ModelState);
@@ -414,13 +496,13 @@ namespace WebApp.Controllers
 
             string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
 
-            if(hilo.Encuesta.Ids.Contains(User.GetId()) || hilo.Encuesta.Ips.Contains(ip))
+            if (hilo.Encuesta.Ids.Contains(User.GetId()) || hilo.Encuesta.Ips.Contains(ip))
             {
                 ModelState.AddModelError("Ay", "Usted ya ha votado");
                 return BadRequest(ModelState);
             }
 
-            if(!hilo.Encuesta.Opciones.Any(o => o.Nombre == model.Opcion))
+            if (!hilo.Encuesta.Opciones.Any(o => o.Nombre == model.Opcion))
             {
                 ModelState.AddModelError("Ay", "No se encontro la opcion");
                 return BadRequest(ModelState);
@@ -438,25 +520,25 @@ namespace WebApp.Controllers
 
         [Authorize("esMod")]
         [HttpPost]
-        async public Task<ActionResult> ToggleHistorico(AccionVM model) 
+        async public Task<ActionResult> ToggleHistorico(AccionVM model)
         {
             var hilo = await context.Hilos.PorId(model.HiloId);
-            if(hilo is null) return NotFound();
+            if (hilo is null) return NotFound();
 
-            if(hilo.Flags.Contains("h")) hilo.Flags = hilo.Flags.Replace("h", "");
+            if (hilo.Flags.Contains("h")) hilo.Flags = hilo.Flags.Replace("h", "");
             else hilo.Flags += "h";
 
-            return Ok();      
+            return Ok();
         }
 
         [AllowAnonymous]
-        async public Task<ActionResult> Todos() 
+        async public Task<ActionResult> Todos()
         {
             return Ok(rchanCacheService.hilosIndex.Take(160));
-        } 
+        }
 
     }
-    
+
 
     public class ApiResponse
     {
@@ -480,14 +562,14 @@ namespace WebApp.Controllers
         public string Accion { get; set; }
     }
 
-    public class DenunciaVM 
+    public class DenunciaVM
     {
         [Required]
         public TipoElemento Tipo { get; set; }
         [Required]
         public string HiloId { get; set; }
         public string ComentarioId { get; set; }
-        [Required, Range(0, 10, ErrorMessage="Seleccione un motivo padre")]
+        [Required, Range(0, 10, ErrorMessage = "Seleccione un motivo padre")]
         public MotivoDenuncia Motivo { get; set; }
         public string Aclaracion { get; set; } = "";
         public string Captcha { get; set; } = "";

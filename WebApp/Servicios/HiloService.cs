@@ -295,7 +295,6 @@ namespace Servicios
             if(hilo.Contenido.Contains(">>serio")) hilo.Flags += "s";
             
             hilo.Contenido = formateador.Parsear(hilo.Contenido);
-            logger.LogInformation($"Se creó el hilo {hilo.Id}: {hilo.Titulo}");
             await _context.SaveChangesAsync();
             return hilo.Id;
         }

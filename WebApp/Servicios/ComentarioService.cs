@@ -18,7 +18,7 @@ namespace Servicios
 {
     public interface IComentarioService
     {
-        Task Guardar(ComentarioModel comentario, bool bumpearHilo = true);
+        Task<string> Guardar(ComentarioModel comentario, bool bumpearHilo = true);
         Task<List<ComentarioViewModel>> DeHilo(string hiloId, string creadorId);
         Task Eliminar(params string[] ids) => Eliminar(ids, false);
         Task Eliminar(string[] ids, bool borrarMedias);
@@ -57,7 +57,7 @@ namespace Servicios
                 .ToListAsync();
         }
 
-        public async Task Guardar(ComentarioModel comentario, bool bumpearHilo = true)
+        public async Task<string> Guardar(ComentarioModel comentario, bool bumpearHilo = true)
         {
             comentario.Contenido = formateador.Parsear(comentario.Contenido);
             comentario.Id = hashService.Random(8).ToUpper();
@@ -70,6 +70,7 @@ namespace Servicios
                     .Where("Id", comentario.HiloId)
                     .UpdateAsync(new { Bump = DateTimeOffset.Now});
             }
+            return comentario.Id;
         }
 
         public Task Eliminar(params string[] ids) => Eliminar(ids, false);

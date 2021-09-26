@@ -48,7 +48,7 @@ namespace WebApp
 
         public string Nombre { get; set; } = "Rozed";
         public string Mensaje { get; set; } = "Union de miserables";
-
+        public string PalabrasCensuradas { get; set; }
     }
 
     public enum RestriccionDeAcceso

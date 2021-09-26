@@ -104,7 +104,9 @@ namespace WebApp.Controllers
                 config.Version,
                 config.ModoMessi,
                 config.ModoSerenito,
-                config.Flags});
+                config.Flags,
+                config.PalabrasCensuradas
+            });
 
             return Json(new ApiResponse("Configuracion actualizada"));
         }

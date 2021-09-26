@@ -187,6 +187,18 @@
             </ul>
         </div>
     </section>
+    <section>
+        <h3> Censor </h3>
+        <ul>
+        <li> Lista negra <li>
+        <textarea 
+        spellcheck="false"
+        bind:value={model.config.palabrasCensuradas}
+        placeholder="Las palabras van separadas por espacios. Si se agrega * al final de la palabra va detectar todas las palabras que empiecen con esa palabra. Si se agrega * al inicio va a detectar todas las palabras que terminen con esa palabra. Reemplazar una letra dentro de la palabra por ? la convierte en comodín."
+        cols="30" rows="10"></textarea>
+        <li class="header"> <span style="margin-right: auto"></span> <Button on:click={actualizarConfig}>Guardar</Button></li>
+        </ul>
+    </section>
 </main>
 
 <style>
