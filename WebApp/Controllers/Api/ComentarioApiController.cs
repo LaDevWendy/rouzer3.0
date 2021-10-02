@@ -108,7 +108,7 @@ namespace WebApp.Controllers
                 Creacion = DateTimeOffset.Now,
                 Ip = ip,
             };
-
+            
             MediaModel media = null;
             try
             {
@@ -119,11 +119,11 @@ namespace WebApp.Controllers
                         ModelState.AddModelError("El  formato del archivo no es soportado", "");
                         return BadRequest(ModelState);
                     }
-                    media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo);
+                    media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo, User.EsMod());
                 }
                 else if (!string.IsNullOrWhiteSpace(vm.Link))
                 {
-                    media = await mediaService.GenerarMediaDesdeLink(vm.Link);
+                    media = await mediaService.GenerarMediaDesdeLink(vm.Link, User.EsMod());
                 }
             }
             catch (Exception e)
@@ -240,7 +240,7 @@ namespace WebApp.Controllers
             };
 
             denuncia.Id = hashService.Random();
-            denuncia.UsuarioId = User.GetId();
+            denuncia.UsuarioId = "9edfd2a6-e017-4fda-9d94-902bf19be996";
             if (!ModelState.IsValid) return BadRequest(ModelState);
             denuncia.Estado = EstadoDenuncia.NoRevisada;
             context.Denuncias.Add(denuncia);

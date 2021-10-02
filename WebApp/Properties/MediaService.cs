@@ -22,8 +22,8 @@ namespace Servicios
     public interface IMediaService
     {
         string GetThumbnail(string id);
-        Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo);
-        Task<MediaModel> GenerarMediaDesdeLink(string url);
+        Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo, bool esAdmin);
+        Task<MediaModel> GenerarMediaDesdeLink(string url, bool esAdmin);
         Task<bool> Eliminar(string id) ;
         Task<int> LimpiarMediasHuerfanos();
     }
@@ -54,7 +54,7 @@ namespace Servicios
             return Uri.EscapeUriString(filenames[new Random().Next(filenames.Count())]);
         }
 
-        public virtual async Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo)
+        public virtual async Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo, bool esAdmin)
         {
             bool esVideo = archivo.ContentType.Contains("video");
 
@@ -73,7 +73,25 @@ namespace Servicios
             // Me fijo si el hash existe en la db
             var mediaAntiguo = await context.Medias.FirstOrDefaultAsync(e => e.Id == hash);
 
-            if(mediaAntiguo != null) return mediaAntiguo;
+            bool flag = false;
+            if (mediaAntiguo != null)
+            {
+                if (esAdmin)
+                {
+                    if (!(mediaAntiguo.Tipo == MediaType.Eliminado))
+                    {
+                        return mediaAntiguo;
+                    }
+                    else
+                    {
+                        flag = true;
+                    }
+                }
+                else
+                {
+                    return mediaAntiguo;
+                }
+            }
 
             // Si no se resetea el stream imageSharp deja de funcionar -_o_-
             imagenStream.Seek(0, SeekOrigin.Begin);
@@ -87,13 +105,23 @@ namespace Servicios
                 Size = new Size(300)
             }));
 
-            var media = new MediaModel
+            MediaModel media = null;
+            if (flag)
+            {
+                media = mediaAntiguo;
+                media.Tipo = esVideo? MediaType.Video: MediaType.Imagen;
+                media.Url = $"{hash}{Path.GetExtension(archivo.FileName)}";
+            }
+            else
+            {
+            media = new MediaModel
             {
                 Id = hash,
                 Hash = hash,
                 Tipo = esVideo? MediaType.Video: MediaType.Imagen,
                 Url = $"{hash}{Path.GetExtension(archivo.FileName)}",
             };
+            }
 
             // Si no se resetea el stream guarda correctamente -_o_-
             imagenStream.Seek(0, SeekOrigin.Begin);
@@ -107,8 +135,6 @@ namespace Servicios
 
             await imagenStream.DisposeAsync();
             await archivoStream.DisposeAsync();
-
-            await context.Medias.AddAsync(media);
 
             return media;
         }
@@ -145,15 +171,34 @@ namespace Servicios
             return imgStream;
         }
 
-        public virtual async Task<MediaModel> GenerarMediaDesdeYouTube(string url) 
+        public virtual async Task<MediaModel> GenerarMediaDesdeYouTube(string url, bool esAdmin) 
         {
             var match = Regex.Match(url, @"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})");
             if(!match.Success) return null;
 
             string id = match.Groups[1].Value;
 
-            var mediaViejo = await context.Medias.FirstOrDefaultAsync(m => m.Hash == id);
-            if(mediaViejo != null) return mediaViejo;
+            var mediaAntiguo = await context.Medias.FirstOrDefaultAsync(m => m.Hash == id);
+            
+            bool flag = false;
+            if (mediaAntiguo != null)
+            {
+                if (esAdmin)
+                {
+                    if (!(mediaAntiguo.Tipo == MediaType.Eliminado))
+                    {
+                        return mediaAntiguo;
+                    }
+                    else
+                    {
+                        flag = true;
+                    }
+                }
+                else
+                {
+                    return mediaAntiguo;
+                }
+            }
 
             var  vistaPrevia =  await new HttpClient().GetAsync($"https://img.youtube.com/vi/{id}/maxresdefault.jpg");
 
@@ -164,12 +209,23 @@ namespace Servicios
             
             if(!vistaPrevia.IsSuccessStatusCode) return null;
 
-            var media = new MediaModel {
+
+            MediaModel media = null;
+            if (flag)
+            {
+                media = mediaAntiguo;
+                media.Tipo = MediaType.Youtube;
+                media.Url = url;
+            }
+            else
+            {
+            media = new MediaModel {
                 Id = id,
                 Hash = id,
                 Tipo = MediaType.Youtube,
                 Url = url
             };
+            }
 
             using var thumbnail = await vistaPrevia.Content.ReadAsStreamAsync();
 
@@ -187,23 +243,29 @@ namespace Servicios
             
             return media;
         }
-        public virtual async Task<MediaModel> GenerarMediaDesdeLink(string url) 
+        public virtual async Task<MediaModel> GenerarMediaDesdeLink(string url, bool esAdmin) 
         {
             var match = Regex.Match(url, @"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})");
             if(!match.Success) return null;
-            else return await GenerarMediaDesdeYouTube(url);
+            else return await GenerarMediaDesdeYouTube(url, esAdmin);
         }
 
         public virtual async Task<bool> Eliminar(string id) 
         {
             var intentos = 25;
             var media = await context.Medias.FirstOrDefaultAsync(m => m.Id == id);
+            
+            if (media.Tipo == MediaType.Eliminado)
+            {
+                return true;
+            }
+            
             var archivosAEliminar = new List<string> (new[]{
                 $"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadradoLocal}",
                 $"{CarpetaDeAlmacenamiento}/{media.VistaPreviaLocal}",
                 $"{CarpetaDeAlmacenamiento}/{media.Url}",
             });
-
+            
             media.Tipo = MediaType.Eliminado;
             media.Url = "";
             await context.SaveChangesAsync();

@@ -36,7 +36,7 @@ namespace Servicios
             chat = new ChatId(conf.GetValue<long>("Telegram:ChatId"));
         }
 
-        public override async Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo)
+        public override async Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo, bool esAdmin)
         {
             bool esVideo = archivo.ContentType.Contains("video");
 
@@ -121,11 +121,11 @@ namespace Servicios
             return await base.Eliminar(id);
         }
 
-        override public async Task<MediaModel> GenerarMediaDesdeLink(string url)
+        override public async Task<MediaModel> GenerarMediaDesdeLink(string url, bool esAdmin)
         {
             if(Regex.IsMatch(url, @"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})"))
             {
-                return await base.GenerarMediaDesdeYouTube(url);
+                return await base.GenerarMediaDesdeYouTube(url, esAdmin);
             }
             
             var res = await new HttpClient().GetAsync(url, HttpCompletionOption.ResponseHeadersRead);

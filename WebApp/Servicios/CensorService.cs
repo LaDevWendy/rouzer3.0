@@ -21,15 +21,14 @@ namespace Servicios
 
         public bool BuscarPalabras(string contenido)
         {
-            try
-            {
-                Censor censor = new Censor(options.Value.PalabrasCensuradas.Split(' ', StringSplitOptions.RemoveEmptyEntries));
-                return censor.CensorText(contenido);
-            }
-            catch (ArgumentNullException e)
+            var CensoredWords = options.Value.PalabrasCensuradas.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            if (CensoredWords == null || CensoredWords.Count() == 0)
             {
                 return false;
             }
+            Censor censor = new Censor(CensoredWords);
+            return censor.CensorText(contenido);
         }
     }
 
@@ -40,9 +39,6 @@ namespace Servicios
         public Censor(IEnumerable<string> censoredWords)
 
         {
-            if (censoredWords == null || censoredWords.Count() == 0)
-                throw new ArgumentNullException("censoredWords");
-
             CensoredWords = new List<string>(censoredWords);
         }
 

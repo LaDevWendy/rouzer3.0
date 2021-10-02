@@ -157,7 +157,7 @@ namespace WebApp
                 services.AddScoped<IMediaService>(s =>
                 {
                     var env = s.GetService<IWebHostEnvironment>();
-                    var logger = s.GetService<ILogger<MediaTgService>>();
+                    var logger = s.GetService<ILogger<MediaService>>();
                     return new MediaService(Path.Combine(env.ContentRootPath, "Almacenamiento"), 
                     s.GetService<RChanContext>(), env, logger);
                 });
