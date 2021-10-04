@@ -27,7 +27,7 @@ namespace Servicios
         IQueryable<HiloModel> OrdenadosPorBump();
         Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId="", int cantidad = 16);
         Task EliminarHilos(params string[] ids);
-        Task EliminarHilos(string[] ids, bool borrarMedias = false, string usuarioId="");
+        Task EliminarHilos(string[] ids, bool borrarMedias = false);
         Task LimpiarHilo(string id);
         Task LimpiarHilo(HiloModel hilo);
         Task LimpiarHilosViejos();
@@ -318,7 +318,7 @@ namespace Servicios
 
         public Task EliminarHilos(params string[] ids) => EliminarHilos(ids, false);
 
-        public async Task EliminarHilos(string[] ids, bool borrarMedias = false, string usuarioId="")
+        public async Task EliminarHilos(string[] ids, bool borrarMedias = false)
         {
             var hilos = await _context.Hilos
                 .Where(h => ids.Contains(h.Id))
@@ -341,10 +341,6 @@ namespace Servicios
             }
 
             await _context.SaveChangesAsync();
-
-            // Historial
-            await Task.WhenAll(hilos.Select( h => 
-                historial.RegistrarEliminacion(usuarioId, h.Id)));
 
             await rchanHub.Clients.All.SendAsync("HilosEliminados", ids);
 

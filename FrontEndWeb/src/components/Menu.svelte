@@ -3,14 +3,15 @@
     import {fly} from "svelte/transition"
 
     export let mostrarMenu = false
+    let stylish=$$props.style
 
 </script>
 
-<span on:click={() => mostrarMenu = true}>
+<span on:click={() => mostrarMenu = !mostrarMenu}>
     <slot name="activador"></slot>
 </span>
 {#if mostrarMenu}
-    <ul class="menu" in:fly|local={{x:-100}} out:fly|local={{x:100}} on:mouseleave={() => mostrarMenu = false} >
+    <ul class="menu" style={stylish} in:fly|local={{x:-100}} out:fly|local={{x:100}} on:mouseleave={() => mostrarMenu = false} >
         <slot></slot>
     </ul>
 {/if}

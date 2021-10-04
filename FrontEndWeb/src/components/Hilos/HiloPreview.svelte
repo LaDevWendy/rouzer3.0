@@ -114,9 +114,9 @@ async function onContextMenu(e) {
     display: flex;
     flex-direction: column;
     position: absolute;">
-        <Menu>
+        <Menu style="top: 100%;">
             <span slot="activador">
-                <Button  icon color="white" style="margin-left: auto;"  on:click={()=> mostrarMenu = !mostrarMenu}>
+                <Button  icon color="white" style="margin-left: auto;" on:click={()=> mostrarMenu = !mostrarMenu}>
                     <Icon><svelte:component this={more} /></Icon> 
                     <!-- <i class="fe fe-circle"></i> -->
                 </Button>
@@ -166,6 +166,7 @@ async function onContextMenu(e) {
 
 
 <style>
+ 
     .info {
         border-radius: 0 !important;
         margin: 0;

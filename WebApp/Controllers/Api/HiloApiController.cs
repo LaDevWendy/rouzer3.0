@@ -121,6 +121,7 @@ namespace WebApp.Controllers
                     if (!new[] { "jpeg", "jpg", "gif", "mp4", "webm", "png" }.Contains(vm.Archivo.ContentType.Split("/")[1]))
                     {
                         ModelState.AddModelError("Archivo invalido", "");
+                        antiFlood.ResetearSegundosParaHilo(User.GetId());
                         return BadRequest(ModelState);
                     }
                     media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo, User.EsMod());
@@ -134,12 +135,14 @@ namespace WebApp.Controllers
             {
                 ModelState.AddModelError("El  formato del archivo no es soportado", "");
                 Console.WriteLine(e);
+                antiFlood.ResetearSegundosParaHilo(User.GetId());                
                 return BadRequest(ModelState);
             }
 
             if (media is null)
             {
                 ModelState.AddModelError("Chocamo", "No se pudo subir el archivo o importar el link");
+                antiFlood.ResetearSegundosParaHilo(User.GetId());                
                 return BadRequest(ModelState);
             }
 

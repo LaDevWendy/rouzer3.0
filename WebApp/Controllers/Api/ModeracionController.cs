@@ -427,7 +427,8 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> BorrarHilo(BorrarCreacionesVm vm)
         {
-            await hiloService.EliminarHilos(vm.Ids, vm.BorrarMedia, User.GetId());
+            await hiloService.EliminarHilos(vm.Ids, vm.BorrarMedia);
+            await Task.WhenAll(vm.Ids.Select(id => historial.RegistrarEliminacion(User.GetId(), id)));
             return Json(new ApiResponse("Hilo borrado"));
         }
 

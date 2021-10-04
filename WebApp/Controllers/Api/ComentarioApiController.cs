@@ -95,6 +95,7 @@ namespace WebApp.Controllers
             if (comentariosIdsTageados.Length > 5)
             {
                 ModelState.AddModelError("Jeje", "No podes taguear mas de 5 comentarios. Ok?");
+                antiFlood.ResetearSegundosComentario(User.GetId());
                 return BadRequest(ModelState);
             }
 
@@ -117,6 +118,7 @@ namespace WebApp.Controllers
                     if (!new[] { "jpeg", "jpg", "gif", "mp4", "webm", "png" }.Contains(vm.Archivo.ContentType.Split("/")[1]))
                     {
                         ModelState.AddModelError("El  formato del archivo no es soportado", "");
+                        antiFlood.ResetearSegundosComentario(User.GetId());
                         return BadRequest(ModelState);
                     }
                     media = await mediaService.GenerarMediaDesdeArchivo(vm.Archivo, User.EsMod());
@@ -130,6 +132,7 @@ namespace WebApp.Controllers
             {
                 ModelState.AddModelError("El  formato del archivo no es soportado", "");
                 Console.WriteLine(e);
+                antiFlood.ResetearSegundosComentario(User.GetId());                
                 return BadRequest(ModelState);
             }
             if (media != null)

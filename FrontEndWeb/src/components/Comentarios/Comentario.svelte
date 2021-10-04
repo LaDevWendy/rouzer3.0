@@ -38,6 +38,8 @@
     
     let dispatch = createEventDispatcher()
     
+    let mostrarMenu = false
+    
     onMount(() => {
 
         let respuestas = el.querySelectorAll(".restag")
@@ -174,7 +176,7 @@
 
         <div>
             <Menu>
-                <span slot="activador" on:click={() => mostrarMenu = true} class=""><i class="fe fe-more-vertical relative"></i></span>
+                <span slot="activador" on:click={() => mostrarMenu = !mostrarMenu} class=""><i class="fe fe-more-vertical relative"></i></span>
                 <li on:click={() => toggle()}>{visible?'Ocultar':'Mostrar'}</li>
                 {#if comentario.propio }
                     <li on:click={() => toggle()}>Ignorar</li>
