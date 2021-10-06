@@ -1,14 +1,12 @@
 <script>
-    import {ComentarioEstado} from "../../enums"
+    import { ComentarioEstado } from "../../enums";
     import Comentario from "../Comentarios/Comentario.svelte";
-    export let comentario
-
+    export let comentario;
 </script>
-    <div 
-        class:eliminado = {comentario.estado == ComentarioEstado.eliminado}
-    >
-        <Comentario hilo={{id: comentario.hiloId}} {comentario}/>
-    </div>
+
+<div class:eliminado={comentario.estado == ComentarioEstado.eliminado}>
+    <Comentario hilo={{ id: comentario.hiloId }} {comentario} />
+</div>
 
 <style>
     /* .eliminado {
