@@ -85,6 +85,9 @@
         <ul transition:fly={{x: -50, duration:150}} class="notis panel drop-menu abs lista-nav menu1"
             on:mouseleave={() => mostrar = false}
         >
+            <li class="noti" style="justify-content: center;"
+                on:click={limpiar}
+            >Limpiar todas</li>
             {#each notificaciones as n}
                 <a href="/Notificacion/{n.id}?hiloId={n.hiloId}&comentarioId={n.comentarioId}">
                     <li class="noti">
@@ -97,9 +100,7 @@
                     </li>
                 </a>
             {/each}
-            <li class="noti" style="justify-content: center;"
-                on:click={limpiar}
-            >Limpiar todas</li>
+
         </ul>
     {/if}
 </span>
