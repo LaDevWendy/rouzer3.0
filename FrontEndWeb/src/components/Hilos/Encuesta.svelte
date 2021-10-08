@@ -1,101 +1,121 @@
 <script>
-    import {Dialog, Ripple, Button} from 'svelte-mui'
-    import globalStore from '../../globalStore';
-    import RChanClient from '../../RChanClient';
-    import comentarioStore from '../Comentarios/comentarioStore';
-    import Spinner from '../Spinner.svelte';
+    import { Dialog, Ripple, Button } from "svelte-mui";
+    import globalStore from "../../globalStore";
+    import RChanClient from "../../RChanClient";
+    import comentarioStore from "../Comentarios/comentarioStore";
+    import Spinner from "../Spinner.svelte";
 
-    export let encuesta
-    export let hiloId
-    export let votando = false
+    export let encuesta;
+    export let hiloId;
+    export let votando = false;
 
-    let dialogo = false
-    let estado = 0 // 0 no voto // 1 votando // 2 voto //3 detalles
+    let dialogo = false;
+    let estado = 0; // 0 no voto // 1 votando // 2 voto //3 detalles
 
-    if(encuesta.haVotado || !$globalStore.usuario.estaAutenticado) estado = 2
+    if (encuesta.haVotado || !$globalStore.usuario.estaAutenticado) estado = 2;
 
-    $: totalDeVotos = encuesta.opciones.map(e => e.votos).reduce((a,b) => a + b)
+    $: totalDeVotos = encuesta.opciones
+        .map((e) => e.votos)
+        .reduce((a, b) => a + b);
 
     function abrirEncuesta() {
-        if(estado == 0) {
+        if (estado == 0) {
             estado = 1;
-        } else if(estado == 2)
-        {
-            estado = 3
+        } else if (estado == 2) {
+            estado = 3;
         }
     }
 
     async function votar(opcion) {
         try {
-            votando = true
-            let res = await RChanClient.votarEncuesta(hiloId, opcion)
-            $comentarioStore = `[${opcion}]\n\n` + $comentarioStore
-        } catch (error) {
-            
-        }
+            votando = true;
+            let res = await RChanClient.votarEncuesta(hiloId, opcion);
+            $comentarioStore = `[${opcion}]\n\n` + $comentarioStore;
+        } catch (error) {}
 
-        encuesta.opciones.filter(o => o.nombre == opcion)[0].votos ++;
-        encuesta = encuesta
-        votando = false
-        estado = 2
+        encuesta.opciones.filter((o) => o.nombre == opcion)[0].votos++;
+        encuesta = encuesta;
+        votando = false;
+        estado = 2;
+    }
+
+    function cerrar() {
+        votando = false;
+        estado = 0;
     }
 
     function calcularPorcentaje(opcion) {
-        let votosTotales = 0
-        encuesta.opciones.forEach(o => votosTotales+= o.votos);
+        let votosTotales = 0;
+        encuesta.opciones.forEach((o) => (votosTotales += o.votos));
 
-        if(votosTotales == 0) votosTotales = 1
-        
-        const votosOpcion = encuesta.opciones.filter(o => o.nombre == opcion)[0].votos
-        return ((votosOpcion / votosTotales) * 100).toFixed(2)
+        if (votosTotales == 0) votosTotales = 1;
+
+        const votosOpcion = encuesta.opciones.filter(
+            (o) => o.nombre == opcion
+        )[0].votos;
+        return ((votosOpcion / votosTotales) * 100).toFixed(2);
     }
 
-    if(!$globalStore.usuario.estaAutenticado) estado = 2
-    
+    if (!$globalStore.usuario.estaAutenticado) estado = 2;
 </script>
 
 <div class="encuesta">
     {#if encuesta}
         <div class="preview" on:click={abrirEncuesta}>
-            <Ripple color="var(--color5)"></Ripple>
+            <Ripple color="var(--color5)" />
             {#each encuesta.opciones as o}
-            <div class="opcion" title="{calcularPorcentaje(o.nombre)}% {o.nombre}" style="flex:{(estado < 2)?1:o.votos}">
-                    <span >
+                <div
+                    class="opcion"
+                    title="{calcularPorcentaje(o.nombre)}% {o.nombre}"
+                    style="flex:{estado < 2 ? 1 : o.votos}"
+                >
+                    <span>
                         {o.nombre}
                     </span>
                 </div>
             {/each}
         </div>
-    
+
         {#if estado == 1}
-            <Dialog  visible={true} modal={true}>
+            <Dialog visible={true} modal={true}>
                 <div slot="title">Elija una opcion padre</div>
                 <ul>
                     <Spinner cargando={votando}>
                         {#each encuesta.opciones as o}
-                            <li on:click={() =>  votar(o.nombre)}>{o.nombre} <Ripple/></li>
+                            <li on:click={() => votar(o.nombre)}>
+                                {o.nombre}
+                                <Ripple />
+                            </li>
                         {/each}
                     </Spinner>
                 </ul>
+                <div slot="actions" class="actions center">
+                    <Button color="primary" on:click={() => cerrar()}
+                        >Cerrar</Button
+                    >
+                </div>
             </Dialog>
         {/if}
         {#if estado == 3}
-            <Dialog  visible={true} modal={true}>
-                <div slot="title">Resultados ({totalDeVotos} {(totalDeVotos != 1)?'votos':'voto'})</div>
+            <Dialog visible={true} modal={true}>
+                <div slot="title">
+                    Resultados ({totalDeVotos}
+                    {totalDeVotos != 1 ? "votos" : "voto"})
+                </div>
                 <ul>
                     {#each encuesta.opciones as o}
-                        <li>{calcularPorcentaje(o.nombre)}% {o.nombre} </li>
+                        <li>{calcularPorcentaje(o.nombre)}% {o.nombre}</li>
                     {/each}
                 </ul>
                 <div slot="actions" class="actions center">
-                    <Button color="primary" on:click={() => estado = 2}>Ok</Button>
+                    <Button color="primary" on:click={() => (estado = 2)}
+                        >Ok</Button
+                    >
                 </div>
             </Dialog>
         {/if}
     {/if}
-
 </div>
-
 
 <style>
     .encuesta {
@@ -129,7 +149,7 @@
     .opcion:last-child {
         border-right: none;
     }
-    .opcion:nth-child(2){
+    .opcion:nth-child(2) {
         border-left: none;
     }
     /* .opcion:nth-child(1) {background: #d43328;} 
