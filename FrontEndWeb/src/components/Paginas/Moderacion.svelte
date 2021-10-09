@@ -49,67 +49,69 @@
             {/each}
         </ul>
     </div>
-    <div id="botones" class="tab {innerWidth < 956 ? '' : 'oculta'}">
-        <button
-            id="tab1"
-            class="boton {current === 1 ? 'active' : ''}"
-            on:click={() => (current = 1)}
-        >
-            Denuncias
-        </button>
-        <button
-            id="tab2"
-            class="boton {current === 2 ? 'active' : ''}"
-            on:click={() => (current = 2)}
-        >
-            Hilos
-        </button>
-        <button
-            id="tab3"
-            class="boton {current === 3 ? 'active' : ''}"
-            on:click={() => (current = 3)}
-        >
-            Comentarios
-        </button>
-    </div>
+    {#if innerWidth < 956}
+        <div id="botones" class="tab">
+            <button
+                id="tab1"
+                class="boton {current === 1 ? 'active' : ''}"
+                on:click={() => (current = 1)}
+            >
+                Denuncias
+            </button>
+            <button
+                id="tab2"
+                class="boton {current === 2 ? 'active' : ''}"
+                on:click={() => (current = 2)}
+            >
+                Hilos
+            </button>
+            <button
+                id="tab3"
+                class="boton {current === 3 ? 'active' : ''}"
+                on:click={() => (current = 3)}
+            >
+                Comentarios
+            </button>
+        </div>
+    {/if}
     <div class="seccion2" style="min-width: 33%">
-        <ul
-            style="width:33%; background:#711c08; font-size: 0.7em; min-width:33%"
-            class="{innerWidth > 956 || current === 1
-                ? ''
-                : 'oculta'} {innerWidth <= 956 ? 'resize' : ''}"
-        >
-            <h3 style="height:40px">Ultimas denuncias</h3>
-            {#each denuncias as d}
-                <Denuncia denuncia={d} />
-            {/each}
-        </ul>
-        <ul
-            style="width:33%; min-width:33%"
-            class="{innerWidth > 956 || current === 2
-                ? ''
-                : 'oculta resize'} {innerWidth <= 956 ? 'resize' : ''}"
-        >
-            <h3 style="height:40px">Ultimos hilos</h3>
-            {#each hilos as h (h.id)}
-                <HiloPreviewMod hilo={h} />
-            {/each}
-        </ul>
-        <ul
-            style="width:33%; min-width:33%"
-            class="{innerWidth > 956 || current === 3
-                ? ''
-                : 'oculta resize'} {innerWidth <= 956 ? 'resize' : ''}"
-        >
-            <h3 style="height:40px">Ultimos comentarios</h3>
-            {#each comentarios as c}
-                <li transition:fly|local={{ y: -50, duration: 250 }}>
-                    <a href="/Hilo/{c.hiloId}#{c.id}"
-                        ><ComentarioMod comentario={c} /></a
-                    >
-                </li>
-            {/each}
-        </ul>
+        {#if innerWidth > 956 || current === 1}
+            <ul
+                style="width:33%; background:#711c08; font-size: 0.7em; min-width:33%"
+                class={innerWidth <= 956 ? "resize" : ""}
+            >
+                <h3 style="height:40px">Ultimas denuncias</h3>
+                {#each denuncias as d}
+                    <Denuncia denuncia={d} />
+                {/each}
+            </ul>
+        {/if}
+        {#if innerWidth > 956 || current === 2}
+            <ul
+                style="width:33%; min-width:33%"
+                class={innerWidth <= 956 ? "resize" : ""}
+            >
+                <h3 style="height:40px">Ultimos hilos</h3>
+                {#each hilos as h (h.id)}
+                    <HiloPreviewMod hilo={h} />
+                {/each}
+            </ul>
+        {/if}
+        {#if innerWidth > 956 || current === 3}
+            <ul
+                style="width:33%; min-width:33%"
+                class={innerWidth <= 956 ? "resize" : ""}
+            >
+                <h3 style="height:40px">Ultimos comentarios</h3>
+                {#each comentarios as c}
+                    <li transition:fly|local={{ y: -50, duration: 250 }}>
+                        <a href="/Hilo/{c.hiloId}#{c.id}"
+                            ><ComentarioMod comentario={c} /></a
+                        >
+                    </li>
+                {/each}
+            </ul>
+        {/if}
     </div>
 </main>
 
@@ -155,9 +157,6 @@
         max-width: 480px;
         justify-content: space-around;
     }
-    .oculta {
-        display: none !important;
-    }
     .resize {
         width: 100% !important;
         max-width: 574px;
@@ -176,6 +175,7 @@
         padding: 14px 16px;
         transition: 0.3s;
         color: white;
+        width: 33%;
     }
     .tab button:hover {
         background-color: #2b333b;

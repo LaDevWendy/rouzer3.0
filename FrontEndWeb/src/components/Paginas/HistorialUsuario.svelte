@@ -1,29 +1,37 @@
 <script>
-    import BarraModeracion from '../Moderacion/BarraModeracion.svelte';
+    import BarraModeracion from "../Moderacion/BarraModeracion.svelte";
 
-    import ComentarioMod from '../Moderacion/ComentarioMod.svelte';
-    import HiloPreviewMod from '../Moderacion/HiloPreviewMod.svelte';
-    import { MotivoDenuncia } from '../../enums'
-    import { formatearTiempo, formatearTimeSpan } from '../../helper';
-import BanPreview from '../Moderacion/BanPreview.svelte';
+    import ComentarioMod from "../Moderacion/ComentarioMod.svelte";
+    import HiloPreviewMod from "../Moderacion/HiloPreviewMod.svelte";
+    import { MotivoDenuncia } from "../../enums";
+    import { formatearTiempo, formatearTimeSpan } from "../../helper";
+    import BanPreview from "../Moderacion/BanPreview.svelte";
 
-    let hilos = window.model.hilos
-    let comentarios = window.model.comentarios
-    let usuario = window.model.usuario
-    let baneos = window.model.baneos
+    let innerWidth = window.innerWidth;
+    let current = 2;
+
+    let hilos = window.model.hilos;
+    let comentarios = window.model.comentarios;
+    let usuario = window.model.usuario;
+    let baneos = window.model.baneos;
     // let denuncias = window.model.denuncias
 
-    const motivo = Object.keys( MotivoDenuncia)
+    const motivo = Object.keys(MotivoDenuncia);
 
-    comentarios = comentarios.map (c => {
-        c.respuestas = []
-        return c
-    })
+    comentarios = comentarios.map((c) => {
+        c.respuestas = [];
+        return c;
+    });
 </script>
 
-<BarraModeracion/>
+<svelte:window bind:innerWidth />
+
+<BarraModeracion />
 <main>
-    <div class="panel" style="background:var(--color6) !important;color:black; padding:8px 16px;">
+    <div
+        class="panel"
+        style="background:var(--color6) !important;color:black; padding:8px 16px;"
+    >
         <h1 style>{usuario.userName}</h1>
     </div>
     <div class="panel">
@@ -32,33 +40,72 @@ import BanPreview from '../Moderacion/BanPreview.svelte';
         <p>Numero de rozs(en db): {usuario.rozs}</p>
         <p>Numero de comentarios(en db): {usuario.comentarios}</p>
     </div>
-    
-    <div class="historial">
-        <ul style="min-width:300px">
-            <h3 style="height:40px">Ultimos hilos</h3>
-            {#each hilos as h}
-                <HiloPreviewMod hilo={h}/>
-            {/each}
-        </ul>
-        <ul>
-            <h3 style="height:40px">Ultimos comentarios</h3>
-            {#each comentarios as c}
-                <ComentarioMod comentario={c}/>
-            {/each}
-        </ul>
-        <ul>
-            <h3 style="height:40px">Baneos</h3>
-            {#each baneos as ban}
-                <li style="margin-bottom:4px">
-                    <BanPreview {ban}/>
-                </li>
-            {/each}
-        </ul>
+    {#if innerWidth < 956}
+        <div id="botones" class="tab">
+            <button
+                id="tab1"
+                class="boton {current === 1 ? 'active' : ''}"
+                on:click={() => (current = 1)}
+            >
+                Últimos hilos
+            </button>
+
+            <button
+                id="tab2"
+                class="boton {current === 2 ? 'active' : ''}"
+                on:click={() => (current = 2)}
+            >
+                Últimos comentarios
+            </button>
+            <button
+                id="tab3"
+                class="boton {current === 3 ? 'active' : ''}"
+                on:click={() => (current = 3)}
+            >
+                Baneos
+            </button>
+        </div>
+    {/if}
+    <div class="historial" style="min-width: 33%;">
+        {#if innerWidth > 956 || current === 1}
+            <ul
+                style="width:33%; min-width: 33%;"
+                class={innerWidth <= 956 ? "resize" : ""}
+            >
+                <h3 style="height:40px">Ultimos hilos</h3>
+                {#each hilos as h}
+                    <HiloPreviewMod hilo={h} />
+                {/each}
+            </ul>
+        {/if}
+        {#if innerWidth > 956 || current === 2}
+            <ul
+                style="width:33%; min-width: 33%;"
+                class={innerWidth <= 956 ? "resize" : ""}
+            >
+                <h3 style="height:40px">Ultimos comentarios</h3>
+                {#each comentarios as c}
+                    <ComentarioMod comentario={c} />
+                {/each}
+            </ul>
+        {/if}
+        {#if innerWidth > 956 || current === 3}
+            <ul
+                style="width:33%; min-width: 33%;"
+                class={innerWidth <= 956 ? "resize" : ""}
+            >
+                <h3 style="height:40px">Baneos</h3>
+                {#each baneos as ban}
+                    <li style="margin-bottom:4px">
+                        <BanPreview {ban} />
+                    </li>
+                {/each}
+            </ul>
+        {/if}
     </div>
 </main>
 
-<style >
-
+<style>
     h1 {
         text-align: center;
     }
@@ -66,34 +113,66 @@ import BanPreview from '../Moderacion/BanPreview.svelte';
         display: flex;
         gap: 10px;
         flex-direction: column;
-        margin:auto;
+        margin: auto;
         justify-content: center;
         align-items: center;
-        max-width: 1400px;
     }
     .historial {
         display: flex;
         gap: 10px;
-        margin:auto;
+        margin: auto;
         justify-content: center;
         width: 100%;
+        max-width: 1800px;
     }
-    ul, .panel {
+    ul,
+    .panel {
         background: var(--color4);
-        padding: 10px
+        padding: 10px;
     }
-    ul :global(.hilo) 
-    {
+    ul :global(.hilo) {
         width: 100%;
-        height: 100px !important
+        height: 100px !important;
     }
-    ul :global(.hilo img) 
-    {
+    ul :global(.hilo img) {
         height: fit-content;
     }
 
     .panel {
         width: max-content;
     }
- 
+
+    #botones {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        max-width: 480px;
+        justify-content: space-around;
+    }
+    .resize {
+        width: 100% !important;
+        max-width: 574px;
+    }
+    .tab {
+        overflow: hidden;
+        border: 1px solid #354e67;
+        background-color: #17212b;
+    }
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        color: white;
+        width: 33%;
+    }
+    .tab button:hover {
+        background-color: #2b333b;
+    }
+    .tab button.active {
+        background-color: #322029;
+    }
 </style>

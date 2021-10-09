@@ -1,7 +1,7 @@
 {
   "General": {
     "LimiteBump": 500,
-    "HilosMaximosPorCategoria": 5,
+    "HilosMaximosPorCategoria": 25,
     "ModoPrivado": true,
     "TiempoEntreComentarios": 10,
     "TiempoEntreHilos": 120,
