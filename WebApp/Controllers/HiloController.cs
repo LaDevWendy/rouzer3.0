@@ -47,12 +47,18 @@ namespace WebApp.Controllers
 
         public async Task<IActionResult> IndexAsync()
         {
-            int[] categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
+            int[] categorias;
+            if (User.Identity.IsAuthenticated)
+            {
+                categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
+                HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
+                if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+            }
+            else
+            {
+                categorias = categoriasOpts.Value.Public().Ids().ToArray();
+            }
 
-            HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
-
-            if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
-            
             var ocultos = (await context.HiloAcciones
                 .Where(a  => a.UsuarioId == User.GetId() && a.Hideado)
                 .Select(a => a.HiloId)

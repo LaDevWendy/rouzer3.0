@@ -10,6 +10,7 @@ namespace Modelos
         public string Nombre { get; set; }
         public string NombreCorto { get; set; }
         public bool Nsfw { get; set; }
+        public bool Public { get; set; }
     }
 
     public static class CategoriaExtensiones
@@ -22,6 +23,10 @@ namespace Modelos
         {
             return categorias.Select(c => c.Id).ToList();
         }
-        
+        public static List<Categoria> Public(this List<Categoria> categorias)
+        {
+            return categorias.Where(c => c.Public).ToList();
+        }
+
     }
 }
