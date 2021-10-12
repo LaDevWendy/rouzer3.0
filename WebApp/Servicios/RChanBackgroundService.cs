@@ -12,6 +12,7 @@ using Modelos;
 using WebApp;
 using System.Linq;
 using System.Collections.Concurrent;
+using static WebApp.RChanHub;
 
 namespace Servicios
 {
@@ -37,64 +38,48 @@ namespace Servicios
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            timer = new Timer(async (state) => await LimpearHilosViejos(), null, 0, (int) TimeSpan.FromSeconds(60).TotalMilliseconds);
-            timer2 = new Timer(async (state) => await RefrescarOnlines(), null, 0, (int) TimeSpan.FromSeconds(10).TotalMilliseconds);
+            timer = new Timer(async (state) => await LimpearHilosViejos(), null, 0, (int)TimeSpan.FromMinutes(60).TotalMilliseconds);
+            timer2 = new Timer(async (state) => await RefrescarOnlines(), null, 0, (int)TimeSpan.FromSeconds(10).TotalMilliseconds);
 
             return Task.CompletedTask;
         }
 
-        public async Task RefrescarOnlines(){
+        public async Task RefrescarOnlines()
+        {
 
             var admins = await userManager.GetUsersForClaimAsync(new Claim("Role", "admin"));
             var mods = await userManager.GetUsersForClaimAsync(new Claim("Role", "mod"));
             var auxiliares = await userManager.GetUsersForClaimAsync(new Claim("Role", "auxiliar"));
 
-            ConcurrentDictionary<string, int> usuariosConectados = RChanHub.NombresUsuariosConectados;
-            
-            var adms = admins.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
-            
-            var meds = mods.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
-            
-            var auxs = auxiliares.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
-            
-            var onlines = new List<UsuarioVM>();
-            
-            foreach (UsuarioVM a in adms){
-                int n = usuariosConectados.GetOrAdd(a.UserName, 0);
-                if (n > 0)
-                {
-                    onlines.Add(a);
-                }
-                else
-                {
-                    onlines.Remove(a);
-                }
-            }
-            
-            foreach (UsuarioVM a in meds){
-                int n = usuariosConectados.GetOrAdd(a.UserName, 0);
-                if (n > 0)
-                {
-                    onlines.Add(a);
-                }
-                else
-                {
-                    onlines.Remove(a);
-                }
-            }
-            
-            foreach (UsuarioVM a in auxs){
-                int n = usuariosConectados.GetOrAdd(a.UserName, 0);
-                if (n > 0)
-                {
-                    onlines.Add(a);
-                }
-                else {
-                    onlines.Remove(a);
-                }
-            }
+            ConcurrentDictionary<string, OnlineUser> usuariosConectados = NombresUsuariosConectados;
 
-            await rChanHub.Clients.Group("administracion").SendAsync("RefrescarOnlines", onlines.ToArray());
+            var staff = admins.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToList();
+            staff.AddRange(mods.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToList());
+            staff.AddRange(auxiliares.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToList());
+
+            Dictionary<string, OnlineUser> onlines = new Dictionary<string, OnlineUser>();
+
+            var keys = usuariosConectados.Keys.Select(k => k).ToList();
+            foreach (UsuarioVM a in staff)
+            {
+                OnlineUser onlineUser = new OnlineUser();
+                onlineUser.NConexiones = 0;
+                onlineUser.UltimaConexion = DateTime.MinValue;
+                onlineUser = usuariosConectados.GetOrAdd(a.UserName, onlineUser);
+                onlines.Add(a.UserName, onlineUser);
+                keys.Remove(a.UserName);
+            }
+            await rChanHub.Clients.Group("administracion").SendAsync("RefrescarOnlines", onlines);
+
+            var now = DateTime.Now;
+            var timespan = TimeSpan.FromMinutes(10);
+            foreach (string k in keys)
+            {
+                OnlineUser onlineUser = usuariosConectados[k];
+                if ((onlineUser.NConexiones <= 0) && ((DateTime.Now - onlineUser.UltimaConexion) > timespan))
+                    usuariosConectados.TryRemove(k, out var jijo);
+            }
+            logger.LogInformation($"{usuariosConectados.Count}");
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -104,7 +89,7 @@ namespace Servicios
             return Task.CompletedTask;
         }
 
-        public async Task LimpearHilosViejos() 
+        public async Task LimpearHilosViejos()
         {
             try
             {
@@ -124,6 +109,7 @@ namespace Servicios
         public void Dispose()
         {
             timer?.Dispose();
+            timer2?.Dispose();
         }
     }
 }

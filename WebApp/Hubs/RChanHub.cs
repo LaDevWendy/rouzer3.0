@@ -16,11 +16,11 @@ namespace WebApp
     public class RChanHub : Hub
     {
         public static ConcurrentDictionary<string, bool> usuariosConectados = new ConcurrentDictionary<string, bool>();
-        
-        public static ConcurrentDictionary<string, int> nombreUsuariosConectados = new ConcurrentDictionary<string, int>();
 
-        public static ConcurrentDictionary<string, int> NombresUsuariosConectados => nombreUsuariosConectados;
-        
+        public static ConcurrentDictionary<string, OnlineUser> nombreUsuariosConectados = new ConcurrentDictionary<string, OnlineUser>();
+
+        public static ConcurrentDictionary<string, OnlineUser> NombresUsuariosConectados => nombreUsuariosConectados;
+
         public static int NumeroDeUsuariosConectados => usuariosConectados.Count;
 
         public RChanHub()
@@ -29,57 +29,66 @@ namespace WebApp
 
         public async Task SubscribirseAHilo(string hiloId)
         {
-           await Groups.AddToGroupAsync(Context.ConnectionId, hiloId);
+            await Groups.AddToGroupAsync(Context.ConnectionId, hiloId);
         }
         public async Task SubscribirAHome()
         {
-           await Groups.AddToGroupAsync(Context.ConnectionId, "home");
+            await Groups.AddToGroupAsync(Context.ConnectionId, "home");
         }
 
         [Authorize("esAdmin")]
         public async Task SubscribirAAdministracion()
         {
-           await Groups.AddToGroupAsync(Context.ConnectionId, "administracion");
+            await Groups.AddToGroupAsync(Context.ConnectionId, "administracion");
         }
-        
+
         [Authorize("esAuxiliar")]
         public async Task SubscribirAModeracion()
         {
-           await Groups.AddToGroupAsync(Context.ConnectionId, "moderacion");
+            await Groups.AddToGroupAsync(Context.ConnectionId, "moderacion");
         }
 
         [AllowAnonymous]
         public async Task SubscribirARozed()
         {
-           await Groups.AddToGroupAsync(Context.ConnectionId, "rozed");
+            await Groups.AddToGroupAsync(Context.ConnectionId, "rozed");
         }
 
         public override async Task OnConnectedAsync()
         {
             var ip = Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString();
-            
+
             if (!usuariosConectados.Keys.Any(x => x == ip))
             {
                 usuariosConectados.TryAdd(ip, true);
             }
-            
-            try {
+
+            try
+            {
                 var nombre = Context.User.Identity.Name;
-                if (!string.IsNullOrEmpty(nombre)){
+                if (!string.IsNullOrEmpty(nombre))
+                {
+                    OnlineUser onlineUser;
                     if (!nombreUsuariosConectados.Keys.Any(x => x == nombre))
                     {
-                        nombreUsuariosConectados.TryAdd(nombre, 1);
+                        onlineUser = new OnlineUser();
+                        onlineUser.NConexiones = 1;
+                        onlineUser.UltimaConexion = DateTime.Now;
+                        nombreUsuariosConectados.TryAdd(nombre, onlineUser);
                     }
-                    else 
+                    else
                     {
-                        int n = nombreUsuariosConectados[nombre];
-                        n++;
-                        nombreUsuariosConectados[nombre] = n;
+                        nombreUsuariosConectados.TryGetValue(nombre, out onlineUser);
+                        OnlineUser newOnlineUser = new OnlineUser();
+                        newOnlineUser.NConexiones = onlineUser.NConexiones + 1;
+                        newOnlineUser.UltimaConexion = DateTime.Now;
+                        nombreUsuariosConectados.TryUpdate(nombre, newOnlineUser, onlineUser);
                     }
                 }
             }
-            catch (Exception e){
-                
+            catch (Exception e)
+            {
+
             }
 
             await base.OnConnectedAsync();
@@ -88,29 +97,45 @@ namespace WebApp
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             var ip = Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString();
-            
+
             usuariosConectados.TryRemove(ip, out var jeje);
-            
-            try {
+
+            try
+            {
                 var nombre = Context.User.Identity.Name;
-                if (!string.IsNullOrEmpty(nombre)){
+                if (!string.IsNullOrEmpty(nombre))
+                {
                     if (nombreUsuariosConectados.Keys.Any(x => x == nombre))
                     {
-                        int n = nombreUsuariosConectados[nombre];
-                        n--;
-                        if (n <= 0){
-                            nombreUsuariosConectados.TryRemove(nombre, out var jijo);
-                        } else {
-                            nombreUsuariosConectados[nombre] = n;
+                        OnlineUser onlineUser;
+                        nombreUsuariosConectados.TryGetValue(nombre, out onlineUser);
+                        OnlineUser newOnlineUser = new OnlineUser();
+                        newOnlineUser.NConexiones = onlineUser.NConexiones - 1;
+                        if (newOnlineUser.NConexiones <= 0)
+                        {
+                            newOnlineUser.UltimaConexion = DateTime.Now;
                         }
+                        else
+                        {
+                            newOnlineUser.UltimaConexion = onlineUser.UltimaConexion;
+                        }
+                        nombreUsuariosConectados.TryUpdate(nombre, newOnlineUser, onlineUser);
                     }
                 }
-            } 
-            catch (Exception e){
-                
             }
-            
+            catch (Exception e)
+            {
+
+            }
+
             await base.OnDisconnectedAsync(exception);
+        }
+
+        public struct OnlineUser
+
+        {
+            public int NConexiones { get; set; }
+            public DateTime UltimaConexion { get; set; }
         }
 
     }
@@ -118,6 +143,6 @@ namespace WebApp
     public interface IRchanHub
     {
         Task HiloCreado(HiloModel hilo);
-        Task HiloComentado(string hiloId, string comentario="");
+        Task HiloComentado(string hiloId, string comentario = "");
     }
 }
