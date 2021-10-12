@@ -19,6 +19,7 @@ using System.IO;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
 using System.ComponentModel.DataAnnotations;
+using static WebApp.RChanHub;
 
 namespace WebApp.Controllers
 {
@@ -74,14 +75,11 @@ namespace WebApp.Controllers
 
             var auxs = auxiliares.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
 
-            var onlines = new List<UsuarioVM>();
-
             var vm = new AdministracionVM
             {
                 Admins = adms,
                 Mods = meds,
                 Auxiliares = auxs,
-                Onlines = onlines.ToArray(),
                 Config = config.Value
             };
             return View(vm);
@@ -260,7 +258,6 @@ public class AdministracionVM
     public UsuarioVM[] Admins { get; set; }
     public UsuarioVM[] Mods { get; set; }
     public UsuarioVM[] Auxiliares { get; set; }
-    public UsuarioVM[] Onlines { get; set; }
     public GeneralOptions Config { get; internal set; }
 }
 

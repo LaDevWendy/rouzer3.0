@@ -57,11 +57,10 @@
         } catch (error) {}
     }
 
-    let onlines = model.onlines;
+    let onlines = {};
     Sigal.subscribirAAdministracion();
     Sigal.coneccion.on("RefrescarOnlines", (ons) => {
         onlines = ons;
-        console.log(onlines);
     });
 
     let restriccionDeAcesso = 2;
