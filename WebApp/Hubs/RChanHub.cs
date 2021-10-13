@@ -1,15 +1,11 @@
 
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Modelos;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Authorization;
-using System.Collections.Generic;
 using System;
-using Servicios;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace WebApp
 {
@@ -127,7 +123,6 @@ namespace WebApp
             {
 
             }
-
             await base.OnDisconnectedAsync(exception);
         }
 

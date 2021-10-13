@@ -5,7 +5,7 @@
     import Dialogo from "../Dialogo.svelte";
     import ErrorValidacion from "../ErrorValidacion.svelte";
     import Sigal from "../../signal";
-    import Tiempo from '../Tiempo.svelte'
+    import Tiempo from "../Tiempo.svelte";
 
     let model = window.model;
     let error = null;
@@ -58,10 +58,18 @@
     }
 
     let onlines = {};
-    Sigal.subscribirAAdministracion();
-    Sigal.coneccion.on("RefrescarOnlines", (ons) => {
-        onlines = ons;
-    });
+    async function refrescar() {
+        try {
+            let res = await RChanClient.refrescarOnlines();
+            onlines = res.data;
+        } catch (e) {
+            console.log(e.resposne);
+            error = e.response.data;
+            return;
+        }
+    }
+    setInterval(refrescar, 10000);
+    setTimeout(refrescar, 1000);
 
     let restriccionDeAcesso = 2;
     let restriccionesDeAcesso = {
@@ -138,13 +146,23 @@
                 <li class="header">Conectados</li>
                 {#each Object.entries(onlines) as [nombre, data]}
                     {#if data.nConexiones > 0}
-                        <li>{nombre} <span class="tiempo"><Tiempo date={data.ultimaConexion}/></span></li>
+                        <li>
+                            {nombre}
+                            <span class="tiempo"
+                                ><Tiempo date={data.ultimaConexion} /></span
+                            >
+                        </li>
                     {/if}
                 {/each}
                 <li class="header">Desconectados</li>
                 {#each Object.entries(onlines) as [nombre, data]}
                     {#if data.nConexiones < 1}
-                        <li>{nombre} <span class="tiempo"><Tiempo date={data.ultimaConexion}/></span></li>
+                        <li>
+                            {nombre}
+                            <span class="tiempo"
+                                ><Tiempo date={data.ultimaConexion} /></span
+                            >
+                        </li>
                     {/if}
                 {/each}
             </ul>
