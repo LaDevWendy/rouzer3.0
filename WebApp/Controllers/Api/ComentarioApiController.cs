@@ -109,7 +109,7 @@ namespace WebApp.Controllers
                 Creacion = DateTimeOffset.Now,
                 Ip = ip,
             };
-            
+
             MediaModel media = null;
             try
             {
@@ -130,9 +130,9 @@ namespace WebApp.Controllers
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("El  formato del archivo no es soportado", "");
+                ModelState.AddModelError("El archivo es muy pesado (+10mb) o el formato no es soportado", "");
                 Console.WriteLine(e);
-                antiFlood.ResetearSegundosComentario(User.GetId());                
+                antiFlood.ResetearSegundosComentario(User.GetId());
                 return BadRequest(ModelState);
             }
             if (media != null)
@@ -182,7 +182,7 @@ namespace WebApp.Controllers
                     .Where(c => c.Estado == ComentarioEstado.Normal)
                     .Where(c => c.HiloId == hilo.Id)
                     .CountAsync();
-                if (cantidadComentarios >= 10) hilo.Flags += "h";
+                if (cantidadComentarios >= 1000) hilo.Flags += "h";
             }
             //Roz de concentracion
             if (hilo.Flags.Contains("c"))

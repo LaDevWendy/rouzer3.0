@@ -133,16 +133,16 @@ namespace WebApp.Controllers
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("El  formato del archivo no es soportado", "");
+                ModelState.AddModelError("El archivo es muy pesado (+10mb) o el formato no es soportado", "");
                 Console.WriteLine(e);
-                antiFlood.ResetearSegundosParaHilo(User.GetId());                
+                antiFlood.ResetearSegundosParaHilo(User.GetId());
                 return BadRequest(ModelState);
             }
 
             if (media is null)
             {
                 ModelState.AddModelError("Chocamo", "No se pudo subir el archivo o importar el link");
-                antiFlood.ResetearSegundosParaHilo(User.GetId());                
+                antiFlood.ResetearSegundosParaHilo(User.GetId());
                 return BadRequest(ModelState);
             }
 

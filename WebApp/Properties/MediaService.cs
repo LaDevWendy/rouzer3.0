@@ -1,21 +1,21 @@
-using System;
-using System.Linq;
-using System.IO;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Modelos;
 using Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Modelos;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using Xabe.FFmpeg;
-using System.Drawing.Imaging;
-using Microsoft.AspNetCore.Hosting;
-using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Xabe.FFmpeg;
 
 namespace Servicios
 {
@@ -24,7 +24,7 @@ namespace Servicios
         string GetThumbnail(string id);
         Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo, bool esAdmin);
         Task<MediaModel> GenerarMediaDesdeLink(string url, bool esAdmin);
-        Task<bool> Eliminar(string id) ;
+        Task<bool> Eliminar(string id);
         Task<int> LimpiarMediasHuerfanos();
     }
 
@@ -56,16 +56,22 @@ namespace Servicios
 
         public virtual async Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo, bool esAdmin)
         {
-            bool esVideo = archivo.ContentType.Contains("video");
-
             using var archivoStream = archivo.OpenReadStream();
+            string filename = archivo.FileName;
+            string type = archivo.ContentType;
+            return await GenerarMediaDesdeStream(archivoStream, filename, type, esAdmin);
+        }
+
+        public virtual async Task<MediaModel> GenerarMediaDesdeStream(Stream archivoStream, string filename, string type, bool esAdmin)
+        {
+            bool esVideo = type.Contains("video");
 
             Stream imagenStream;
 
-            if(!esVideo && !archivo.FileName.Contains(".gif"))
+            if (!esVideo && !filename.Contains(".gif"))
                 imagenStream = archivoStream;
             else
-                imagenStream = await GenerarImagenDesdeVideo(archivoStream, archivo.FileName);
+                imagenStream = await GenerarImagenDesdeVideo(archivoStream, filename);
 
             // Genero un hash md5 del archivo
             archivoStream.Seek(0, SeekOrigin.Begin);
@@ -99,8 +105,9 @@ namespace Servicios
 
             using var original = await Image.LoadAsync(imagenStream);
             using var thumbnail = original.Clone(e => e.Resize(300, 0));
-            using var cuadradito = thumbnail.Clone(e => e.Resize( new ResizeOptions {
-                Mode=ResizeMode.Crop,
+            using var cuadradito = thumbnail.Clone(e => e.Resize(new ResizeOptions
+            {
+                Mode = ResizeMode.Crop,
                 Position = AnchorPositionMode.Center,
                 Size = new Size(300)
             }));
@@ -109,18 +116,18 @@ namespace Servicios
             if (flag)
             {
                 media = mediaAntiguo;
-                media.Tipo = esVideo? MediaType.Video: MediaType.Imagen;
-                media.Url = $"{hash}{Path.GetExtension(archivo.FileName)}";
+                media.Tipo = esVideo ? MediaType.Video : MediaType.Imagen;
+                media.Url = $"{hash}{Path.GetExtension(filename)}";
             }
             else
             {
-            media = new MediaModel
-            {
-                Id = hash,
-                Hash = hash,
-                Tipo = esVideo? MediaType.Video: MediaType.Imagen,
-                Url = $"{hash}{Path.GetExtension(archivo.FileName)}",
-            };
+                media = new MediaModel
+                {
+                    Id = hash,
+                    Hash = hash,
+                    Tipo = esVideo ? MediaType.Video : MediaType.Imagen,
+                    Url = $"{hash}{Path.GetExtension(filename)}",
+                };
             }
 
             // Si no se resetea el stream guarda correctamente -_o_-
@@ -141,15 +148,15 @@ namespace Servicios
         public async Task<Stream> GenerarImagenDesdeVideo(Stream video, string filename)
         {
             //Guardo el archivo en una carpeta temporal
-            var directoryTemporal =  Path.Join(env.ContentRootPath, "Temp");
+            var directoryTemporal = Path.Join(env.ContentRootPath, "Temp");
             Directory.CreateDirectory(directoryTemporal);
 
-            var archivoPath = Path.Join( directoryTemporal, Guid.NewGuid().ToString() + filename);
+            var archivoPath = Path.Join(directoryTemporal, Guid.NewGuid().ToString() + filename);
 
             video.Seek(0, SeekOrigin.Begin);
             var archivoGuardado = File.Create(archivoPath);
             await video.CopyToAsync(archivoGuardado);
-            
+
             await archivoGuardado.DisposeAsync();
 
             var archivoSalidaThumbnail = Path.Join(directoryTemporal, Guid.NewGuid() + ".jpg");
@@ -158,11 +165,11 @@ namespace Servicios
                     archivoSalidaThumbnail,
                     TimeSpan.FromSeconds(0));
 
-            var result = await conversion.Start(); 
+            var result = await conversion.Start();
 
             var imgStream = new MemoryStream();
 
-            var archivoTemporalImagen =  File.OpenRead(archivoSalidaThumbnail);
+            var archivoTemporalImagen = File.OpenRead(archivoSalidaThumbnail);
             await archivoTemporalImagen.CopyToAsync(imgStream);
 
             await archivoTemporalImagen.DisposeAsync();
@@ -171,15 +178,15 @@ namespace Servicios
             return imgStream;
         }
 
-        public virtual async Task<MediaModel> GenerarMediaDesdeYouTube(string url, bool esAdmin) 
+        public virtual async Task<MediaModel> GenerarMediaDesdeYouTube(string url, bool esAdmin)
         {
             var match = Regex.Match(url, @"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})");
-            if(!match.Success) return null;
+            if (!match.Success) return null;
 
             string id = match.Groups[1].Value;
 
             var mediaAntiguo = await context.Medias.FirstOrDefaultAsync(m => m.Hash == id);
-            
+
             bool flag = false;
             if (mediaAntiguo != null)
             {
@@ -200,14 +207,14 @@ namespace Servicios
                 }
             }
 
-            var  vistaPrevia =  await new HttpClient().GetAsync($"https://img.youtube.com/vi/{id}/maxresdefault.jpg");
+            var vistaPrevia = await new HttpClient().GetAsync($"https://img.youtube.com/vi/{id}/maxresdefault.jpg");
 
-            if(!vistaPrevia.IsSuccessStatusCode)
+            if (!vistaPrevia.IsSuccessStatusCode)
             {
                 vistaPrevia = await new HttpClient().GetAsync($"https://img.youtube.com/vi/{id}/hqdefault.jpg");
             }
-            
-            if(!vistaPrevia.IsSuccessStatusCode) return null;
+
+            if (!vistaPrevia.IsSuccessStatusCode) return null;
 
 
             MediaModel media = null;
@@ -219,53 +226,109 @@ namespace Servicios
             }
             else
             {
-            media = new MediaModel {
-                Id = id,
-                Hash = id,
-                Tipo = MediaType.Youtube,
-                Url = url
-            };
+                media = new MediaModel
+                {
+                    Id = id,
+                    Hash = id,
+                    Tipo = MediaType.Youtube,
+                    Url = url
+                };
             }
 
             using var thumbnail = await vistaPrevia.Content.ReadAsStreamAsync();
 
-            using var cuadradito = (await Image.LoadAsync(thumbnail)).Clone(e => e.Resize( new ResizeOptions {
-                Mode=ResizeMode.Crop,
+            using var cuadradito = (await Image.LoadAsync(thumbnail)).Clone(e => e.Resize(new ResizeOptions
+            {
+                Mode = ResizeMode.Crop,
                 Position = AnchorPositionMode.Center,
                 Size = new Size(300)
             }));
-            
+
             using var vistaPreviaSalida = File.Create($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaLocal}");
             thumbnail.Seek(0, SeekOrigin.Begin);
 
             await thumbnail.CopyToAsync(vistaPreviaSalida);
             await cuadradito.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadradoLocal}");
-            
+
             return media;
         }
-        public virtual async Task<MediaModel> GenerarMediaDesdeLink(string url, bool esAdmin) 
+        public virtual async Task<MediaModel> GenerarMediaDesdeLink(string url, bool esAdmin)
         {
             var match = Regex.Match(url, @"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})");
-            if(!match.Success) return null;
+            if (!match.Success) return await GenerarMediaDesdeUrl(url, esAdmin);
             else return await GenerarMediaDesdeYouTube(url, esAdmin);
         }
 
-        public virtual async Task<bool> Eliminar(string id) 
+        public async Task<MediaModel> GenerarMediaDesdeUrl(string url, bool esAdmin)
+        {
+            // Obtener tamaño
+            long size = MediaExtension.GetFileSize(url);
+
+            // Si es mayor a 10mb se rechaza
+            if (size < 0 || size > 10485760)
+                throw new Exception("Archivo muy pesado.");
+
+            //Obtener tipo
+            string type = MediaExtension.GetContentType(url);
+
+            //Si no es un tipo soportado se rechaza
+            if (!new[] { "jpeg", "jpg", "gif", "mp4", "webm", "png", "webp" }.Contains(type.Split("/")[1]))
+                throw new Exception("El  formato del archivo no es soportado.");
+
+            // Crear un nombre único para evitar concurrencias
+            string filename = $"{Guid.NewGuid()}.{type.Split("/")[1].ToLower()}";
+
+            // Leer el archivo remoto
+            WebClient client = new WebClient();
+            client.Headers["User-Agent"] = "Rouzer/2.2.0 (https://rouzer.fun/; RouzedFoster4000@yahoo.com) generic-library/2.2.0";
+            using Stream data = await client.OpenReadTaskAsync(new Uri(url));
+
+            // Guardo el archivo en una carpeta temporal (no se puede usar método seek si no)
+            var directoryTemporal = Path.Join(env.ContentRootPath, "Temp");
+            Directory.CreateDirectory(directoryTemporal);
+            var archivoPath = Path.Join(directoryTemporal, filename);
+            var archivoGuardado = File.Create(archivoPath);
+            await data.CopyToAsync(archivoGuardado);
+            await archivoGuardado.DisposeAsync();
+
+            // Lectura y conversión a MediaModel
+            using Stream stream = File.Open(archivoPath, FileMode.Open);
+            MediaModel media = null;
+            try
+            {
+                media = await GenerarMediaDesdeStream(stream, filename, type, esAdmin);
+            }
+            catch (Exception e)
+            {
+                // Borrado archivo temporal
+                await stream.DisposeAsync();
+                File.Delete(archivoPath);
+                throw;
+            }
+
+            // Borrado archivo temporal
+            await stream.DisposeAsync();
+            File.Delete(archivoPath);
+
+            return media;
+        }
+
+        public virtual async Task<bool> Eliminar(string id)
         {
             var intentos = 25;
             var media = await context.Medias.FirstOrDefaultAsync(m => m.Id == id);
-            
+
             if (media.Tipo == MediaType.Eliminado)
             {
                 return true;
             }
-            
-            var archivosAEliminar = new List<string> (new[]{
+
+            var archivosAEliminar = new List<string>(new[]{
                 $"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadradoLocal}",
                 $"{CarpetaDeAlmacenamiento}/{media.VistaPreviaLocal}",
                 $"{CarpetaDeAlmacenamiento}/{media.Url}",
             });
-            
+
             media.Tipo = MediaType.Eliminado;
             media.Url = "";
             await context.SaveChangesAsync();
@@ -273,16 +336,18 @@ namespace Servicios
             {
                 try
                 {
-                    if(archivosAEliminar.First().Contains("youtu")) 
+                    if (archivosAEliminar.First().Contains("youtu"))
                     {
 
                     }
-                    else {
+                    else
+                    {
                         File.Delete(archivosAEliminar.First());
                     }
                     archivosAEliminar.Remove(archivosAEliminar.First());
                 }
-                catch (Exception e ) { 
+                catch (Exception e)
+                {
                     logger.LogError(e.ToString());
                     intentos--;
                     await Task.Delay(100);
@@ -291,16 +356,16 @@ namespace Servicios
             return intentos == 0;
         }
 
-        public async Task<int> LimpiarMediasHuerfanos() 
+        public async Task<int> LimpiarMediasHuerfanos()
         {
             var mediasABorrar = await context.Medias
                 .Where(m => !context.Hilos.Any(h => h.MediaId == m.Id) &&
                     !context.Comentarios.Any(c => c.MediaId == m.Id))
                 .Where(m => m.Tipo != MediaType.Eliminado)
                 .ToListAsync();
-            
+
             logger.LogInformation($"Limpiando medias viejos {mediasABorrar.Count()}");
-            
+
             var eliminados = 0;
             foreach (var m in mediasABorrar)
             {
@@ -320,18 +385,52 @@ namespace Servicios
             return eliminados;
         }
 
-        protected bool EsFormatoValido(string contentType) 
+        protected bool EsFormatoValido(string contentType)
         {
             return Regex.IsMatch(contentType, @"(jpeg|png|gif|jpg|mp4|webm)");
         }
     }
 }
 
-static class MediaExtension {
-     public static async Task<string> GenerarHashAsync(this Stream archivo) {
-            using var md5 = MD5.Create();
-            var hash =  md5.ComputeHash(archivo);
-            return string
-                .Join("",hash.Select(e => e.ToString("x2")));
+static class MediaExtension
+{
+    public static async Task<string> GenerarHashAsync(this Stream archivo)
+    {
+        using var md5 = MD5.Create();
+        var hash = md5.ComputeHash(archivo);
+        return string
+            .Join("", hash.Select(e => e.ToString("x2")));
+    }
+
+    public static string GetContentType(string url)
+    {
+        string result = "";
+        HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+        req.UserAgent = "Rouzer/2.2.0 (https://rouzer.fun/; RouzedFoster4000@yahoo.com) generic-library/2.2.0";
+        req.Method = "HEAD";
+        using (System.Net.WebResponse resp = req.GetResponse())
+        {
+
+            result = resp.Headers.Get("Content-Type");
         }
+        return result;
+    }
+
+    public static long GetFileSize(string url)
+    {
+        long result = -1;
+        HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+        req.Method = "HEAD";
+        req.UserAgent = "Rouzer/2.2.0 (https://rouzer.fun/; RouzedFoster4000@yahoo.com) generic-library/2.2.0";
+        using (System.Net.WebResponse resp = req.GetResponse())
+        {
+            if (long.TryParse(resp.Headers.Get("Content-Length"), out long ContentLength))
+            {
+                result = ContentLength;
+            }
+        }
+
+        return result;
+    }
+
 }
