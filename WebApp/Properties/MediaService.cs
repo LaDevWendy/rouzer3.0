@@ -252,10 +252,94 @@ namespace Servicios
 
             return media;
         }
+
+        public virtual async Task<MediaModel> GenerarMediaDesdeBitchute(string url, bool esAdmin)
+        {
+            var match = Regex.Match(url, @"(?:bitchute\.com\/\S*(?:(?:\/e(?:mbed))?\/|video\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,12})");
+            if (!match.Success) return null;
+            string id = match.Groups[1].Value;
+            string hashid = $"bitchute_{id}";
+
+            var mediaAntiguo = await context.Medias.FirstOrDefaultAsync(m => m.Hash == hashid);
+            
+            bool flag = false;
+            if (mediaAntiguo != null)
+            {
+                Console.WriteLine(mediaAntiguo.Tipo);
+                if (esAdmin)
+                {
+                    if (!(mediaAntiguo.Tipo == MediaType.Eliminado))
+                    {
+                        return mediaAntiguo;
+                    }
+                    else
+                    {
+                        flag = true;
+                    }
+                }
+                else
+                {
+                    return mediaAntiguo;
+                }
+            }
+            Console.WriteLine("Test");
+            var httpResponse = await new HttpClient().GetAsync(url);
+            if (!httpResponse.IsSuccessStatusCode) return null;
+
+            string httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+            match = Regex.Match(httpResponseBody, @"https://static-3.bitchute.com/live/cover_images/[a-zA-Z0-9]*/[a-zA-Z0-9]*_[0-9]*x[0-9]*.jpg");
+            if (!match.Success) return null;
+
+            string vistaPreviaUrl = match.Value;
+            var vistaPrevia = await new HttpClient().GetAsync(vistaPreviaUrl);
+            if (!vistaPrevia.IsSuccessStatusCode) return null;
+
+            MediaModel media = null;
+            if (flag)
+            {
+                media = mediaAntiguo;
+                media.Tipo = MediaType.Youtube;
+                media.Url = url;
+            }
+            else
+            {
+                media = new MediaModel
+                {
+                    Id = id,
+                    Hash = hashid,
+                    Tipo = MediaType.Bitchute,
+                    Url = url
+                };
+            }
+
+            using var thumbnail = await vistaPrevia.Content.ReadAsStreamAsync();
+
+            using var cuadradito = (await Image.LoadAsync(thumbnail)).Clone(e => e.Resize(new ResizeOptions
+            {
+                Mode = ResizeMode.Crop,
+                Position = AnchorPositionMode.Center,
+                Size = new Size(300)
+            }));
+
+            using var vistaPreviaSalida = File.Create($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaLocal}");
+            thumbnail.Seek(0, SeekOrigin.Begin);
+
+            await thumbnail.CopyToAsync(vistaPreviaSalida);
+            await cuadradito.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadradoLocal}");
+
+            return media;
+        }
+
         public virtual async Task<MediaModel> GenerarMediaDesdeLink(string url, bool esAdmin)
         {
             var match = Regex.Match(url, @"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})");
-            if (!match.Success) return await GenerarMediaDesdeUrl(url, esAdmin);
+            if (!match.Success)
+            {
+                match = Regex.Match(url, @"(?:bitchute\.com\/\S*(?:(?:\/e(?:mbed))?\/|video\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,12})");
+                if (!match.Success)
+                    return await GenerarMediaDesdeUrl(url, esAdmin);
+                else return await GenerarMediaDesdeBitchute(url, esAdmin);
+            }
             else return await GenerarMediaDesdeYouTube(url, esAdmin);
         }
 

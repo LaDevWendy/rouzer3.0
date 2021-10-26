@@ -60,11 +60,11 @@
             {#if mostrarCategorias}
                 <div transition:fly={{y: -50, duration:150}}>
                     {#each categorias as c (c.id)}
-                        <li class="categoria-link">
+                        <li class="categoria-link categoria-link-{c.id}">
                             <a href="/{c.nombreCorto}">
                                 <icon class="fe fe-circle"/>  {c.nombre}
                             </a>
-                            <span style="width: fit-content;margin-left: auto;">
+                            <span style="width: fit-content;margin-left: auto; background: var(--color7); opacity: 56%; border-radius: 50%">
                             <Checkbox bind:checked={c.activa} right></Checkbox></span> 
                             <Ripple/>
                         </li>
@@ -140,7 +140,7 @@
     }
 
     .menu-principal :global(.icon) {
-        opacity: 0.7;
-        padding-right: 23px;
+        opacity: 1.0;
+        padding-right: 16px;
     }
 </style>

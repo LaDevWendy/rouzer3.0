@@ -26,6 +26,7 @@ namespace Modelos
         Video,
         Youtube,
         Eliminado,
+        Bitchute,
     }
     [Owned]
     public class TgMedia 

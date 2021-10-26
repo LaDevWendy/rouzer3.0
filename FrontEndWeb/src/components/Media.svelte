@@ -1,115 +1,175 @@
 <script>
     import MediaType from "../MediaType";
-    import {onMount} from "svelte/";
-    import {Icon, Button, Ripple} from "svelte-mui"
+    import { onMount } from "svelte/";
+    import { Icon, Button, Ripple } from "svelte-mui";
     import RChanClient from "../RChanClient";
 
-    export let media
-    export let modoCuadrado = false
+    export let media;
+    export let modoCuadrado = false;
 
-    $: vistaPrevia = modoCuadrado? media.vistaPreviaCuadrado : media.vistaPrevia
+    $: vistaPrevia = modoCuadrado
+        ? media.vistaPreviaCuadrado
+        : media.vistaPrevia;
 
-    export let abierto = false 
-    let oculto = false
-    let vid
-
+    export let abierto = false;
+    let oculto = false;
+    let vid;
 
     function abrirVideo() {
-        abierto = true
-        console.log(vid);
-        setTimeout(async () => {
-            vid.play()
-        }, 1)
+        abierto = true;
+        if (vid != undefined) {
+            console.log(vid);
+            setTimeout(async () => {
+                vid.play();
+            }, 1);
+        }
     }
 
-    let hackYoutubeActivo = false
-    let hackYoutubeLink = ""
+    let hackYoutubeActivo = false;
+    let hackYoutubeLink = "";
 
     async function hackYoutube() {
-        var res = await RChanClient.hackYoutube(media.url)
+        var res = await RChanClient.hackYoutube(media.url);
         hackYoutubeLink = res.data.link;
         hackYoutubeActivo = true;
-        abrirVideo()
+        abrirVideo();
     }
-
 </script>
 
-<div class="media" 
+<div
+    class="media"
     class:abierto
     class:modoCuadrado
-    class:youtube={media.tipo == MediaType.Youtube}>
+    class:youtube={media.tipo == MediaType.Youtube}
+>
     {#if !abierto}
         <div class="ocultar">
-            <Button on:click={() => oculto = !oculto} class="cerrar" icon>
-                <i class="fe fe-eye{!oculto?'-off':''}"></i> 
+            <Button on:click={() => (oculto = !oculto)} class="cerrar" icon>
+                <i class="fe fe-eye{!oculto ? '-off' : ''}" />
             </Button>
         </div>
     {/if}
     {#if oculto}
-        <div style="height:64px;"></div>
-    {:else if media.tipo  == MediaType.Imagen}
+        <div style="height:64px;" />
+    {:else if media.tipo == MediaType.Imagen}
         {#if media.esGif}
             <a href="/Media/{media.url}" target="_blank">
-                <img src="/Media/{media.url}" alt="" srcset="">
+                <img src="/Media/{media.url}" alt="" srcset="" />
             </a>
         {:else}
             <a href="/Media/{media.url}" target="_blank">
-                <img src="{vistaPrevia}" alt="" srcset="">
+                <img src={vistaPrevia} alt="" srcset="" />
             </a>
         {/if}
-        {:else if media.tipo == MediaType.Video}
-        
-            {#if abierto}
-                <video muted bind:this={vid} loop controls  src="/Media/{media.url}" style="margin-bottom: 16px;"></video>
-                <Button on:click={() => abierto = false} class="cerrar" icon>
-                    <i class="fe fe-x"></i> 
-                </Button>
-                {:else}
-                <img on:click={abrirVideo} src="{vistaPrevia}" alt="" srcset="">
-                <Button on:click={abrirVideo}  color="red" class="play" icon>
-                    <i class="fe fe-play" style="position: relative;left: 2px;"></i> 
-                </Button>
-            {/if}
-        {:else if media.tipo == MediaType.Youtube}
-        
-            {#if abierto}
-                {#if !hackYoutubeActivo}
-                    <div class="youtube-container">
-                        <iframe title="youtube" allowfullscreen src="https://www.youtube.com/embed/{media.id}?autoplay=1"> </iframe>
-                    </div>
-                {:else}
-                <video bind:this={vid} loop controls  src="{hackYoutubeLink}"></video>
-
-                {/if}
-                <Button on:click={() => abierto = false} class="cerrar" icon>
-                    <i class="fe fe-x"></i> 
-                </Button>
-            {:else}
-                <img on:click={abrirVideo} src="{vistaPrevia}" alt="" srcset="">
-                <Button on:click={abrirVideo}  color="red" class="play" icon>
-                    <i class="fe fe-youtube" style="position: relative;left: 1px;"></i> 
-                </Button>
-            {/if}
-                <div class="youtube-footer">
-                    {#if !hackYoutubeActivo}
-                        <span class="medialink cpt" on:click={hackYoutube}
-                            title="Sirve para reproducir el video en el sitio aunque este bloqueado"
-                            > Hack <Ripple/></span>
-                        {:else}
-                        <span class="medialink cpt" on:click={() => hackYoutubeActivo = false}> Volver <Ripple/></span>
-                    {/if}
-                    <a  class="medialink" 
-                        target="_blanck" 
-                        href="https://www.youtube.com/watch/{media.id}">
-                        Abrir en Jewtube 
-                        <Ripple/>
-                    </a>
+    {:else if media.tipo == MediaType.Video}
+        {#if abierto}
+            <video
+                muted
+                bind:this={vid}
+                loop
+                controls
+                src="/Media/{media.url}"
+                style="margin-bottom: 16px;"
+            />
+            <Button on:click={() => (abierto = false)} class="cerrar" icon>
+                <i class="fe fe-x" />
+            </Button>
+        {:else}
+            <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
+            <Button on:click={abrirVideo} color="red" class="play" icon>
+                <i class="fe fe-play" style="position: relative;left: 2px;" />
+            </Button>
+        {/if}
+    {:else if media.tipo == MediaType.Bitchute}
+        {#if abierto}
+            <div class="youtube-container">
+                <iframe
+                    title="bitchute"
+                    scrolling="no"
+                    frameborder="0"
+                    style="border: none;"
+                    src="https://www.bitchute.com/embed/{media.id}/"
+                />
+            </div>
+            <Button on:click={() => (abierto = false)} class="cerrar" icon>
+                <i class="fe fe-x" />
+            </Button>
+        {:else}
+            <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
+            <Button on:click={abrirVideo} color="red" class="play" icon>
+                <i
+                    class="fe fe-youtube"
+                    style="position: relative;left: 1px;"
+                />
+            </Button>
+        {/if}
+        <div class="youtube-footer">
+            <a
+                class="medialink"
+                target="_blanck"
+                href="https://www.bitchute.com/video/{media.id}/"
+            >
+                Abrir en Bitchute
+                <Ripple />
+            </a>
+        </div>
+    {:else if media.tipo == MediaType.Youtube}
+        {#if abierto}
+            {#if !hackYoutubeActivo}
+                <div class="youtube-container">
+                    <iframe
+                        title="youtube"
+                        allowfullscreen
+                        src="https://www.youtube.com/embed/{media.id}?autoplay=1"
+                    />
                 </div>
+            {:else}
+                <video bind:this={vid} loop controls src={hackYoutubeLink} />
+            {/if}
+            <Button on:click={() => (abierto = false)} class="cerrar" icon>
+                <i class="fe fe-x" />
+            </Button>
+        {:else}
+            <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
+            <Button on:click={abrirVideo} color="red" class="play" icon>
+                <i
+                    class="fe fe-youtube"
+                    style="position: relative;left: 1px;"
+                />
+            </Button>
+        {/if}
+        <div class="youtube-footer">
+            {#if !hackYoutubeActivo}
+                <span
+                    class="medialink cpt"
+                    on:click={hackYoutube}
+                    title="Sirve para reproducir el video en el sitio aunque este bloqueado"
+                >
+                    Hack <Ripple /></span
+                >
+            {:else}
+                <span
+                    class="medialink cpt"
+                    on:click={() => (hackYoutubeActivo = false)}
+                >
+                    Volver <Ripple /></span
+                >
+            {/if}
+            <a
+                class="medialink"
+                target="_blanck"
+                href="https://www.youtube.com/watch/{media.id}"
+            >
+                Abrir en Jewtube
+                <Ripple />
+            </a>
+        </div>
     {/if}
 </div>
 
 <style>
-    video, img {
+    video,
+    img {
         border-radius: 4px;
         max-height: 80vh;
     }
@@ -120,9 +180,10 @@
         display: flex;
         flex-direction: column;
     }
-    video, .abierto {
-        width:100%;
-        max-width:100%;
+    video,
+    .abierto {
+        width: 100%;
+        max-width: 100%;
     }
 
     .media :global(button) {
@@ -132,7 +193,7 @@
     }
     .media :global(.play) {
         position: absolute;
-        top:50%;
+        top: 50%;
         transform: translateX(50%) translateY(-50%) scale(2);
         right: 50%;
     }
@@ -168,7 +229,9 @@
         color: #ffffffe3 !important;
     }
 
-    .youtube-footer .medialink { flex:1 }
+    .youtube-footer .medialink {
+        flex: 1;
+    }
 
     .media .ocultar {
         opacity: 0;
@@ -177,7 +240,9 @@
     .media:hover .ocultar {
         opacity: 1;
     }
-    .youtube, iframe, .youtube img {
+    .youtube,
+    iframe,
+    .youtube img {
         border-radius: 4px 4px 0 0 !important;
     }
     .youtube iframe {
