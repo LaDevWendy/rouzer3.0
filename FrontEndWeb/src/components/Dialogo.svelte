@@ -18,6 +18,7 @@
             exito = true;
             setTimeout(()=> visible=false, 1000) 
         } catch (e) {
+            console.log(e.response.data)
             exito = false;
             error = e.response.data
         }

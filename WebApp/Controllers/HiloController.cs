@@ -108,7 +108,7 @@ namespace WebApp.Controllers
              else {
                 hilo =  await hiloService.GetHiloFull(id, User.GetId());
              }
-            if (hilo is null) return NotFound();
+            if (hilo is null) return Redirect("/Error/404");
             // return Json(new {
             //     hilo.Hilo,
             //     hilo.Comentarios,
@@ -125,7 +125,7 @@ namespace WebApp.Controllers
             var cate = categoriasOpts.Value.FirstOrDefault(c => c.NombreCorto.ToLower() == categoria.ToLower());
             if (cate == null)
             {
-                return NotFound();
+                return Redirect("/Error/404");
             };
 
             var vm = new HiloListViewModel
@@ -152,7 +152,7 @@ namespace WebApp.Controllers
         {
             if (coleccion == null || !"favoritos ocultos seguidos creados".Split(" ").Contains(coleccion.ToLower()))
             {
-                return NotFound();
+                return Redirect("/Error/404");
             }
             coleccion = coleccion.ToLower();
             var query = hiloService

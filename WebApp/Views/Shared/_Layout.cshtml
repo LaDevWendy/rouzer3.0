@@ -6,6 +6,7 @@
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @inject RChanContext _context;
 @inject IOptionsSnapshot<List<Categoria>> categoriasOpt;
+@inject IOptionsSnapshot<List<Grupo>> gruposOpt;
 @inject IConfiguration config;
 @inject IOptionsSnapshot<GeneralOptions> generalOptions
 @inject IWebHostEnvironment env
@@ -39,6 +40,8 @@
     <link rel="stylesheet" href="~/js/css/bundle.css?v=@version" />
     <link rel="stylesheet" type="text/css" href="~/css/flags32-both.css?v=@version"/>
     <style id="skin"></style>
+    <style id="portenho"></style>
+    <style id="halloween"></style>
 
     <script src="https://hcaptcha.com/1/api.js" async defer></script>
 
@@ -96,6 +99,7 @@
         var gnrlOpt = (GeneralPublicOptions)  generalOptions.Value;
         var configurafionPublica = new {
             Categorias = categoriasOpt.Value,
+            Grupos = gruposOpt.Value,
             HCaptchaSiteKey = config.GetValue<string>("HCaptcha:SiteKey"),
             General =  new {
                 gnrlOpt.TiempoEntreComentarios,

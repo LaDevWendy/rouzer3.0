@@ -6,6 +6,9 @@
     import { MotivoDenuncia } from "../../enums";
     import { formatearTiempo, formatearTimeSpan } from "../../helper";
     import BanPreview from "../Moderacion/BanPreview.svelte";
+    import { HiloEstado } from "../../enums";
+    import { ComentarioEstado } from "../../enums";
+    import Signal from "../../signal";
 
     let innerWidth = window.innerWidth;
     let current = 2;
@@ -21,6 +24,45 @@
     comentarios = comentarios.map((c) => {
         c.respuestas = [];
         return c;
+    });
+
+    Signal.subscribirAModeracion();
+    Signal.subscribirAHome();
+    Signal.coneccion.on("NuevoComentarioMod", (comentario) => {
+        if (comentario.usuarioId == usuario.id) {
+            comentario.respuestas = [];
+            comentarios.unshift(comentario);
+            comentarios = comentarios;
+        }
+    });
+    Signal.coneccion.on("HiloCreadoMod", (hilo) => {
+        console.log(hilo);
+        if (hilo.usuarioId == usuario.id) {
+            hilos = [hilo, ...hilos];
+        }
+    });
+    Signal.coneccion.on("categoriaCambiada", (data) => {
+        let hilo = hilos.filter((h) => h.id == data.hiloId);
+        if (hilo.length != 0) {
+            hilo[0].categoriaId = data.categoriaId;
+            hilos = hilos;
+        }
+    });
+    Signal.coneccion.on("HilosEliminados", (ids) => {
+        let hs = hilos.filter((h) => ids.includes(h.id));
+        if (hs.length != 0) {
+            hs.map((h) => (h.estado = HiloEstado.eliminado));
+            hilos = hilos;
+        }
+    });
+    Signal.coneccion.on("ComentariosEliminados", (ids) => {
+        let cs = comentarios.filter((c) => ids.includes(c.id));
+        if (cs.length != 0) {
+            cs.map((c) => {
+                c.estado = ComentarioEstado.eliminado;
+            });
+            comentarios = comentarios;
+        }
     });
 </script>
 
@@ -73,7 +115,7 @@
                 class={innerWidth <= 956 ? "resize" : ""}
             >
                 <h3 style="height:40px">Ultimos hilos</h3>
-                {#each hilos as h}
+                {#each hilos as h (h.id)}
                     <HiloPreviewMod hilo={h} />
                 {/each}
             </ul>
@@ -84,7 +126,7 @@
                 class={innerWidth <= 956 ? "resize" : ""}
             >
                 <h3 style="height:40px">Ultimos comentarios</h3>
-                {#each comentarios as c}
+                {#each comentarios as c (c.id)}
                     <ComentarioMod comentario={c} />
                 {/each}
             </ul>

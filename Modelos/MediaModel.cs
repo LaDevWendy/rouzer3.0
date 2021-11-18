@@ -27,6 +27,8 @@ namespace Modelos
         Youtube,
         Eliminado,
         Bitchute,
+        DailyMotion,
+        PornHub
     }
     [Owned]
     public class TgMedia 

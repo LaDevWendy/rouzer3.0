@@ -20,9 +20,9 @@ namespace Servicios
         private readonly ILogger<RChanCacheService> logger;
         private Timer timer;
 
-        public List<HiloViewModel> hilosIndex { get; private set;} = new List<HiloViewModel>();
+        public List<HiloViewModel> hilosIndex { get; private set; } = new List<HiloViewModel>();
 
-        public BanCache banCache {get; private set;} = new BanCache();
+        public BanCache banCache { get; private set; } = new BanCache();
 
         private int[] todasLasCategorias;
 
@@ -36,13 +36,14 @@ namespace Servicios
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            timer = new Timer(async (state) => {
-                    var t1 = DateTimeOffset.Now;
-                    await ActualizarHilos();
-                    // Console.WriteLine("Cache actualizado en " + (DateTimeOffset.Now - t1).TotalMilliseconds);
-                    await ActualizarBaneos();
-                }, 
-                null, 0, (int) TimeSpan.FromSeconds(4).TotalMilliseconds);
+            timer = new Timer(async (state) =>
+            {
+                var t1 = DateTimeOffset.Now;
+                await ActualizarHilos();
+                // Console.WriteLine("Cache actualizado en " + (DateTimeOffset.Now - t1).TotalMilliseconds);
+                await ActualizarBaneos();
+            },
+                null, 0, (int)TimeSpan.FromSeconds(4).TotalMilliseconds);
             return Task.CompletedTask;
         }
 
@@ -52,18 +53,33 @@ namespace Servicios
             return Task.CompletedTask;
         }
 
-        public async Task ActualizarHilos() 
+        public async Task ActualizarHilos()
         {
             using var scope = services.CreateScope();
             var hiloService = scope.ServiceProvider.GetService<IHiloService>();
-            hilosIndex = await hiloService.GetHilosOrdenadosPorBump(new GetHilosOptions {
-                Cantidad = 10000,
-                IncluirStickies = true,
-                CategoriasId = todasLasCategorias,
-            });
+            int count = 0, maxTries = 3;
+            while (count < maxTries)
+            {
+                try
+                {
+                    hilosIndex = await hiloService.GetHilosOrdenadosPorBump(new GetHilosOptions
+                    {
+                        Cantidad = 10000,
+                        IncluirStickies = true,
+                        CategoriasId = todasLasCategorias,
+                    });
+                    count = maxTries;
+                }
+                catch (Exception e)
+                {
+                    count++;
+                    logger.LogWarning($"Intento: {count}/{maxTries}");
+                    logger.LogWarning(e.Message);
+                }
+            }
         }
 
-        public async Task ActualizarBaneos() 
+        public async Task ActualizarBaneos()
         {
             using var scope = services.CreateScope();
             var context = scope.ServiceProvider.GetService<RChanContext>();
@@ -75,7 +91,7 @@ namespace Servicios
 
             banCache.IpsBaneadas = banCache.BaneosActivos.Select(b => b.Ip).ToHashSet();
             banCache.IdsBaneadas = banCache.BaneosActivos.Select(b => b.UsuarioId).ToHashSet();
-                
+
         }
 
         public void Dispose()

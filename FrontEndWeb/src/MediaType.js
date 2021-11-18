@@ -4,4 +4,6 @@ export default class MediaType
     static Video = 1
     static Youtube = 2
     static Bitchute = 4
+    static DailyMotion = 5
+    static PornHub = 6
 }

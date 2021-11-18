@@ -43,7 +43,7 @@ namespace WebApp
             this.Configuration = configuration;
 
         }
-                public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -53,6 +53,7 @@ namespace WebApp
             services.AddScoped<CensorService>();
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
             services.Configure<List<Categoria>>(Configuration.GetSection("Categorias"));
+            services.Configure<List<Grupo>>(Configuration.GetSection("Grupos"));
             // services.AddLiveReload(config =>
             // {
             //     // config.FolderToMonitor = env.ContentRootPath + "\\Views";
@@ -60,7 +61,8 @@ namespace WebApp
             services.AddSignalR();
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
-            services.AddMvc(opts => {
+            services.AddMvc(opts =>
+            {
                 opts.Filters.Add<RestriccionDeAccesoAction>();
                 opts.Filters.Add<BanFilter>();
                 opts.Filters.Add<ProtocoloMessi>();
@@ -84,11 +86,13 @@ namespace WebApp
                 .AddSignInManager()
                 .AddEntityFrameworkStores<RChanContext>();
 
-            services.ConfigureApplicationCookie(opt => {
+            services.ConfigureApplicationCookie(opt =>
+            {
                 opt.LoginPath = "/Login";
-                opt.Events.OnRedirectToLogin = async (c) => {
+                opt.Events.OnRedirectToLogin = async (c) =>
+                {
                     c.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    await c.Response.WriteAsync("{\"redirect\":\"/Inicio\"}");
+                    c.Response.Redirect("/Inicio");
                 };
             });
 
@@ -114,13 +118,14 @@ namespace WebApp
                 });
             });
             services.AddRazorPages();
-            services.AddMvc(options => {
+            services.AddMvc(options =>
+            {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             })
                 .AddNewtonsoftJson(options =>
                     {
                         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                        if(env.IsDevelopment())
+                        if (env.IsDevelopment())
                         {
                             options.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
                         }
@@ -135,13 +140,13 @@ namespace WebApp
             services.AddScoped<AccionesDeModeracionService>();
             services.AddScoped<SpamService>();
 
-            if(Configuration.GetValue<bool>("Telegram:UsarTelegram"))
+            if (Configuration.GetValue<bool>("Telegram:UsarTelegram"))
             {
                 services.AddScoped<IMediaService, MediaTgService>(s =>
                 {
                     var env = s.GetService<IWebHostEnvironment>();
                     var logger = s.GetService<ILogger<MediaTgService>>();
-                    return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), 
+                    return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"),
                     s.GetService<RChanContext>(), env, logger, s.GetService<IConfiguration>());
                 });
 
@@ -152,21 +157,22 @@ namespace WebApp
                     return new MediaTgService(Path.Combine(env.ContentRootPath, "Almacenamiento"), s.GetService<RChanContext>(), env, logger, s.GetService<IConfiguration>());
                 });
             }
-            else 
+            else
             {
                 services.AddScoped<IMediaService>(s =>
                 {
                     var env = s.GetService<IWebHostEnvironment>();
                     var logger = s.GetService<ILogger<MediaService>>();
-                    return new MediaService(Path.Combine(env.ContentRootPath, "Almacenamiento"), 
+                    return new MediaService(Path.Combine(env.ContentRootPath, "Almacenamiento"),
                     s.GetService<RChanContext>(), env, logger);
                 });
             }
-            
+
             services.AddSingleton<FormateadorService>();
 
             // Estadisticas
-            services.AddSingleton((sp)  => {
+            services.AddSingleton((sp) =>
+            {
                 string ubicacionDeArchivo = Path.Join(sp.GetService<IWebHostEnvironment>().ContentRootPath, "estadisticas.json");
                 var estadisticas = new EstadisticasService(ubicacionDeArchivo, sp.GetService<IHubContext<RChanHub>>());
                 return estadisticas;
@@ -181,7 +187,7 @@ namespace WebApp
             });
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddHostedService<RChanBackgroundService>();
-            
+
             services.AddSingleton<RChanCacheService>();
             services.AddHostedService<RChanCacheService>(provider => provider.GetService<RChanCacheService>());
 
@@ -222,6 +228,8 @@ namespace WebApp
                 // app.UseHsts();
             }
 
+
+
             // app.UseHttpsRedirection();
 
             void ConfigurarCache(StaticFileResponseContext ctx)
@@ -246,8 +254,9 @@ namespace WebApp
                 ),
                 OnPrepareResponse = ConfigurarCache
             });
-            app.Map("/Media", (app) => {
-                if(conf.GetValue<bool>("Telegram:UsarTelegram"))
+            app.Map("/Media", (app) =>
+            {
+                if (conf.GetValue<bool>("Telegram:UsarTelegram"))
                 {
                     app.UseMiddleware<TelegramMediaHostingMiddleare>();
                 }
@@ -282,9 +291,9 @@ namespace WebApp
             return user.HasClaim("Role", "mod")
                 || user.HasClaim("Role", "admin");
         }
-        public static bool EsAuxiliar(this ClaimsPrincipal user, bool modoSerenito=false)
+        public static bool EsAuxiliar(this ClaimsPrincipal user, bool modoSerenito = false)
         {
-            if(!modoSerenito && user.HasClaim("Role", "auxiliar")) return false;
+            if (!modoSerenito && user.HasClaim("Role", "auxiliar")) return false;
             return user.HasClaim("Role", "mod")
                 || user.HasClaim("Role", "admin")
                 || user.HasClaim("Role", "auxiliar");

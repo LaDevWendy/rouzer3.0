@@ -7,6 +7,9 @@
     import ComentarioMod from "../Moderacion/ComentarioMod.svelte";
     import HiloPreviewMod from "../Moderacion/HiloPreviewMod.svelte";
     import Sigal from "../../signal";
+    import { HiloEstado } from "../../enums";
+    import { EstadoDenuncia } from "../../enums";
+    import { ComentarioEstado } from "../../enums";
 
     let innerWidth = window.innerWidth;
     let current = 2;
@@ -22,6 +25,7 @@
     });
 
     Sigal.subscribirAModeracion();
+    Sigal.subscribirAHome();
     Sigal.coneccion.on("NuevoComentarioMod", (comentario) => {
         comentario.respuestas = [];
         comentarios.unshift(comentario);
@@ -31,6 +35,53 @@
     Sigal.coneccion.on("HiloCreadoMod", (hilo) => {
         hilos.pop();
         hilos = [hilo, ...hilos];
+    });
+    Sigal.coneccion.on("categoriaCambiada", (data) => {
+        let hilo = hilos.filter((h) => h.id == data.hiloId);
+        if (hilo.length != 0) {
+            hilo[0].categoriaId = data.categoriaId;
+            hilos = hilos;
+        }
+    });
+    Sigal.coneccion.on("HiloComentado", (id, comentario) => {
+        let hiloComentado = hilos.filter((h) => h.id == id);
+        if (hiloComentado.length != 0) {
+            hiloComentado[0].cantidadComentarios += 1;
+        }
+        hilos = hilos;
+    });
+    Sigal.coneccion.on("HilosEliminados", (ids) => {
+        let hs = hilos.filter((h) => ids.includes(h.id));
+        if (hs.length != 0) {
+            hs.map((h) => (h.estado = HiloEstado.eliminado));
+            hilos = hilos;
+        }
+    });
+    Sigal.coneccion.on("nuevaDenuncia", (denuncia) => {
+        denuncias = [denuncia, ...denuncias];
+    });
+    Sigal.coneccion.on("denunciasRechazadas", (ids) => {
+        if (ids.length == 0) return;
+        denuncias = denuncias.map((d) => {
+            if (ids.includes(d.id)) d.estado = EstadoDenuncia.Rechazada;
+            return d;
+        });
+    });
+    Sigal.coneccion.on("denunciasAceptadas", (ids) => {
+        if (ids.length == 0) return;
+        denuncias = denuncias.map((d) => {
+            if (ids.includes(d.id)) d.estado = EstadoDenuncia.Aceptada;
+            return d;
+        });
+    });
+    Sigal.coneccion.on("ComentariosEliminados", (ids) => {
+        let cs = comentarios.filter((c) => ids.includes(c.id));
+        if (cs.length != 0) {
+            cs.map((c) => {
+                c.estado = ComentarioEstado.eliminado;
+            });
+            comentarios = comentarios;
+        }
     });
 </script>
 
@@ -81,7 +132,7 @@
                 class={innerWidth <= 956 ? "resize" : ""}
             >
                 <h3 style="height:40px">Ultimas denuncias</h3>
-                {#each denuncias as d}
+                {#each denuncias as d (d.id)}
                     <Denuncia denuncia={d} />
                 {/each}
             </ul>
@@ -103,7 +154,7 @@
                 class={innerWidth <= 956 ? "resize" : ""}
             >
                 <h3 style="height:40px">Ultimos comentarios</h3>
-                {#each comentarios as c}
+                {#each comentarios as c (c.id)}
                     <li transition:fly|local={{ y: -50, duration: 250 }}>
                         <a href="/Hilo/{c.hiloId}#{c.id}"
                             ><ComentarioMod comentario={c} /></a

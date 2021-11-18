@@ -106,6 +106,7 @@
     .colapsar-categorias {
         font-size: 16px;
         transition: 0.2s;
+        cursor: pointer;
     }
 
     .oculta a, .oculta .sep {

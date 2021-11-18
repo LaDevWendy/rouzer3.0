@@ -33,6 +33,102 @@
     let accionVista = null;
 </script>
 
+<main>
+    <BarraModeracion />
+    <h3 style="text-align:center;margin-bottom: 10px;">Ultimas acciones</h3>
+    <div
+        class="filtros"
+        style="display: flex;width: fit-content;margin: 0;align-items: baseline;"
+    >
+        <span>Filtrar: </span>
+        <select bind:value={filtro.usuario}>
+            <option value={""}>Usuario</option>
+            {#each mods as m}
+                <option value={m}>{m}</option>
+            {/each}
+        </select>
+
+        <select bind:value={filtro.accion}>
+            <option value={""}>Accion</option>
+            {#each Object.keys(TipoAccion) as a}
+                <option value={TipoAccion[a]}>{a}</option>
+            {/each}
+        </select>
+    </div>
+    <div class="container">
+        <ul>
+            {#each accionesFiltradas as a (a.id)}
+                <li
+                    class="accion"
+                    on:mouseenter={() => (accionVista = a)}
+                    style={a == accionVista ? "background: var(--color6);" : ""}
+                >
+                    <span style="background: var(--color3);">
+                        <Tiempo date={a.creacion} />
+                    </span>
+                    <span style="background: var(--color6);"
+                        >{a.usuario.userName}</span
+                    >
+                    <span style="background: var(--color5);"
+                        >{TipoAccion.aString(a.tipo)}</span
+                    >
+                    {#if a.tipo == TipoAccion.CategoriaCambiada}
+                        <span>{a.nota}</span>
+                    {/if}
+                    {#if a.hilo}
+                        <a href="/Hilo/{a.hilo.id}">{a.hilo.titulo}</a>
+                    {/if}
+                    <!-- {#if a.comentario}
+                            <a href="/Hilo/{a.comentario.hiloId}#{a.comentario.id}"> Comentario</a>
+                        {/if}
+                        {#if a.denuncia}
+                            <a href="#">  Denuncia</a>
+                        {/if}
+                        {#if a.ban}
+                            <a href="#" style="background: var(--color5);"> Ban </a>
+                        {/if} -->
+                </li>
+            {/each}
+        </ul>
+
+        <div class="vista-previa panel">
+            {#if accionVista != null}
+                {#key accionVista}
+                    {#if accionVista.tipo == TipoAccion.CategoriaCambiada}
+                        <span>{accionVista.nota}</span>
+                    {/if}
+                    {#if accionVista.hilo}
+                        <HiloPreviewMod hilo={accionVista.hilo} />
+                    {/if}
+                    {#if accionVista.comentario}
+                        <Comentario comentario={accionVista.comentario} />
+                    {/if}
+                    {#if accionVista.denuncia}
+                        <Denuncia denuncia={accionVista.denuncia} />
+                    {/if}
+                    {#if accionVista.ban}
+                        <BanPreview ban={accionVista.ban} />
+                        <Dialogo
+                            textoActivador="Desbanear"
+                            titulo="Desbanear gordo"
+                            accion={() =>
+                                RChanClient.removerBan(accionVista.ban.id)}
+                        >
+                            <span
+                                slot="activador"
+                                style="display:flex;justify-content:center;"
+                            >
+                                <Button>Desbanear</Button></span
+                            >
+                            <div slot="body">Remover ban?</div>
+                        </Dialogo>
+                    {/if}
+                {/key}
+            {/if}
+        </div>
+    </div>
+</main>
+
 <style>
     .desplegable {
         display: none;
@@ -80,7 +176,7 @@
 
     .container {
         display: flex;
-        margin: 0 auto;
+        margin: 0;
         width: fit-content;
     }
     .vista-previa {
@@ -90,87 +186,3 @@
         top: 60px;
     }
 </style>
-
-<main>
-    <BarraModeracion />
-    <h3 style="text-align:center;margin-bottom: 10px;">Ultimas acciones</h3>
-    <div
-        class="filtros"
-        style="display: flex;width: fit-content;margin: 0 auto;align-items: baseline;">
-        <span>Filtrar: </span>
-        <select bind:value={filtro.usuario}>
-            <option value={''}>Usuario</option>
-            {#each mods as m}
-                <option value={m}>{m}</option>
-            {/each}
-        </select>
-
-        <select bind:value={filtro.accion}>
-            <option value={''}>Accion</option>
-            {#each Object.keys(TipoAccion) as a}
-                <option value={TipoAccion[a]}>{a}</option>
-            {/each}
-        </select>
-    </div>
-    <div class="container">
-            <ul>
-                {#each accionesFiltradas as a (a.id)}
-                    <li class="accion" on:mouseenter={() => accionVista = a}
-                        style="{a == accionVista?'background: var(--color6);':''}"
-                        >
-                        <span style="background: var(--color3);">
-                            <Tiempo date={a.creacion} />
-                        </span>
-                        <span
-                            style="background: var(--color6);">{a.usuario.userName}</span>
-                        <span
-                            style="background: var(--color5);">{TipoAccion.aString(a.tipo)}</span>
-                        {#if a.tipo == TipoAccion.CategoriaCambiada}
-                            <span>{a.nota}</span>
-                        {/if}
-                        {#if a.hilo}
-                            <a href="/Hilo/{a.hilo.id}">{a.hilo.titulo}</a>
-                        {/if}
-                        <!-- {#if a.comentario}
-                            <a href="/Hilo/{a.comentario.hiloId}#{a.comentario.id}"> Comentario</a>
-                        {/if}
-                        {#if a.denuncia}
-                            <a href="#">  Denuncia</a>
-                        {/if}
-                        {#if a.ban}
-                            <a href="#" style="background: var(--color5);"> Ban </a>
-                        {/if} -->
-                    </li>
-                {/each}
-            </ul>
-        
-            <div class="vista-previa panel">
-                {#if accionVista != null }
-                {#key accionVista}
-                    {#if accionVista.tipo == TipoAccion.CategoriaCambiada}
-                        <span>{accionVista.nota}</span>
-                    {/if}
-                    {#if accionVista.hilo}
-                        <HiloPreviewMod hilo={accionVista.hilo} />
-                    {/if}
-                    {#if accionVista.comentario}
-                        <Comentario comentario={accionVista.comentario} />
-                    {/if}
-                    {#if accionVista.denuncia}
-                        <Denuncia denuncia={accionVista.denuncia} />
-                    {/if}
-                    {#if accionVista.ban}
-                        <BanPreview ban={accionVista.ban} />
-                        <Dialogo
-                            textoActivador="Desbanear"
-                            titulo="Desbanear gordo"
-                            accion={() => RChanClient.removerBan(accionVista.ban.id)}>
-                            <span slot="activador" style="display:flex;justify-content:center;"> <Button>Desbanear</Button></span>
-                            <div slot="body">Remover ban?</div>
-                        </Dialogo>
-                    {/if}
-                {/key}
-                {/if}
-            </div>
-    </div>
-</main>

@@ -143,7 +143,7 @@ namespace WebApp.Controllers
         {
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
             if (usuario is null)
-                return NotFound();
+                return Redirect("/Error/404");
             return View(new
             {
                 Usuario = await context.Usuarios.Select(u => new
@@ -280,7 +280,6 @@ namespace WebApp.Controllers
             context.Bans.Add(ban);
             // Si se marco la opcion para eliminar elemento, borro el hilo o el comentario
 
-            var denuncias = new List<DenunciaModel>();
             if (comentario != null && model.EliminarElemento)
             {
                 await comentarioService.Eliminar(comentario.Id);
@@ -289,10 +288,6 @@ namespace WebApp.Controllers
             {
                 await hiloService.EliminarHilos(hilo.Id);
             }
-            denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
-
-            await rchanHub.Clients.Group("moderacion")
-                .SendAsync("denunciasAceptadas", denuncias.Select(d => d.Id).ToArray());
 
             bool mediaEliminado = false;
             if (model.EliminarAdjunto)
@@ -439,6 +434,16 @@ namespace WebApp.Controllers
                 await historial.RegistrarEliminacion(User.GetId(), h.Id);
             }
             await hiloService.EliminarHilos(vm.Ids, vm.BorrarMedia);
+
+            var stickies = await context.Stickies.Where(s => vm.Ids.Contains(s.HiloId)).ToListAsync();
+            if (stickies.Any())
+            {
+                foreach (Sticky s in stickies)
+                {
+                    s.Importancia = 0;
+                    await AñadirSticky(s);
+                }
+            }
             return Json(new ApiResponse("Hilo borrado"));
         }
 
@@ -480,7 +485,7 @@ namespace WebApp.Controllers
                 var advertencia = new BaneoModel
                 {
                     Id = hashService.Random(),
-                    Aclaracion = $"El roz fue movido de {categoriasOpt.Value.First(c => c.Id == vm.CategoriaId).Nombre} a {categoriasOpt.Value.First(c => c.Id == categoriaAntigua).Nombre}",
+                    Aclaracion = $"El roz fue movido de {categoriasOpt.Value.First(c => c.Id == categoriaAntigua).Nombre} a {categoriasOpt.Value.First(c => c.Id == vm.CategoriaId).Nombre}",
                     Creacion = DateTimeOffset.Now,
                     Expiracion = DateTimeOffset.Now + TimeSpan.FromSeconds(0),
                     ModId = User.GetId(),
@@ -490,7 +495,9 @@ namespace WebApp.Controllers
                     Ip = hilo.Ip,
                     UsuarioId = hilo.UsuarioId,
                 };
+                context.Bans.Add(advertencia);
                 await context.SaveChangesAsync();
+                await historial.RegistrarBan(User.GetId(), advertencia);
                 await rchanHub.Clients.User(advertencia.UsuarioId).SendAsync("domado");
             }
 

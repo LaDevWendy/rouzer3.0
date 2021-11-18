@@ -25,13 +25,13 @@ namespace Servicios
         Task<HiloFullViewModel> GetHiloFull(string id, string userId = null, bool mostrarOcultos = false);
         Task<HiloFullViewModelMod> GetHiloFullMod(string id, string userId = null, bool mostrarOcultos = false);
         IQueryable<HiloModel> OrdenadosPorBump();
-        Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId="", int cantidad = 16);
+        Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId = "", int cantidad = 16);
         Task EliminarHilos(params string[] ids);
         Task EliminarHilos(string[] ids, bool borrarMedias = false);
         Task LimpiarHilo(string id);
         Task LimpiarHilo(HiloModel hilo);
         Task LimpiarHilosViejos();
-        
+
     }
 
     public class HiloService : ContextService, IHiloService
@@ -50,7 +50,7 @@ namespace Servicios
             IComentarioService comentarioService,
             IOptionsSnapshot<GeneralOptions> options,
             FormateadorService formateador,
-            IHubContext<RChanHub> rchanHub, 
+            IHubContext<RChanHub> rchanHub,
             IMediaService mediaService,
             AccionesDeModeracionService historial,
             ILogger<HiloService> logger,
@@ -79,7 +79,7 @@ namespace Servicios
             var hilo = await _context.Hilos
                 .FirstOrDefaultAsync(h =>
                 h.Id == id &&
-                (h.Estado ==  HiloEstado.Normal || mostrarOcultos));
+                (h.Estado == HiloEstado.Normal || mostrarOcultos));
 
             if (hilo is null) return null;
             return new HiloViewModel(hilo);
@@ -93,38 +93,38 @@ namespace Servicios
             var query = _context.Hilos
                 .Include(h => h.Media);
 
-            if(!mostrarOcultos) 
+            if (!mostrarOcultos)
                 hilo = await query.FiltrarEliminados().PorId(id);
-            else 
+            else
                 hilo = await query.PorId(id);
-            
+
 
             if (hilo is null) return null;
 
             hiloFullView.Hilo = new HiloViewModel(hilo);
 
-            if(hilo.Encuesta != null) 
+            if (hilo.Encuesta != null)
             {
                 hiloFullView.Hilo.EncuestaData = new EncuestaViewModel(hilo.Encuesta, userId);
             }
 
-            hiloFullView.Comentarios =  await _context.Comentarios
+            hiloFullView.Comentarios = await _context.Comentarios
                 .Where(c => c.HiloId == hilo.Id)
                 .Where(c => c.Estado == ComentarioEstado.Normal)
                 .OrderByDescending(c => c.Creacion)
                 .Include(c => c.Media)
-                .Select(c => new ComentarioViewModel(c, hilo,null))
+                .Select(c => new ComentarioViewModel(c, hilo, null))
                 .ToListAsync();
 
-             if (!string.IsNullOrEmpty(userId))
-             {
-                 hiloFullView.Acciones = await _context.HiloAcciones
-                    .FirstOrDefaultAsync(a => a.UsuarioId == userId && a.HiloId == id);
-             }
-             
-             hiloFullView.Acciones ??= new HiloAccionModel();
+            if (!string.IsNullOrEmpty(userId))
+            {
+                hiloFullView.Acciones = await _context.HiloAcciones
+                   .FirstOrDefaultAsync(a => a.UsuarioId == userId && a.HiloId == id);
+            }
 
-            hiloFullView.Spams =  await spamService.GetSpamsActivos();
+            hiloFullView.Acciones ??= new HiloAccionModel();
+
+            hiloFullView.Spams = await spamService.GetSpamsActivos();
             return hiloFullView;
 
         }
@@ -137,18 +137,18 @@ namespace Servicios
             var query = _context.Hilos
                 .Include(h => h.Media);
 
-            if(!mostrarOcultos) 
+            if (!mostrarOcultos)
                 hilo = await query.FiltrarEliminados().PorId(id);
-            else 
+            else
                 hilo = await query.PorId(id);
-            
+
 
             if (hilo is null) return null;
 
-            hiloFullView.Usuario =  await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == hilo.UsuarioId);
+            hiloFullView.Usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == hilo.UsuarioId);
             hiloFullView.Hilo = new HiloViewModel(hilo);
 
-             if(hilo.Encuesta != null) 
+            if (hilo.Encuesta != null)
             {
                 hiloFullView.Hilo.EncuestaData = new EncuestaViewModel(hilo.Encuesta, userId);
             }
@@ -161,16 +161,16 @@ namespace Servicios
                 .Include(c => c.Media)
                 .Select(c => new ComentarioViewModelMod(c, hilo, userId))
                 .ToListAsync();
-            
+
             hiloFullView.Comentarios.ForEach(c => c.Propio = c.UsuarioId == userId);
 
-             if (!string.IsNullOrEmpty(userId))
-             {
-                 hiloFullView.Acciones = await _context.HiloAcciones
-                    .FirstOrDefaultAsync(a => a.UsuarioId == userId && a.HiloId == id);
-             }
-             
-             hiloFullView.Acciones ??= new HiloAccionModel();
+            if (!string.IsNullOrEmpty(userId))
+            {
+                hiloFullView.Acciones = await _context.HiloAcciones
+                   .FirstOrDefaultAsync(a => a.UsuarioId == userId && a.HiloId == id);
+            }
+
+            hiloFullView.Acciones ??= new HiloAccionModel();
 
             hiloFullView.Spams = await spamService.GetSpamsActivos();
             return hiloFullView;
@@ -186,49 +186,50 @@ namespace Servicios
             // Mejorar esto
             var query = _context.Hilos
                 .AsNoTracking()
-                .Where(h => opciones.CategoriasId.Contains(h.CategoriaId) && 
-                !_context.HiloAcciones.Any(a => a.HiloId ==  h.Id && a.UsuarioId == opciones.UserId && a.Hideado));
+                .Where(h => opciones.CategoriasId.Contains(h.CategoriaId) &&
+                !_context.HiloAcciones.Any(a => a.HiloId == h.Id && a.UsuarioId == opciones.UserId && a.Hideado));
 
-            if(opciones.CategoriasId.Length != 1) 
+            if (opciones.CategoriasId.Length != 1)
             {
-                query = query.Where( h => !_context.Stickies.Any( s => s.HiloId == h.Id && s.Global ) );
+                query = query.Where(h => !_context.Stickies.Any(s => s.HiloId == h.Id && s.Global));
             }
 
             var hilos = await query.FiltrarNoActivos()
-                .Where( h => !_context.Stickies.Any( s => s.HiloId == h.Id && s.Global))
+                .Where(h => !_context.Stickies.Any(s => s.HiloId == h.Id && s.Global))
                 .OrderByDescending(h => h.Bump)
                 .Take(opciones.Cantidad)
                 .AViewModel(_context).ToListAsync();
-            
+
 
             List<HiloViewModel> hilosStickies = null;
-            if(opciones.CategoriasId.Length > 1)
+            if (opciones.CategoriasId.Length > 1)
             {
-                hilosStickies = await  _context.Stickies
+                hilosStickies = await _context.Stickies
                     .AsNoTracking()
-                    .Where( s => !_context.HiloAcciones.Any(a => a.HiloId ==  s.HiloId && a.UsuarioId == opciones.UserId && a.Hideado))
+                    .Where(s => !_context.HiloAcciones.Any(a => a.HiloId == s.HiloId && a.UsuarioId == opciones.UserId && a.Hideado))
                     .Where(s => s.Global)
                     .Select(s => _context.Hilos.FirstOrDefault(h => h.Id == s.HiloId))
                     .AViewModel(_context).ToListAsync();
             }
-            else if(opciones.CategoriasId.Length == 0) 
+            else if (opciones.CategoriasId.Length == 0)
             {
                 return new List<HiloViewModel>();
             }
-            else 
+            else
             {
-                hilosStickies = await  _context.Stickies
+                hilosStickies = await _context.Stickies
                     .AsNoTracking()
-                    .Where( s => !_context.HiloAcciones.Any(a => a.HiloId ==  s.HiloId && a.UsuarioId == opciones.UserId && a.Hideado))
+                    .Where(s => !_context.HiloAcciones.Any(a => a.HiloId == s.HiloId && a.UsuarioId == opciones.UserId && a.Hideado))
                     .Where(s => !s.Global)
                     .Select(s => _context.Hilos.FirstOrDefault(h => h.Id == s.HiloId))
                     .Where(h => h.CategoriaId == opciones.CategoriasId[0])
                     .AViewModel(_context).ToListAsync();
             }
-            
+
             var stickies = await _context.Stickies.ToListAsync();
-            
-            hilosStickies.ForEach(h => {
+
+            hilosStickies.ForEach(h =>
+            {
                 var stck = stickies.FirstOrDefault(s => s.HiloId == h.Id);
                 if (stck != null)
                 {
@@ -239,13 +240,13 @@ namespace Servicios
                     h.Sticky = 1;
                 }
             });
-            
+
             var hilosRet = hilosStickies.OrderByDescending(h => h.Sticky).Concat(hilos).ToList();
             hilosRet.ForEach(h => h.Contenido = "");
-            return  hilosRet;
+            return hilosRet;
         }
 
-        public async Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId="", int cantidad = 16)
+        public async Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId = "", int cantidad = 16)
         {
             // Mejorar esto
             var query = _context.Hilos
@@ -255,15 +256,15 @@ namespace Servicios
                 .Where(h => h.CategoriaId == categoria);
 
             var hilos = await query.FiltrarNoActivos()
-                .Where( h => !_context.Stickies.Any( s => s.HiloId == h.Id && !s.Global))
+                .Where(h => !_context.Stickies.Any(s => s.HiloId == h.Id && !s.Global))
                 .OrdenadosPorBump()
                 .Take(cantidad)
                 .AViewModel(_context).ToListAsync();
-            
+
 
             List<HiloViewModel> hilosStickies = null;
 
-            hilosStickies = await  _context.Stickies
+            hilosStickies = await _context.Stickies
                 .AsNoTracking()
                 .Where(s => !s.Global)
                 .Select(s => _context.Hilos.FirstOrDefault(h => h.Id == s.HiloId))
@@ -272,13 +273,13 @@ namespace Servicios
                 .Where(h => h.CategoriaId == categoria)
                 .AViewModel(_context)
                 .ToListAsync();
-           
-            
+
+
             var stickies = await _context.Stickies.Where(s => !s.Global).ToListAsync();
-            
+
             hilosStickies.ForEach(h => h.Sticky = stickies.First(s => s.HiloId == h.Id).Importancia);
 
-            return  hilosStickies.OrderByDescending(h => h.Sticky).Concat(hilos).ToList();
+            return hilosStickies.OrderByDescending(h => h.Sticky).Concat(hilos).ToList();
         }
 
         // public async Task<List<HiloViewModel>> GetHilosRecientes(GetHilosOptions opciones)
@@ -301,16 +302,17 @@ namespace Servicios
             hilosParaArchivar.ForEach(h => h.Estado = HiloEstado.Archivado);
 
             // Flags
-            if(hilo.Contenido.Contains(">>dados")) hilo.Flags += "d";
-            if(hilo.Contenido.Contains(">>idunico")) hilo.Flags += "i";
-            if(hilo.Contenido.Contains(">>serio")) hilo.Flags += "s";
-            
+            if (hilo.Contenido.Contains(">>dados")) hilo.Flags += "d";
+            if (hilo.Contenido.Contains(">>idunico")) hilo.Flags += "i";
+            if (hilo.Contenido.Contains(">>serio")) hilo.Flags += "s";
+
             hilo.Contenido = formateador.Parsear(hilo.Contenido);
             await _context.SaveChangesAsync();
             return hilo.Id;
         }
 
-        public IQueryable<HiloModel> OrdenadosPorBump() {
+        public IQueryable<HiloModel> OrdenadosPorBump()
+        {
             return _context.Hilos
                 .Include(h => h.Media)
                 .OrderByDescending(h => h.Bump);
@@ -331,7 +333,7 @@ namespace Servicios
             var denuncias = await _context.Denuncias.Where(d => ids.Contains(d.HiloId)).ToListAsync();
             denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
 
-            if(borrarMedias) 
+            if (borrarMedias)
             {
                 var mediaIds = hilos.Select(h => h.MediaId).ToArray();
                 foreach (var m in mediaIds)
@@ -341,34 +343,33 @@ namespace Servicios
             }
 
             await _context.SaveChangesAsync();
-
             await rchanHub.Clients.All.SendAsync("HilosEliminados", ids);
-
+            await rchanHub.Clients.Group("moderacion").SendAsync("denunciasAceptadas", denuncias.Select(d => d.Id).ToArray());
         }
 
         public async Task LimpiarHilo(HiloModel hilo)
         {
             var baneos = await _context.Bans.Where(d => d.HiloId == hilo.Id).ToListAsync();
             var acciones = await _context.HiloAcciones.Where(d => d.HiloId == hilo.Id).ToListAsync();
-            var notis = await _context.Notificaciones.Where( n => n.HiloId == hilo.Id).ToListAsync();
+            var notis = await _context.Notificaciones.Where(n => n.HiloId == hilo.Id).ToListAsync();
             var denuncias = await _context.Denuncias.Where(d => d.HiloId == hilo.Id).ToListAsync();
             var accionesDeModeracion = await _context.AccionesDeModeracion.Where(d => d.HiloId == hilo.Id).ToListAsync();
 
             var baneosBugeados = await _context.Bans.Where(b => b.HiloId == null).ToListAsync();
             _context.RemoveRange(baneosBugeados);
-            
+
             _context.RemoveRange(acciones);
             _context.RemoveRange(notis);
             _context.RemoveRange(denuncias);
             _context.RemoveRange(accionesDeModeracion);
 
-            if(baneos.Count == 0) 
+            if (baneos.Count == 0)
             {
                 _context.Remove(hilo);
-            } 
-            else 
+            }
+            else
             {
-                var comentarios = await  _context.Comentarios
+                var comentarios = await _context.Comentarios
                     .Where(c => c.Hilo.Id == hilo.Id)
                     .Where(c => !_context.Bans.Any(b => b.ComentarioId == c.Id))
                     .ToListAsync();
@@ -380,30 +381,30 @@ namespace Servicios
         public async Task LimpiarHilo(string id)
         {
             var hilo = await _context.Hilos.PorId(id);
-            if(hilo != null) await LimpiarHilo(hilo);
+            if (hilo != null) await LimpiarHilo(hilo);
         }
-        public async Task LimpiarHilosViejos () 
+        public async Task LimpiarHilosViejos()
         {
-            var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromSeconds(60);
+            var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromHours(48);
             var hilosALimpiar = await _context.Hilos
                 .Where(h => (!h.Flags.Contains("h") & h.Estado == HiloEstado.Archivado) || h.Estado == HiloEstado.Eliminado)
                 .Where(h => h.Creacion < tiempoMinimoDeVida)
                 .Where(h => !_context.Bans.Any(b => b.HiloId == h.Id && b.ComentarioId == null))
                 .ToListAsync();
-            
+
             // Marcar  hilos archivados con mas de dos dias como eliminados
             var hilosArchivadosConBaneo = await _context.Hilos
                 .Where(h => h.Estado == HiloEstado.Archivado)
                 .Where(h => _context.Bans.Any(b => b.HiloId == h.Id))
                 .Where(h => h.Creacion < tiempoMinimoDeVida)
                 .ToListAsync();
-            
+
             hilosArchivadosConBaneo.ForEach(h => h.Estado = HiloEstado.Eliminado);
-            
+
             int total = hilosALimpiar.Count();
             int limpiados = 0;
             foreach (var h in hilosALimpiar)
-            {   
+            {
                 logger.LogInformation($"Limpeando hilo {h.Titulo}({limpiados}/{total})");
                 try
                 {
@@ -414,7 +415,7 @@ namespace Servicios
                 {
                     throw e;
                     logger.LogInformation($"No se pudo limpear el hilo hilo {h.Titulo}({limpiados}/{total})");
-                    logger.LogError(e.Message,e);
+                    logger.LogError(e.Message, e);
                 }
             }
             await _context.SaveChangesAsync();
@@ -422,87 +423,97 @@ namespace Servicios
 
             logger.LogInformation($"{hilosALimpiar.Count()} hilos limpiados y {ArchivosLimpiados} archivos limpiados");
 
-        } 
+        }
     }
 
     public class GetHilosOptions
     {
         public int Cantidad { get; set; } = 32;
-        public int[] CategoriasId { get; set; } = new int[]{};
+        public int[] CategoriasId { get; set; } = new int[] { };
         public int[] IdsExcluidas { get; set; } = new int[0];
         public bool IncluirStickies { get; set; } = false;
         public string UserId { get; set; }
         public bool MostrarBorrados { get; set; } = false;
     }
 
-     public static class HiloExtensions
+    public static class HiloExtensions
     {
-        public static IQueryable<HiloViewModel> AViewModel(this IQueryable<HiloModel> hilos, RChanContext context) {
-            return hilos.Select(h => new HiloViewModel {
-                    Bump = h.Bump,
-                    CategoriaId = h.CategoriaId,
-                    Contenido = h.Contenido,
-                    Creacion = h.Creacion,
-                    Media = h.Media,
-                    Id = h.Id,
-                    Titulo = h.Titulo,
-                    Estado = h.Estado,
-                    Dados = h.Flags.Contains("d"),
-                    Historico = h.Flags.Contains("h"),
-                    Serio = h.Flags.Contains("s"),
-                    Concentracion = h.Flags.Contains("c"),
-                    Encuesta = h.Encuesta != null,
-                    CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count()
-                });
+        public static IQueryable<HiloViewModel> AViewModel(this IQueryable<HiloModel> hilos, RChanContext context)
+        {
+            return hilos.Select(h => new HiloViewModel
+            {
+                Bump = h.Bump,
+                CategoriaId = h.CategoriaId,
+                Contenido = h.Contenido,
+                Creacion = h.Creacion,
+                Media = h.Media,
+                Id = h.Id,
+                Titulo = h.Titulo,
+                Estado = h.Estado,
+                Dados = h.Flags.Contains("d"),
+                Historico = h.Flags.Contains("h"),
+                Serio = h.Flags.Contains("s"),
+                Concentracion = h.Flags.Contains("c"),
+                Encuesta = h.Encuesta != null,
+                CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count()
+            });
         }
-        public static IQueryable<HiloViewModelMod> AViewModelMod(this IQueryable<HiloModel> hilos, RChanContext context) {
-            return hilos.Select(h => new HiloViewModelMod {
-                    Bump = h.Bump,
-                    CategoriaId = h.CategoriaId,
-                    Contenido = h.Contenido,
-                    Creacion = h.Creacion,
-                    Media = h.Media,
-                    Id = h.Id,
-                    Titulo = h.Titulo,
-                    Estado = h.Estado,
-                    Usuario = h.Usuario,
-                    Dados = h.Flags.Contains("d"),
-                    Historico = h.Flags.Contains("h"),
-                    Serio = h.Flags.Contains("s"),
-                    Concentracion = h.Flags.Contains("c"),
-                    Encuesta = h.Encuesta != null,
-                    CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
-                    UsuarioId = h.UsuarioId,
-                });
+        public static IQueryable<HiloViewModelMod> AViewModelMod(this IQueryable<HiloModel> hilos, RChanContext context)
+        {
+            return hilos.Select(h => new HiloViewModelMod
+            {
+                Bump = h.Bump,
+                CategoriaId = h.CategoriaId,
+                Contenido = h.Contenido,
+                Creacion = h.Creacion,
+                Media = h.Media,
+                Id = h.Id,
+                Titulo = h.Titulo,
+                Estado = h.Estado,
+                Usuario = h.Usuario,
+                Dados = h.Flags.Contains("d"),
+                Historico = h.Flags.Contains("h"),
+                Serio = h.Flags.Contains("s"),
+                Concentracion = h.Flags.Contains("c"),
+                Encuesta = h.Encuesta != null,
+                CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
+                UsuarioId = h.UsuarioId,
+            });
         }
 
-        public static IOrderedQueryable<HiloModel> OrdenadosPorBump(this IQueryable<HiloModel> hilos) {
+        public static IOrderedQueryable<HiloModel> OrdenadosPorBump(this IQueryable<HiloModel> hilos)
+        {
             return hilos.OrderByDescending(h => h.Bump);
         }
 
-        public static IQueryable<HiloModel> FiltrarNoActivos(this IQueryable<HiloModel> hilos) {
+        public static IQueryable<HiloModel> FiltrarNoActivos(this IQueryable<HiloModel> hilos)
+        {
             return hilos.Where(h => h.Estado == HiloEstado.Normal);
         }
-        public static IQueryable<HiloModel> FiltrarEliminados(this IQueryable<HiloModel> hilos) {
+        public static IQueryable<HiloModel> FiltrarEliminados(this IQueryable<HiloModel> hilos)
+        {
             return hilos.Where(h => h.Estado == HiloEstado.Normal || h.Estado == HiloEstado.Archivado);
         }
 
-        public static IQueryable<HiloModel> FiltrarPorCategoria(this IQueryable<HiloModel> hilos, params int[] categorias) {
+        public static IQueryable<HiloModel> FiltrarPorCategoria(this IQueryable<HiloModel> hilos, params int[] categorias)
+        {
             return hilos.Where(h => categorias.Contains(h.CategoriaId));
         }
 
-        public static IQueryable<HiloModel> FiltrarOcultosDeUsuario(this IQueryable<HiloModel> hilos, string usuarioId, RChanContext context) {
-            return hilos.Where( h => !context.HiloAcciones.Any(a => a.HiloId ==  h.Id && a.UsuarioId == usuarioId && a.Hideado));
+        public static IQueryable<HiloModel> FiltrarOcultosDeUsuario(this IQueryable<HiloModel> hilos, string usuarioId, RChanContext context)
+        {
+            return hilos.Where(h => !context.HiloAcciones.Any(a => a.HiloId == h.Id && a.UsuarioId == usuarioId && a.Hideado));
         }
-        public static IQueryable<T> DeUsuario<T>(this IQueryable<T> creaciones, string usuarioId) where T : CreacionUsuario{
-            return creaciones.Where( h => h.UsuarioId == usuarioId);
+        public static IQueryable<T> DeUsuario<T>(this IQueryable<T> creaciones, string usuarioId) where T : CreacionUsuario
+        {
+            return creaciones.Where(h => h.UsuarioId == usuarioId);
         }
-        public static IQueryable<T> Recientes<T> (this IQueryable<T> elemento) where T : BaseModel
-        { 
-            return elemento.OrderByDescending( h => h.Creacion);
+        public static IQueryable<T> Recientes<T>(this IQueryable<T> elemento) where T : BaseModel
+        {
+            return elemento.OrderByDescending(h => h.Creacion);
         }
-        public static Task<T> PorId<T> (this IQueryable<T> elemento, string id) where T : BaseModel
-        { 
+        public static Task<T> PorId<T>(this IQueryable<T> elemento, string id) where T : BaseModel
+        {
             return elemento.FirstOrDefaultAsync(e => e.Id == id);
         }
 

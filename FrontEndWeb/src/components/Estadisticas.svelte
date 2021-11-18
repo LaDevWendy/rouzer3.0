@@ -1,51 +1,58 @@
 <script>
     import { Ripple } from "svelte-mui";
     import { fly } from "svelte/transition";
-    import Signal  from "../signal";
-    import { localStore} from './../localStore'
+    import Signal from "../signal";
+    import { localStore } from "./../localStore";
 
     let computadorasConectadas = window.estadisticas.computadorasConectadas;
     let rozCreados = window.estadisticas.hilosCreados;
     let comentariosCreados = window.estadisticas.comentariosCreados;
     let estabilidad = window.estadisticas.estabilidad;
-    let estadisticasStore = localStore("Estadisticas", {visible: false});
+    let estadisticasStore = localStore("Estadisticas", { visible: false });
 
     function formatear(numero) {
         if (numero >= 1000000) return `${(numero / 1000000).toFixed(2)}M`;
         if (numero >= 1000) return `${(numero / 1000).toFixed(2)}K`;
         return numero;
     }
-    Signal.coneccion.on('estadisticasActualizadas', estadisticas => {
+    Signal.coneccion.on("estadisticasActualizadas", (estadisticas) => {
         computadorasConectadas = estadisticas.computadorasConectadas;
         rozCreados = estadisticas.hilosCreados;
         comentariosCreados = estadisticas.comentariosCreados;
         estabilidad = estadisticas.estabilidad;
-    })
+    });
 </script>
 
 {#if $estadisticasStore.visible}
     <div
         class="container"
-        transition:fly={{ opacity: 1, y: -48, duration:300 }}
-        style="position:absolute; width:100vw;z-index: 1;height: 100%; pointer-events: none !important;">
-        <div class="estadisticas " on:click={() => ($estadisticasStore.visible = false)}>
-            <span
-                style="right: 68%;"
-                title="Computadoras conectadas">{formatear(computadorasConectadas)}</span>
-            <span
-                style="right: 50%;"
-                title="Roz creados">{formatear(rozCreados)}</span>
-            <span
-                style="right: 32%;"
-                title="Comentarios creados">{formatear(comentariosCreados)}</span>
-            <span
-                style="right: 16%"
-                title="Estabilidad">{estabilidad.toFixed(1)}%</span>
+        transition:fly={{ opacity: 1, y: -48, duration: 300 }}
+        style="position:absolute; width:100vw;z-index: 1;height: 100%; pointer-events: none !important;"
+    >
+        <div
+            class="estadisticas "
+            on:click={() => ($estadisticasStore.visible = false)}
+        >
+            <span style="right: 68%;" title="Computadoras conectadas"
+                >{formatear(computadorasConectadas)}</span
+            >
+            <span style="right: 50%;" title="Roz creados"
+                >{formatear(rozCreados)}</span
+            >
+            <span style="right: 32%;" title="Comentarios creados"
+                >{formatear(comentariosCreados)}</span
+            >
+            <span style="right: 16%" title="Estabilidad"
+                >{estabilidad.toFixed(1)}%</span
+            >
         </div>
     </div>
 {/if}
 
-<div on:click={() => ($estadisticasStore.visible = true)} class="desplegar-estadisticas">
+<div
+    on:click={() => ($estadisticasStore.visible = true)}
+    class="desplegar-estadisticas"
+>
     <span class="fe fe-bar-chart-2" />
     <Ripple />
 </div>
@@ -85,10 +92,13 @@
         border-radius: 0 0 4px 4px;
         color: var(--color2);
         padding: 1px 2px;
+        cursor: pointer;
     }
 
-    @media(max-width:600px) {
-        .estadisticas span { top:4px}
+    @media (max-width: 600px) {
+        .estadisticas span {
+            top: 4px;
+        }
         .estadisticas {
             font-size: 10px;
             height: 24px;

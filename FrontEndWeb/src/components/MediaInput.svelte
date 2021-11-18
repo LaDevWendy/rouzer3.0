@@ -20,10 +20,10 @@
 
     let inputLink = "";
     let estado = "vacio"; // importarLink | cargado
-    const youtubeRegex =
-        /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/;
-    const bitchuteRegex =
-        /(?:bitchute\.com\/\S*(?:(?:\/e(?:mbed))?\/|video\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,12})/;
+    const youtubeRegex = /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,12})/;
+    const bitchuteRegex = /(?:bitchute\.com\/\S*(?:(?:\/e(?:mbed))?\/|video\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,12})/;
+    const dailyMotionRegex = /(?:(?:dailymotion\.com\/(?:embed\/)?video\/)|(?:dai\.ly\/))([a-zA-Z0-9_-]{6,12})/;
+    const pornhubRegex = /(?:pornhub.com\/(?:(?:view_video\.php\?viewkey=)|(?:embed\/)))([a-zA-Z0-9_-]{10,20})/;
 
     async function actualizarArchivo() {
         if (input.files && input.files[0]) {
@@ -53,14 +53,17 @@
 
     async function importarVideo() {
         let id = inputLink.match(youtubeRegex);
-        console.log(id);
-        if (!id) {
-            id = inputLink.match(bitchuteRegex);
-            if (!id) {
-                importarArchivo();
-                return;
-                inputLink = "Link invalido";
-            }
+        if (id){
+            mediaType = MediaType.Youtube;
+            vistaPreviaYoutube = `https://img.youtube.com/vi/${id[1]}/hqdefault.jpg`;
+            videoUrl = inputLink;
+            archivoBlob = `https://img.youtube.com/vi/${id[1]}/hqdefault.jpg`;
+            media.link = videoUrl;
+            estado = "cargado";
+            return
+        }
+        id = inputLink.match(bitchuteRegex);
+        if (id) {
             mediaType = MediaType.Bitchute;
             videoUrl = inputLink;
             archivoBlob = `https://www.bitchute.com/static/v133/images/logo-full-day.png`;
@@ -68,12 +71,26 @@
             estado = "cargado";
             return;
         }
-        mediaType = MediaType.Youtube;
-        vistaPreviaYoutube = `https://img.youtube.com/vi/${id[1]}/hqdefault.jpg`;
-        videoUrl = inputLink;
-        archivoBlob = `https://img.youtube.com/vi/${id[1]}/hqdefault.jpg`;
-        media.link = videoUrl;
-        estado = "cargado";
+        id = inputLink.match(dailyMotionRegex);
+        if (id) {
+            mediaType = MediaType.DailyMotion;
+            videoUrl = inputLink;
+            archivoBlob = `https://www.dailymotion.com/thumbnail/video/${id[1]}`;
+            media.link = videoUrl;
+            estado = "cargado";
+            return;
+        }
+        id = inputLink.match(pornhubRegex);
+        if (id) {
+            mediaType = MediaType.PornHub;
+            videoUrl = inputLink;
+            archivoBlob = `https://ei.phncdn.com/www-static/images/pornhub_logo_straight.png`;
+            media.link = videoUrl;
+            estado = "cargado";
+            return;
+        }
+        importarArchivo();
+        return;
     }
     async function importarArchivo() {
         let match = inputLink.match(
@@ -145,7 +162,7 @@
             <input
                 type="text"
                 bind:value={inputLink}
-                placeholder="Importar video, imagen, link de youtube o link de bitchute"
+                placeholder="Importar video, imagen, link de youtube, bitchute, dailymotion o pornhub"
             />
             <ButtonGroup>
                 <Button outlined shaped={true} on:click={importarVideo}>

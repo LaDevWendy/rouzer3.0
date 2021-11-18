@@ -17,12 +17,12 @@
 
     function abrirVideo() {
         abierto = true;
-        if (vid != undefined) {
-            console.log(vid);
-            setTimeout(async () => {
-                vid.play();
-            }, 1);
-        }
+        setTimeout(async () => {
+            if (vid != undefined) {
+                await vid.play();
+                vid.muted = true;
+            }
+        }, 1);
     }
 
     let hackYoutubeActivo = false;
@@ -80,39 +80,6 @@
                 <i class="fe fe-play" style="position: relative;left: 2px;" />
             </Button>
         {/if}
-    {:else if media.tipo == MediaType.Bitchute}
-        {#if abierto}
-            <div class="youtube-container">
-                <iframe
-                    title="bitchute"
-                    scrolling="no"
-                    frameborder="0"
-                    style="border: none;"
-                    src="https://www.bitchute.com/embed/{media.id}/"
-                />
-            </div>
-            <Button on:click={() => (abierto = false)} class="cerrar" icon>
-                <i class="fe fe-x" />
-            </Button>
-        {:else}
-            <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
-            <Button on:click={abrirVideo} color="red" class="play" icon>
-                <i
-                    class="fe fe-youtube"
-                    style="position: relative;left: 1px;"
-                />
-            </Button>
-        {/if}
-        <div class="youtube-footer">
-            <a
-                class="medialink"
-                target="_blanck"
-                href="https://www.bitchute.com/video/{media.id}/"
-            >
-                Abrir en Bitchute
-                <Ripple />
-            </a>
-        </div>
     {:else if media.tipo == MediaType.Youtube}
         {#if abierto}
             {#if !hackYoutubeActivo}
@@ -120,7 +87,7 @@
                     <iframe
                         title="youtube"
                         allowfullscreen
-                        src="https://www.youtube.com/embed/{media.id}?autoplay=1"
+                        src="https://www.youtube.com/embed/{media.hash}?autoplay=1"
                     />
                 </div>
             {:else}
@@ -158,9 +125,118 @@
             <a
                 class="medialink"
                 target="_blanck"
-                href="https://www.youtube.com/watch/{media.id}"
+                href="https://www.youtube.com/watch/{media.hash}"
             >
                 Abrir en Jewtube
+                <Ripple />
+            </a>
+        </div>
+    {:else if media.tipo == MediaType.Bitchute}
+        {#if abierto}
+            <div class="youtube-container">
+                <iframe
+                    title="bitchute"
+                    scrolling="no"
+                    frameborder="0"
+                    style="border: none;"
+                    src="https://www.bitchute.com/embed/{media.hash.replace(/[a-zA-Z]*_/g,'')}/"
+                    allow="autoplay"
+                />
+            </div>
+            <Button on:click={() => (abierto = false)} class="cerrar" icon>
+                <i class="fe fe-x" />
+            </Button>
+        {:else}
+            <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
+            <Button on:click={abrirVideo} color="red" class="play" icon>
+                <i
+                    class="fe fe-youtube"
+                    style="position: relative;left: 1px;"
+                />
+            </Button>
+        {/if}
+        <div class="youtube-footer">
+            <a
+                class="medialink"
+                target="_blanck"
+                href="https://www.bitchute.com/video/{media.hash.replace(
+                    /[a-zA-Z]*_/g,
+                    ''
+                )}/"
+            >
+                Abrir en Bitchute
+                <Ripple />
+            </a>
+        </div>
+    {:else if media.tipo == MediaType.DailyMotion}
+        {#if abierto}
+            <div class="youtube-container">
+                <iframe
+                    title="DailyMotion"
+                    style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden"
+                    frameborder="0"
+                    type="text/html"
+                    src="https://www.dailymotion.com/embed/video/{media.hash.replace(/[a-zA-Z]*_/g,'')}?autoplay=1"
+                    width="100%"
+                    height="100%"
+                    allowfullscreen
+                    allow="autoplay"
+                />
+            </div>
+            <Button on:click={() => (abierto = false)} class="cerrar" icon>
+                <i class="fe fe-x" />
+            </Button>
+        {:else}
+            <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
+            <Button on:click={abrirVideo} color="red" class="play" icon>
+                <i
+                    class="fe fe-youtube"
+                    style="position: relative;left: 1px;"
+                />
+            </Button>
+        {/if}
+        <div class="youtube-footer">
+            <a
+                class="medialink"
+                target="_blanck"
+                href="https://dai.ly/{media.hash.replace(/[a-zA-Z]*_/g,'')}"
+            >
+                Abrir en DailyMotion
+                <Ripple />
+            </a>
+        </div>
+        {:else if media.tipo == MediaType.PornHub}
+        {#if abierto}
+            <div class="youtube-container">
+                <iframe
+                    title="PornHub"
+                    src="https://www.pornhub.com/embed/{media.hash.replace(/[a-zA-Z]*_/g,'')}"
+                    frameborder="0"
+                    width="100%"
+                    height="100%"
+                    scrolling="no"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <Button on:click={() => (abierto = false)} class="cerrar" icon>
+                <i class="fe fe-x" />
+            </Button>
+        {:else}
+            <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
+            <Button on:click={abrirVideo} color="red" class="play" icon>
+                <i
+                    class="fe fe-youtube"
+                    style="position: relative;left: 1px;"
+                />
+            </Button>
+        {/if}
+        <div class="youtube-footer">
+            <a
+                class="medialink"
+                target="_blanck"
+                href="https://pornhub.com/view_video.php?viewkey={media.hash.replace(/[a-zA-Z]*_/g,'')}"
+            >
+                Abrir en PornHub
                 <Ripple />
             </a>
         </div>

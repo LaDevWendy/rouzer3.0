@@ -72,7 +72,7 @@ namespace WebApp.Controllers
                 .Include(h => h.Media)
                 .FirstOrDefaultAsync(c => c.Id == vm.HiloId);
 
-            if (hilo is null) return NotFound();
+            if (hilo is null) return Redirect("/Error/404");
 
             if (hilo.Estado != HiloEstado.Normal)
             {

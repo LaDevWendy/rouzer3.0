@@ -146,6 +146,13 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
+            if ((media.Tipo == MediaType.PornHub) && (categoriasOpt.Value.Sfw().Any(c => c.Id == vm.CategoriaId)))
+            {
+                ModelState.AddModelError("Chocamo", "Categoría incorrecta");
+                antiFlood.ResetearSegundosParaHilo(User.GetId());
+                return BadRequest(ModelState);
+            }
+
             hilo.Media = media;
             hilo.MediaId = media.Id;
 
@@ -183,7 +190,8 @@ namespace WebApp.Controllers
             await context.SaveChangesAsync();
             var viewModel = new HiloViewModel(hilo);
             await rchanHub.Clients.Group("home").SendAsync("HiloCreado", viewModel);
-            await rchanHub.Clients.Group("moderacion").SendAsync("HiloCreadoMod", viewModel);
+            var viewModelMod = new HiloViewModelMod(hilo);
+            await rchanHub.Clients.Group("moderacion").SendAsync("HiloCreadoMod", viewModelMod);
 
             await estadisticasService.RegistrarNuevoHilo();
 
@@ -421,6 +429,7 @@ namespace WebApp.Controllers
             var hilos = rchanCacheService.hilosIndex
                 .Where(h => categoriasActivas.Contains(h.CategoriaId) && !ocultos.Contains(h.Id) && h.Sticky == 0)
                 .Where(h => h.Bump < ultimoBump)
+                .Where(h => !serios || h.Serio)
                 .Take(16);
 
 

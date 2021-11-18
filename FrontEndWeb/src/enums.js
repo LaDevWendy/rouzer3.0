@@ -24,7 +24,7 @@ export class MotivoDenuncia  extends Enum
     static CategoriaIncorrecta = 0
     static Spam = 1
     static Doxxeo = 2
-    static CoentenidoIlegal = 3
+    static ContenidoIlegal = 3
     static Gore = 4
     static MaltratoAnimal = 5
 }

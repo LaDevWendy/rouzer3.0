@@ -32,8 +32,8 @@ namespace Servicios
         private readonly IMediaService mediaService;
         private readonly AccionesDeModeracionService historial;
 
-        public ComentarioService(RChanContext context,       
-            FormateadorService formateador,              
+        public ComentarioService(RChanContext context,
+            FormateadorService formateador,
             IHubContext<RChanHub> rchanHub,
             IMediaService mediaService,
             HashService hashService,
@@ -63,18 +63,18 @@ namespace Servicios
             comentario.Id = hashService.Random(8).ToUpper();
             _context.Comentarios.Add(comentario);
             await _context.SaveChangesAsync();
-            
-            if(!comentario.Contenido.ToLower().Contains("gt;hide")) 
+
+            if (!comentario.Contenido.ToLower().Contains("gt;hide"))
             {
                 await db.Query("Hilos")
                     .Where("Id", comentario.HiloId)
-                    .UpdateAsync(new { Bump = DateTimeOffset.Now});
+                    .UpdateAsync(new { Bump = DateTimeOffset.Now });
             }
             return comentario.Id;
         }
 
         public Task Eliminar(params string[] ids) => Eliminar(ids, false);
-        public async Task Eliminar(string[] ids, bool borrarMedias=false)
+        public async Task Eliminar(string[] ids, bool borrarMedias = false)
         {
             var comentarios = await _context.Comentarios
                 .Where(c => ids.Contains(c.Id))
@@ -86,9 +86,9 @@ namespace Servicios
             var denuncias = await _context.Denuncias
                 .Where(d => ids.Contains(d.ComentarioId))
                 .ToListAsync();
-            denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);           
-            
-             if(borrarMedias) 
+            denuncias.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
+
+            if (borrarMedias)
             {
                 var mediaIds = comentarios.Select(h => h.MediaId).ToArray();
                 foreach (var m in mediaIds)
@@ -96,9 +96,9 @@ namespace Servicios
                     await mediaService.Eliminar(m);
                 }
             }
-            
-            await rchanHub.Clients.All.SendAsync("ComentariosEliminados", ids);
 
+            await rchanHub.Clients.All.SendAsync("ComentariosEliminados", ids);
+            await rchanHub.Clients.Group("moderacion").SendAsync("denunciasAceptadas", denuncias.Select(d => d.Id).ToArray());
             int eliminados = await _context.SaveChangesAsync();
         }
         public string[] GetIdsTageadas(string contenido) => formateador.GetIdsTageadas(contenido);

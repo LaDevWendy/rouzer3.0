@@ -1,0 +1,120 @@
+{
+  "Grupos": [
+    {
+      "Id": 1,
+      "Nombre": "Ayuda",
+      "Categorias": [
+        5,
+        7,
+        37
+      ]
+    },
+    {
+      "Id": 2,
+      "Nombre": "Chadismo",
+      "Categorias": [
+        36,
+        8
+      ]
+    },
+    {
+      "Id": 3,
+      "Nombre": "Cultura",
+      "Categorias": [
+        3,
+        35,
+        43,
+        30,
+        12,
+        42,
+        31,
+        13,
+        9
+      ]
+    },
+    {
+      "Id": 4,
+      "Nombre": "Entretenimiento",
+      "Categorias": [
+        4,
+        16,
+        11,
+        10,
+        19
+      ]
+    },
+    {
+      "Id": 5,
+      "Nombre": "General",
+      "Categorias": [
+        2,
+        1,
+        18,
+        24,
+        25
+      ]
+    },
+    {
+      "Id": 6,
+      "Nombre": "Internet",
+      "Categorias": [
+        33,
+        44,
+        21,
+        14
+      ]
+    },
+    {
+      "Id": 7,
+      "Nombre": "Meta",
+      "Categorias": [
+        22
+      ]
+    },
+    {
+      "Id": 8,
+      "Nombre": "Mujeres",
+      "Categorias": [
+        20,
+        26
+      ]
+    },
+    {
+      "Id": 9,
+      "Nombre": "Política y actualidad",
+      "Categorias": [
+        29,
+        32,
+        17
+      ]
+    },
+    {
+      "Id": 10,
+      "Nombre": "Tecnología",
+      "Categorias": [
+        40,
+        38,
+        23
+      ]
+    },
+    {
+      "Id": 11,
+      "Nombre": "X-Files",
+      "Categorias": [
+        6,
+        15
+      ]
+    },
+    {
+      "Id": 12,
+      "Nombre": "NSFW",
+      "Categorias": [
+        27,
+        39,
+        28,
+        34,
+        41
+      ]
+    }
+  ]
+}

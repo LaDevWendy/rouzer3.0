@@ -1,13 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chocamo</title>
 </head>
+
 <body>
-    <img src="imagenes/chocamo.jpg" width="100%;min-width:500px" alt="">
+    <h1 class="mantenimiento">En mantenimiento, en instantes volvemos...</h1>
+    <img src="imagenes/chocamo.jpg" alt="">
     <audio src="audio/chocamo.mp3" autoplay></audio>
 
     <div class="audioPrompt" style="display: none;">
@@ -18,7 +20,7 @@
 
 <script>
 
-async function inicio () {
+    async function inicio() {
         console.log("uuf");
         try {
             await playAudio()
@@ -29,10 +31,10 @@ async function inicio () {
         }
     }
 
-    document.addEventListener("DOMContentLoaded",() => inicio())
+    document.addEventListener("DOMContentLoaded", () => inicio())
 
-    
-    
+
+
     function playAudio() {
         // let audioPrompt = document.querySelector(".audioPrompt");
         // audioPrompt.style.display = "none"
@@ -50,14 +52,30 @@ async function inicio () {
 
 <style>
     body {
-        margin: 0;
+        display: block;
         background: #cc1d24;
     }
+
     img {
         position: fixed;
-        max-height: 100vh;
         bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto auto 0 auto;
+        max-height: 100vh;
+        min-width: 500px;
+        max-width: 100%;
         animation: ani 0.1s infinite;
+    }
+
+    h1 {
+        color: white;
+        font-family: Helvetica;
+    }
+
+    .mantenimiento {
+        position: fixed;
+        z-index: 1;
     }
 
     .audioPrompt {
@@ -73,9 +91,18 @@ async function inicio () {
     }
 
     @keyframes ani {
-        0% { transform: translateX(10px);}
-        50% { transform: translateX(-10px);}
-        100% { transform: translateX(10px);}
+        0% {
+            transform: translateX(10px);
+        }
+
+        50% {
+            transform: translateX(-10px);
+        }
+
+        100% {
+            transform: translateX(10px);
+        }
     }
 </style>
+
 </html>

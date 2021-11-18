@@ -1,33 +1,71 @@
 <script>
-    import { Ripple, Sidepanel, Checkbox, Icon } from 'svelte-mui';
-    import {fly} from 'svelte/transition'
-    import config from '../config';
-    import globalStore from '../globalStore'
-    import RChanClient from '../RChanClient';
-    import Dialogo from './Dialogo.svelte';
-    import Ajustes from './Dialogos/Ajustes.svelte';
+    import { Ripple, Sidepanel, Checkbox, Icon } from "svelte-mui";
+    import { fly } from "svelte/transition";
+    import config from "../config";
+    import globalStore from "../globalStore";
+    import RChanClient from "../RChanClient";
+    import Dialogo from "./Dialogo.svelte";
+    import Ajustes from "./Dialogos/Ajustes.svelte";
 
-    import more from '../icons/more-vertical.svg'
-    import serio from '../icons/serio.svg'
-    
-    export let mostrar = true
-    
-    $:usuario = $globalStore.usuario
-    let mostrarCategorias = false
-    let mostrarAjustes = false
+    import more from "../icons/more-vertical.svg";
+    import serio from "../icons/serio.svg";
 
-    $: if (mostrarAjustes) mostrar = false
+    export let mostrar = true;
 
-    let categorias =  config.categorias.map(c => {
-        c.activa = $globalStore.categoriasActivas.includes(c.id)
-        c = c
-        return c
-    })
-    $: $globalStore.categoriasActivas = categorias.filter(c => c.activa).map(c => c.id)
+    $: usuario = $globalStore.usuario;
+    let mostrarCategorias = false;
+    let mostrarAjustes = false;
+    let mostrarLista = new Array(config.grupos.length).fill(false);
+
+    $: if (mostrarAjustes) mostrar = false;
+
+    let categorias = config.categorias.map((c) => {
+        c.activa = $globalStore.categoriasActivas.includes(c.id);
+        c = c;
+        return c;
+    });
+
+    let grupos = config.grupos.map((g) => {
+        g.activo = g.categorias.reduce(
+            (acc, cid) =>
+                acc && categorias.filter((c) => c.id == cid)[0].activa,
+            true
+        );
+        g = g;
+        return g;
+    });
+
+    $: $globalStore.categoriasActivas = categorias
+        .filter((c) => c.activa)
+        .map((c) => c.id);
 
     async function desloguearse() {
-        await RChanClient.deslogearse()
-        location.reload()
+        await RChanClient.deslogearse();
+        location.reload();
+    }
+
+    function updateCategorias(cids, value) {
+        categorias
+            .filter((c) => cids.includes(c.id))
+            .map((c) => {
+                c.activa = value;
+                c = c;
+            });
+        categorias = categorias;
+    }
+
+    function updateGrupo(cid) {
+        grupos
+            .filter((g) => g.categorias.includes(cid))
+            .map((g) => {
+                g.activo = g.categorias.reduce(
+                    (acc, cid) =>
+                        acc && categorias.filter((c) => c.id == cid)[0].activa,
+                    true
+                );
+                g = g;
+            });
+        grupos = grupos;
     }
 </script>
 
@@ -35,97 +73,170 @@
     <section class="menu-principal">
         <div class="menu-principal-header">
             <a href="/">
-                <h1 style="font-family: 'euroFighter';">{window.config.general.nombre.toUpperCase()}</h1>
+                <h1 style="font-family: 'euroFighter';">
+                    {window.config.general.nombre.toUpperCase()}
+                </h1>
             </a>
             {#if usuario.estaAutenticado}
-            <span style="display: block;text-align: center;">Hola {usuario.userName}!</span>
+                <span style="display: block;text-align: center;"
+                    >Hola {usuario.userName}!</span
+                >
             {/if}
         </div>
         <ul>
             {#if !usuario.estaAutenticado}
-            <a href="/Login">
-                <li> <icon class="fe fe-log-in"/> Iniciar Sesion  <Ripple/></li>
-            </a>
-            <a href="/Inicio">
-                <li> <icon class="fe fe-user"/> Crear Sesion  <Ripple/></li>
-            </a>
+                <a href="/Login">
+                    <li>
+                        <icon class="fe fe-log-in" /> Iniciar Sesion <Ripple />
+                    </li>
+                </a>
+                <a href="/Inicio">
+                    <li><icon class="fe fe-user" /> Crear Sesion <Ripple /></li>
+                </a>
             {/if}
-            <li on:click={() => mostrarCategorias = !mostrarCategorias}>
-                <icon class="fe fe-menu"/> Categorias 
-                <span style="margin-left:auto"></span>
+            <li on:click={() => (mostrarCategorias = !mostrarCategorias)}>
+                <icon class="fe fe-menu" /> Categorias
+                <span style="margin-left:auto" />
 
-                    <icon class="fe fe-chevron-down" style="padding:0;transform: rotate({mostrarCategorias?180:0}deg);transition: all 0.2s ease 0s;"/>  
+                <icon
+                    class="fe fe-chevron-down"
+                    style="padding:0;transform: rotate({mostrarCategorias
+                        ? 180
+                        : 0}deg);transition: all 0.2s ease 0s;"
+                />
 
-                <Ripple/></li>
+                <Ripple />
+            </li>
             {#if mostrarCategorias}
-                <div transition:fly={{y: -50, duration:150}}>
-                    {#each categorias as c (c.id)}
-                        <li class="categoria-link categoria-link-{c.id}">
-                            <a href="/{c.nombreCorto}">
-                                <icon class="fe fe-circle"/>  {c.nombre}
-                            </a>
-                            <span style="width: fit-content;margin-left: auto; background: var(--color7); opacity: 56%; border-radius: 50%">
-                            <Checkbox bind:checked={c.activa} right></Checkbox></span> 
-                            <Ripple/>
+                <div transition:fly={{ y: -50, duration: 150 }}>
+                    {#each grupos as g}
+                        <li
+                            class="grupo-categorias {mostrarLista[g.id]
+                                ? 'grupo-categorias-activo'
+                                : ''}"
+                            on:click={() => {
+                                mostrarLista[g.id] = !mostrarLista[g.id];
+                            }}
+                        >
+                            <icon
+                                class="fe fe-chevron-down"
+                                style="padding:0;transform: rotate({mostrarLista[
+                                    g.id
+                                ]
+                                    ? 180
+                                    : 0}deg);transition: all 0.2s ease 0s;"
+                            />
+                            <span style="margin-left:auto" />
+                            {g.nombre}
+                            <Ripple />
+                            <span style="width: fit-content;margin-left: auto;">
+                                <Checkbox
+                                    bind:checked={g.activo}
+                                    true
+                                    right
+                                    on:change={(e) => {
+                                        e.preventDefault();
+                                        updateCategorias(
+                                            g.categorias,
+                                            e.target.checked
+                                        );
+                                    }}
+                                />
+                            </span>
                         </li>
+                        {#if mostrarLista[g.id]}
+                            {#each categorias.filter( (c) => g.categorias.includes(c.id) ) as c (c.id)}
+                                <li class="categoria-link">
+                                    <a href="/{c.nombreCorto}">
+                                        <icon class="fe fe-circle" />
+                                        {c.nombre}
+                                    </a>
+                                    <span
+                                        style="width: fit-content;margin-left: auto;"
+                                    >
+                                        <Checkbox
+                                            bind:checked={c.activa}
+                                            right
+                                            on:change={(e) => updateGrupo(c.id)}
+                                        /></span
+                                    >
+                                    <Ripple />
+                                </li>
+                            {/each}
+                        {/if}
                     {/each}
-
                 </div>
             {/if}
-            <hr>
+            <hr />
             <a href="/Archivo">
-                <li> <icon class="fe fe-book"/> Archivo  <Ripple/></li>
+                <li><icon class="fe fe-book" /> Archivo <Ripple /></li>
             </a>
             <a href="/Serios">
-                <li><Icon color="var(--color-texto2)" ><svelte:component this={serio} /></Icon>  Serios  <Ripple/></li>
+                <li>
+                    <Icon
+                        color="var(--color-texto2)"
+                        style="padding-right: 23px;"
+                        ><svelte:component this={serio} /></Icon
+                    > Serios <Ripple />
+                </li>
             </a>
-            <hr>
+            <hr />
             {#if $globalStore.usuario.estaAutenticado}
                 <a href="/Mis/Creados">
-                    <li> <icon class="fe fe-target"/> Creados  <Ripple/></li>
+                    <li><icon class="fe fe-target" /> Creados <Ripple /></li>
                 </a>
                 <a href="/Mis/Favoritos">
-                    <li> <icon class="fe fe-star"/> Favoritos  <Ripple/></li>
+                    <li><icon class="fe fe-star" /> Favoritos <Ripple /></li>
                 </a>
                 <a href="/Mis/Seguidos">
-                    <li> <icon class="fe fe-eye"/> Seguidos  <Ripple/></li>
+                    <li><icon class="fe fe-eye" /> Seguidos <Ripple /></li>
                 </a>
                 <a href="/Mis/Ocultos">
-                    <li> <icon class="fe fe-eye-off"/> Ocultos  <Ripple/></li>
+                    <li><icon class="fe fe-eye-off" /> Ocultos <Ripple /></li>
                 </a>
-            {/if
-            }
-            <hr>
-            <li on:click={() => mostrarAjustes = true}> <icon class="fe fe-settings"/> Ajustes  <Ripple/></li>
+            {/if}
+            <hr />
+            <li on:click={() => (mostrarAjustes = true)}>
+                <icon class="fe fe-settings" /> Ajustes <Ripple />
+            </li>
             <a href="/reglas.html">
-                <li > <icon class="fe fe-align-justify"/> Reglas  <Ripple/></li>
+                <li><icon class="fe fe-align-justify" /> Reglas <Ripple /></li>
             </a>
-            <hr>
+            <hr />
             {#if $globalStore.usuario.tieneToken}
                 <a href="/Token">
-                    <li> <icon class="fe fe-user-check"/> Ver token <Ripple/></li>
+                    <li>
+                        <icon class="fe fe-user-check" /> Ver token <Ripple />
+                    </li>
                 </a>
             {/if}
             {#if $globalStore.usuario.estaAutenticado}
-                <li on:click={desloguearse}> <icon class="fe fe-log-out"/> Salir  <Ripple/></li>
+                <li on:click={desloguearse}>
+                    <icon class="fe fe-log-out" /> Salir <Ripple />
+                </li>
             {/if}
-            <hr>
-            
+            <hr />
+
             {#if $globalStore.usuario.esMod}
-            <a href="/Moderacion">
-                <li> <icon class="fe fe-triangle"/> Moderacion  <Ripple/></li>
-            </a>
+                <a href="/Moderacion">
+                    <li>
+                        <icon class="fe fe-triangle" /> Moderacion <Ripple />
+                    </li>
+                </a>
             {/if}
             {#if $globalStore.usuario.esAdmin}
-            <a href="/Administracion">
-                <li> <icon class="fe fe-triangle"/> Administracion  <Ripple/></li>
-            </a>
+                <a href="/Administracion">
+                    <li>
+                        <icon class="fe fe-triangle" /> Administracion <Ripple
+                        />
+                    </li>
+                </a>
             {/if}
-            <hr>
+            <hr />
         </ul>
     </section>
 </Sidepanel>
-<Ajustes bind:visible={mostrarAjustes}></Ajustes>
+<Ajustes bind:visible={mostrarAjustes} />
 
 <style>
     :global(.side-panel) {
@@ -138,9 +249,8 @@
         display: flex;
         align-items: center;
     }
-
     .menu-principal :global(.icon) {
-        opacity: 1.0;
-        padding-right: 16px;
+        opacity: 0.7;
+        padding-right: 17px;
     }
 </style>
