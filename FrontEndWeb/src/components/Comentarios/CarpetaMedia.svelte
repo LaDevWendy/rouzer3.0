@@ -1,29 +1,41 @@
 <script>
-    import Media from '../Media.svelte'
-    import {fade} from 'svelte/transition'
-    export let comentarios = []
+    import Media from "../Media.svelte";
+    import { fade } from "svelte/transition";
+    import { createEventDispatcher } from "svelte";
+    export let comentarios = [];
     export let visible = true;
 
-    function onMediaClick(e) {
-        visible = false
+    let dispatch = createEventDispatcher();
+
+    function onMediaClick(id) {
+        visible = false;
+        irAComentario(id);
     }
 
+    function irAComentario(id) {
+        dispatch("irAComentario", id);
+    }
 </script>
 
 {#if visible}
-    <div transition:fade={{duration:150}} class="fondo" style="z-index:20" on:click={() => visible = false}>
+    <div
+        transition:fade={{ duration: 150 }}
+        class="fondo"
+        style="z-index:20"
+        on:click={() => (visible = false)}
+    >
         <section class="carpeta-media panel">
             <h3>Archivos del roz</h3>
             <ul>
                 {#each comentarios as c}
                     {#if c.media}
-                        <li>
+                        <li r-id={c.id}>
                             <Media media={c.media} modoCuadrado={true} />
                             <a
-                                on:click={onMediaClick}
-                                href="#{c.id}" class="click-area">
-                                
-                            </a>
+                                on:click={onMediaClick(c.id)}
+                                href="#{c.id}"
+                                class="click-area"
+                            />
                         </li>
                     {/if}
                 {/each}
@@ -31,6 +43,7 @@
         </section>
     </div>
 {/if}
+
 <style>
     .carpeta-media {
         background: red;
@@ -39,8 +52,8 @@
         position: fixed;
         height: 100vh;
         width: 100vw;
-        top:0;
-        left:0;
+        top: 0;
+        left: 0;
         display: flex;
         justify-content: center;
         background: #0000004a;
@@ -52,7 +65,7 @@
         flex-wrap: wrap;
         justify-content: center;
     }
-    ul  li {
+    ul li {
         width: 128px;
         height: 128px;
         position: relative;
@@ -63,8 +76,8 @@
         position: absolute;
         width: 100%;
         height: 100%;
-        top:0;
-        left:0;
+        top: 0;
+        left: 0;
     }
 
     section {
@@ -81,14 +94,14 @@
         margin-bottom: 10px;
     }
 
-    .carpeta-media :global(.medialink){
+    .carpeta-media :global(.medialink) {
         display: none !important;
     }
 
     li:hover {
         transform: translateY(-10px);
     }
-    @media(max-width:600px) {
+    @media (max-width: 600px) {
         section {
             width: 100vw;
             max-width: 100vw;

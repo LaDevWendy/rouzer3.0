@@ -5,7 +5,7 @@
     import Menu from "../Menu.svelte";
     import comentarioStore from "./comentarioStore";
     import { fly } from "svelte/transition";
-
+    import ajustesConfigStore from "../Dialogos/ajustesConfigStore";
     import Tiempo from "../Tiempo.svelte";
     import globalStore from "../../globalStore";
     import Media from "../Media.svelte";
@@ -19,7 +19,8 @@
     export let hilo = { id: null };
     export let comentariosDic = {};
     export let resaltado = false;
-    export let prevenirScroll = false;
+    export let prevenirScroll =
+        $globalStore.esCelular && !$ajustesConfigStore.tagClasico;
     export let respuetasCompactas = false;
 
     export let esRespuesta = false;
@@ -52,6 +53,8 @@
                 if (prevenirScroll) {
                     console.log("Scroll prevenido");
                     e.preventDefault();
+                } else {
+                    irAComentario(r.getAttribute("r-id").trim());
                 }
             });
         });
@@ -65,6 +68,10 @@
 
     function resaltarCliqueado(id) {
         dispatch("tagClickeado", id);
+    }
+
+    function irAComentario(id) {
+        dispatch("irAComentario", id);
     }
 
     function ocultarRespuesta() {
@@ -288,7 +295,7 @@
                         style="width:32px;height:16px;"
                         on:click={toggle}
                     >
-                        <icon class="fe fe-eye" />
+                        <icon class="fe fe-eye-off" />
                     </Button>
                 </div>
             {/if}

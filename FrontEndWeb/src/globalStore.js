@@ -12,8 +12,7 @@ let data = Object.assign({
 
 // Categorias 
 data.categoriasActivas = config.categorias.filter(c => !c.nsfw).map(c => c.id)
-
-if(Cookie.getJSON('categoriasActivas')) {
+if (Cookie.getJSON('categoriasActivas')) {
     data.categoriasActivas = Cookie.getJSON('categoriasActivas')
     // Quitar este despues (es para activar la categoria programacion automaticamente)
     // data.categoriasActivas = [...data.categoriasActivas, 38]
@@ -21,24 +20,33 @@ if(Cookie.getJSON('categoriasActivas')) {
 } else
     Cookie.set('categoriasActivas', data.categoriasActivas)
 
+data.gruposActivos = []
+if (Cookie.getJSON('gruposActivos')) {
+    data.gruposActivos = Cookie.getJSON('gruposActivos')
+} else {
+    Cookie.set('gruposActivos', data.gruposActivos)
+}
+
 // Hide comentarios
 let comentariosOcultosStorage = localStorage.getItem('comentariosOcultos')
-if(!comentariosOcultosStorage) comentariosOcultosStorage = JSON.stringify(['test'])
+if (!comentariosOcultosStorage) comentariosOcultosStorage = JSON.stringify(['test'])
 data.comentariosOcultos = new Map(JSON.parse(comentariosOcultosStorage).map(e => [e, true]))
 
 // Checkeo si es celular
 data.esCelular = window.innerWidth < 600
 
-const store= writable(data)
-export default  {
+const store = writable(data)
+export default {
     subscribe: store.subscribe,
     set(value) {
         localStorage.setItem('comentariosOcultos', JSON.stringify(Array.from(value.comentariosOcultos.keys())))
         Cookie.set('categoriasActivas', value.categoriasActivas, { expires: 696969 })
+        Cookie.set('gruposActivos', value.gruposActivos, { expires: 696969 })
         store.set(value)
     },
-    update (config){
+    update(config) {
         Cookie.set('categoriasActivas', config.categoriasActivas, { expires: 696969 })
+        Cookie.set('gruposActivos', config.gruposActivos, { expires: 696969 })
         store.update(config)
     }
 }

@@ -16,8 +16,10 @@
     import comentarioStore from "./comentarioStore";
     import SpamList from "../SpamList.svelte";
     import selectorStore from "../Moderacion/selectorStore";
-    import { ComentarioEstado } from '../../enums';    
-    
+    import { ComentarioEstado } from "../../enums";
+    import InfiniteLoading from "svelte-infinite-loading";
+    import Ajustes from "../Dialogos/Ajustes.svelte";
+
     export let hilo;
     export let comentarios;
     export let spams;
@@ -25,7 +27,10 @@
     let modoTelefono = $globalStore.esCelular;
     let nuevosComentarios = [];
     let comentariosStore = localStore("Comentarios", { modoVivo: false });
+    let bloque = 100;
+    let limite = bloque;
 
+    let infLoadActivo = true;
     function cargarNuevosComentarios() {
         comentarios = [...nuevosComentarios, ...comentarios];
         nuevosComentarios = [];
@@ -33,6 +38,7 @@
         comentarios.forEach(cargarRespuestas);
         // Añadir el restag a los comentarios tageados por este comentario
         comentarios = comentarios;
+        infLoadActivo = comentarios.length >= limite;
     }
 
     let diccionarioRespuestas = {};
@@ -78,15 +84,15 @@
                 (c) => !ids.includes(c.id)
             );
         } else {
-        if (ids.length == 0) return;
-        comentarios = comentarios.map((c) => {
-            if (ids.includes(c.id)) c.estado = ComentarioEstado.eliminado;
-            return c;
-        });
-        nuevosComentarios = nuevosComentarios.map((c) => {
-            if (ids.includes(c.id)) c.estado = ComentarioEstado.eliminado;
-            return c;
-        });
+            if (ids.length == 0) return;
+            comentarios = comentarios.map((c) => {
+                if (ids.includes(c.id)) c.estado = ComentarioEstado.eliminado;
+                return c;
+            });
+            nuevosComentarios = nuevosComentarios.map((c) => {
+                if (ids.includes(c.id)) c.estado = ComentarioEstado.eliminado;
+                return c;
+            });
         }
     });
 
@@ -126,14 +132,15 @@
     let comentarioUrl = window.location.hash.replace("#", "");
 
     async function irAComentario(comentarioId) {
-        if (diccionarioComentarios[comentarioId]) {
-            diccionarioComentarios[comentarioId].resaltado = true;
-
-            let comentarioDOM = document.getElementById(comentarioId);
-            await tick();
-            if (comentarioDOM)
-                comentarioDOM.scrollIntoView({ block: "center" });
-        }
+        if (typeof comentarioId != "string") comentarioId = comentarioId.detail;
+        console.log(comentarioId);
+        if (!diccionarioComentarios[comentarioId]) return;
+        let pos = comentarios.findIndex((c) => c.id == comentarioId);
+        if (pos - limite > 0) limite = Math.ceil(pos / bloque) * bloque;
+        await tick();
+        diccionarioComentarios[comentarioId].resaltado = true;
+        let comentarioDOM = document.getElementById(comentarioId);
+        if (comentarioDOM) comentarioDOM.scrollIntoView({ block: "center" });
     }
 
     onMount(() => irAComentario(comentarioUrl));
@@ -156,23 +163,40 @@
     let historialRespuestas = [];
 
     let cargarComentarios = false;
-    onMount(async () =>
+    onMount(async () => {
         setTimeout(async () => {
             cargarComentarios = true;
             await tick();
             irAComentario(comentarioUrl);
-        }, 120)
-    );
+        }, 120);
+    });
 
     let mostrarFormularioFlotante = false;
 
     let scrollY = 0;
     $: mostrarFormularioFlotante =
         $comentarioStore && comentarioStore.length != 0;
+
+    let spinnerAcciones = false;
+    function cargarViejos({ detail: { loaded, complete } }) {
+        if (limite > comentarios.length) {
+            complete();
+        } else {
+            setTimeout(() => {
+                limite = limite + bloque;
+                console.log(limite);
+                loaded();
+            }, 60);
+        }
+    }
 </script>
 
 <svelte:window bind:scrollY />
-<CarpetaMedia {comentarios} bind:visible={carpetaMedia} />
+<CarpetaMedia
+    {comentarios}
+    bind:visible={carpetaMedia}
+    on:irAComentario={irAComentario}
+/>
 <div class="comentarios">
     <PilaRespuestas
         {diccionarioComentarios}
@@ -213,24 +237,49 @@
                         : "background:white"}
                 />
             </Button>
+            <Button
+                on:click={() => {
+                    spinnerAcciones = true;
+                    setTimeout(() => {
+                        limite = bloque;
+                        infLoadActivo = false;
+                        tick().then(() => {
+                            infLoadActivo = comentarios.length >= limite;
+                            spinnerAcciones = false;
+                        });
+                    }, 60);
+                }}
+                title="Limitar a {bloque} comentarios mostrados (evita el lag)"
+                dense
+                icon
+                ><icon class="fe fe-slash" />
+            </Button>
             <Button on:click={() => (carpetaMedia = !carpetaMedia)} dense icon
                 ><icon class="fe fe-folder" />
             </Button>
             {#if comentarios.length > 0}
-                <a
-                    href="#{comentarios[comentarios.length - 1].id}"
-                    style="margin: 0;"
-                >
-                    <Button dense icon
-                        ><icon class="fe fe-arrow-down" />
-                    </Button>
-                </a>
+                <Button
+                    on:click={() => {
+                        spinnerAcciones = true;
+                        setTimeout(() => {
+                            irAComentario(
+                                comentarios[comentarios.length - 1].id
+                            ).then(() => {
+                                spinnerAcciones = false;
+                            });
+                        }, 60);
+                    }}
+                    dense
+                    icon
+                    ><icon class="fe fe-arrow-down" />
+                </Button>
+                <Spinner cargando={spinnerAcciones} />
             {/if}
         </div>
     </div>
-    <div class="lista-comentarios">
-        <Spinner cargando={!cargarComentarios}>
-            {#each comentarios as comentario (comentario.id)}
+    <Spinner cargando={!cargarComentarios}>
+        <div class="lista-comentarios">
+            {#each comentarios.slice(0, limite) as comentario (comentario.id)}
                 <li transition:fly|local={{ y: -50, duration: 250 }}>
                     <Comentario
                         on:colorClick={(e) =>
@@ -243,6 +292,7 @@
                         respuetasCompactas={modoTelefono}
                         on:tagClickeado={tagCliqueado}
                         on:idUnicoClickeado={idUnicoClickeado}
+                        on:irAComentario={irAComentario}
                         on:motrarRespuestas={(e) =>
                             (historialRespuestas = [
                                 diccionarioRespuestas[e.detail].map(
@@ -252,27 +302,35 @@
                     />
                 </li>
             {/each}
-        </Spinner>
-
-        {#if mostrarFormularioFlotante && !$globalStore.esCelular && scrollY > 300}
-            <div
-                class="formulario-flotante"
-                transition:fly|local={{ x: -50, duration: 100 }}
-            >
-                <Formulario
-                    {hilo}
-                    on:comentarioCreado={cargarNuevosComentarios}
-                />
+            {#if mostrarFormularioFlotante && !$globalStore.esCelular && scrollY > 300}
                 <div
-                    class="cerrar-comentario-flotante cpt"
-                    on:click={() => (mostrarFormularioFlotante = false)}
+                    class="formulario-flotante"
+                    transition:fly|local={{ x: -50, duration: 100 }}
                 >
-                    <span class="fe fe-x" />
+                    <Formulario
+                        {hilo}
+                        on:comentarioCreado={cargarNuevosComentarios}
+                    />
+                    <div
+                        class="cerrar-comentario-flotante cpt"
+                        on:click={() => (mostrarFormularioFlotante = false)}
+                    >
+                        <span class="fe fe-x" />
+                    </div>
                 </div>
-            </div>
+            {/if}
+        </div>
+        {#if infLoadActivo}
+            <InfiniteLoading on:infinite={cargarViejos} distance="600">
+                <div style="text-align:center" slot="noMore" />
+                <div style="text-align:center" slot="noResults" />
+                <div slot="spinner">
+                    <Spinner cargando="true" />
+                </div>
+            </InfiniteLoading>
         {/if}
-    </div>
-    <div class="espacio-vacio" />
+        <div class="espacio-vacio" />
+    </Spinner>
 </div>
 
 <style>

@@ -282,15 +282,13 @@
             <Button
                 icon
                 color="white"
-                style="font-size: 1.5rem;"
                 on:click={toggle}
             >
-                <icon class="fe fe-eye" />
+                <icon class="fe fe-eye-off" />
             </Button>
             <Button
                 icon
                 color="var(--color5)"
-                style="top: 100%; font-size: 1.5rem;"
                 on:click={() => abrir.reporte(hilo.id, "")}
             >
                 <icon class="fe fe-flag" />
@@ -398,9 +396,11 @@
     }
     .hilo:hover :global(button) {
         background: rgb(23 33 43 / 22%) !important;
+        opacity: 1.00;
     }
     .hilo :global(button) {
         border-radius: 50% 0% 0% 50%;
+        opacity: 0.33;
     }
     .hilo-oculto {
         display: none;
