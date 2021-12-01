@@ -14,6 +14,7 @@
     import selectorStore from "../Moderacion/selectorStore";
     import teclas from "../../shorcuts";
     import RChanClient from "../../RChanClient";
+    import Audio from "../Audio.svelte";
 
     export let comentario;
     export let hilo = { id: null };
@@ -51,7 +52,6 @@
             r.addEventListener("click", (e) => {
                 resaltarCliqueado(r.getAttribute("r-id").trim());
                 if (prevenirScroll) {
-                    console.log("Scroll prevenido");
                     e.preventDefault();
                 } else {
                     irAComentario(r.getAttribute("r-id").trim());
@@ -270,8 +270,10 @@
                     {:else}
                         <Menuitem
                             on:click={() =>
-                                abrir.restaurarComentario(comentario.id)}
-                            >Restaurar</Menuitem
+                                abrir.restaurarComentario(
+                                    hilo.id || comentario.hiloId,
+                                    comentario.id
+                                )}>Restaurar</Menuitem
                         >
                     {/if}
                 </Menu>
@@ -279,7 +281,7 @@
                 <div class="acciones-comentario">
                     <Button
                         icon
-                        color="var(--color5)"
+                        color="red"
                         style="width:32px;height:16px;"
                         on:click={() =>
                             abrir.reporte(
@@ -306,6 +308,9 @@
         <div class="contenido" class:mediaExpandido>
             {#if comentario.media}
                 <Media media={comentario.media} bind:abierto={mediaExpandido} />
+            {/if}
+            {#if comentario.audio}
+                <Audio urlBlobAudio={comentario.audio.url} />
             {/if}
             <span class="texto">
                 {@html comentario.contenido}
@@ -353,12 +358,14 @@
     :global(.media) {
         margin-bottom: 10px;
     }
+    :global(audio) {
+        margin-bottom: 10px;
+    }
 
     .comentario .texto {
         white-space: pre-wrap;
         word-break: break-word;
         overflow: hidden;
-        display: inline-block;
     }
 
     .respuestas {
@@ -387,6 +394,13 @@
         float: left;
         margin-right: 10px;
         max-width: 50%;
+        clear: both;
+    }
+
+    .contenido audio {
+        float: left;
+        margin-right: 10px;
+        clear: both;
     }
 
     .color {

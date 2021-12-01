@@ -65,6 +65,8 @@ export class TipoAccion
     static HiloRestaurado = 7
     static HiloStickeado = 8
     static HiloDeestickeado = 9
+    static MediaEliminado = 10
+    static AudioEliminado = 11
 
     static aString(rango) 
     {

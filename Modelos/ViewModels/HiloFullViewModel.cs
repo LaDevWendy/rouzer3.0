@@ -21,10 +21,10 @@ namespace Modelos
         public List<SpamModel> Spams { get; set; }
         public string Nombre { get; set; }
     }
-    public class HiloFullViewModelMod :HiloFullViewModel
+    public class HiloFullViewModelMod : HiloFullViewModel
     {
         public new List<ComentarioViewModelMod> Comentarios { get; set; }
         public UsuarioModel Usuario { get; set; }
-       
+
     }
 }

@@ -168,6 +168,14 @@ namespace WebApp
                 });
             }
 
+            services.AddScoped<IAudioService>(s =>
+                {
+                    var env = s.GetService<IWebHostEnvironment>();
+                    var logger = s.GetService<ILogger<AudioService>>();
+                    return new AudioService(Path.Combine(env.ContentRootPath, "Audios"),
+                    s.GetService<RChanContext>(), logger);
+                });
+
             services.AddSingleton<FormateadorService>();
 
             // Estadisticas

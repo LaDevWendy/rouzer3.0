@@ -133,7 +133,6 @@
 
     async function irAComentario(comentarioId) {
         if (typeof comentarioId != "string") comentarioId = comentarioId.detail;
-        console.log(comentarioId);
         if (!diccionarioComentarios[comentarioId]) return;
         let pos = comentarios.findIndex((c) => c.id == comentarioId);
         if (pos - limite > 0) limite = Math.ceil(pos / bloque) * bloque;
@@ -184,7 +183,6 @@
         } else {
             setTimeout(() => {
                 limite = limite + bloque;
-                console.log(limite);
                 loaded();
             }, 60);
         }
@@ -237,23 +235,25 @@
                         : "background:white"}
                 />
             </Button>
-            <Button
-                on:click={() => {
-                    spinnerAcciones = true;
-                    setTimeout(() => {
-                        limite = bloque;
-                        infLoadActivo = false;
-                        tick().then(() => {
-                            infLoadActivo = comentarios.length >= limite;
-                            spinnerAcciones = false;
-                        });
-                    }, 60);
-                }}
-                title="Limitar a {bloque} comentarios mostrados (evita el lag)"
-                dense
-                icon
-                ><icon class="fe fe-slash" />
-            </Button>
+            {#if comentarios.length > limite}
+                <Button
+                    on:click={() => {
+                        spinnerAcciones = true;
+                        setTimeout(() => {
+                            limite = bloque;
+                            infLoadActivo = false;
+                            tick().then(() => {
+                                infLoadActivo = comentarios.length >= limite;
+                                spinnerAcciones = false;
+                            });
+                        }, 60);
+                    }}
+                    title="Limitar a {bloque} comentarios mostrados (evita el lag)"
+                    dense
+                    icon
+                    ><icon class="fe fe-slash" />
+                </Button>
+            {/if}
             <Button on:click={() => (carpetaMedia = !carpetaMedia)} dense icon
                 ><icon class="fe fe-folder" />
             </Button>

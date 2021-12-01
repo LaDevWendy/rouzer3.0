@@ -20,8 +20,8 @@ namespace Servicios
     {
         Task<string> Guardar(ComentarioModel comentario, bool bumpearHilo = true);
         Task<List<ComentarioViewModel>> DeHilo(string hiloId, string creadorId);
-        Task Eliminar(params string[] ids) => Eliminar(ids, false);
-        Task Eliminar(string[] ids, bool borrarMedias);
+        Task Eliminar(params string[] ids) => Eliminar(ids, false, false);
+        Task Eliminar(string[] ids, bool borrarMedias, bool borrarAudios);
         string[] GetIdsTageadas(string contenido);
     }
 
@@ -31,19 +31,24 @@ namespace Servicios
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly IMediaService mediaService;
         private readonly AccionesDeModeracionService historial;
+        private readonly IAudioService audioService;
 
         public ComentarioService(RChanContext context,
             FormateadorService formateador,
             IHubContext<RChanHub> rchanHub,
             IMediaService mediaService,
             HashService hashService,
-            AccionesDeModeracionService historial)
+            AccionesDeModeracionService historial,
+            IAudioService audioService
+            )
+
             : base(context, hashService)
         {
             this.rchanHub = rchanHub;
             this.mediaService = mediaService;
             this.historial = historial;
             this.formateador = formateador;
+            this.audioService = audioService;
         }
 
         public async Task<List<ComentarioViewModel>> DeHilo(string hiloId, string creadorId)
@@ -74,7 +79,7 @@ namespace Servicios
         }
 
         public Task Eliminar(params string[] ids) => Eliminar(ids, false);
-        public async Task Eliminar(string[] ids, bool borrarMedias = false)
+        public async Task Eliminar(string[] ids, bool borrarMedias = false, bool borrarAudios = false)
         {
             var comentarios = await _context.Comentarios
                 .Where(c => ids.Contains(c.Id))
@@ -94,6 +99,15 @@ namespace Servicios
                 foreach (var m in mediaIds)
                 {
                     await mediaService.Eliminar(m);
+                }
+            }
+
+            if (borrarAudios)
+            {
+                var audiosIds = comentarios.Select(h => h.AudioId).ToArray();
+                foreach (var a in audiosIds)
+                {
+                    await audioService.Eliminar(a);
                 }
             }
 

@@ -8,6 +8,7 @@
     import Spinner from "../Spinner.svelte";
     import config from "../../config";
     import globalStore from "../../globalStore";
+    import AudioInput from "../AudioInput.svelte";
 
     let dispatch = createEventDispatcher();
 
@@ -18,6 +19,8 @@
     $comentarioStore;
     let media;
     let mediaInput;
+    let audio;
+    let audioInput;
 
     let mostrarRango = false;
     let mostrarNombre = false;
@@ -48,6 +51,7 @@
                     comentarioConFlag,
                     media.archivo,
                     media.link,
+                    audio,
                     "",
                     mostrarNombre,
                     mostrarRango
@@ -57,7 +61,8 @@
                     hilo.id,
                     comentarioConFlag,
                     media.archivo,
-                    media.link
+                    media.link,
+                    audio
                 );
             }
             if (!$globalStore.usuario.esMod) {
@@ -67,6 +72,7 @@
                 hide_flag = false;
             }
             mediaInput.removerArchivo();
+            audioInput.removerArchivo();
             dispatch("comentarioCreado");
         } catch (e) {
             error = e.response.data;
@@ -95,8 +101,10 @@
     on:blur={() => (focus = false)}
 >
     <ErrorValidacion {error} />
-
     <MediaInput bind:this={mediaInput} bind:media compacto={true} />
+    {#if hilo.audios}
+        <AudioInput bind:this={audioInput} bind:blobAudio={audio} />
+    {/if}
     <textarea
         on:focus={onFocus}
         bind:value={$comentarioStore}

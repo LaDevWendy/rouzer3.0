@@ -246,7 +246,7 @@
                     <Button
                         icon
                         color="white"
-                        style="margin-left: auto;"
+                        style="margin-left: auto; border-radius: 50% 0% 0% 50%;"
                         on:click={() => (mostrarMenu = !mostrarMenu)}
                     >
                         <Icon><svelte:component this={more} /></Icon>
@@ -279,16 +279,12 @@
         flex-direction: column;
         position: absolute;"
         >
-            <Button
-                icon
-                color="white"
-                on:click={toggle}
-            >
+            <Button icon color="white" on:click={toggle}>
                 <icon class="fe fe-eye-off" />
             </Button>
             <Button
                 icon
-                color="var(--color5)"
+                color="red"
                 on:click={() => abrir.reporte(hilo.id, "")}
             >
                 <icon class="fe fe-flag" />
@@ -331,11 +327,19 @@
                     <span class="fe fe-play" />
                 </div>{/if}
             {#if media.tipo == MediaType.Youtube}
-                <div class="info" style="var(--color5)">
+                <div class="info" style="background:#F10002">
                     <span class="fe fe-play" />
                 </div>{/if}
             {#if media.tipo == MediaType.Bitchute}
-                <div class="info" style="var(--color5)">
+                <div class="info" style="background:#E33E34">
+                    <span class="fe fe-play" />
+                </div>{/if}
+            {#if media.tipo == MediaType.DailyMotion}
+                <div class="info" style="background:#0062D2">
+                    <span class="fe fe-play" />
+                </div>{/if}
+            {#if media.tipo == MediaType.PornHub}
+                <div class="info" style="background:#EA8F1C">
                     <span class="fe fe-play" />
                 </div>{/if}
             {#if hilo.encuesta}
@@ -396,11 +400,17 @@
     }
     .hilo:hover :global(button) {
         background: rgb(23 33 43 / 22%) !important;
-        opacity: 1.00;
+        opacity: 1;
     }
     .hilo :global(button) {
         border-radius: 50% 0% 0% 50%;
         opacity: 0.33;
+    }
+    .hilo:hover :global(button:first-child) {
+        border-radius: 50% 0% 0% 0%;
+    }
+    .hilo:hover :global(button:last-child) {
+        border-radius: 0% 0% 0% 50%;
     }
     .hilo-oculto {
         display: none;

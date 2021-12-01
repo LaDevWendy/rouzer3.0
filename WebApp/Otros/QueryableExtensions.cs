@@ -39,7 +39,8 @@ namespace WebApp
         private static object Private(this object obj, string privateField) => obj?.GetType().GetField(privateField, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj);
         private static T Private<T>(this object obj, string privateField) => (T)obj?.GetType().GetField(privateField, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj);
 
-         public static IQueryable<DenunciaModel> UltimasNoRevisadas(this IQueryable<DenunciaModel> denuncias) {
+        public static IQueryable<DenunciaModel> UltimasNoRevisadas(this IQueryable<DenunciaModel> denuncias)
+        {
             return denuncias
                 .Where(d => d.Estado == EstadoDenuncia.NoRevisada)
                 .OrderByDescending(d => d.Creacion)
@@ -52,7 +53,8 @@ namespace WebApp
                 .Include(d => d.Hilo.Usuario);
         }
 
-         public static IQueryable<BaneoModel> BansActivos(this IQueryable<BaneoModel> baneos, string usuarioId, string ip) {
+        public static IQueryable<BaneoModel> BansActivos(this IQueryable<BaneoModel> baneos, string usuarioId, string ip)
+        {
             var ahora = DateTimeOffset.Now;
             return baneos
                     .OrderByDescending(b => b.Expiracion)
@@ -61,26 +63,29 @@ namespace WebApp
                     .Where(b => b.UsuarioId == usuarioId || b.Ip == ip);
         }
 
-         public static async Task<bool> EstaBaneado(this IQueryable<BaneoModel> baneos, string usuarioId, string ip) {
+        public static async Task<bool> EstaBaneado(this IQueryable<BaneoModel> baneos, string usuarioId, string ip)
+        {
             return (await baneos
                 .BansActivos(usuarioId, ip)
                 .FirstOrDefaultAsync()) != null;
         }
-         public static IQueryable<ComentarioViewModelMod> AViewModelMod(this IQueryable<ComentarioModel> comentarios) {
+        public static IQueryable<ComentarioViewModelMod> AViewModelMod(this IQueryable<ComentarioModel> comentarios)
+        {
             return comentarios.Select(c => new ComentarioViewModelMod
-                {
-                    HiloId = c.HiloId,
-                    UsuarioId = c.UsuarioId,
-                    Contenido = c.Contenido,
-                    Id = c.Id,
-                    Creacion = c.Creacion,
-                    Media = c.Media,
-                    Estado = c.Estado,
-                    Rango = c.Rango,
-                    Nombre = c.Nombre,
-                });
+            {
+                HiloId = c.HiloId,
+                UsuarioId = c.UsuarioId,
+                Contenido = c.Contenido,
+                Id = c.Id,
+                Creacion = c.Creacion,
+                Media = c.Media,
+                Estado = c.Estado,
+                Rango = c.Rango,
+                Nombre = c.Nombre,
+                Audio = c.Audio
+            });
         }
 
     }
-    
+
 }

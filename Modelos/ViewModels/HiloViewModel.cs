@@ -2,9 +2,9 @@ using System;
 
 namespace Modelos
 {
-    public class HiloViewModel 
+    public class HiloViewModel
     {
-        public HiloViewModel(){}
+        public HiloViewModel() { }
         public HiloViewModel(HiloModel hilo)
         {
             this.Bump = hilo.Bump;
@@ -23,10 +23,12 @@ namespace Modelos
             this.Serio = hilo.Flags.Contains("s");
             this.Concentracion = hilo.Flags.Contains("c");
             this.Encuesta = hilo.Encuesta != null;
+            this.Audio = hilo.Audio;
+            this.Audios = hilo.Flags.Contains("a");
         }
 
         public int CantidadComentarios { get; set; }
-        public bool Nuevo =>  Creacion.AddMinutes(20) > DateTimeOffset.Now;
+        public bool Nuevo => Creacion.AddMinutes(20) > DateTimeOffset.Now;
 
         public string Titulo { get; set; }
         public string Id { get; set; }
@@ -36,6 +38,7 @@ namespace Modelos
         public string Contenido { get; set; }
         public DateTimeOffset Creacion { get; set; }
         public MediaModel Media { get; set; }
+        public AudioModel Audio { get; set; }
         public string Thumbnail { get; set; }
         public HiloEstado Estado { get; set; }
         public CreacionRango Rango { get; set; }
@@ -46,12 +49,13 @@ namespace Modelos
         public bool Historico { get; set; }
         public bool Serio { get; set; }
         public bool Concentracion { get; set; }
+        public bool Audios { get; set; }
     }
 
     public class HiloViewModelMod : HiloViewModel
     {
-        public HiloViewModelMod(){}
-        public HiloViewModelMod(HiloModel hilo) :base(hilo)
+        public HiloViewModelMod() { }
+        public HiloViewModelMod(HiloModel hilo) : base(hilo)
         {
             UsuarioId = hilo.UsuarioId;
         }

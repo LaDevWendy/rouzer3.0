@@ -41,7 +41,7 @@ axios.interceptors.request.use(function (config) {
 
 export default class RChanClient {
     // Acciones
-    static crearHilo(titulo, categoria, contenido, archivo, link = "", captcha = "", encuesta = [], mostrarNombre = false, mostrarRango = false) {
+    static crearHilo(titulo, categoria, contenido, archivo, link = "", audio = null, captcha = "", encuesta = [], mostrarNombre = false, mostrarRango = false) {
         let form = new FormData()
         form.append("Titulo", titulo)
         form.append("CategoriaId", categoria)
@@ -54,10 +54,11 @@ export default class RChanClient {
             form.append('mostrarNombre', mostrarNombre)
             form.append('mostrarRango', mostrarRango)
         }
+        form.append("Audio", audio);
         return axios.post("/api/Hilo/Crear", form)
     }
 
-    static crearComentario(hiloId, contenido, archivo = null, link = "", captcha = "", mostrarNombre = false, mostrarRango = false) {
+    static crearComentario(hiloId, contenido, archivo = null, link = "", audio = null, captcha = "", mostrarNombre = false, mostrarRango = false) {
         let form = new FormData();
         form.append('hiloId', hiloId)
         form.append('contenido', contenido)
@@ -68,6 +69,7 @@ export default class RChanClient {
             form.append('mostrarNombre', mostrarNombre)
             form.append('mostrarRango', mostrarRango)
         }
+        form.append("audio", audio)
         return axios.post('/api/Comentario/Crear', form)
     }
 
@@ -136,10 +138,11 @@ export default class RChanClient {
             importancia: Number(importancia),
         })
     }
-    static borrarHilos(ids, borrarMedia = false) {
+    static borrarHilos(ids, borrarMedia = false, borrarAudio = false) {
         return axios.post("/api/Moderacion/BorrarHilo", {
             ids,
-            borrarMedia
+            borrarMedia,
+            borrarAudio
         })
     }
     static borrarHilo(id, borrarMedia = false) {
@@ -166,13 +169,14 @@ export default class RChanClient {
             comentarioId
         })
     }
-    static banear(motivo, aclaracion, duracion, usuarioId, hiloId = "", comentarioId = "", eliminarElemento = true, eliminarAdjunto = false, desaparecer = false) {
+    static banear(motivo, aclaracion, duracion, usuarioId, hiloId = "", comentarioId = "", eliminarElemento = true, eliminarAdjunto = false, eliminarAudio = false, desaparecer = false) {
         return axios.post("/api/Moderacion/Banear", {
             motivo,
             aclaracion,
             duracion,
             eliminarElemento,
             eliminarAdjunto,
+            eliminarAudio,
             hiloId,
             comentarioId,
             desaparecer,
@@ -204,10 +208,11 @@ export default class RChanClient {
         return axios.post(`/api/Moderacion/RechazarDenuncia/${denunciaId}`)
     }
 
-    static eliminarComentarios(ids, borrarMedia = false) {
+    static eliminarComentarios(ids, borrarMedia = false, borrarAudio = false) {
         return axios.post(`/api/Moderacion/EliminarComentarios`, {
             ids,
-            borrarMedia
+            borrarMedia,
+            borrarAudio
         })
     }
 

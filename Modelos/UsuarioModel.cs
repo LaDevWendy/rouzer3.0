@@ -40,6 +40,5 @@ namespace Modelos
         public string Ip { get; set; }
         [JsonIgnore, System.Text.Json.Serialization.JsonIgnore]
         public string Token { get; set; } = "";
-        public ICollection<Connection> Connections { get; set; }
     }
 }

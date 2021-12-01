@@ -37,6 +37,7 @@ namespace WebApp.Controllers
         private readonly RChanCacheService rchanCacheService;
         private readonly CensorService censorService;
         private static readonly HashSet<string> denunciasIp = new HashSet<string>();
+        private readonly IAudioService audioService;
 
         #region constructor
         public HiloApiController(
@@ -51,7 +52,8 @@ namespace WebApp.Controllers
             AntiFloodService antiFlood,
             EstadisticasService estadisticasService,
             RChanCacheService rchanCacheService,
-            CensorService censorService
+            CensorService censorService,
+            IAudioService audioService
         )
         {
             this.hiloService = hiloService;
@@ -66,6 +68,7 @@ namespace WebApp.Controllers
             this.estadisticasService = estadisticasService;
             this.rchanCacheService = rchanCacheService;
             this.censorService = censorService;
+            this.audioService = audioService;
         }
         #endregion
 
@@ -89,7 +92,7 @@ namespace WebApp.Controllers
             if (antiFlood.SegundosParaHilo(User) != new TimeSpan(0))
             {
                 var minutos = antiFlood.SegundosParaHilo(User).Minutes;
-                ModelState.AddModelError("Para para", $"faltan {minutos} minuto{(minutos != 1 ? "s" : "")} para que pudeas crear otro roz");
+                ModelState.AddModelError("Para para", $"faltan {minutos} minuto{(minutos != 1 ? "s" : "")} para que puedas crear otro roz");
                 return BadRequest(ModelState);
             }
             else
@@ -156,6 +159,28 @@ namespace WebApp.Controllers
             hilo.Media = media;
             hilo.MediaId = media.Id;
 
+            AudioModel audio = null;
+            try
+            {
+                if (vm.Audio != null)
+                {
+                    audio = await audioService.GenerarAudio(vm.Audio);
+                }
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("No se pudo subir el audio", "");
+                Console.WriteLine(e);
+                antiFlood.ResetearSegundosComentario(User.GetId());
+                return BadRequest(ModelState);
+            }
+
+            if (audio != null)
+            {
+                hilo.Audio = audio;
+                hilo.AudioId = audio.Id;
+            }
+
             // MarkDown solo para mods
             if (!User.EsMod()) hilo.Contenido = hilo.Contenido.Replace(">>md", "");
 
@@ -199,7 +224,7 @@ namespace WebApp.Controllers
             {
                 DenunciaVM denunciaAutomatica = new DenunciaVM();
                 denunciaAutomatica.Tipo = TipoElemento.Hilo;
-                denunciaAutomatica.Motivo = MotivoDenuncia.CoentenidoIlegal;
+                denunciaAutomatica.Motivo = MotivoDenuncia.ContenidoIlegal;
                 denunciaAutomatica.HiloId = id;
                 denunciaAutomatica.Aclaracion = "[Denuncia automática] Se mencionó palabra en la lista negra";
                 await AutoDenunciar(denunciaAutomatica);
@@ -318,8 +343,10 @@ namespace WebApp.Controllers
                 .Include(d => d.Usuario)
                 .Include(d => d.Comentario)
                 .Include(d => d.Comentario.Media)
+                .Include(d => d.Comentario.Audio)
                 .Include(d => d.Comentario.Usuario)
                 .Include(d => d.Hilo.Media)
+                .Include(d => d.Hilo.Audio)
                 .Include(d => d.Hilo.Usuario)
                 .SingleAsync(d => d.Id == denuncia.Id);
 

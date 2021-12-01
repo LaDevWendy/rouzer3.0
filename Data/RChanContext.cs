@@ -33,6 +33,7 @@ namespace Data
         public DbSet<BaneoModel> Bans { get; set; }
         public DbSet<AccionDeModeracion> AccionesDeModeracion { get; set; }
         public DbSet<SpamModel> Spams { get; set; }
+        public DbSet<AudioModel> Audios { get; set; }
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

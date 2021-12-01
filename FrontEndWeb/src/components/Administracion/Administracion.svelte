@@ -11,6 +11,7 @@
     let error = null;
     let nickAdmin = "";
     let nickMod = "";
+    let nickAux = "";
 
     let restAcc = 0;
 
@@ -20,7 +21,7 @@
             console.log(res);
             alert(res.data.mensaje);
         } catch (e) {
-            console.log(e.resposne);
+            console.log(e.response);
             error = e.response.data;
             return;
         }
@@ -32,7 +33,7 @@
             console.log(res);
             alert(res.data.mensaje);
         } catch (e) {
-            console.log(e.resposne);
+            console.log(e.response);
             error = e.response.data;
             return;
         }
@@ -43,7 +44,7 @@
             console.log(res);
             alert(res.data.mensaje);
         } catch (e) {
-            console.log(e.resposne);
+            console.log(e.response);
             error = e.response.data;
             return;
         }
@@ -63,7 +64,7 @@
             let res = await RChanClient.refrescarOnlines();
             onlines = res.data;
         } catch (e) {
-            console.log(e.resposne);
+            console.log(e.response);
             error = e.response.data;
             return;
         }
@@ -127,11 +128,11 @@
                 <li class="header">Auxiliares(aux)</li>
                 <li class="noback">
                     <input
-                        bind:value={nickMod}
+                        bind:value={nickAux}
                         type="text"
                         placeholder="Id o nick del usuario"
                     />
-                    <Button on:click={() => añadir(nickMod, "auxiliar")}
+                    <Button on:click={() => añadir(nickAux, "auxiliar")}
                         >Añadir</Button
                     >
                 </li>

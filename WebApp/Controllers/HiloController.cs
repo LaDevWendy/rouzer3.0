@@ -25,7 +25,7 @@ namespace WebApp.Controllers
         private readonly RChanContext context;
         private readonly IOptionsSnapshot<List<Categoria>> categoriasOpts;
         private readonly RChanCacheService rchanCacheService;
-        private static  Cache<List<HiloViewModel>> hilosCache;
+        private static Cache<List<HiloViewModel>> hilosCache;
 
         public IMediaService MediaService { get; }
 
@@ -60,14 +60,14 @@ namespace WebApp.Controllers
             }
 
             var ocultos = (await context.HiloAcciones
-                .Where(a  => a.UsuarioId == User.GetId() && a.Hideado)
+                .Where(a => a.UsuarioId == User.GetId() && a.Hideado)
                 .Select(a => a.HiloId)
                 .ToArrayAsync())
                 .ToHashSet();
 
             var vm = new HiloListViewModel
             {
-   
+
                 Hilos = rchanCacheService.hilosIndex.Where(h => !ocultos.Contains(h.Id) && categorias.Contains(h.CategoriaId)).Take(16).ToList(),
                 CategoriasActivas = categorias.ToList()
             };
@@ -77,12 +77,12 @@ namespace WebApp.Controllers
         [HttpGet("/Favoritas")]
         public async Task<IActionResult> Favoritas()
         {
-            int[] categorias = new int[]{};
+            int[] categorias = new int[] { };
 
             HttpContext.Request.Cookies.TryGetValue("categoriasFavoritas", out string categoriasActivas);
 
             if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
-            
+
             var vm = new HiloListViewModel
             {
                 Hilos = await hiloService.GetHilosOrdenadosPorBump(new GetHilosOptions
@@ -100,14 +100,15 @@ namespace WebApp.Controllers
         public async Task<IActionResult> MostrarAsync(string id)
         {
             // var hilo = await hiloService.GetHiloFull(id, User.GetId());
-             IHiloFullView hilo;
-             if(User.EsMod())
-             {
-                hilo =  await hiloService.GetHiloFullMod(id, User.GetId(), true);
-             }
-             else {
-                hilo =  await hiloService.GetHiloFull(id, User.GetId());
-             }
+            IHiloFullView hilo;
+            if (User.EsMod())
+            {
+                hilo = await hiloService.GetHiloFullMod(id, User.GetId(), true);
+            }
+            else
+            {
+                hilo = await hiloService.GetHiloFull(id, User.GetId());
+            }
             if (hilo is null) return Redirect("/Error/404");
             // return Json(new {
             //     hilo.Hilo,
@@ -130,7 +131,7 @@ namespace WebApp.Controllers
 
             var vm = new HiloListViewModel
             {
-                
+
                 // Hilos = await context.Hilos
                 //     .Where(h => h.CategoriaId == cate.Id)
                 //     .AsNoTracking()
@@ -170,31 +171,31 @@ namespace WebApp.Controllers
                 "creados" => query.Where(h => h.UsuarioId == User.GetId()),
                 _ => null
             };
-            
+
             var hilos = await query.AViewModel(context).ToListAsync();
             var vm = new HiloListViewModel { Hilos = hilos, CategoriasActivas = new List<int>() };
             return View("Index", vm);
         }
 
         [HttpGet("/Buscar")]
-        public IActionResult Buscar() 
+        public IActionResult Buscar()
         {
-            return View();         
+            return View();
         }
 
         [HttpGet("/Archivo")]
-        public async Task<IActionResult> ArchivoAsync() 
+        public async Task<IActionResult> ArchivoAsync()
         {
             var archivados = await context.Hilos
                 .Where(h => h.Estado == HiloEstado.Archivado)
                 .OrderByDescending(h => h.Bump)
-                .Select(h => new {h.Titulo, h.Id, h.Estado, h.Bump, Historico = h.Flags.Contains("h")})
+                .Select(h => new { h.Titulo, h.Id, h.Estado, h.Bump, Historico = h.Flags.Contains("h") })
                 .Take(3000)
                 .ToListAsync();
-            return View(archivados);         
+            return View(archivados);
         }
         [HttpGet("/Serios")]
-        public async Task<IActionResult> SeriosAsync() 
+        public async Task<IActionResult> SeriosAsync()
         {
             int[] categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
             HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
@@ -207,11 +208,11 @@ namespace WebApp.Controllers
                 .FiltrarOcultosDeUsuario(User.GetId(), context)
                 .FiltrarPorCategoria(categorias)
                 .Where(h => !context.Stickies.Any(s => s.HiloId == h.Id && !s.Global))
-                .Where(h =>h.Flags.Contains("s"))
+                .Where(h => h.Flags.Contains("s"))
                 .Take(32)
                 .AViewModel(context)
                 .ToListAsync();
-            return View("Index", new HiloListViewModel{Hilos = hilos, CategoriasActivas = categorias.ToList(), Serios = true});         
+            return View("Index", new HiloListViewModel { Hilos = hilos, CategoriasActivas = categorias.ToList(), Serios = true });
         }
 
         private UsuarioVm GetUserInfo()
@@ -222,13 +223,13 @@ namespace WebApp.Controllers
                 UserName = User.Identity.Name,
                 EsAdmin = User.EsAdmin(),
                 EsMod = User.EsMod(),
-                EsAuxiliar= User.EsAuxiliar(),
+                EsAuxiliar = User.EsAuxiliar(),
             };
         }
 
         private async Task<List<NotificacionViewModel>> GetNotis()
         {
-            if(User is null) return null;
+            if (User is null) return null;
             return await context.Notificaciones
                 .Where(n => n.UsuarioId == User.GetId())
                 .Select(n => new NotificacionViewModel
@@ -255,7 +256,7 @@ class UsuarioVm
     public string UserName { get; set; }
     public bool EsAdmin { get; set; }
     public bool EsMod { get; set; }
-    public bool EsAuxiliar{ get; set; }
+    public bool EsAuxiliar { get; set; }
 }
 
 public class HiloListViewModel

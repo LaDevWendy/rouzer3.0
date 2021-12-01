@@ -34,6 +34,7 @@ namespace WebApp.Controllers
         private readonly IMediaService mediaService;
         private readonly CensorService censorService;
         private readonly HashService hashService;
+        private readonly IAudioService audioService;
 
         public ComentarioApiControlelr(
             IComentarioService comentarioService,
@@ -45,7 +46,8 @@ namespace WebApp.Controllers
             IOptionsSnapshot<GeneralOptions> gnrlOpts,
             EstadisticasService estadisticasService,
             CensorService censorService,
-            HashService hashService
+            HashService hashService,
+            IAudioService audioService
         )
         {
             this.comentarioService = comentarioService;
@@ -58,13 +60,14 @@ namespace WebApp.Controllers
             this.mediaService = mediaService;
             this.censorService = censorService;
             this.hashService = hashService;
+            this.audioService = audioService;
         }
 
         [HttpPost, Authorize, ValidateAntiForgeryToken]
         public async Task<ActionResult<ApiResponse>> Crear([FromForm] ComentarioFormViewModel vm)
         {
             if (vm.Contenido is null) vm.Contenido = "";
-            if (string.IsNullOrWhiteSpace(vm.Contenido) && vm.Archivo is null && string.IsNullOrWhiteSpace(vm.Link))
+            if (string.IsNullOrWhiteSpace(vm.Contenido) && vm.Archivo is null && string.IsNullOrWhiteSpace(vm.Link) && vm.Audio is null)
                 ModelState.AddModelError("uy!", "El comentario no puede estar vacio padre");
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -82,7 +85,7 @@ namespace WebApp.Controllers
 
             if (antiFlood.SegundosParaComentar(User) != new TimeSpan(0))
             {
-                ModelState.AddModelError("Para para", $"faltan {antiFlood.SegundosParaComentar(User).Seconds} para que pudeas comentar");
+                ModelState.AddModelError("Para para", $"faltan {antiFlood.SegundosParaComentar(User).Seconds} para que puedas comentar");
                 return BadRequest(ModelState);
             }
             else
@@ -139,6 +142,31 @@ namespace WebApp.Controllers
             {
                 comentario.Media = media;
                 comentario.MediaId = media.Id;
+            }
+
+            if (hilo.Flags.Contains("a"))
+            {
+                AudioModel audio = null;
+                try
+                {
+                    if (vm.Audio != null)
+                    {
+                        audio = await audioService.GenerarAudio(vm.Audio);
+                    }
+                }
+                catch (Exception e)
+                {
+                    ModelState.AddModelError("No se pudo subir el audio", "");
+                    Console.WriteLine(e);
+                    antiFlood.ResetearSegundosComentario(User.GetId());
+                    return BadRequest(ModelState);
+                }
+
+                if (audio != null)
+                {
+                    comentario.Audio = audio;
+                    comentario.AudioId = audio.Id;
+                }
             }
 
             // Agrego rango y nombre
@@ -221,7 +249,7 @@ namespace WebApp.Controllers
             {
                 DenunciaVM denunciaAutomatica = new DenunciaVM();
                 denunciaAutomatica.Tipo = TipoElemento.Comentario;
-                denunciaAutomatica.Motivo = MotivoDenuncia.CoentenidoIlegal;
+                denunciaAutomatica.Motivo = MotivoDenuncia.ContenidoIlegal;
                 denunciaAutomatica.HiloId = hilo.Id;
                 denunciaAutomatica.ComentarioId = id;
                 denunciaAutomatica.Aclaracion = "[Denuncia automática] Se mencionó palabra en la lista negra";
@@ -295,6 +323,7 @@ public class ComentarioFormViewModel
     [MaxLength(3000, ErrorMessage = "Pero este comentario es muy largo padre")]
     public string Contenido { get; set; } = "";
     public IFormFile Archivo { get; set; }
+    public IFormFile Audio { get; set; }
     public string Link { get; set; }
     public bool MostrarRango { get; set; } = false;
     public bool MostrarNombre { get; set; } = false;

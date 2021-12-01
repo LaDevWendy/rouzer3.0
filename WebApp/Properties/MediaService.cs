@@ -620,19 +620,17 @@ namespace Servicios
             var media = await context.Medias.FirstOrDefaultAsync(m => m.Id == id);
             if (media is null)
             {
-                return true;
+                return false;
             }
             if (media.Tipo == MediaType.Eliminado)
             {
-                return true;
+                return false;
             }
-
             var archivosAEliminar = new List<string>(new[]{
                 $"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadradoLocal}",
                 $"{CarpetaDeAlmacenamiento}/{media.VistaPreviaLocal}",
                 $"{CarpetaDeAlmacenamiento}/{media.Url}",
             });
-
             media.Tipo = MediaType.Eliminado;
             media.Url = "";
             await context.SaveChangesAsync();
@@ -657,7 +655,7 @@ namespace Servicios
                     await Task.Delay(100);
                 }
             }
-            return intentos == 0;
+            return true;
         }
 
         public async Task<int> LimpiarMediasHuerfanos()

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Modelos
 {
 
-    public class AccionDeModeracion:BaseModel
+    public class AccionDeModeracion : BaseModel
     {
         public string UsuarioId { get; set; }
 
@@ -37,6 +37,8 @@ namespace Modelos
         HiloRestaurado,
         HiloStickeado,
         HiloDestickeado,
+        MediaEliminado,
+        AudioEliminado
     }
 
 }

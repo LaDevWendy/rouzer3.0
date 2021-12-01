@@ -20,10 +20,14 @@
 
     let inputLink = "";
     let estado = "vacio"; // importarLink | cargado
-    const youtubeRegex = /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,12})/;
-    const bitchuteRegex = /(?:bitchute\.com\/\S*(?:(?:\/e(?:mbed))?\/|video\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,12})/;
-    const dailyMotionRegex = /(?:(?:dailymotion\.com\/(?:embed\/)?video\/)|(?:dai\.ly\/))([a-zA-Z0-9_-]{6,12})/;
-    const pornhubRegex = /(?:pornhub.com\/(?:(?:view_video\.php\?viewkey=)|(?:embed\/)))([a-zA-Z0-9_-]{10,20})/;
+    const youtubeRegex =
+        /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,12})/;
+    const bitchuteRegex =
+        /(?:bitchute\.com\/\S*(?:(?:\/e(?:mbed))?\/|video\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,12})/;
+    const dailyMotionRegex =
+        /(?:(?:dailymotion\.com\/(?:embed\/)?video\/)|(?:dai\.ly\/))([a-zA-Z0-9_-]{6,12})/;
+    const pornhubRegex =
+        /(?:pornhub.com\/(?:(?:view_video\.php\?viewkey=)|(?:embed\/)))([a-zA-Z0-9_-]{10,20})/;
 
     async function actualizarArchivo() {
         if (input.files && input.files[0]) {
@@ -53,14 +57,14 @@
 
     async function importarVideo() {
         let id = inputLink.match(youtubeRegex);
-        if (id){
+        if (id) {
             mediaType = MediaType.Youtube;
             vistaPreviaYoutube = `https://img.youtube.com/vi/${id[1]}/hqdefault.jpg`;
             videoUrl = inputLink;
             archivoBlob = `https://img.youtube.com/vi/${id[1]}/hqdefault.jpg`;
             media.link = videoUrl;
             estado = "cargado";
-            return
+            return;
         }
         id = inputLink.match(bitchuteRegex);
         if (id) {
@@ -96,7 +100,6 @@
         let match = inputLink.match(
             /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi
         );
-        console.log(match);
         if (!match || match.length == 0) {
             inputLink = "Link invalido";
             return;
@@ -130,7 +133,6 @@
 
     onMount(() => {
         window.addEventListener("paste", (e) => {
-            console.log(e.clipboardData.files);
             input.files = e.clipboardData.files;
             actualizarArchivo();
         });

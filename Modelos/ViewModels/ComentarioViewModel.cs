@@ -19,7 +19,7 @@ namespace Modelos
             this.Media = comentario.Media;
             this.Nombre = comentario?.Nombre ?? "";
             this.Rango = comentario.Rango;
-
+            this.Audio = comentario.Audio;
         }
 
         public ComentarioViewModel(ComentarioModel comentario, HiloModel hilo = null, string requestUsuarioId = null)
@@ -31,28 +31,29 @@ namespace Modelos
             this.Nombre = comentario?.Nombre ?? "";
             this.Rango = comentario.Rango;
             this.Propio = requestUsuarioId == comentario.UsuarioId;
+            this.Audio = comentario.Audio;
 
             if (hilo != null)
             {
                 this.EsOp = comentario.UsuarioId == hilo.UsuarioId;
 
-                if(hilo.Flags.Contains("d"))
+                if (hilo.Flags.Contains("d"))
                 {
                     var random = new Random(comentario.Creacion.Millisecond + Creacion.Second);
                     this.Dados = random.Next(10);
                 }
-                if(hilo.Flags.Contains("i") || hilo.Flags.Contains("s"))
+                if (hilo.Flags.Contains("i") || hilo.Flags.Contains("s"))
                 {
                     IdUnico = GenerarIdUnico(hilo.Id, comentario.UsuarioId);
                 }
-                if(!hilo.Flags.Contains("b") && !hilo.Flags.Contains("s")) 
+                if (!hilo.Flags.Contains("b") && !hilo.Flags.Contains("s"))
                 {
                     this.Banderita = comentario.Pais;
-                    if(comentario.UsuarioId == "f01cb2b7-a116-4382-bcbf-e172c4009c2f") 
+                    if (comentario.UsuarioId == "f01cb2b7-a116-4382-bcbf-e172c4009c2f")
                     {
                         this.Banderita = "py";
                     }
-                    if(!string.IsNullOrEmpty(comentario.Nombre) || comentario.Rango != CreacionRango.Anon) 
+                    if (!string.IsNullOrEmpty(comentario.Nombre) || comentario.Rango != CreacionRango.Anon)
                     {
                         this.Banderita = null;
                     }
@@ -83,13 +84,14 @@ namespace Modelos
             //         _ => "",
             //     };
         }
-        public ComentarioViewModel() {}
+        public ComentarioViewModel() { }
 
         public string Id { get; set; }
         public string Contenido { get; set; }
         public DateTimeOffset Creacion { get; set; }
         public bool EsOp { get; set; }
         public MediaModel Media { get; set; }
+        public AudioModel Audio { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore), DefaultValue("")]
         public string Nombre { get; set; }
@@ -105,16 +107,16 @@ namespace Modelos
             var r = new Random(Creacion.Millisecond + Creacion.Second * 60 + Creacion.Minute * 60 * 60 + Creacion.Hour * 60 * 60 * 60 + +Creacion.Day * 60 * 60 * 60 * 24);
 
             //Serio
-            if(hilo != null && hilo.Flags.Contains("s")) return "serio";
+            if (hilo != null && hilo.Flags.Contains("s")) return "serio";
 
             // Black
             const int categoriaParanormal = 15;
-            if(hilo != null && hilo.CategoriaId == categoriaParanormal)
+            if (hilo != null && hilo.CategoriaId == categoriaParanormal)
             {
                 // var paraguayTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Paraguay Standard Time");
-		        var horaParaguay = Creacion.ToUniversalTime().AddHours(-3);
+                var horaParaguay = Creacion.ToUniversalTime().AddHours(-3);
 
-                if(horaParaguay.Hour < 7 && horaParaguay.Hour >= 0 && r.Next(1000) == 666) 
+                if (horaParaguay.Hour < 7 && horaParaguay.Hour >= 0 && r.Next(1000) == 666)
                     return "negro";
             }
 
@@ -169,22 +171,22 @@ namespace Modelos
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        private int HashString(string str) 
+        private int HashString(string str)
         {
             var hashed = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
             var ivalue = BitConverter.ToInt32(hashed, 0);
             return ivalue;
         }
-        
+
     }
-    public class ComentarioViewModelMod: ComentarioViewModel
+    public class ComentarioViewModelMod : ComentarioViewModel
     {
-        public ComentarioViewModelMod() {}
-        public ComentarioViewModelMod(ComentarioModel comentario):base(comentario)
+        public ComentarioViewModelMod() { }
+        public ComentarioViewModelMod(ComentarioModel comentario) : base(comentario)
         {
             UsuarioId = comentario.UsuarioId;
         }
-        public ComentarioViewModelMod(ComentarioModel comentario, HiloModel hilo, string clientUsuarioId = null):base(comentario, hilo, clientUsuarioId)
+        public ComentarioViewModelMod(ComentarioModel comentario, HiloModel hilo, string clientUsuarioId = null) : base(comentario, hilo, clientUsuarioId)
         {
             UsuarioId = comentario.UsuarioId;
             Estado = comentario.Estado;
@@ -196,4 +198,4 @@ namespace Modelos
         public string Username { get; set; }
         public UsuarioModel Usuario { get; set; }
     }
-}   
+}

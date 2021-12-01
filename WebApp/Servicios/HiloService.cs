@@ -27,7 +27,7 @@ namespace Servicios
         IQueryable<HiloModel> OrdenadosPorBump();
         Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId = "", int cantidad = 16);
         Task EliminarHilos(params string[] ids);
-        Task EliminarHilos(string[] ids, bool borrarMedias = false);
+        Task EliminarHilos(string[] ids, bool borrarMedias = false, bool borrarAudios = false);
         Task LimpiarHilo(string id);
         Task LimpiarHilo(HiloModel hilo);
         Task LimpiarHilosViejos();
@@ -44,6 +44,7 @@ namespace Servicios
         private readonly AccionesDeModeracionService historial;
         private readonly ILogger<HiloService> logger;
         private readonly SpamService spamService;
+        private readonly IAudioService audioService;
 
         public HiloService(RChanContext context,
             HashService hashService,
@@ -54,7 +55,8 @@ namespace Servicios
             IMediaService mediaService,
             AccionesDeModeracionService historial,
             ILogger<HiloService> logger,
-            SpamService spamService
+            SpamService spamService,
+            IAudioService audioService
             )
         : base(context, hashService)
         {
@@ -66,6 +68,7 @@ namespace Servicios
             this.historial = historial;
             this.logger = logger;
             this.spamService = spamService;
+            this.audioService = audioService;
         }
 
         public async Task ActualizarHilo(HiloModel Hilo)
@@ -91,7 +94,8 @@ namespace Servicios
 
             HiloModel hilo;
             var query = _context.Hilos
-                .Include(h => h.Media);
+                .Include(h => h.Media)
+                .Include(h => h.Audio);
 
             if (!mostrarOcultos)
                 hilo = await query.FiltrarEliminados().PorId(id);
@@ -113,6 +117,7 @@ namespace Servicios
                 .Where(c => c.Estado == ComentarioEstado.Normal)
                 .OrderByDescending(c => c.Creacion)
                 .Include(c => c.Media)
+                .Include(c => c.Audio)
                 .Select(c => new ComentarioViewModel(c, hilo, null))
                 .ToListAsync();
 
@@ -135,7 +140,8 @@ namespace Servicios
 
             HiloModel hilo;
             var query = _context.Hilos
-                .Include(h => h.Media);
+                .Include(h => h.Media)
+                .Include(h => h.Audio);
 
             if (!mostrarOcultos)
                 hilo = await query.FiltrarEliminados().PorId(id);
@@ -159,6 +165,7 @@ namespace Servicios
                 .Where(c => c.Estado != ComentarioEstado.Eliminado || mostrarOcultos)
                 .OrderByDescending(c => c.Creacion)
                 .Include(c => c.Media)
+                .Include(c => c.Audio)
                 .Select(c => new ComentarioViewModelMod(c, hilo, userId))
                 .ToListAsync();
 
@@ -305,6 +312,7 @@ namespace Servicios
             if (hilo.Contenido.Contains(">>dados")) hilo.Flags += "d";
             if (hilo.Contenido.Contains(">>idunico")) hilo.Flags += "i";
             if (hilo.Contenido.Contains(">>serio")) hilo.Flags += "s";
+            if (hilo.Contenido.Contains(">>audios")) hilo.Flags += "a";
 
             hilo.Contenido = formateador.Parsear(hilo.Contenido);
             await _context.SaveChangesAsync();
@@ -318,9 +326,9 @@ namespace Servicios
                 .OrderByDescending(h => h.Bump);
         }
 
-        public Task EliminarHilos(params string[] ids) => EliminarHilos(ids, false);
+        public Task EliminarHilos(params string[] ids) => EliminarHilos(ids, false, false);
 
-        public async Task EliminarHilos(string[] ids, bool borrarMedias = false)
+        public async Task EliminarHilos(string[] ids, bool borrarMedias = false, bool borrarAudios = false)
         {
             var hilos = await _context.Hilos
                 .Where(h => ids.Contains(h.Id))
@@ -339,6 +347,15 @@ namespace Servicios
                 foreach (var m in mediaIds)
                 {
                     await mediaService.Eliminar(m);
+                }
+            }
+
+            if (borrarAudios)
+            {
+                var audioIds = hilos.Select(h => h.AudioId).ToArray();
+                foreach (var a in audioIds)
+                {
+                    await audioService.Eliminar(a);
                 }
             }
 
@@ -420,8 +437,9 @@ namespace Servicios
             }
             await _context.SaveChangesAsync();
             var ArchivosLimpiados = await mediaService.LimpiarMediasHuerfanos();
+            var AudiosLimpiados = await audioService.LimpiarAudiosHuerfanos();
 
-            logger.LogInformation($"{hilosALimpiar.Count()} hilos limpiados y {ArchivosLimpiados} archivos limpiados");
+            logger.LogInformation($"{hilosALimpiar.Count()} hilos limpiados, {ArchivosLimpiados} archivos limpiados y {AudiosLimpiados} audios limpiados.");
 
         }
     }

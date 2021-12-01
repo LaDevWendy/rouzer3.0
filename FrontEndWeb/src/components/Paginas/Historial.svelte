@@ -31,6 +31,11 @@
     let mods = Array.from(new Set(historial.map((a) => a.usuario.userName)));
 
     let accionVista = null;
+
+    let tiposConNotas = [
+        TipoAccion.CategoriaCambiada,
+        TipoAccion.MediaEliminado,
+    ];
 </script>
 
 <main>
@@ -72,7 +77,7 @@
                     <span style="background: var(--color5);"
                         >{TipoAccion.aString(a.tipo)}</span
                     >
-                    {#if a.tipo == TipoAccion.CategoriaCambiada}
+                    {#if tiposConNotas.indexOf(a.tipo) > -1}
                         <span>{a.nota}</span>
                     {/if}
                     {#if a.hilo}
@@ -94,7 +99,7 @@
         <div class="vista-previa panel">
             {#if accionVista != null}
                 {#key accionVista}
-                    {#if accionVista.tipo == TipoAccion.CategoriaCambiada}
+                    {#if tiposConNotas.indexOf(accionVista.tipo) > -1}
                         <span>{accionVista.nota}</span>
                     {/if}
                     {#if accionVista.hilo}

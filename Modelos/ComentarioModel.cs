@@ -14,7 +14,8 @@ namespace Modelos
         public HiloModel Hilo { get; set; }
         public UsuarioModel Usuario { get; set; }
     }
-     public enum ComentarioEstado {
+    public enum ComentarioEstado
+    {
         Normal,
         Eliminado,
     }

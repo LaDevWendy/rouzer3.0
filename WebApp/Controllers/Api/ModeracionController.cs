@@ -36,6 +36,7 @@ namespace WebApp.Controllers
         private readonly IOptions<GeneralOptions> config;
         private readonly IOptionsSnapshot<List<Categoria>> categoriasOpt;
         private readonly AccionesDeModeracionService historial;
+        private readonly IAudioService audioService;
 
         public Moderacion(
             IHiloService hiloService,
@@ -48,7 +49,8 @@ namespace WebApp.Controllers
             SignInManager<UsuarioModel> signInManager,
             IOptionsSnapshot<GeneralOptions> config,
             IOptionsSnapshot<List<Categoria>> categoriasOpt,
-            AccionesDeModeracionService historial
+            AccionesDeModeracionService historial,
+            IAudioService audioService
         )
         {
             this.hiloService = hiloService;
@@ -62,6 +64,7 @@ namespace WebApp.Controllers
             this.config = config;
             this.categoriasOpt = categoriasOpt;
             this.historial = historial;
+            this.audioService = audioService;
         }
 
         [Route("/Moderacion")]
@@ -88,7 +91,9 @@ namespace WebApp.Controllers
                 .Include(d => d.Usuario)
                 .Include(d => d.Comentario)
                 .Include(d => d.Comentario.Media)
+                .Include(d => d.Comentario.Audio)
                 .Include(d => d.Hilo.Media)
+                .Include(d => d.Hilo.Audio)
                 .Include(d => d.Hilo.Usuario)
                 .Include(d => d.Comentario.Usuario)
                 .Where(d => d.Creacion > DateTime.Now - TimeSpan.FromDays(1.5))
@@ -180,6 +185,7 @@ namespace WebApp.Controllers
                     .Include(b => b.Comentario)
                     .Include(b => b.Hilo.Media)
                     .Include(b => b.Comentario.Media)
+                    .Include(b => b.Comentario.Audio)
                     .Select(b => new
                     {
                         b.Aclaracion,
@@ -280,19 +286,30 @@ namespace WebApp.Controllers
             context.Bans.Add(ban);
             // Si se marco la opcion para eliminar elemento, borro el hilo o el comentario
 
-            if (comentario != null && model.EliminarElemento)
+            if (comentario != null && model.EliminarElemento && comentario.Estado != ComentarioEstado.Eliminado)
             {
                 await comentarioService.Eliminar(comentario.Id);
+                await historial.RegistrarEliminacion(User.GetId(), comentario.HiloId, comentario.Id);
             }
-            else if (hilo != null && model.EliminarElemento)
+            else if (hilo != null && model.EliminarElemento && hilo.Estado != HiloEstado.Eliminado)
             {
                 await hiloService.EliminarHilos(hilo.Id);
+                await historial.RegistrarEliminacion(User.GetId(), hilo.Id);
             }
 
             bool mediaEliminado = false;
             if (model.EliminarAdjunto)
             {
                 mediaEliminado = await mediaService.Eliminar(elemento.MediaId);
+                if (mediaEliminado)
+                    await historial.RegistrarEliminacionMedia(User.GetId(), elemento.MediaId, hilo != null ? hilo.Id : comentario.HiloId, comentario != null ? comentario.Id : null);
+            }
+            bool audioEliminado = false;
+            if (model.EliminarAudio)
+            {
+                audioEliminado = await audioService.Eliminar(elemento.AudioId);
+                if (audioEliminado)
+                    await historial.RegistrarEliminacionAudio(User.GetId(), hilo != null ? hilo.Id : comentario.HiloId, comentario != null ? comentario.Id : null);
             }
 
             //Borro todos los hilos y comentarios del usuario
@@ -302,7 +319,6 @@ namespace WebApp.Controllers
                     .DeUsuario(elemento.UsuarioId).Select(e => e.Id).ToListAsync();
                 var comentarios = await context.Comentarios
                     .DeUsuario(elemento.UsuarioId).Select(e => e.Id).ToListAsync();
-
                 await comentarioService.Eliminar(comentarios.ToArray());
                 await hiloService.EliminarHilos(hilos.ToArray());
             }
@@ -365,9 +381,23 @@ namespace WebApp.Controllers
             foreach (var c in comentarios)
             {
                 await historial.RegistrarEliminacion(User.GetId(), c.HiloId, c.Id);
+                if (model.BorrarMedia)
+                {
+                    if (!String.IsNullOrEmpty(c.MediaId))
+                    {
+                        await historial.RegistrarEliminacionMedia(User.GetId(), c.MediaId, c.HiloId, c.Id);
+                    }
+                }
+                if (model.BorrarAudio)
+                {
+                    if (!String.IsNullOrEmpty(c.AudioId))
+                    {
+                        await historial.RegistrarEliminacionAudio(User.GetId(), c.HiloId, c.Id);
+                    }
+                }
             }
 
-            await comentarioService.Eliminar(model.Ids, model.BorrarMedia);
+            await comentarioService.Eliminar(model.Ids, model.BorrarMedia, model.BorrarAudio);
             return Json(new ApiResponse($"comentarios domados!"));
         }
 
@@ -420,6 +450,7 @@ namespace WebApp.Controllers
         {
             public string[] Ids { get; set; }
             public bool BorrarMedia { get; set; }
+            public bool BorrarAudio { get; set; }
         }
         [HttpPost]
         public async Task<ActionResult> BorrarHilo(BorrarCreacionesVm vm)
@@ -432,8 +463,22 @@ namespace WebApp.Controllers
             foreach (var h in hilos)
             {
                 await historial.RegistrarEliminacion(User.GetId(), h.Id);
+                if (vm.BorrarMedia)
+                {
+                    if (!String.IsNullOrEmpty(h.MediaId))
+                    {
+                        await historial.RegistrarEliminacionMedia(User.GetId(), h.MediaId, h.Id);
+                    }
+                }
+                if (vm.BorrarAudio)
+                {
+                    if (!String.IsNullOrEmpty(h.AudioId))
+                    {
+                        await historial.RegistrarEliminacionAudio(User.GetId(), h.Id);
+                    }
+                }
             }
-            await hiloService.EliminarHilos(vm.Ids, vm.BorrarMedia);
+            await hiloService.EliminarHilos(vm.Ids, vm.BorrarMedia, vm.BorrarAudio);
 
             var stickies = await context.Stickies.Where(s => vm.Ids.Contains(s.HiloId)).ToListAsync();
             if (stickies.Any())
@@ -533,19 +578,28 @@ namespace WebApp.Controllers
         public async Task<ActionResult> EliminarMedia(string[] ids)
         {
             var medias = await context.Medias.Where(m => ids.Contains(m.Id)).ToListAsync();
-
             foreach (var m in medias)
             {
-                await mediaService.Eliminar(m.Id);
-
+                var mediaEliminado = await mediaService.Eliminar(m.Id);
                 var comentarios = await context.Comentarios
                     .Where(c => c.MediaId == m.Id).ToListAsync();
                 var hilos = await context.Hilos
                     .Where(c => c.MediaId == m.Id).ToListAsync();
-
                 comentarios.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
                 hilos.ForEach(c => c.Estado = HiloEstado.Eliminado);
-
+                if (mediaEliminado)
+                {
+                    var hilo = hilos.FirstOrDefault();
+                    if (hilo != null)
+                    {
+                        await historial.RegistrarEliminacionMedia(User.GetId(), m.Id, hilo.Id);
+                    }
+                    else
+                    {
+                        var comentario = comentarios.FirstOrDefault();
+                        await historial.RegistrarEliminacionMedia(User.GetId(), m.Id, comentario.HiloId, comentario.Id);
+                    }
+                }
             }
             await context.SaveChangesAsync();
 
@@ -580,6 +634,7 @@ namespace WebApp.Controllers
         public int Duracion { get; set; }
         public bool EliminarElemento { get; set; }
         public bool EliminarAdjunto { get; set; }
+        public bool EliminarAudio { get; set; }
         public bool Desaparecer { get; set; }
     }
 }

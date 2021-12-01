@@ -18,7 +18,7 @@ namespace Servicios
         private readonly IOptionsSnapshot<List<Categoria>> categorias;
 
         public AccionesDeModeracionService(
-            RChanContext context,  
+            RChanContext context,
             IHubContext<RChanHub> rchanHub,
             HashService hashService,
             IOptionsSnapshot<List<Categoria>> categorias
@@ -32,7 +32,8 @@ namespace Servicios
 
         async public Task RegistrarBan(string usuarioId, BaneoModel ban)
         {
-            var accion  = new AccionDeModeracion {
+            var accion = new AccionDeModeracion
+            {
                 Id = hashService.Random(),
                 UsuarioId = usuarioId,
                 Ban = ban,
@@ -46,7 +47,8 @@ namespace Servicios
         }
         async public Task RegistrarBanRemovido(string usuarioId, BaneoModel ban)
         {
-            var accion  = new AccionDeModeracion {
+            var accion = new AccionDeModeracion
+            {
                 Id = hashService.Random(),
                 UsuarioId = usuarioId,
                 Ban = ban,
@@ -61,7 +63,8 @@ namespace Servicios
 
         async public Task RegistrarCambioDeCategoria(string usuarioId, string hiloId, int categoriaOrigen, int categoriaDestino)
         {
-            var accion  = new AccionDeModeracion {
+            var accion = new AccionDeModeracion
+            {
                 Id = hashService.Random(),
                 UsuarioId = usuarioId,
                 HiloId = hiloId,
@@ -73,28 +76,59 @@ namespace Servicios
             await context.SaveChangesAsync();
         }
 
-        async public Task RegistrarEliminacion(string usuarioId, string hiloId, string comentarioId=null)
+        async public Task RegistrarEliminacion(string usuarioId, string hiloId, string comentarioId = null)
         {
-            var accion  = new AccionDeModeracion {
+            var accion = new AccionDeModeracion
+            {
                 Id = hashService.Random(),
                 UsuarioId = usuarioId,
                 HiloId = hiloId,
                 ComentarioId = comentarioId,
-                TipoElemento = comentarioId == null? TipoElemento.Hilo : TipoElemento.Comentario,
-                Tipo =  comentarioId == null? TipoAccion.HiloBorrado : TipoAccion.ComentarioBorrado,
+                TipoElemento = comentarioId == null ? TipoElemento.Hilo : TipoElemento.Comentario,
+                Tipo = comentarioId == null ? TipoAccion.HiloBorrado : TipoAccion.ComentarioBorrado,
             };
             context.AccionesDeModeracion.Add(accion);
             await context.SaveChangesAsync();
         }
-        async public Task RegistrarRestauracion(string usuarioId, string hiloId, string comentarioId=null)
+        async public Task RegistrarEliminacionMedia(string usuarioId, string mediaId, string hiloId, string comentarioId = null)
         {
-            var accion  = new AccionDeModeracion {
+            var accion = new AccionDeModeracion
+            {
                 Id = hashService.Random(),
                 UsuarioId = usuarioId,
                 HiloId = hiloId,
                 ComentarioId = comentarioId,
-                TipoElemento = comentarioId == null? TipoElemento.Hilo : TipoElemento.Comentario,
-                Tipo =  comentarioId == null? TipoAccion.HiloRestaurado : TipoAccion.ComentarioRestaurado,
+                TipoElemento = comentarioId == null ? TipoElemento.Hilo : TipoElemento.Comentario,
+                Tipo = TipoAccion.MediaEliminado,
+                Nota = $"Id media: {mediaId}"
+            };
+            context.AccionesDeModeracion.Add(accion);
+            await context.SaveChangesAsync();
+        }
+        async public Task RegistrarEliminacionAudio(string usuarioId, string hiloId, string comentarioId = null)
+        {
+            var accion = new AccionDeModeracion
+            {
+                Id = hashService.Random(),
+                UsuarioId = usuarioId,
+                HiloId = hiloId,
+                ComentarioId = comentarioId,
+                TipoElemento = comentarioId == null ? TipoElemento.Hilo : TipoElemento.Comentario,
+                Tipo = TipoAccion.AudioEliminado,
+            };
+            context.AccionesDeModeracion.Add(accion);
+            await context.SaveChangesAsync();
+        }
+        async public Task RegistrarRestauracion(string usuarioId, string hiloId, string comentarioId = null)
+        {
+            var accion = new AccionDeModeracion
+            {
+                Id = hashService.Random(),
+                UsuarioId = usuarioId,
+                HiloId = hiloId,
+                ComentarioId = comentarioId,
+                TipoElemento = comentarioId == null ? TipoElemento.Hilo : TipoElemento.Comentario,
+                Tipo = comentarioId == null ? TipoAccion.HiloRestaurado : TipoAccion.ComentarioRestaurado,
             };
             context.AccionesDeModeracion.Add(accion);
             await context.SaveChangesAsync();
@@ -102,39 +136,42 @@ namespace Servicios
 
         async public Task RegistrarDenunciaRechazada(string usuarioId, DenunciaModel denuncia)
         {
-            var accion  = new AccionDeModeracion {
+            var accion = new AccionDeModeracion
+            {
                 Id = hashService.Random(),
                 UsuarioId = usuarioId,
                 HiloId = denuncia.HiloId,
                 ComentarioId = denuncia.ComentarioId,
                 DenunciaId = denuncia.Id,
                 TipoElemento = denuncia.Tipo,
-                Tipo =  TipoAccion.DenunciaRechazada,
+                Tipo = TipoAccion.DenunciaRechazada,
             };
             context.AccionesDeModeracion.Add(accion);
             await context.SaveChangesAsync();
         }
         async public Task RegistrarHiloStickeado(string usuarioId, HiloModel hilo)
         {
-            var accion  = new AccionDeModeracion {
+            var accion = new AccionDeModeracion
+            {
                 Id = hashService.Random(),
                 UsuarioId = usuarioId,
                 HiloId = hilo.Id,
                 TipoElemento = TipoElemento.Hilo,
-                Tipo =  TipoAccion.HiloStickeado,
+                Tipo = TipoAccion.HiloStickeado,
             };
             context.AccionesDeModeracion.Add(accion);
             await context.SaveChangesAsync();
         }
-        
+
         async public Task RegistrarHiloDeestickeado(string usuarioId, HiloModel hilo)
         {
-            var accion  = new AccionDeModeracion {
+            var accion = new AccionDeModeracion
+            {
                 Id = hashService.Random(),
                 UsuarioId = usuarioId,
                 HiloId = hilo.Id,
                 TipoElemento = TipoElemento.Hilo,
-                Tipo =  TipoAccion.HiloDestickeado,
+                Tipo = TipoAccion.HiloDestickeado,
             };
             context.AccionesDeModeracion.Add(accion);
             await context.SaveChangesAsync();

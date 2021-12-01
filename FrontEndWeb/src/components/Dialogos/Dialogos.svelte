@@ -17,6 +17,7 @@
         categoriaId: "-1",
         advertenciaCategoria: false,
         eliminarMedia: false,
+        eliminarAudio: false,
         mediaEliminarDependientes: true,
     });
 
@@ -115,7 +116,8 @@
     accion={() =>
         RChanClient.borrarHilos(
             [$dialogosStore.hiloId],
-            $dialogosStore.eliminarMedia
+            $dialogosStore.eliminarMedia,
+            $dialogosStore.eliminarAudio
         )}
 >
     <span slot="activador" />
@@ -123,6 +125,9 @@
         ¿Estas seguro de que queres domar el roz?
         <Checkbox bind:checked={$dialogosStore.eliminarMedia} right
             >Eliminar Archivos</Checkbox
+        >
+        <Checkbox bind:checked={$dialogosStore.eliminarAudio} right
+            >Eliminar Audio</Checkbox
         >
     </div>
 </Dialogo>
@@ -140,11 +145,7 @@
     visible={$dialogosStore.dialogoAbierto == "restaurarComentario"}
     textoActivador="Restaurar"
     titulo="Restaurar el comentario"
-    accion={() =>
-        RChanClient.restaurarComentario(
-            $dialogosStore.hiloId,
-            $dialogosStore.comentarioId
-        )}
+    accion={() => RChanClient.restaurarComentario($dialogosStore.comentarioId)}
 >
     <span slot="activador" />
     <div slot="body">
@@ -159,7 +160,8 @@
     accion={() =>
         RChanClient.eliminarComentarios(
             $dialogosStore.comentariosIds,
-            $dialogosStore.eliminarMedia
+            $dialogosStore.eliminarMedia,
+            $dialogosStore.eliminarAudio
         )}
 >
     <span slot="activador" />
@@ -167,6 +169,9 @@
         ¿Estas seguro de que queres borrar los comentarios {$dialogosStore.comentariosIds}
         <Checkbox bind:checked={$dialogosStore.eliminarMedia} right
             >Eliminar Archivos</Checkbox
+        >
+        <Checkbox bind:checked={$dialogosStore.eliminarAudio} right
+            >Eliminar Audio</Checkbox
         >
     </div>
 </Dialogo>

@@ -30,7 +30,7 @@ namespace Modelos
         CategoriaIncorrecta,
         Spam,
         Doxxeo,
-        CoentenidoIlegal,
+        ContenidoIlegal,
         Gore,
         MaltratoAnimal,
     }
