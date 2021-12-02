@@ -312,7 +312,7 @@ namespace Servicios
             if (hilo.Contenido.Contains(">>dados")) hilo.Flags += "d";
             if (hilo.Contenido.Contains(">>idunico")) hilo.Flags += "i";
             if (hilo.Contenido.Contains(">>serio")) hilo.Flags += "s";
-            if (hilo.Contenido.Contains(">>audios")) hilo.Flags += "a";
+            //if (hilo.Contenido.Contains(">>audios")) hilo.Flags += "a";
 
             hilo.Contenido = formateador.Parsear(hilo.Contenido);
             await _context.SaveChangesAsync();

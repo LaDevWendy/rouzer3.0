@@ -4,6 +4,7 @@
 
     import Dialogo from "../Dialogo.svelte";
     import { Checkbox } from "svelte-mui";
+    import globalStore from "../../globalStore";
 
     let motivo;
     let duracion;
@@ -80,22 +81,24 @@
             >
                 Eliminar elemento(hilo/comentario)</Checkbox
             >
-            <Checkbox
+            {#if $globalStore.usuario.esMod}
+                <Checkbox
+                    style="padding: 0 8px"
+                    title="Borra la imagen del servidor, usar en caso de cp"
+                    bind:checked={eliminarAdjunto}
+                    right
+                >
+                    Eliminar adjunto(imagen/video)</Checkbox
+                >
+                <!--<Checkbox
                 style="padding: 0 8px"
-                title="Borra la imagen del servidor, usar en caso de cp"
-                bind:checked={eliminarAdjunto}
-                right
-            >
-                Eliminar adjunto(imagen/video)</Checkbox
-            >
-            <Checkbox
-                style="padding: 0 8px"
-                title="Borra la imagen del servidor, usar en caso de cp"
+                title="Borra el audio del servidor"
                 bind:checked={eliminarAudio}
                 right
             >
                 Eliminar audio</Checkbox
-            >
+            >-->
+            {/if}
         {/if}
         {#if duracion > 5000}
             <Checkbox

@@ -6,6 +6,7 @@
     import DialogoReporte from "./DialogoReporte.svelte";
     import { Checkbox } from "svelte-mui";
     import config from "../../config";
+    import globalStore from "../../globalStore";
 
     const dialogosStore = writable({
         dialogoAbierto: "ninguno",
@@ -123,12 +124,14 @@
     <span slot="activador" />
     <div slot="body">
         ¿Estas seguro de que queres domar el roz?
-        <Checkbox bind:checked={$dialogosStore.eliminarMedia} right
-            >Eliminar Archivos</Checkbox
-        >
-        <Checkbox bind:checked={$dialogosStore.eliminarAudio} right
-            >Eliminar Audio</Checkbox
-        >
+        {#if $globalStore.usuario.esMod}
+            <Checkbox bind:checked={$dialogosStore.eliminarMedia} right
+                >Eliminar Archivos</Checkbox
+            >
+            <!--<Checkbox bind:checked={$dialogosStore.eliminarAudio} right
+                >Eliminar Audio</Checkbox
+            >-->
+        {/if}
     </div>
 </Dialogo>
 
@@ -167,12 +170,14 @@
     <span slot="activador" />
     <div slot="body">
         ¿Estas seguro de que queres borrar los comentarios {$dialogosStore.comentariosIds}
-        <Checkbox bind:checked={$dialogosStore.eliminarMedia} right
-            >Eliminar Archivos</Checkbox
-        >
-        <Checkbox bind:checked={$dialogosStore.eliminarAudio} right
-            >Eliminar Audio</Checkbox
-        >
+        {#if $globalStore.usuario.esMod}
+            <Checkbox bind:checked={$dialogosStore.eliminarMedia} right
+                >Eliminar Archivos</Checkbox
+            >
+            <!--<Checkbox bind:checked={$dialogosStore.eliminarAudio} right
+                >Eliminar Audio</Checkbox
+            >-->
+        {/if}
     </div>
 </Dialogo>
 

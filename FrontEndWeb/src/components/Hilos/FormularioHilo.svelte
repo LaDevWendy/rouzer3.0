@@ -11,7 +11,7 @@
     import globalStore from "../../globalStore";
     import FormularioEncuesta from "./FormularioEncuesta.svelte";
     import { tick } from "svelte";
-    import AudioInput from "../AudioInput.svelte";
+    //import AudioInput from "../AudioInput.svelte";
 
     export let mostrar = false;
 
@@ -28,7 +28,7 @@
     let serio_flag = false;
     let concentracion_flag = false;
     let md_flag = false;
-    let audio_flag = false;
+    //let audio_flag = false;
 
     let encuesta = new Set([]);
     $: encuestaArray = [...encuesta];
@@ -55,11 +55,7 @@
         contenidoConFlags += serio_flag ? ">>serio\n" : "";
         contenidoConFlags += concentracion_flag ? ">>concentracion\n" : "";
         contenidoConFlags += md_flag ? ">>md\n" : "";
-        contenidoConFlags += audio_flag
-            ? ">>audios\n"
-            : audio
-            ? ">>audios\n"
-            : "";
+        //contenidoConFlags += audio_flag? ">>audios\n": audio ? ">>audios\n" : "";
         try {
             let r = null;
             if (!$globalStore.usuario.esMod) {
@@ -83,7 +79,7 @@
                     audio,
                     captcha,
                     [...encuesta],
-                    mostrarNombre,
+                    mostrarNombre && $globalStore.usuario.esAdmin,
                     mostrarRango
                 );
             }
@@ -119,7 +115,7 @@
             on:submit|preventDefault
         >
             <MediaInput bind:media />
-            <AudioInput bind:blobAudio={audio} />
+            <!--<AudioInput bind:blobAudio={audio} />-->
 
             <!-- svelte-ignore a11y-autofocus -->
             <input
@@ -205,10 +201,10 @@
                     ></span
                 >
 
-                <span style="width: fit-content;margin-right: auto;"
+                <!--<span style="width: fit-content;margin-right: auto;"
                     ><Checkbox bind:checked={audio_flag} right>Audios</Checkbox
                     ></span
-                >
+                >-->
             </div>
 
             {#if $globalStore.usuario.esMod}
@@ -228,11 +224,13 @@
                             >Tag_Mod</Checkbox
                         ></span
                     >
-                    <span style="width: fit-content;margin-right: auto;"
-                        ><Checkbox bind:checked={mostrarNombre} right
-                            >Nombre</Checkbox
-                        ></span
-                    >
+                    {#if $globalStore.usuario.esAdmin}
+                        <span style="width: fit-content;margin-right: auto;"
+                            ><Checkbox bind:checked={mostrarNombre} right
+                                >Nombre</Checkbox
+                            ></span
+                        >
+                    {/if}
                 </div>
             {/if}
             <Captcha

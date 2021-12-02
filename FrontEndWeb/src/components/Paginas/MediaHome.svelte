@@ -4,6 +4,7 @@
     import BarraModeracion from "../Moderacion/BarraModeracion.svelte";
     import Media from "../Media.svelte";
     import RChanClient from "../../RChanClient";
+    import globalStore from "../../globalStore";
 
     let medias = window.model.medias;
     // let comentarios = window.model.comentarios
@@ -11,34 +12,33 @@
     medias.forEach((m) => (m.seleccionado = false));
     medias = medias;
 
-    $: selecionados = medias.filter(m => m.seleccionado);
+    $: selecionados = medias.filter((m) => m.seleccionado);
 
-    let eliminando = false
-    
+    let eliminando = false;
+
     async function eliminarMedias() {
         try {
-            eliminando = true
-            await RChanClient.eliminarMedias(selecionados.map(s => s.id))
-            medias = medias.filter(m =>!selecionados.map(s => s.id).includes(m.id))
-            selecionados = []
-            
-        } catch (error) {
-            
-        }
-        eliminando = false
+            eliminando = true;
+            await RChanClient.eliminarMedias(selecionados.map((s) => s.id));
+            medias = medias.filter(
+                (m) => !selecionados.map((s) => s.id).includes(m.id)
+            );
+            selecionados = [];
+        } catch (error) {}
+        eliminando = false;
     }
 </script>
 
-
 <BarraModeracion />
 <section class="media-home">
-    
-    {#if selecionados.length > 0}
+    {#if selecionados.length > 0 && $globalStore.usuario.esMod}
         <div style="justify-content: center;display: flex; margin:8px">
-            <Button on:click={eliminarMedias} 
+            <Button
+                on:click={eliminarMedias}
                 color="var(--color5)"
-                disabled = {eliminando}
-                raised>Eliminar {selecionados.length} archivos</Button>
+                disabled={eliminando}
+                raised>Eliminar {selecionados.length} archivos</Button
+            >
         </div>
     {/if}
     <ul>

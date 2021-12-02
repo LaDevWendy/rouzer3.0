@@ -119,7 +119,7 @@ namespace WebApp.Controllers
             return View(new { hilos, comentarios, denuncias, medias });
         }
 
-        [Route("/Moderacion/ListaDeUsuarios"), Authorize("esMod")]
+        [Route("/Moderacion/ListaDeUsuarios"), Authorize("esAdmin")]
         public async Task<ActionResult> ListaDeUsuarios()
         {
             var ultimosRegistros = await context.Users
@@ -143,7 +143,7 @@ namespace WebApp.Controllers
 
 
         [HttpGet]
-        [Route("/Moderacion/HistorialDeUsuario/{id}"), Authorize("esMod")]
+        [Route("/Moderacion/HistorialDeUsuario/{id}"), Authorize("esAdmin")]
         public async Task<ActionResult> HistorialDeUsuario(string id)
         {
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
@@ -201,7 +201,7 @@ namespace WebApp.Controllers
             });
         }
 
-        [Route("/Moderacion/EliminadosYDesactivados")]
+        [Route("/Moderacion/EliminadosYDesactivados"), Authorize("esAdmin")]
         public async Task<ActionResult> EliminadosYDesactivados()
         {
             var hilos = await context.Hilos
@@ -220,7 +220,7 @@ namespace WebApp.Controllers
 
             return View(new { hilos, comentarios });
         }
-        [Route("/Moderacion/Historial"), Authorize("esMod")]
+        [Route("/Moderacion/Historial"), Authorize("esAdmin")]
         public async Task<ActionResult> Historial()
         {
             var antesDeAyer = DateTimeOffset.Now - TimeSpan.FromDays(2);
@@ -298,14 +298,14 @@ namespace WebApp.Controllers
             }
 
             bool mediaEliminado = false;
-            if (model.EliminarAdjunto)
+            if (model.EliminarAdjunto && User.EsMod())
             {
                 mediaEliminado = await mediaService.Eliminar(elemento.MediaId);
                 if (mediaEliminado)
                     await historial.RegistrarEliminacionMedia(User.GetId(), elemento.MediaId, hilo != null ? hilo.Id : comentario.HiloId, comentario != null ? comentario.Id : null);
             }
             bool audioEliminado = false;
-            if (model.EliminarAudio)
+            if (model.EliminarAudio && User.EsMod())
             {
                 audioEliminado = await audioService.Eliminar(elemento.AudioId);
                 if (audioEliminado)
@@ -381,14 +381,14 @@ namespace WebApp.Controllers
             foreach (var c in comentarios)
             {
                 await historial.RegistrarEliminacion(User.GetId(), c.HiloId, c.Id);
-                if (model.BorrarMedia)
+                if (model.BorrarMedia && User.EsMod())
                 {
                     if (!String.IsNullOrEmpty(c.MediaId))
                     {
                         await historial.RegistrarEliminacionMedia(User.GetId(), c.MediaId, c.HiloId, c.Id);
                     }
                 }
-                if (model.BorrarAudio)
+                if (model.BorrarAudio && User.EsMod())
                 {
                     if (!String.IsNullOrEmpty(c.AudioId))
                     {
@@ -397,7 +397,7 @@ namespace WebApp.Controllers
                 }
             }
 
-            await comentarioService.Eliminar(model.Ids, model.BorrarMedia, model.BorrarAudio);
+            await comentarioService.Eliminar(model.Ids, model.BorrarMedia && User.EsMod(), model.BorrarAudio && User.EsMod());
             return Json(new ApiResponse($"comentarios domados!"));
         }
 
@@ -463,14 +463,14 @@ namespace WebApp.Controllers
             foreach (var h in hilos)
             {
                 await historial.RegistrarEliminacion(User.GetId(), h.Id);
-                if (vm.BorrarMedia)
+                if (vm.BorrarMedia && User.EsMod())
                 {
                     if (!String.IsNullOrEmpty(h.MediaId))
                     {
                         await historial.RegistrarEliminacionMedia(User.GetId(), h.MediaId, h.Id);
                     }
                 }
-                if (vm.BorrarAudio)
+                if (vm.BorrarAudio && User.EsMod())
                 {
                     if (!String.IsNullOrEmpty(h.AudioId))
                     {
@@ -478,7 +478,7 @@ namespace WebApp.Controllers
                     }
                 }
             }
-            await hiloService.EliminarHilos(vm.Ids, vm.BorrarMedia, vm.BorrarAudio);
+            await hiloService.EliminarHilos(vm.Ids, vm.BorrarMedia && User.EsMod(), vm.BorrarAudio && User.EsMod());
 
             var stickies = await context.Stickies.Where(s => vm.Ids.Contains(s.HiloId)).ToListAsync();
             if (stickies.Any())

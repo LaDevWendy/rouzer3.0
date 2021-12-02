@@ -32,7 +32,7 @@
     let protocoloMessi = false;
     $: protocoloMessi = $configStore.general.modoMessi;
     let protocoloSerenito = false;
-    $: protocoloSerenito = $configStore.general.modoSerenito;
+    //$: protocoloSerenito = $configStore.general.modoSerenito;
 
     let mostrarComputadorasConectadas = false;
 

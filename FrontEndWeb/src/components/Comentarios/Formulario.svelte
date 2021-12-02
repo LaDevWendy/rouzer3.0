@@ -53,7 +53,7 @@
                     media.link,
                     audio,
                     "",
-                    mostrarNombre,
+                    mostrarNombre && $globalStore.usuario.esAdmin,
                     mostrarRango
                 );
             } else {
@@ -126,11 +126,13 @@
                         >Lucesitas</Checkbox
                     ></span
                 >
-                <span style="width: fit-content;margin-right: auto;"
-                    ><Checkbox bind:checked={mostrarNombre} right
-                        >Nombre</Checkbox
-                    ></span
-                >
+                {#if $globalStore.usuario.esAdmin}
+                    <span style="width: fit-content;margin-right: auto;"
+                        ><Checkbox bind:checked={mostrarNombre} right
+                            >Nombre</Checkbox
+                        ></span
+                    >
+                {/if}
             </div>
         {/if}
         <Button
