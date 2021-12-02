@@ -6,6 +6,7 @@
     import RChanClient from "../RChanClient";
     import Dialogo from "./Dialogo.svelte";
     import Ajustes from "./Dialogos/Ajustes.svelte";
+    import ajustesConfigStore from "./Dialogos/ajustesConfigStore";
 
     import more from "../icons/more-vertical.svg";
     import serio from "../icons/serio.svg";
@@ -130,76 +131,99 @@
             </li>
             {#if mostrarCategorias}
                 <div transition:fly={{ y: -50, duration: 150 }}>
-                    {#each grupos as g, i (g.id)}
-                        <li
-                            class="grupo-categorias {mostrarLista.find(
-                                (g1) => g1.id == g.id
-                            ).activo
-                                ? 'grupo-categorias-activo'
-                                : ''}"
-                            on:click={() => {
-                                mostrarLista.find(
-                                    (g1) => g1.id == g.id
-                                ).activo = !mostrarLista.find(
-                                    (g1) => g1.id == g.id
-                                ).activo;
-                                mostrarLista = mostrarLista;
-                            }}
-                        >
-                            <icon
-                                class="fe fe-chevron-down"
-                                style="padding:0;transform: rotate({mostrarLista.find(
+                    {#if $ajustesConfigStore.catClasicas}
+                        {#each categorias as c (c.id)}
+                            <li class="categoria-link">
+                                <a href="/{c.nombreCorto}">
+                                    <icon class="fe fe-circle" />
+                                    {c.nombre}
+                                </a>
+                                <span
+                                    style="width: fit-content;margin-left: auto;"
+                                >
+                                    <Checkbox
+                                        bind:checked={c.activa}
+                                        right
+                                        on:change={(e) => updateGrupo(c.id)}
+                                    /></span
+                                >
+                                <Ripple />
+                            </li>
+                        {/each}
+                    {:else}
+                        {#each grupos as g, i (g.id)}
+                            <li
+                                class="grupo-categorias {mostrarLista.find(
                                     (g1) => g1.id == g.id
                                 ).activo
-                                    ? 180
-                                    : 0}deg);transition: all 0.2s ease 0s;"
-                            />
-                            <span style="margin-left:auto" />
-                            {g.nombre}
-                            <Ripple />
-                            <span style="width: fit-content;margin-left: auto;">
-                                <Checkbox
-                                    bind:checked={g.activo}
-                                    true
-                                    right
-                                    on:change={(e) => {
-                                        e.preventDefault();
-                                        updateCategorias(
-                                            g.categorias,
-                                            e.target.checked
-                                        );
-                                        mostrarLista.find(
-                                            (g1) => g1.id == g.id
-                                        ).activo = e.target.checked;
-                                        mostrarLista = mostrarLista;
-                                    }}
+                                    ? 'grupo-categorias-activo'
+                                    : ''}"
+                                on:click={() => {
+                                    mostrarLista.find(
+                                        (g1) => g1.id == g.id
+                                    ).activo = !mostrarLista.find(
+                                        (g1) => g1.id == g.id
+                                    ).activo;
+                                    mostrarLista = mostrarLista;
+                                }}
+                            >
+                                <icon
+                                    class="fe fe-chevron-down"
+                                    style="padding:0;transform: rotate({mostrarLista.find(
+                                        (g1) => g1.id == g.id
+                                    ).activo
+                                        ? 180
+                                        : 0}deg);transition: all 0.2s ease 0s;"
                                 />
-                            </span>
-                        </li>
-                        {#if mostrarLista.find((g1) => g1.id == g.id).activo}
-                            <div transition:fly={{ y: -50, duration: 150 }}>
-                                {#each categorias.filter( (c) => g.categorias.includes(c.id) ) as c (c.id)}
-                                    <li class="categoria-link">
-                                        <a href="/{c.nombreCorto}">
-                                            <icon class="fe fe-circle" />
-                                            {c.nombre}
-                                        </a>
-                                        <span
-                                            style="width: fit-content;margin-left: auto;"
-                                        >
-                                            <Checkbox
-                                                bind:checked={c.activa}
-                                                right
-                                                on:change={(e) =>
-                                                    updateGrupo(c.id)}
-                                            /></span
-                                        >
-                                        <Ripple />
-                                    </li>
-                                {/each}
-                            </div>
-                        {/if}
-                    {/each}
+                                <span style="margin-left:auto" />
+                                {g.nombre}
+                                <Ripple />
+                                <span
+                                    style="width: fit-content;margin-left: auto;"
+                                >
+                                    <Checkbox
+                                        bind:checked={g.activo}
+                                        true
+                                        right
+                                        on:change={(e) => {
+                                            e.preventDefault();
+                                            updateCategorias(
+                                                g.categorias,
+                                                e.target.checked
+                                            );
+                                            mostrarLista.find(
+                                                (g1) => g1.id == g.id
+                                            ).activo = e.target.checked;
+                                            mostrarLista = mostrarLista;
+                                        }}
+                                    />
+                                </span>
+                            </li>
+                            {#if mostrarLista.find((g1) => g1.id == g.id).activo}
+                                <div transition:fly={{ y: -50, duration: 150 }}>
+                                    {#each categorias.filter( (c) => g.categorias.includes(c.id) ) as c (c.id)}
+                                        <li class="categoria-link">
+                                            <a href="/{c.nombreCorto}">
+                                                <icon class="fe fe-circle" />
+                                                {c.nombre}
+                                            </a>
+                                            <span
+                                                style="width: fit-content;margin-left: auto;"
+                                            >
+                                                <Checkbox
+                                                    bind:checked={c.activa}
+                                                    right
+                                                    on:change={(e) =>
+                                                        updateGrupo(c.id)}
+                                                /></span
+                                            >
+                                            <Ripple />
+                                        </li>
+                                    {/each}
+                                </div>
+                            {/if}
+                        {/each}
+                    {/if}
                 </div>
             {/if}
             <hr />

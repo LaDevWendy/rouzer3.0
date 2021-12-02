@@ -1,4 +1,4 @@
-import {writable} from 'svelte/store'
+import { writable } from 'svelte/store'
 import Signal from './signal'
 
 let gruposOrdenados = window.config.grupos.sort((g1, g2) => g1.id - g2.id)
@@ -15,32 +15,29 @@ export default class config {
 
     static grupos = gruposOrdenados
 
-    static categorias =  categoriasOrdenadas
+    static categorias = categoriasOrdenadas
 
     static nombre = window.config.general.nombre
 
-    static categoriaPorId(id)
-    {
-        return config.categorias.filter(c => c.id==id)[0]
+    static categoriaPorId(id) {
+        return config.categorias.filter(c => c.id == id)[0]
     }
 
-    static grupoPorId(id)
-    {
-        return config.grupos.filter(g => g.id==id)[0]
+    static grupoPorId(id) {
+        return config.grupos.filter(g => g.id == id)[0]
     }
 
 
     static general = window.config.general
 
-    static getCategoriaById(id){ return this.categorias[id - 1]} 
+    static getCategoriaById(id) { return this.categorias[id - 1] }
 }
 
 export let configStore = writable({
     categorias: categoriasOrdenadas,
     general: window.config.general,
-    categoriaPorId(id)
-    {
-        return config.categorias.filter(c => c.id==id)[0]
+    categoriaPorId(id) {
+        return config.categorias.filter(c => c.id == id)[0]
     }
 })
 

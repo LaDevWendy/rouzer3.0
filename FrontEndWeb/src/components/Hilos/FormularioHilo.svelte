@@ -11,6 +11,7 @@
     import globalStore from "../../globalStore";
     import FormularioEncuesta from "./FormularioEncuesta.svelte";
     import { tick } from "svelte";
+    import ajustesConfigStore from "../Dialogos/ajustesConfigStore";
     //import AudioInput from "../AudioInput.svelte";
 
     export let mostrar = false;
@@ -124,26 +125,32 @@
                 name="titulo"
                 placeholder="Titulo"
             />
-
-            <select bind:value={categoria} name="categoria">
-                <option value="-1" selected="selected" disabled="disabled"
-                    >Categoría</option
-                >
-                {#each config.grupos as g}
-                    <optgroup
-                        id="grupo_{g.id}"
-                        label={g.nombre}
-                        class="grupo-categorias"
+            {#if $ajustesConfigStore.catClasicas}
+                <select bind:value={categoria} name="categoria">
+                    {#each config.categorias as c}
+                        <option value={c.id}>{c.nombre}</option>
+                    {/each}
+                </select>
+            {:else}
+                <select bind:value={categoria} name="categoria">
+                    <option value="-1" selected="selected" disabled="disabled"
+                        >Categoría</option
                     >
-                        {#each g.categorias as cid}
-                            <option value={cid}
-                                >{config.categoriaPorId(cid).nombre}</option
-                            >
-                        {/each}
-                    </optgroup>
-                {/each}
-            </select>
-
+                    {#each config.grupos as g}
+                        <optgroup
+                            id="grupo_{g.id}"
+                            label={g.nombre}
+                            class="grupo-categorias"
+                        >
+                            {#each g.categorias as cid}
+                                <option value={cid}
+                                    >{config.categoriaPorId(cid).nombre}</option
+                                >
+                            {/each}
+                        </optgroup>
+                    {/each}
+                </select>
+            {/if}
             <FormularioEncuesta bind:opciones={encuesta} />
 
             <textarea
