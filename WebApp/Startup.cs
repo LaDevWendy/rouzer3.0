@@ -89,7 +89,7 @@ namespace WebApp
             services.ConfigureApplicationCookie(opt =>
             {
                 opt.LoginPath = "/Login";
-                opt.Events.OnRedirectToLogin = async (c) =>
+                opt.Events.OnRedirectToLogin = (c) =>
                 {
                     c.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     c.Response.Redirect("/Inicio");

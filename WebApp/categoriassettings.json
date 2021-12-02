@@ -86,7 +86,7 @@
         },
         {
             "Id": 13,
-            "Nombre": "Musica",
+            "Nombre": "Música",
             "NombreCorto": "MUS",
             "Nsfw": false,
             "Public": true
@@ -114,7 +114,7 @@
         },
         {
             "Id": 17,
-            "Nombre": "Politica",
+            "Nombre": "Política",
             "NombreCorto": "POL",
             "Nsfw": false,
             "Public": true
@@ -156,7 +156,7 @@
         },
         {
             "Id": 23,
-            "Nombre": "Tecnologia",
+            "Nombre": "Tecnología",
             "NombreCorto": "TEC",
             "Nsfw": false,
             "Public": true
@@ -198,7 +198,7 @@
         },
         {
             "Id": 29,
-            "Nombre": "Economia",
+            "Nombre": "Economía",
             "NombreCorto": "ECO",
             "Nsfw": false,
             "Public": true
@@ -261,7 +261,7 @@
         },
         {
             "Id": 38,
-            "Nombre": "Programacion",
+            "Nombre": "Programación",
             "NombreCorto": "PROG",
             "Nsfw": false,
             "Public": true

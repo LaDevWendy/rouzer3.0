@@ -389,7 +389,7 @@ namespace WebApp.Controllers
             };
 
             denuncia.Id = hashService.Random();
-            denuncia.UsuarioId = "9edfd2a6-e017-4fda-9d94-902bf19be996";
+            denuncia.UsuarioId = "6dc9e3f2-3bdb-4c0d-8370-01c926ab454a";
             if (!ModelState.IsValid) return BadRequest(ModelState);
             denuncia.Estado = EstadoDenuncia.NoRevisada;
             context.Denuncias.Add(denuncia);

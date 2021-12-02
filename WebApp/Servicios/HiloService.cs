@@ -430,9 +430,9 @@ namespace Servicios
                 }
                 catch (Exception e)
                 {
-                    throw e;
                     logger.LogInformation($"No se pudo limpear el hilo hilo {h.Titulo}({limpiados}/{total})");
                     logger.LogError(e.Message, e);
+                    throw e;
                 }
             }
             await _context.SaveChangesAsync();
