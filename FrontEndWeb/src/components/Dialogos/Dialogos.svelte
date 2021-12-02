@@ -7,6 +7,7 @@
     import { Checkbox } from "svelte-mui";
     import config from "../../config";
     import globalStore from "../../globalStore";
+    import ajustesConfigStore from "./ajustesConfigStore";
 
     const dialogosStore = writable({
         dialogoAbierto: "ninguno",
@@ -215,20 +216,31 @@
     <span slot="activador" />
     <div slot="body">
         <span asp-validation-for="CategoriaId" />
-        <select bind:value={$dialogosStore.categoriaId} name="categoria">
-            <option value="-1" selected="selected" disabled="disabled"
-                >Categoría</option
-            >
-            {#each config.grupos as g}
-                <optgroup label={g.nombre} class="grupo-categorias">
-                    {#each g.categorias as cid}
-                        <option value={cid}
-                            >{config.categoriaPorId(cid).nombre}</option
-                        >
-                    {/each}
-                </optgroup>
-            {/each}
-        </select>
+        {#if $ajustesConfigStore.catClasicas}
+            <select bind:value={$dialogosStore.categoriaId} name="categoria">
+                <option value="-1" selected="selected" disabled="disabled"
+                    >Categoría</option
+                >
+                {#each config.categorias as c}
+                    <option value={c.id}>{c.nombre}</option>
+                {/each}
+            </select>
+        {:else}
+            <select bind:value={$dialogosStore.categoriaId} name="categoria">
+                <option value="-1" selected="selected" disabled="disabled"
+                    >Categoría</option
+                >
+                {#each config.grupos as g}
+                    <optgroup label={g.nombre} class="grupo-categorias">
+                        {#each g.categorias as cid}
+                            <option value={cid}
+                                >{config.categoriaPorId(cid).nombre}</option
+                            >
+                        {/each}
+                    </optgroup>
+                {/each}
+            </select>
+        {/if}
         <Checkbox bind:checked={$dialogosStore.advertenciaCategoria} right
             >Advertencia</Checkbox
         >

@@ -4,6 +4,7 @@
     import RChanClient from "../../RChanClient";
     import { MotivoDenuncia } from "../../enums";
     import config from "../../config";
+    import ajustesConfigStore from "./ajustesConfigStore";
 
     export let comentarioId = "";
     export let hiloId = "";
@@ -77,24 +78,35 @@
             {/each}
         </select>
         {#if motivo === 0}
-            <select bind:value={categoria} name="categoria">
-                <option value="-1" selected="selected" disabled="disabled"
-                    >Categoría</option
-                >
-                {#each config.grupos as g}
-                    <optgroup
-                        id="grupo_{g.id}"
-                        label={g.nombre}
-                        class="grupo-categorias"
+            {#if $ajustesConfigStore.catClasicas}
+                <select bind:value={categoria} name="categoria">
+                    <option value="-1" selected="selected" disabled="disabled"
+                        >Categoría</option
                     >
-                        {#each g.categorias as cid}
-                            <option value={cid}
-                                >{config.categoriaPorId(cid).nombre}</option
-                            >
-                        {/each}
-                    </optgroup>
-                {/each}
-            </select>
+                    {#each config.categorias as c}
+                        <option value={c.id}>{c.nombre}</option>
+                    {/each}
+                </select>
+            {:else}
+                <select bind:value={categoria} name="categoria">
+                    <option value="-1" selected="selected" disabled="disabled"
+                        >Categoría</option
+                    >
+                    {#each config.grupos as g}
+                        <optgroup
+                            id="grupo_{g.id}"
+                            label={g.nombre}
+                            class="grupo-categorias"
+                        >
+                            {#each g.categorias as cid}
+                                <option value={cid}
+                                    >{config.categoriaPorId(cid).nombre}</option
+                                >
+                            {/each}
+                        </optgroup>
+                    {/each}
+                </select>
+            {/if}
         {/if}
 
         <textarea

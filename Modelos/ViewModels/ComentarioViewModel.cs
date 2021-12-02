@@ -49,7 +49,7 @@ namespace Modelos
                 if (!hilo.Flags.Contains("b") && !hilo.Flags.Contains("s"))
                 {
                     this.Banderita = comentario.Pais;
-                    if (comentario.UsuarioId == "f01cb2b7-a116-4382-bcbf-e172c4009c2f")
+                    if (comentario.UsuarioId == "954c1d80-0a87-4e1a-9784-1ffc667c598f")
                     {
                         this.Banderita = "py";
                     }
