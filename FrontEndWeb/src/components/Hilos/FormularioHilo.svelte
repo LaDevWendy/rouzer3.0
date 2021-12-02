@@ -27,8 +27,8 @@
     let idunico_flag = false;
     let serio_flag = false;
     let concentracion_flag = false;
-    let md_flag = false;
-    //let audio_flag = false;
+    // let md_flag = false;
+    // let audio_flag = false;
 
     let encuesta = new Set([]);
     $: encuestaArray = [...encuesta];
@@ -54,8 +54,8 @@
         contenidoConFlags += idunico_flag ? ">>idunico\n" : "";
         contenidoConFlags += serio_flag ? ">>serio\n" : "";
         contenidoConFlags += concentracion_flag ? ">>concentracion\n" : "";
-        contenidoConFlags += md_flag ? ">>md\n" : "";
-        //contenidoConFlags += audio_flag? ">>audios\n": audio ? ">>audios\n" : "";
+        // contenidoConFlags += md_flag ? ">>md\n" : "";
+        // contenidoConFlags += audio_flag? ">>audios\n": audio ? ">>audios\n" : "";
         try {
             let r = null;
             if (!$globalStore.usuario.esMod) {
@@ -214,11 +214,11 @@
                             >Concentración</Checkbox
                         ></span
                     >
-                    <span style="width: fit-content;margin-right: auto;"
+                    <!--<span style="width: fit-content;margin-right: auto;"
                         ><Checkbox bind:checked={md_flag} right
                             >Markdown</Checkbox
                         ></span
-                    >
+                    >-->
                     <span style="width: fit-content;margin-right: auto;"
                         ><Checkbox bind:checked={mostrarRango} right
                             >Tag_Mod</Checkbox
