@@ -19,7 +19,7 @@
     $comentarioStore;
     let media;
     let mediaInput;
-    let audio;
+    let audio = null;
     let audioInput;
 
     let mostrarRango = false;
@@ -72,7 +72,8 @@
                 hide_flag = false;
             }
             mediaInput.removerArchivo();
-            audioInput.removerArchivo();
+            if (hilo.audios)
+                audioInput.removerArchivo();
             dispatch("comentarioCreado");
         } catch (e) {
             error = e.response.data;
