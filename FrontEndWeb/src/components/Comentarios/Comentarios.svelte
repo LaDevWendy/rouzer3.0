@@ -235,7 +235,7 @@
                         : "background:white"}
                 />
             </Button>
-            {#if comentarios.length > limite}
+            {#if comentarios.length > bloque}
                 <Button
                     on:click={() => {
                         spinnerAcciones = true;
