@@ -43,7 +43,9 @@
             }
             comentarioConFlag += hide_flag ? ">hide\n" : "";
             if (!hide) {
-                await RChanClient.agregar("ocultos", hilo.id);
+                if (hide_flag) {
+                    await RChanClient.agregar("ocultos", hilo.id);
+                }
                 hide = hide_flag;
             }
             if (
