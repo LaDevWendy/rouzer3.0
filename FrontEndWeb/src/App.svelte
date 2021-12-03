@@ -49,7 +49,7 @@
 			<Encuesta bind:encuesta={hilo.encuestaData} hiloId={hilo.id} />
 		{/if}
 
-		{#if $globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar}
+		{#if $globalStore.usuario.esAuxiliar}
 			{#if hilo.estado == 2}
 				<span style="color:red"
 					>Este roz esta eliminado y pronto sera borrado</span
@@ -99,7 +99,7 @@
 					>
 				{/if}
 				<Button on:click={() => abrir.ban(hilo.id)}>Banear</Button>
-				{#if $globalStore.usuario.esAdmin}
+				{#if $globalStore.usuario.esMod}
 					<a href="/Moderacion/HistorialDeUsuario/{usuario.id}">
 						<Button>Op</Button>
 					</a>

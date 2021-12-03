@@ -9,9 +9,10 @@
     import { HiloEstado } from "../../enums";
     import { ComentarioEstado } from "../../enums";
     import Signal from "../../signal";
+    import globalStore from "../../globalStore";
 
     let innerWidth = window.innerWidth;
-    let current = 2;
+    let current = 3;
 
     let hilos = window.model.hilos;
     let comentarios = window.model.comentarios;
@@ -84,21 +85,23 @@
     </div>
     {#if innerWidth < 956}
         <div id="botones" class="tab">
-            <button
-                id="tab1"
-                class="boton {current === 1 ? 'active' : ''}"
-                on:click={() => (current = 1)}
-            >
-                Últimos hilos
-            </button>
+            {#if $globalStore.usuario.esAdmin}
+                <button
+                    id="tab1"
+                    class="boton {current === 1 ? 'active' : ''}"
+                    on:click={() => (current = 1)}
+                >
+                    Últimos hilos
+                </button>
 
-            <button
-                id="tab2"
-                class="boton {current === 2 ? 'active' : ''}"
-                on:click={() => (current = 2)}
-            >
-                Últimos comentarios
-            </button>
+                <button
+                    id="tab2"
+                    class="boton {current === 2 ? 'active' : ''}"
+                    on:click={() => (current = 2)}
+                >
+                    Últimos comentarios
+                </button>
+            {/if}
             <button
                 id="tab3"
                 class="boton {current === 3 ? 'active' : ''}"
@@ -109,7 +112,7 @@
         </div>
     {/if}
     <div class="historial" style="min-width: 33%;">
-        {#if innerWidth > 956 || current === 1}
+        {#if (innerWidth > 956 || current === 1) && $globalStore.usuario.esAdmin}
             <ul
                 style="width:33%; min-width: 33%;"
                 class={innerWidth <= 956 ? "resize" : ""}
@@ -120,7 +123,7 @@
                 {/each}
             </ul>
         {/if}
-        {#if innerWidth > 956 || current === 2}
+        {#if (innerWidth > 956 || current === 2) && $globalStore.usuario.esAdmin}
             <ul
                 style="width:33%; min-width: 33%;"
                 class={innerWidth <= 956 ? "resize" : ""}

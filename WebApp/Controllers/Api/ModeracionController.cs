@@ -143,7 +143,7 @@ namespace WebApp.Controllers
 
 
         [HttpGet]
-        [Route("/Moderacion/HistorialDeUsuario/{id}"), Authorize("esAdmin")]
+        [Route("/Moderacion/HistorialDeUsuario/{id}"), Authorize("esMod")]
         public async Task<ActionResult> HistorialDeUsuario(string id)
         {
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
