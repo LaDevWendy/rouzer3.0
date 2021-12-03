@@ -470,6 +470,6 @@
     .hilo-in.es-gif {
         background-repeat: no-repeat !important;
         background-position: center !important;
-        background-color: var(--color9) !important;
+        background-size: cover !important;
     }
 </style>
