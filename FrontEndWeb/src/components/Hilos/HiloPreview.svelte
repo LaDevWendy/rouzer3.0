@@ -222,6 +222,19 @@
         e.preventDefault();
         toggle();
     }
+    let vistaPrevia = media.vistaPreviaCuadrado;
+
+    function esGif() {
+        if (media.url.includes(".gif")) {
+            vistaPrevia = `/Media/${media.url}`;
+        }
+    }
+
+    function reset() {
+        if (media.url.includes(".gif")) {
+            vistaPrevia = media.vistaPreviaCuadrado;
+        }
+    }
 </script>
 
 <li
@@ -293,9 +306,11 @@
     {/if}
 
     <a
-        style="background:url({media.vistaPreviaCuadrado})"
+        style="background:url({vistaPrevia})"
         href="/Hilo/{hilo.id}"
-        class="hilo-in"
+        class="hilo-in{media.url.includes('.gif') ? ' es-gif' : ''}"
+        on:mouseover={esGif}
+        on:mouseleave={reset}
         on:click={onClick}
         transition:fly|local={{ duration: 250 }}
     >
@@ -451,5 +466,10 @@
         position: relative;
         top: -2px;
         background-size: 100%;
+    }
+    .hilo-in.es-gif {
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-color: var(--color9) !important;
     }
 </style>
