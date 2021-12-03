@@ -126,7 +126,7 @@
     }
 
     async function onContexMenu(e) {
-        if (teclas.estaPresionada("x") && $globalStore.usuario.esMod) {
+        if (teclas.estaPresionada("x") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             RChanClient.eliminarComentarios([comentario.id]);
         }

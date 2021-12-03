@@ -60,7 +60,7 @@
 
     async function onContextMenu(e) {
         // AYNS
-        if (shortcuts.estaPresionada("a") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("a") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 2, false)).data
@@ -69,7 +69,7 @@
             return;
         }
         // DEP
-        if (shortcuts.estaPresionada("d") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("d") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 16, false)).data
@@ -78,7 +78,7 @@
             return;
         }
         // ECO
-        if (shortcuts.estaPresionada("e") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("e") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 29, false)).data
@@ -87,7 +87,7 @@
             return;
         }
         // GNR
-        if (shortcuts.estaPresionada("g") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("g") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 1, false)).data
@@ -96,7 +96,7 @@
             return;
         }
         // HMR
-        if (shortcuts.estaPresionada("h") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("h") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 11, false)).data
@@ -105,7 +105,7 @@
             return;
         }
         // JUE
-        if (shortcuts.estaPresionada("j") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("j") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 10, false)).data
@@ -114,7 +114,7 @@
             return;
         }
         // LIT
-        if (shortcuts.estaPresionada("l") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("l") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 12, false)).data
@@ -123,7 +123,7 @@
             return;
         }
         // MUS
-        if (shortcuts.estaPresionada("m") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("m") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 13, false)).data
@@ -132,7 +132,7 @@
             return;
         }
         // NPC
-        if (shortcuts.estaPresionada("n") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("n") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 21, false)).data
@@ -141,7 +141,7 @@
             return;
         }
         // O3P
-        if (shortcuts.estaPresionada("o") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("o") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 14, false)).data
@@ -150,7 +150,7 @@
             return;
         }
         // PRG
-        if (shortcuts.estaPresionada("p") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("p") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 18, false)).data
@@ -159,7 +159,7 @@
             return;
         }
         // RS
-        if (shortcuts.estaPresionada("r") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("r") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 20, false)).data
@@ -168,7 +168,7 @@
             return;
         }
         // SLD
-        if (shortcuts.estaPresionada("s") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("s") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 37, false)).data
@@ -177,7 +177,7 @@
             return;
         }
         // TEC
-        if (shortcuts.estaPresionada("t") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("t") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 23, false)).data
@@ -186,7 +186,7 @@
             return;
         }
         // UMA
-        if (shortcuts.estaPresionada("u") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("u") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 26, false)).data
@@ -195,7 +195,7 @@
             return;
         }
         // JTB
-        if (shortcuts.estaPresionada("y") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("y") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             console.log(
                 (await RChanClient.cambiarCategoria(hilo.id, 44, false)).data
@@ -203,17 +203,17 @@
             );
             return;
         }
-        if (shortcuts.estaPresionada("c") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("c") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             abrir.cambiarCategoria(hilo.id);
             return;
         }
-        if (shortcuts.estaPresionada("v") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("v") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             abrir.ban(hilo.id);
             return;
         }
-        if (shortcuts.estaPresionada("x") && $globalStore.usuario.esMod) {
+        if (shortcuts.estaPresionada("x") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             await RChanClient.borrarHilo(hilo.id);
             return;
@@ -231,7 +231,7 @@
     }}
     on:contextmenu={onContextMenu}
 >
-    {#if $globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar}
+    {#if $globalStore.usuario.esAuxiliar}
         <div
             class=""
             style="top: 0;

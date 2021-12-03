@@ -1,7 +1,7 @@
 {
   "General": {
     "LimiteBump": 500,
-    "HilosMaximosPorCategoria": 120,
+    "HilosMaximosPorCategoria": 190,
     "ModoPrivado": true,
     "TiempoEntreComentarios": 10,
     "TiempoEntreHilos": 300,
@@ -18,9 +18,9 @@
     "CaptchaComentario": false,
     "CaptchaRegistro": true,
     "Flags": "",
-    "Version": "3.5.0",
+    "Version": "3.5.0a",
     "Nombre": "Rouzed",
-    "Mensaje": "how 'bout this notions?",
+    "Mensaje": "how \u0027bout this notions?",
     "PalabrasCensuradas": ""
   }
 }
