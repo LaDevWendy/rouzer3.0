@@ -75,8 +75,25 @@ cp rozed/Otros/rozed.service  /etc/systemd/system/
 systemd enable rozed
 systemctl start  rozed
 ```
-## Yasta, con eso hecho Rozed ya deberia estar online!
-Pueden verla online en la ip donde esta alojada o en  http://localhost
+## Yasta, con eso hecho Rozed ya deberia estar online... NO! Te falta compilar el FrontEnd
+Primero instalar nodejs y npm
+```
+sudo apt install nodejs
+sudo apt install npm
+```
+Luego tenés que moverte a la carpeta /FrontEndWeb y ahí instalar las dependencias:
+```
+npm install
+```
+y reparar vulnerabilidades:
+```
+npm audit fix
+```
+Y ahora sí, finalmente, compilar el FrontEnd:
+```
+npm run build
+```
+Cuando termine pueden verla online en la ip donde esta alojada o en  http://localhost
 ![](https://i.imgur.com/phIG68M.png)
 ![](https://imgur.com/jS0Hsz3.png)
 ## Añadir Medz y admins
@@ -108,17 +125,13 @@ Una vez hecho esto deben editar el archivo de configuracion /WebApp/appsettings.
 En usar telegram ponen true, en BotId y ChatId obviamente ponen el token del bot y la id del canal.
 
 # Personalizacion basica
-Antes de comenzar a modificar Rozed es necesario descargar Node.JewS, necesitamos esto para instalar las boludeces javascript para compilar el front end.
-```
-curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
+El FrontEnd está hecho en svelte, ok? son archivos que contienen componentes del FrontEnd y combinan javascript, html y css.
 ### Cambiar el nombre
 Una manera facil de cambiar el nombre es usar la herramienta "buscar y remplazar" de algun editor de texto, y cambiar rozed por otro nombre.
 ### Cambiar los colores
 Para cambiar los colores hay que  editar unas variables en el archivo /WebApp/wwwroot/css/site.css
 ![](https://i.imgur.com/H5VlPqD.png)
-### Aplicar cambios
+### Aplicar cambios sobre archivos svelte
 Para que los cambios surtan efecto deben ubicarse enn la carpeta /FrontEndWeb y ejecutar el siguiente comando
 ```
 npm run build
