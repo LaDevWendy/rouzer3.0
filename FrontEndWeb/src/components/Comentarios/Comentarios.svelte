@@ -187,6 +187,7 @@
             }, 60);
         }
     }
+    export let hide
 </script>
 
 <svelte:window bind:scrollY />
@@ -202,7 +203,7 @@
         historial={historialRespuestas}
     />
     {#if !$configStore.general.modoMessi || $globalStore.usuario.esMod}
-        <Formulario {hilo} on:comentarioCreado={cargarNuevosComentarios} />
+        <Formulario {hilo} on:comentarioCreado={cargarNuevosComentarios} bind:hide />
     {/if}
 
     <SpamList {spams} />

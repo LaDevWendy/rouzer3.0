@@ -109,7 +109,7 @@
 
 		<HiloCuerpo {hilo} />
 	</div>
-	<Comentarios bind:comentarios {hilo} {spams} />
+	<Comentarios bind:comentarios {hilo} {spams} bind:hide={acciones.hideado} />
 </div>
 
 <style>

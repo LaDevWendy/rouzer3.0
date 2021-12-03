@@ -31,7 +31,7 @@
     }
     let error = null;
     let hide_flag = false;
-
+    export let hide;
     async function crearComentario() {
         if (espera != 0 || cargando) return;
 
@@ -42,6 +42,10 @@
                 comentarioConFlag += "\n";
             }
             comentarioConFlag += hide_flag ? ">hide\n" : "";
+            if (!hide) {
+                await RChanClient.agregar("ocultos", hilo.id);
+                hide = hide_flag;
+            }
             if (
                 $globalStore.usuario.esMod ||
                 ($globalStore.usuario.esAuxiliar && config.general.modoSerenito)
@@ -72,8 +76,7 @@
                 hide_flag = false;
             }
             mediaInput.removerArchivo();
-            if (hilo.audios)
-                audioInput.removerArchivo();
+            if (hilo.audios) audioInput.removerArchivo();
             dispatch("comentarioCreado");
         } catch (e) {
             error = e.response.data;
