@@ -711,6 +711,11 @@ button:active {
   width: 350px;
 }
 
+.comentario-flotante .header{
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+}
+
 #crear-hilo-form {
   position: fixed;
 
