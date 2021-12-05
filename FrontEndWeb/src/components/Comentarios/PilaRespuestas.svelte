@@ -1,44 +1,69 @@
 <script>
     import Comentario from "./Comentario.svelte";
-    import {fly} from "svelte/transition"
-    import {Button} from 'svelte-mui'
+    import { fly } from "svelte/transition";
+    import { Button } from "svelte-mui";
 
-    export let diccionarioRespuestas = {}
-    export let diccionarioComentarios = {}
+    export let diccionarioRespuestas = {};
+    export let diccionarioComentarios = {};
 
-    let diccionarioComentariosMap = new Map(Object.keys(diccionarioComentarios).map(k => [k, diccionarioComentarios[k]]))
-    let diccionarioRespuestasMap = new Map(Object.keys(diccionarioRespuestas).map(k => [k, diccionarioRespuestas[k]]))
+    let diccionarioComentariosMap = new Map(
+        Object.keys(diccionarioComentarios).map((k) => [
+            k,
+            diccionarioComentarios[k],
+        ])
+    );
+    let diccionarioRespuestasMap = new Map(
+        Object.keys(diccionarioRespuestas).map((k) => [
+            k,
+            diccionarioRespuestas[k],
+        ])
+    );
 
-    export let historial = []
+    export let historial = [];
 
     function atras() {
-        historial.pop()
-        historial = historial
+        historial.pop();
+        historial = historial;
     }
 
     function agregarComentariosAPila(comentarios) {
-        comentarios = comentarios.filter(c => c && c.id)
-        comentarios = [...new Set(comentarios)]
-        historial = [...historial, comentarios]
+        comentarios = comentarios.filter((c) => c && c.id);
+        comentarios = [...new Set(comentarios)];
+        historial = [...historial, comentarios];
     }
-
 </script>
+
 {#if historial.length != 0}
     <div class="fondo" on:click={atras}>
-        <div transition:fly={{duration:200, x:100}} class="pila-respuestas" on:click|stopPropagation>
+        <div
+            transition:fly={{ duration: 200, x: 100 }}
+            class="pila-respuestas"
+            on:click|stopPropagation
+        >
             <div class="acciones">
                 <Button on:click={atras}>Atras</Button>
-                <Button on:click={() => historial = []}>Cerrar</Button>
+                <Button on:click={() => (historial = [])}>Cerrar</Button>
             </div>
             <ul>
                 {#each historial[historial.length - 1] as c (c.id)}
                     <li>
                         <Comentario
-                            prevenirScroll = {true}
+                            prevenirScroll={true}
                             comentario={c}
                             respuetasCompactas={true}
-                            on:tagClickeado={(e) => agregarComentariosAPila([diccionarioComentariosMap.get(e.detail)])}
-                            on:motrarRespuestas={(e) => agregarComentariosAPila(diccionarioRespuestasMap.get(e.detail).map(  id => diccionarioComentariosMap.get(id)))}/>
+                            on:tagClickeado={(e) =>
+                                agregarComentariosAPila([
+                                    diccionarioComentariosMap.get(e.detail),
+                                ])}
+                            on:motrarRespuestas={(e) =>
+                                agregarComentariosAPila(
+                                    diccionarioRespuestasMap
+                                        .get(e.detail)
+                                        .map((id) =>
+                                            diccionarioComentariosMap.get(id)
+                                        )
+                                )}
+                        />
                     </li>
                 {/each}
             </ul>
@@ -58,7 +83,7 @@
     .pila-respuestas ul {
         overflow: hidden;
         overflow-y: scroll;
-        max-height:calc(100vh - 72px);
+        max-height: calc(100vh - 72px);
     }
     .fondo {
         position: fixed;
@@ -80,7 +105,7 @@
         background: var(--color4);
     }
 
-    .acciones :global(button){
-        flex:1;
+    .acciones :global(button) {
+        flex: 1;
     }
 </style>

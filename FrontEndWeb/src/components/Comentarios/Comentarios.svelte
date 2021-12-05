@@ -33,8 +33,8 @@
     let infLoadActivo = true;
     function cargarNuevosComentarios() {
         comentarios = [...nuevosComentarios, ...comentarios];
+        nuevosComentarios.forEach(agregarComentarioADiccionario);
         nuevosComentarios = [];
-        comentarios.forEach(agregarComentarioADiccionario);
         comentarios.forEach(cargarRespuestas);
         // Añadir el restag a los comentarios tageados por este comentario
         comentarios = comentarios;
@@ -54,8 +54,14 @@
             if (!diccionarioRespuestas[otraId])
                 diccionarioRespuestas[otraId] = [];
             diccionarioRespuestas[otraId].push(id);
-            diccionarioRespuestas[otraId] = diccionarioRespuestas[otraId];
+            diccionarioRespuestas[otraId] = diccionarioRespuestas[otraId].sort(
+                (c1, c2) =>
+                    diccionarioComentarios[c2].creacion.localeCompare(
+                        diccionarioComentarios[c1].creacion
+                    )
+            );
         }
+        diccionarioComentarios = diccionarioComentarios;
         diccionarioRespuestas = diccionarioRespuestas;
     }
 
@@ -187,7 +193,7 @@
             }, 60);
         }
     }
-    export let hide
+    export let hide;
 </script>
 
 <svelte:window bind:scrollY />
@@ -203,7 +209,11 @@
         historial={historialRespuestas}
     />
     {#if !$configStore.general.modoMessi || $globalStore.usuario.esMod}
-        <Formulario {hilo} on:comentarioCreado={cargarNuevosComentarios} bind:hide />
+        <Formulario
+            {hilo}
+            on:comentarioCreado={cargarNuevosComentarios}
+            bind:hide
+        />
     {/if}
 
     <SpamList {spams} />
@@ -294,12 +304,13 @@
                         on:tagClickeado={tagCliqueado}
                         on:idUnicoClickeado={idUnicoClickeado}
                         on:irAComentario={irAComentario}
-                        on:motrarRespuestas={(e) =>
-                            (historialRespuestas = [
+                        on:motrarRespuestas={(e) => {
+                            historialRespuestas = [
                                 diccionarioRespuestas[e.detail].map(
                                     (c) => diccionarioComentarios[c]
                                 ),
-                            ])}
+                            ];
+                        }}
                     />
                 </li>
             {/each}

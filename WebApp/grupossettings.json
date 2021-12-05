@@ -6,15 +6,8 @@
       "Categorias": [
         5,
         7,
+        8,
         37
-      ]
-    },
-    {
-      "Id": 2,
-      "Nombre": "Chadismo",
-      "Categorias": [
-        36,
-        8
       ]
     },
     {
@@ -36,6 +29,7 @@
       "Id": 4,
       "Nombre": "Entretenimiento",
       "Categorias": [
+        36,
         4,
         16,
         11,
@@ -50,6 +44,7 @@
         2,
         1,
         18,
+        22,
         24,
         25
       ]
@@ -58,17 +53,9 @@
       "Id": 6,
       "Nombre": "Internet",
       "Categorias": [
-        33,
         44,
         21,
         14
-      ]
-    },
-    {
-      "Id": 7,
-      "Nombre": "Meta",
-      "Categorias": [
-        22
       ]
     },
     {
@@ -93,6 +80,7 @@
       "Nombre": "Tecnología",
       "Categorias": [
         40,
+        33,
         38,
         23
       ]
