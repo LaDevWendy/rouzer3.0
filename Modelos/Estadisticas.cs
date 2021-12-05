@@ -9,7 +9,7 @@ namespace Modelos
         public int ComputadorasConectadas { get; set; }
         public int HilosCreados { get; set; }
         public int ComentariosCreados { get; set; }
-        public float Estabilidad =>  60 + (float)  (Math.Sin((float)(DateTimeOffset.Now.Hour)/24f) * 20 + Math.Sin((float)(DateTimeOffset.Now.Second)/60f) * 20);
+        public float Estabilidad =>  100f - (float)(Math.Sin((float)(Math.PI * DateTimeOffset.Now.Hour) / 24f) * 30f + Math.Sin((float)(Math.PI * DateTimeOffset.Now.Minute) / 60f) * 30f + Math.Sin((float)(Math.PI * DateTimeOffset.Now.Second) / 60f) * 30f);
     }
 
     public class Perlin

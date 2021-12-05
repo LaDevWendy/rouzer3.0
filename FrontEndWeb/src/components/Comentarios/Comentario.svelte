@@ -535,7 +535,8 @@
         background: #354e67;
     }
 
-    .color-multi {
+    .color-multi,
+    .color-invertido {
         background: linear-gradient(
             #ffc400 25%,
             #00408a 25%,
@@ -546,6 +547,9 @@
             #dd3226 100%
         );
         animation: multi 0.3s infinite;
+    }
+    .color-invertido {
+        filter: invert(1);
     }
 
     .color-navideño {

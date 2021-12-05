@@ -138,10 +138,11 @@ namespace Modelos
 
             if (r.Next(200) == 2)
             {
-                return r.Next(2) switch
+                return r.Next(3) switch
                 {
                     0 => "marron",
                     1 => "rosa",
+                    2 => "invertido",
                     _ => "",
                 };
             }
