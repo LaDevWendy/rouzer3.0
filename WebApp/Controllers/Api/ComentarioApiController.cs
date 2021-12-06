@@ -260,15 +260,15 @@ namespace WebApp.Controllers
             return new ApiResponse("Comentario creado!");
         }
 
-        async private Task<ActionResult<ApiResponse>> AutoDenunciar(DenunciaVM vm)
+        async private Task<ActionResult<ApiResponse>> AutoDenunciar(DenunciaVM vc)
         {
             var denuncia = new DenunciaModel
             {
-                Tipo = vm.Tipo,
-                HiloId = vm.HiloId,
-                ComentarioId = vm.ComentarioId,
-                Motivo = vm.Motivo,
-                Aclaracion = vm.Aclaracion,
+                Tipo = vc.Tipo,
+                HiloId = vc.HiloId,
+                ComentarioId = vc.ComentarioId,
+                Motivo = vc.Motivo,
+                Aclaracion = vc.Aclaracion,
             };
 
             denuncia.Id = hashService.Random();

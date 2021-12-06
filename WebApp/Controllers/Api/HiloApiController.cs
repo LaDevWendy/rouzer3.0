@@ -284,7 +284,7 @@ namespace WebApp.Controllers
         }
 
         [AllowAnonymous]
-        async public Task<ActionResult<ApiResponse>> Denunciar(DenunciaVM vm)
+        async public Task<ActionResult<ApiResponse>> Denunciar(DenunciaVM vc)
         {
             if (generalOptions.Value.IgnorarDenunciasAnonimas && !User.Identity.IsAuthenticated)
             {
@@ -303,11 +303,11 @@ namespace WebApp.Controllers
             }
             var denuncia = new DenunciaModel
             {
-                Tipo = vm.Tipo,
-                HiloId = vm.HiloId,
-                ComentarioId = vm.ComentarioId,
-                Motivo = vm.Motivo,
-                Aclaracion = vm.Aclaracion,
+                Tipo = vc.Tipo,
+                HiloId = vc.HiloId,
+                ComentarioId = vc.ComentarioId,
+                Motivo = vc.Motivo,
+                Aclaracion = vc.Aclaracion,
             };
             if (denuncia.ComentarioId == "") denuncia.ComentarioId = null;
             denuncia.Id = hashService.Random();
@@ -320,7 +320,7 @@ namespace WebApp.Controllers
                     d.Tipo == denuncia.Tipo && denuncia.HiloId == d.HiloId && d.ComentarioId == denuncia.ComentarioId);
 
             string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            yaDenuncio = yaDenuncio || denunciasIp.Contains(vm.HiloId + vm.ComentarioId ?? "" + ip);
+            yaDenuncio = yaDenuncio || denunciasIp.Contains(vc.HiloId + vc.ComentarioId ?? "" + ip);
 
             if (yaDenuncio) ModelState.AddModelError("hilo", "Ya fue denunciado");
 
@@ -336,7 +336,7 @@ namespace WebApp.Controllers
 
             await context.SaveChangesAsync();
 
-            denunciasIp.Add(vm.HiloId + vm.ComentarioId ?? "" + ip);
+            denunciasIp.Add(vc.HiloId + vc.ComentarioId ?? "" + ip);
 
             //Mandar denuncia a los medz
             denuncia = await context.Denuncias
@@ -378,15 +378,15 @@ namespace WebApp.Controllers
             return new ApiResponse("Denuncia enviada");
         }
 
-        async private Task<ActionResult<ApiResponse>> AutoDenunciar(DenunciaVM vm)
+        async private Task<ActionResult<ApiResponse>> AutoDenunciar(DenunciaVM vc)
         {
             var denuncia = new DenunciaModel
             {
-                Tipo = vm.Tipo,
-                HiloId = vm.HiloId,
-                ComentarioId = vm.ComentarioId,
-                Motivo = vm.Motivo,
-                Aclaracion = vm.Aclaracion,
+                Tipo = vc.Tipo,
+                HiloId = vc.HiloId,
+                ComentarioId = vc.ComentarioId,
+                Motivo = vc.Motivo,
+                Aclaracion = vc.Aclaracion,
             };
 
             denuncia.Id = hashService.Random();
@@ -481,12 +481,12 @@ namespace WebApp.Controllers
             return Ok(resultados);
         }
 
-        private ActionResult AgregarEncuesta(CrearHiloViewModel vm, HiloModel hilo)
+        private ActionResult AgregarEncuesta(CrearHiloViewModel vc, HiloModel hilo)
         {
             string[] opcionesEncuesta = null;
             try
             {
-                opcionesEncuesta = JsonConvert.DeserializeObject<string[]>(vm.Encuesta);
+                opcionesEncuesta = JsonConvert.DeserializeObject<string[]>(vc.Encuesta);
             }
             catch (Exception e)
             {

@@ -454,24 +454,24 @@ namespace WebApp.Controllers
             public bool BorrarAudio { get; set; }
         }
         [HttpPost]
-        public async Task<ActionResult> BorrarHilo(BorrarCreacionesVm vm)
+        public async Task<ActionResult> BorrarHilo(BorrarCreacionesVm vc)
         {
             var hilos = await context.Hilos
-                .Where(h => vm.Ids.Contains(h.Id))
+                .Where(h => vc.Ids.Contains(h.Id))
                 .Where(h => h.Estado != HiloEstado.Eliminado)
                 .ToListAsync();
 
             foreach (var h in hilos)
             {
                 await historial.RegistrarEliminacion(User.GetId(), h.Id);
-                if (vm.BorrarMedia && User.EsMod())
+                if (vc.BorrarMedia && User.EsMod())
                 {
                     if (!String.IsNullOrEmpty(h.MediaId))
                     {
                         await historial.RegistrarEliminacionMedia(User.GetId(), h.MediaId, h.Id);
                     }
                 }
-                if (vm.BorrarAudio && User.EsMod())
+                if (vc.BorrarAudio && User.EsMod())
                 {
                     if (!String.IsNullOrEmpty(h.AudioId))
                     {
@@ -479,9 +479,9 @@ namespace WebApp.Controllers
                     }
                 }
             }
-            await hiloService.EliminarHilos(vm.Ids, vm.BorrarMedia && User.EsMod(), vm.BorrarAudio && User.EsMod());
+            await hiloService.EliminarHilos(vc.Ids, vc.BorrarMedia && User.EsMod(), vc.BorrarAudio && User.EsMod());
 
-            var stickies = await context.Stickies.Where(s => vm.Ids.Contains(s.HiloId)).ToListAsync();
+            var stickies = await context.Stickies.Where(s => vc.Ids.Contains(s.HiloId)).ToListAsync();
             if (stickies.Any())
             {
                 foreach (Sticky s in stickies)
@@ -501,22 +501,22 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CambiarCategoria(CambiarCategoriaVm vm)
+        public async Task<ActionResult> CambiarCategoria(CambiarCategoriaVm vc)
         {
-            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == vm.HiloId);
+            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == vc.HiloId);
             if (hilo is null) return NotFound();
             var categoriaAntigua = hilo.CategoriaId;
 
-            if (!categoriasOpt.Value.Any(c => c.Id == vm.CategoriaId))
+            if (!categoriasOpt.Value.Any(c => c.Id == vc.CategoriaId))
             {
                 ModelState.AddModelError("Categoria", "La categoria es invalida");
                 return Json(ModelState);
             }
 
-            hilo.CategoriaId = vm.CategoriaId;
+            hilo.CategoriaId = vc.CategoriaId;
 
             var denunciasPorCategoriaIncorrecta = await context.Denuncias
-                .Where(d => d.HiloId == vm.HiloId)
+                .Where(d => d.HiloId == vc.HiloId)
                 .Where(d => d.Motivo == MotivoDenuncia.CategoriaIncorrecta)
                 .ToListAsync();
             denunciasPorCategoriaIncorrecta.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
@@ -526,12 +526,12 @@ namespace WebApp.Controllers
 
 
             // Advertencia por categoria incorrecta
-            if (vm.Advertencia)
+            if (vc.Advertencia)
             {
                 var advertencia = new BaneoModel
                 {
                     Id = hashService.Random(),
-                    Aclaracion = $"El roz fue movido de {categoriasOpt.Value.First(c => c.Id == categoriaAntigua).Nombre} a {categoriasOpt.Value.First(c => c.Id == vm.CategoriaId).Nombre}",
+                    Aclaracion = $"El roz fue movido de {categoriasOpt.Value.First(c => c.Id == categoriaAntigua).Nombre} a {categoriasOpt.Value.First(c => c.Id == vc.CategoriaId).Nombre}",
                     Creacion = DateTimeOffset.Now,
                     Expiracion = DateTimeOffset.Now + TimeSpan.FromSeconds(0),
                     ModId = User.GetId(),
@@ -550,7 +550,7 @@ namespace WebApp.Controllers
             await historial.RegistrarCambioDeCategoria(User.GetId(), hilo.Id, categoriaAntigua, hilo.CategoriaId);
 
             // Cambio de categoria tiempo real
-            await rchanHub.Clients.Group("home").SendAsync("categoriaCambiada", new { HiloId = hilo.Id, CategoriaId = vm.CategoriaId });
+            await rchanHub.Clients.Group("home").SendAsync("categoriaCambiada", new { HiloId = hilo.Id, CategoriaId = vc.CategoriaId });
             return Json(new ApiResponse("Categoria cambiada!"));
         }
 
