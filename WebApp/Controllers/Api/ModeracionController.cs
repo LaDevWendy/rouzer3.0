@@ -281,6 +281,7 @@ namespace WebApp.Controllers
                 HiloId = model.HiloId,
                 Ip = elemento.Ip,
                 UsuarioId = tipo == TipoElemento.Comentario ? comentario.UsuarioId : hilo.UsuarioId,
+                FingerPrint = elemento.FingerPrint
             };
 
             context.Bans.Add(ban);

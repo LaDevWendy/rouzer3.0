@@ -41,7 +41,7 @@ axios.interceptors.request.use(function (config) {
 
 export default class RChanClient {
     // Acciones
-    static crearHilo(titulo, categoria, contenido, archivo, link = "", audio = null, captcha = "", encuesta = [], mostrarNombre = false, mostrarRango = false) {
+    static crearHilo(titulo, categoria, contenido, fingerPrint, archivo, link = "", audio = null, captcha = "", encuesta = [], mostrarNombre = false, mostrarRango = false) {
         let form = new FormData()
         form.append("Titulo", titulo)
         form.append("CategoriaId", categoria)
@@ -55,49 +55,55 @@ export default class RChanClient {
             form.append('mostrarRango', mostrarRango)
         }
         form.append("Audio", audio);
+        form.append("FingerPrint", fingerPrint);
         return axios.post("/api/Hilo/Crear", form)
     }
 
-    static crearComentario(hiloId, contenido, archivo = null, link = "", audio = null, captcha = "", mostrarNombre = false, mostrarRango = false) {
+    static crearComentario(hiloId, contenido, fingerPrint, archivo = null, link = "", audio = null, captcha = "", mostrarNombre = false, mostrarRango = false) {
         let form = new FormData();
-        form.append('hiloId', hiloId)
-        form.append('contenido', contenido)
-        form.append('archivo', archivo)
+        form.append('HiloId', hiloId)
+        form.append('Contenido', contenido)
+        form.append('Archivo', archivo)
         form.append("Link", link)
         form.append('captcha', captcha)
         if (mostrarNombre || mostrarRango) {
             form.append('mostrarNombre', mostrarNombre)
             form.append('mostrarRango', mostrarRango)
         }
-        form.append("audio", audio)
+        form.append("Audio", audio)
+        form.append("FingerPrint", fingerPrint)
         return axios.post('/api/Comentario/Crear', form)
     }
 
-    static registrase(nick, contraseña, captcha, codigoDeInvitacion = "") {
+    static registrase(nick, contraseña, captcha, fingerPrint, codigoDeInvitacion = "") {
         return axios.post('/api/Usuario/Registro', {
             nick,
             contraseña,
             captcha,
             codigo: codigoDeInvitacion,
+            fingerPrint,
         })
     }
 
-    static restaurarSesion(token) {
+    static restaurarSesion(token, fingerPrint) {
         return axios.post('/api/Usuario/RestaurarSesion', {
-            token
+            token,
+            fingerPrint
         })
     }
-    static inicio(captcha, codigoDeInvitacion = "") {
+    static inicio(captcha, fingerPrint, codigoDeInvitacion = "") {
         return axios.post('/api/Usuario/Inicio', {
             captcha,
             codigo: codigoDeInvitacion,
+            fingerPrint
         })
     }
 
-    static logearse(nick, contraseña) {
+    static logearse(nick, contraseña, fingerPrint) {
         return axios.post('/api/Usuario/Login', {
             nick,
-            contraseña
+            contraseña,
+            fingerPrint
         })
     }
     static deslogearse() {

@@ -39,6 +39,8 @@ namespace Modelos
         [JsonIgnore, System.Text.Json.Serialization.JsonIgnore]
         public string Ip { get; set; }
         [JsonIgnore, System.Text.Json.Serialization.JsonIgnore]
+        public string FingerPrint { get; set; }
+        [JsonIgnore, System.Text.Json.Serialization.JsonIgnore]
         public string Token { get; set; } = "";
     }
 }

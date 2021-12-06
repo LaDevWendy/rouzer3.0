@@ -56,40 +56,42 @@ namespace WebApp.Controllers
         //         if(logueado)
         //         {
         //             return new ApiResponse("logueado", true, id);
-                    
+
         //         }
         //     }
         //     return new ApiResponse("error", false, usuarioResult.Errors);
         // }
         [HttpPost]
-        public async Task<ActionResult> Registro( RegistroVM model)
+        public async Task<ActionResult> Registro(RegistroVM model)
         {
-            if(!ModelState.IsValid) return BadRequest(ModelState);
-            if(await userManager.Users.AnyAsync(u => u.UserName == model.Nick))
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (await userManager.Users.AnyAsync(u => u.UserName == model.Nick))
             {
                 ModelState.AddModelError("Nick", "El nombre de usuario ya existe");
             }
-            if(!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var res = await CheckeosRegistro(model.Captcha, model.Codigo);
+            var res = await CheckeosRegistro(model.Captcha, model.Codigo, model.FingerPrint);
 
-            if(res != null) return res;
+            if (res != null) return res;
 
             UsuarioModel user = new UsuarioModel
             {
                 UserName = model.Nick,
                 Creacion = DateTimeOffset.Now,
                 Ip = HttpContext.GetIp(),
+                FingerPrint = model.FingerPrint
             };
             var createResult = await userManager.CreateAsync(user, model.Contraseña);
 
-            if(createResult.Succeeded) 
+            if (createResult.Succeeded)
             {
                 await signInManager.SignInAsync(user, true);
                 return Redirect("/");
 
             }
-            else {
+            else
+            {
                 return BadRequest(createResult.Errors);
             }
         }
@@ -97,44 +99,46 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> Inicio(InicioVM model)
         {
-            var res = await CheckeosRegistro(model.Captcha, model.Codigo);
-            if(res != null) return res;
+            var res = await CheckeosRegistro(model.Captcha, model.Codigo, model.FingerPrint);
+            if (res != null) return res;
 
             UsuarioModel user = new UsuarioModel
             {
                 UserName = "Anon." + hashService.Random(12),
                 Creacion = DateTimeOffset.Now,
                 Ip = HttpContext.GetIp(),
+                FingerPrint = model.FingerPrint
             };
             user.Token = hashService.Random(40);
             var createResult = await userManager.CreateAsync(user);
 
             await userManager.AddClaimAsync(user, new Claim("Token", user.Token));
 
-            if(createResult.Succeeded) 
+            if (createResult.Succeeded)
             {
                 await signInManager.SignInAsync(user, true);
                 return this.RedirectJson($"/Token?token={user.Token}");
 
             }
-            else {
+            else
+            {
                 return BadRequest(createResult.Errors);
             }
         }
 
-        private async Task<ActionResult> CheckeosRegistro(string captcha, string codigo) 
+        private async Task<ActionResult> CheckeosRegistro(string captcha, string codigo, string fingerPrint)
         {
-            var pasoElCaptcha= await this.captcha.Verificar(captcha);
+            var pasoElCaptcha = await this.captcha.Verificar(captcha);
 
-            if(!pasoElCaptcha && generalOptions.Value.CaptchaRegistro)
+            if (!pasoElCaptcha && generalOptions.Value.CaptchaRegistro)
             {
                 ModelState.AddModelError("Captcha", "Incorrecto");
             }
-            if(!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if(!generalOptions.Value.RegistroAbierto)
+            if (!generalOptions.Value.RegistroAbierto)
             {
-                if(string.IsNullOrWhiteSpace(codigo))
+                if (string.IsNullOrWhiteSpace(codigo))
                 {
                     ModelState.AddModelError("Uy!", "El registro y los inicios de sesion se encuentran deshabilitados por el momento");
                 }
@@ -144,12 +148,12 @@ namespace WebApp.Controllers
                 }
             }
 
-            if(!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             string ip = HttpContext.GetIp();
-            
-            var banActivo = await context.Bans.BansActivos(User.GetId(), ip).FirstOrDefaultAsync();
-            if(banActivo != null)
+
+            var banActivo = await context.Bans.BansActivos(User.GetId(), ip, fingerPrint).FirstOrDefaultAsync();
+            if (banActivo != null)
             {
                 return this.RedirectJson($"/Domado/{banActivo.Id}");
                 // ModelState.AddModelError("Uff", "Esta ip esta baneada, no te podes registrar");
@@ -159,71 +163,72 @@ namespace WebApp.Controllers
             // Checkear cuentas creadas desde esa ip
             var unaSemanaAntes = DateTimeOffset.Now - TimeSpan.FromDays(7);
             int registrosPrevios = await context.Usuarios.CountAsync(u => u.Ip == ip && u.Creacion > unaSemanaAntes);
-            if(registrosPrevios >= generalOptions.Value.NumeroMaximoDeCuentasPorIp)
+            if (registrosPrevios >= generalOptions.Value.NumeroMaximoDeCuentasPorIp)
             {
                 ModelState.AddModelError("Jijo de buta", "Llegaste al numero maximo de sesiones/registros por ip");
-                if(!ModelState.IsValid) return BadRequest(ModelState);
+                if (!ModelState.IsValid) return BadRequest(ModelState);
             }
 
             return null;
         }
 
         [HttpGet, Route("/Login")]
-        public  ActionResult Login() 
+        public ActionResult Login()
         {
             return View("Login");
         }
 
         [HttpGet, Route("/Registro")]
-        public  ActionResult Registro(string codigoDeInvitacion) 
+        public ActionResult Registro(string codigoDeInvitacion)
         {
-            return View("Registro", new {codigoDeInvitacion});
+            return View("Registro", new { codigoDeInvitacion });
         }
 
         [HttpGet, Route("/Token")]
-        public  async Task<ActionResult> Token(string token) 
+        public async Task<ActionResult> Token(string token)
         {
-            if(string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrWhiteSpace(token))
             {
-                if(!User.Identity.IsAuthenticated) return this.Redirect("/Inicio");
+                if (!User.Identity.IsAuthenticated) return this.Redirect("/Inicio");
                 token = (await userManager.GetUserAsync(User)).Token;
             }
-            return View("Token", new {token});
+            return View("Token", new { token });
         }
 
         public class RestaurarSesionVm
         {
             public string Token { get; set; }
+            public string FingerPrint { get; set; }
         }
         [HttpPost]
-        public  async Task<ActionResult> RestaurarSesion(RestaurarSesionVm model) 
+        public async Task<ActionResult> RestaurarSesion(RestaurarSesionVm model)
         {
-            if(model.Token.Length < 20) ModelState.AddModelError("Jijo", "Token invalido");
-            if(!ModelState.IsValid) return BadRequest(ModelState);
+            if (model.Token.Length < 20) ModelState.AddModelError("Jijo", "Token invalido");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var user = await userManager.Users.FirstOrDefaultAsync(u => u.Token == model.Token);
-            if(user == null) ModelState.AddModelError("Jijo", "Token invalido");
-            if(!ModelState.IsValid) return BadRequest(ModelState);
+            if (user == null) ModelState.AddModelError("Jijo", "Token invalido");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
 
             //Checkeo ban
             string ip = HttpContext.GetIp();
-            var ban =  (await context.Bans
-                .Where(b => b.UsuarioId == user.Id || b.Ip == ip)
+            var ban = (await context.Bans
+                .Where(b => b.UsuarioId == user.Id || b.Ip == ip || b.FingerPrint == model.FingerPrint)
                 .ToListAsync())
                 .FirstOrDefault(b => b.Expiracion > DateTimeOffset.Now);
 
-            if(ban != null) return this.RedirectJson($"/Domado/{ban.Id}");
+            if (ban != null) return this.RedirectJson($"/Domado/{ban.Id}");
 
             await signInManager.SignInAsync(user, true);
             return this.RedirectJson("/");
         }
         [HttpGet, Route("/Inicio")]
-        public  ActionResult Inicio(string codigoDeInvitacion) 
+        public ActionResult Inicio(string codigoDeInvitacion)
         {
-            return View("Inicio", new {codigoDeInvitacion});
+            return View("Inicio", new { codigoDeInvitacion });
         }
         [HttpGet, Route("/Domado/{id?}")]
-        public  async Task<ActionResult> Domado(string id) 
+        public async Task<ActionResult> Domado(string id)
         {
             string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             var ban = await context.Bans
@@ -233,14 +238,14 @@ namespace WebApp.Controllers
                 .Include(b => b.Comentario)
                 .FirstOrDefaultAsync(b => b.UsuarioId == User.GetId() || b.Ip == ip);
 
-            if(ban is null && !string.IsNullOrWhiteSpace(id)) 
+            if (ban is null && !string.IsNullOrWhiteSpace(id))
             {
                 ban = await context.Bans
                     .Include(b => b.Hilo)
                     .FirstOrDefaultAsync(b => b.Id == id);
             }
 
-            if(ban is null) return Redirect("/");
+            if (ban is null) return Redirect("/");
 
             var bans = await context.Bans
                     .Where(b => b.UsuarioId == User.GetId() || b.Ip == ip)
@@ -250,68 +255,73 @@ namespace WebApp.Controllers
             await context.SaveChangesAsync();
 
             // await signInManager.SignOutAsync();
-            
-            return View("Ban", new {Ban = new {
-                Hilo = ban?.Hilo?.Titulo ?? " ",
-                ban.Id,
-                ban.Tipo,
-                ban.Creacion,
-                ban.Expiracion,
-                ban.Duracion,
-                Motivo = ban.Motivo.ToString("g"),
-                ban.Aclaracion,
-            }});
+
+            return View("Ban", new
+            {
+                Ban = new
+                {
+                    Hilo = ban?.Hilo?.Titulo ?? " ",
+                    ban.Id,
+                    ban.Tipo,
+                    ban.Creacion,
+                    ban.Expiracion,
+                    ban.Duracion,
+                    Motivo = ban.Motivo.ToString("g"),
+                    ban.Aclaracion,
+                }
+            });
         }
-        
+
         [HttpPost, Route("/Logout")]
-        public async Task<ActionResult> Logout() 
+        public async Task<ActionResult> Logout()
         {
             await signInManager.SignOutAsync();
             return Redirect("/");
         }
 
         [HttpPost]
-        public async Task<ActionResult> Login( RegistroVM model)
+        public async Task<ActionResult> Login(RegistroVM model)
         {
             var user = await userManager.Users.FirstOrDefaultAsync(u => u.UserName == model.Nick);
-            if(user == null) ModelState.AddModelError("Nick", "No se encontro el usuario");
-            if(!ModelState.IsValid) return BadRequest(ModelState);
+            if (user == null) ModelState.AddModelError("Nick", "No se encontro el usuario");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var contraseñaCorrecta= (await signInManager.CheckPasswordSignInAsync(user, model.Contraseña, false)).Succeeded;
+            var contraseñaCorrecta = (await signInManager.CheckPasswordSignInAsync(user, model.Contraseña, false)).Succeeded;
 
-            if(!contraseñaCorrecta) 
-            { 
-                ModelState.AddModelError("Contraseña","La constraseña es incorrecta");
+            if (!contraseñaCorrecta)
+            {
+                ModelState.AddModelError("Contraseña", "La constraseña es incorrecta");
                 return BadRequest(ModelState);
             }
 
             //Checkeo ban
             string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            var ban =  (await context.Bans
-                .Where(b => b.UsuarioId == user.Id || b.Ip == ip)
+            var ban = (await context.Bans
+                .Where(b => b.UsuarioId == user.Id || b.Ip == ip || b.FingerPrint == model.FingerPrint)
                 .ToListAsync())
                 .FirstOrDefault(b => b.Expiracion > DateTimeOffset.Now);
 
-            if(ban != null) return this.RedirectJson($"/Domado/{ban.Id}");
+            if (ban != null) return this.RedirectJson($"/Domado/{ban.Id}");
 
             var result = await signInManager.PasswordSignInAsync(user, model.Contraseña, true, false);
-            if(result.Succeeded) return this.RedirectJson("/");
-        
+            if (result.Succeeded) return this.RedirectJson("/");
+
             return BadRequest(ModelState);
         }
     }
-    
+
     public class RegistroVM
     {
-        [MinLength(4, ErrorMessage="Minimo 4 letras")]
-        [Required(ErrorMessage="Tienes que escribir un nick padre")]
-        [MaxLength(30, ErrorMessage="para la mano")]
+        [MinLength(4, ErrorMessage = "Minimo 4 letras")]
+        [Required(ErrorMessage = "Tienes que escribir un nick padre")]
+        [MaxLength(30, ErrorMessage = "para la mano")]
 
         public string Nick { get; set; }
-        [MinLength(6, ErrorMessage="Minimo 6 letras")]
-        [Required(ErrorMessage="Contraseña requerida")]
-        [MaxLength(30, ErrorMessage="para la mano")]
+        [MinLength(6, ErrorMessage = "Minimo 6 letras")]
+        [Required(ErrorMessage = "Contraseña requerida")]
+        [MaxLength(30, ErrorMessage = "para la mano")]
         public string Contraseña { get; set; }
+        public string FingerPrint { get; set; }
         public string Captcha { get; set; }
 
         public string Codigo { get; set; }
@@ -320,13 +330,15 @@ namespace WebApp.Controllers
     {
         public string Captcha { get; set; }
         public string Codigo { get; set; }
+        public string FingerPrint { get; set; }
     }
 
-    public static class  ControllerExtensions 
+    public static class ControllerExtensions
     {
         public static ActionResult RedirectJson(this Controller controller, string path)
         {
-            return controller.Json(new {
+            return controller.Json(new
+            {
                 Redirect = path
             });
         }

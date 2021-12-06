@@ -18,6 +18,7 @@ namespace Modelos
         public string Pais { get; set; }
         public AudioModel Audio { get; set; }
         public string AudioId { get; set; }
+        public string FingerPrint { get; set; }
     }
 
     public enum CreacionRango

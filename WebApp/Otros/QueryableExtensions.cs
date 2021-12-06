@@ -53,20 +53,20 @@ namespace WebApp
                 .Include(d => d.Hilo.Usuario);
         }
 
-        public static IQueryable<BaneoModel> BansActivos(this IQueryable<BaneoModel> baneos, string usuarioId, string ip)
+        public static IQueryable<BaneoModel> BansActivos(this IQueryable<BaneoModel> baneos, string usuarioId, string ip, string fingerPrint)
         {
             var ahora = DateTimeOffset.Now;
             return baneos
                     .OrderByDescending(b => b.Expiracion)
                     .Where(b => b.Visto)
                     .Where(b => b.Expiracion > ahora)
-                    .Where(b => b.UsuarioId == usuarioId || b.Ip == ip);
+                    .Where(b => b.UsuarioId == usuarioId || b.Ip == ip || b.FingerPrint == fingerPrint);
         }
 
-        public static async Task<bool> EstaBaneado(this IQueryable<BaneoModel> baneos, string usuarioId, string ip)
+        public static async Task<bool> EstaBaneado(this IQueryable<BaneoModel> baneos, string usuarioId, string ip, string fingerPrint)
         {
             return (await baneos
-                .BansActivos(usuarioId, ip)
+                .BansActivos(usuarioId, ip, fingerPrint)
                 .FirstOrDefaultAsync()) != null;
         }
         public static IQueryable<ComentarioViewModelMod> AViewModelMod(this IQueryable<ComentarioModel> comentarios)

@@ -13,6 +13,7 @@
     import { tick } from "svelte";
     import ajustesConfigStore from "../Dialogos/ajustesConfigStore";
     //import AudioInput from "../AudioInput.svelte";
+    import { fpPromise } from "../../fingerprint";
 
     export let mostrar = false;
 
@@ -59,11 +60,13 @@
         // contenidoConFlags += audio_flag? ">>audios\n": audio ? ">>audios\n" : "";
         try {
             let r = null;
+            let result = await (await fpPromise).get();
             if (!$globalStore.usuario.esMod) {
                 r = await await RChanClient.crearHilo(
                     titulo,
                     categoria,
                     contenidoConFlags,
+                    result.visitorId,
                     media.archivo,
                     media.link,
                     audio,
@@ -75,6 +78,7 @@
                     titulo,
                     categoria,
                     contenidoConFlags,
+                    result.visitorId,
                     media.archivo,
                     media.link,
                     audio,
@@ -127,7 +131,9 @@
             />
             {#if $ajustesConfigStore.catClasicas}
                 <select bind:value={categoria} name="categoria">
-                    <option value="-1" selected="selected" disabled="disabled">Categoría</option>
+                    <option value="-1" selected="selected" disabled="disabled"
+                        >Categoría</option
+                    >
                     {#each config.categorias as c}
                         <option value={c.id}>{c.nombre}</option>
                     {/each}

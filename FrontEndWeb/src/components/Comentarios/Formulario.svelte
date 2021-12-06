@@ -9,6 +9,7 @@
     import config from "../../config";
     import globalStore from "../../globalStore";
     import AudioInput from "../AudioInput.svelte";
+    import { fpPromise } from "../../fingerprint";
 
     let dispatch = createEventDispatcher();
 
@@ -48,6 +49,7 @@
                 }
                 hide = hide_flag;
             }
+            let result = await (await fpPromise).get();
             if (
                 $globalStore.usuario.esMod ||
                 ($globalStore.usuario.esAuxiliar && config.general.modoSerenito)
@@ -55,6 +57,7 @@
                 await RChanClient.crearComentario(
                     hilo.id,
                     comentarioConFlag,
+                    result.visitorId,
                     media.archivo,
                     media.link,
                     audio,
@@ -66,6 +69,7 @@
                 await RChanClient.crearComentario(
                     hilo.id,
                     comentarioConFlag,
+                    result.visitorId,
                     media.archivo,
                     media.link,
                     audio

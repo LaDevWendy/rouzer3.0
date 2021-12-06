@@ -110,6 +110,7 @@ namespace WebApp.Controllers
                 CategoriaId = vm.CategoriaId,
                 Bump = DateTimeOffset.Now,
                 Ip = ip,
+                FingerPrint = vm.FingerPrint
             };
 
             //Encuestas

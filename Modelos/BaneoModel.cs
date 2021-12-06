@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Modelos
 {
-    public class BaneoModel: BaseModel
+    public class BaneoModel : BaseModel
     {
         public string UsuarioId { get; set; }
 
@@ -32,6 +32,8 @@ namespace Modelos
         public string Ip { get; set; }
 
         public UsuarioModel Usuario { get; set; }
+        [JsonIgnore]
+        public string FingerPrint { get; set; }
     }
-    
+
 }

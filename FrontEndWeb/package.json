@@ -29,6 +29,7 @@
   "dependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
+    "@fingerprintjs/fingerprintjs-pro": "^3.5.3",
     "@microsoft/signalr": "^3.1.9",
     "@sveltejs/svelte-virtual-list": "^3.0.1",
     "axios": "^0.24.0",

@@ -64,7 +64,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost, Authorize, ValidateAntiForgeryToken]
-        public async Task<ActionResult<ApiResponse>> Crear([FromForm] ComentarioFormViewModel vm)
+        public async Task<ActionResult<ApiResponse>> Crear([FromForm] CrearComentarioViewModel vm)
         {
             if (vm.Contenido is null) vm.Contenido = "";
             if (string.IsNullOrWhiteSpace(vm.Contenido) && vm.Archivo is null && string.IsNullOrWhiteSpace(vm.Link) && vm.Audio is null)
@@ -111,6 +111,7 @@ namespace WebApp.Controllers
                 Contenido = vm.Contenido,
                 Creacion = DateTimeOffset.Now,
                 Ip = ip,
+                FingerPrint = vm.FingerPrint
             };
 
             MediaModel media = null;
@@ -314,17 +315,4 @@ namespace WebApp.Controllers
             return new ApiResponse("Denuncia enviada");
         }
     }
-}
-
-public class ComentarioFormViewModel
-{
-    [Required]
-    public string HiloId { get; set; }
-    [MaxLength(3000, ErrorMessage = "Pero este comentario es muy largo padre")]
-    public string Contenido { get; set; } = "";
-    public IFormFile Archivo { get; set; }
-    public IFormFile Audio { get; set; }
-    public string Link { get; set; }
-    public bool MostrarRango { get; set; } = false;
-    public bool MostrarNombre { get; set; } = false;
 }
