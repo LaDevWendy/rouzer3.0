@@ -8,7 +8,7 @@
     import Spinner from "../Spinner.svelte";
     import config from "../../config";
     import globalStore from "../../globalStore";
-    import AudioInput from "../AudioInput.svelte";
+    // import AudioInput from "../AudioInput.svelte";
     import { fpPromise } from "../../fingerprint";
 
     let dispatch = createEventDispatcher();
@@ -21,10 +21,12 @@
     let media;
     let mediaInput;
     let audio = null;
-    let audioInput;
+    //let audioInput;
 
     let mostrarRango = false;
     let mostrarNombre = false;
+
+    const risas = new Audio("/audio/risas.mp3");
 
     let espera = 0;
     $: if (espera != 0) {
@@ -75,6 +77,7 @@
                     audio
                 );
             }
+            risas.play();
             if (!$globalStore.usuario.esMod) {
                 espera = config.general.tiempoEntreComentarios;
             }
@@ -82,7 +85,7 @@
                 hide_flag = false;
             }
             mediaInput.removerArchivo();
-            if (hilo.audios) audioInput.removerArchivo();
+            //if (hilo.audios) audioInput.removerArchivo();
             dispatch("comentarioCreado");
         } catch (e) {
             error = e.response.data;
@@ -112,9 +115,9 @@
 >
     <ErrorValidacion {error} />
     <MediaInput bind:this={mediaInput} bind:media compacto={true} />
-    {#if hilo.audios}
+    <!--{#if hilo.audios}
         <AudioInput bind:this={audioInput} bind:blobAudio={audio} />
-    {/if}
+    {/if}-->
     <textarea
         on:focus={onFocus}
         bind:value={$comentarioStore}

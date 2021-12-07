@@ -115,7 +115,10 @@ namespace Servicios
                 {
                     foreach (var value in exif.Values.ToList())
                     {
-                        exif.RemoveValue(value.Tag);
+                        if (value.Tag.ToString() != "Orientation")
+                        {
+                            exif.RemoveValue(value.Tag);
+                        }
                     }
                 }
             }

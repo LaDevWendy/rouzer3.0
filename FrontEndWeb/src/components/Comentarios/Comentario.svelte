@@ -14,7 +14,8 @@
     import selectorStore from "../Moderacion/selectorStore";
     import teclas from "../../shorcuts";
     import RChanClient from "../../RChanClient";
-    import Audio from "../Audio.svelte";
+    // import Audio from "../Audio.svelte";
+    import MediaType from "../../MediaType";
 
     export let comentario;
     export let hilo = { id: null };
@@ -221,7 +222,7 @@
         <span class="tiempo"><Tiempo date={comentario.creacion} /></span>
 
         <div>
-            {#if $globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar}
+            {#if $globalStore.usuario.esAuxiliar}
                 <Menu>
                     <span
                         slot="activador"
@@ -276,6 +277,13 @@
                                 )}>Restaurar</Menuitem
                         >
                     {/if}
+                    {#if $globalStore.usuario.esMod && comentario.media && comentario.media.tipo != MediaType.Eliminado}
+                        <Menuitem
+                            on:click={() =>
+                                abrir.eliminarMedia(comentario.media.id)}
+                            >Eliminar media</Menuitem
+                        >
+                    {/if}
                 </Menu>
             {:else}
                 <div class="acciones-comentario">
@@ -309,9 +317,9 @@
             {#if comentario.media}
                 <Media media={comentario.media} bind:abierto={mediaExpandido} />
             {/if}
-            {#if comentario.audio}
+            <!--{#if comentario.audio}
                 <Audio urlBlobAudio={comentario.audio.url} />
-            {/if}
+            {/if}-->
             <span class="texto">
                 {@html comentario.contenido}
             </span>
@@ -421,8 +429,15 @@
         border-radius: 4px;
     }
     /* Gorritos */
-    /* .color-rojo::after, .color-multi::after, .comentarioMod .color::after, .color-navideño::after {
-        content: '';
+    .color-rojo::after,
+    .color-verde::after,
+    .color-multi::after,
+    .color-blanco::after,
+    .color-negro::after,
+    .comentarioMod .color::after,
+    .color-navideño::after,
+    .color-invertido::after {
+        content: "";
         background: url(/imagenes/colores/gorrito.png);
         position: absolute;
         top: 1px;
@@ -432,7 +447,43 @@
         background-size: 85%;
         background-repeat: no-repeat;
         transform: rotate(-4deg);
-    } */
+    }
+
+    .color-invertido::after {
+        filter: invert(1);
+    }
+
+    .color-negro::after {
+        filter: grayscale(1);
+    }
+
+    .comentarioMod .color::after {
+        animation: gorro 0.3s infinite alternate-reverse;
+    }
+
+    @keyframes gorro {
+        0% {
+            filter: hue-rotate(0);
+        }
+        100% {
+            filter: hue-rotate(-100deg);
+        }
+    }
+
+    .color-amarillo::after,
+    .color-azul::after,
+    .color-marron::after,
+    .color-rosa::after,
+    .color-ario::after {
+        background: url(/imagenes/nieve.png);
+        content: "";
+        position: absolute;
+        top: 3px;
+        height: 50px;
+        width: 50px;
+        background-size: 100%;
+        background-repeat: no-repeat;
+    }
 
     .comentario .header {
         grid-template-areas: color;
@@ -535,8 +586,7 @@
         background: #354e67;
     }
 
-    .color-multi,
-    .color-invertido {
+    .color-multi {
         background: linear-gradient(
             #ffc400 25%,
             #00408a 25%,
@@ -548,8 +598,18 @@
         );
         animation: multi 0.3s infinite;
     }
+
     .color-invertido {
-        filter: invert(1);
+        background: linear-gradient(
+            #003bff 25%,
+            #ffbf75 25%,
+            #ffbf75 50%,
+            #ac5ac7 50%,
+            #ac5ac7 75%,
+            #22cdd9 75%,
+            #22cdd9 100%
+        );
+        animation: invertido 0.3s infinite;
     }
 
     .color-navideño {
@@ -636,6 +696,53 @@
                 #53a538 75%,
                 #dd3226 75%,
                 #dd3226 100%
+            );
+        }
+    }
+
+    @keyframes invertido {
+        20% {
+            background: linear-gradient(
+                #22cdd9 25%,
+                #003bff 25%,
+                #003bff 50%,
+                #ffbf75 50%,
+                #ffbf75 75%,
+                #ac5ac7 75%,
+                #ac5ac7 100%
+            );
+        }
+        60% {
+            background: linear-gradient(
+                #ac5ac7 25%,
+                #22cdd9 25%,
+                #22cdd9 50%,
+                #003bff 50%,
+                #003bff 75%,
+                #ffbf75 75%,
+                #ffbf75 100%
+            );
+        }
+        80% {
+            background: linear-gradient(
+                #ffbf75 25%,
+                #ac5ac7 25%,
+                #ac5ac7 50%,
+                #22cdd9 50%,
+                #22cdd9 75%,
+                #003bff 75%,
+                #003bff 100%
+            );
+        }
+        100% {
+            background: linear-gradient(
+                #003bff 25%,
+                #ffbf75 25%,
+                #ffbf75 50%,
+                #ac5ac7 50%,
+                #ac5ac7 75%,
+                #22cdd9 75%,
+                #22cdd9 100%
             );
         }
     }

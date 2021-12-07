@@ -1,25 +1,37 @@
 <script>
-    import { MotivoDenuncia } from '../../enums';
-    import { formatearTiempo, formatearTimeSpan}  from '../../helper'
-    import Comentario from "../Comentarios/Comentario.svelte"
+    import { MotivoDenuncia } from "../../enums";
+    import { formatearTiempo, formatearTimeSpan } from "../../helper";
+    import Comentario from "../Comentarios/Comentario.svelte";
     import HiloPreviewMod from "../Moderacion/HiloPreviewMod.svelte";
 
-    export let ban
+    export let ban;
 </script>
 
 <div class="ban">
-    <p>Mod: <a style="color:var(--color6)" href="/Moderacion/HistorialDeUsuario/{ban.modId}">{ban.modId}</a></p>
-    <p>Aclaracion: {ban.aclaracion ||" "}</p>
-    <p>Motivo: { MotivoDenuncia.aString(ban.motivo)}</p>
+    <p>
+        Mod: <a
+            style="color:var(--color6)"
+            href="/Moderacion/HistorialDeUsuario/{ban.modId}">{ban.modId}</a
+        >
+    </p>
+    <p>
+        Usuario: <a
+            style="color:var(--color6)"
+            href="/Moderacion/HistorialDeUsuario/{ban.usuarioId}"
+            >{ban.usuarioId}</a
+        >
+    </p>
+    <p>Aclaracion: {ban.aclaracion || " "}</p>
+    <p>Motivo: {MotivoDenuncia.aString(ban.motivo)}</p>
     <p>Fecha: {formatearTiempo(ban.creacion)}</p>
     <p>Duracion: {formatearTimeSpan(ban.duracion)}</p>
     <p>Id del ban: {ban.id}</p>
 
-    {#if ban.comentario} 
-        <Comentario comentario={ban.comentario}/>
+    {#if ban.comentario}
+        <Comentario comentario={ban.comentario} />
     {/if}
-    {#if ban.hilo} 
-        <HiloPreviewMod hilo={ban.hilo}/>
+    {#if ban.hilo}
+        <HiloPreviewMod hilo={ban.hilo} />
     {/if}
 </div>
 

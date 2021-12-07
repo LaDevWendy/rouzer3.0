@@ -15,6 +15,7 @@
 	import Encuesta from "./components/Hilos/Encuesta.svelte";
 	import { HiloEstado } from "./enums";
 	import { onMount, tick } from "svelte";
+	import MediaType from "./MediaType";
 
 	let data = window.data || dataEjemplo;
 	let { hilo, comentarios, acciones, usuario, spams } = data;
@@ -92,14 +93,19 @@
 					<Button on:click={() => abrir.eliminarHilo(hilo.id)}
 						>Eliminar</Button
 					>
-				{/if}
-				{#if hilo.estado == HiloEstado.eliminado}
+				{:else}
 					<Button on:click={() => abrir.restaurarHilo(hilo.id)}
 						>Restaurar</Button
 					>
 				{/if}
 				<Button on:click={() => abrir.ban(hilo.id)}>Banear</Button>
 				{#if $globalStore.usuario.esMod}
+					{#if hilo.media && hilo.media != MediaType.Eliminado}
+						<Button
+							on:click={() => abrir.eliminarMedia(hilo.media.id)}
+							>Eliminar media</Button
+						>
+					{/if}
 					<a href="/Moderacion/HistorialDeUsuario/{usuario.id}">
 						<Button>Op</Button>
 					</a>

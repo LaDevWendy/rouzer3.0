@@ -19,7 +19,7 @@
     import Halloween from "./Especiales/Halloween.svelte";
     import Estadisticas from "./Estadisticas.svelte";
     import RChanClient from "../RChanClient";
-    // import Lucesitas from './Lucesitas.svelte'
+    import Lucesitas from './Lucesitas.svelte'
     // import Cuetitos from './Especiales/Cuetitos.svelte'
     // import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
 
@@ -96,7 +96,7 @@
     bind:offsetHeight={height}
 >
     <nav style="height:0">
-        <!-- <Lucesitas/> -->
+        <Lucesitas/>
         <div class="nav-principal" class:modoSticky={scrollY > 50}>
             <div
                 class="fondo"
@@ -377,17 +377,17 @@
         pointer-events: none;
     }
     /* Gorritos */
-    /* .rozed::after {
-    content: "";
-    position: absolute;
-    top: 5px;
-    right: 7px;
-    height: 32px;
-    width: 32px;
-    transform: rotate(-4deg) scaleX(-1);
-    background: url(/imagenes/colores/gorrito.png) 0% 0% / 85% no-repeat;
-    background-repeat: no-repeat;
-} */
+    .rozed::after {
+        content: "";
+        position: absolute;
+        top: 5px;
+        right: 7px;
+        height: 32px;
+        width: 32px;
+        transform: rotate(-4deg) scaleX(-1);
+        background: url(/imagenes/colores/gorrito.png) 0% 0% / 85% no-repeat;
+        background-repeat: no-repeat;
+    }
 
     .modoSticky {
         position: fixed;

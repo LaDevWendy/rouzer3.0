@@ -53,6 +53,10 @@ namespace Modelos
                     {
                         this.Banderita = "py";
                     }
+                    if (comentario.UsuarioId == "7c599f68-6195-4d08-b7af-34052d2a3f44")
+                    {
+                        this.Banderita = "cl";
+                    }
                     if (!string.IsNullOrEmpty(comentario.Nombre) || comentario.Rango != CreacionRango.Anon)
                     {
                         this.Banderita = null;

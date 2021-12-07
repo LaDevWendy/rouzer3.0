@@ -197,9 +197,10 @@
 >
     <span slot="activador" />
     <div slot="body">
-        <Checkbox bind:checked={$dialogosStore.mediaEliminarDependientes} right
+        ¿Estas seguro de que queres borrar el media {$dialogosStore.mediaId}?
+        <!--<Checkbox bind:checked={$dialogosStore.mediaEliminarDependientes} right
             >Eliminar todos los elementos con este archivo?</Checkbox
-        >
+        >-->
     </div>
 </Dialogo>
 

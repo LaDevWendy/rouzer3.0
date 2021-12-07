@@ -238,11 +238,8 @@ export default class RChanClient {
     static eliminarMedias(ids) {
         return axios.post(`/api/Moderacion/EliminarMedia`, ids)
     }
-    static eliminarMedia(mediaId, eliminarElementos = true) {
-        return axios.post(`/api/Moderacion/EliminarMedia`, {
-            mediaId,
-            eliminarElementos,
-        })
+    static eliminarMedia(mediaId) {
+        return axios.post(`/api/Moderacion/EliminarMedia`, [mediaId])
     }
     static limpiarRozesViejos() {
         return axios.post(`/api/Administracion/LimpiarRozesViejos`)

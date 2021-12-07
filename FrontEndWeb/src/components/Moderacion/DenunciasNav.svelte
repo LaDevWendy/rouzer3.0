@@ -4,71 +4,84 @@
     import globalStore from "../../globalStore";
     import Signal from "../../signal";
     import Denuncia from "../Denuncia.svelte";
-    import ajustesConfigModStore from '../Dialogos/ajustesConfigModStore'
+    import ajustesConfigModStore from "../Dialogos/ajustesConfigModStore";
 
     let denuncias = window.denuncias || [];
-    $: denunciasActivas = denuncias.filter(d => d.estado == EstadoDenuncia.NoRevisada)
+    $: denunciasActivas = denuncias.filter(
+        (d) => d.estado == EstadoDenuncia.NoRevisada
+    );
 
     let mostrar = false;
 
-    $: if(denuncias.filter(d => d.estado == EstadoDenuncia.NoRevisada).length == 0) {
-        mostrar = false
+    $: if (
+        denuncias.filter((d) => d.estado == EstadoDenuncia.NoRevisada).length ==
+        0
+    ) {
+        mostrar = false;
     }
 
-    if($globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar) {
+    if ($globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar) {
         Signal.subscribirAModeracion();
     }
 
-    const underAttack = new Audio("/audio/underAttack.mp3")
-    const toing = new Audio("/audio/toing.mp3")
+    const underAttack = new Audio("/audio/underAttack.mp3");
+    const toing = new Audio("/audio/toing.mp3");
 
-    const denunciasVolumen = $ajustesConfigModStore.mutearDenuncias? 0 : 0.03
-    
-    underAttack.volume = denunciasVolumen
-    toing.volume = denunciasVolumen
+    const denunciasVolumen = $ajustesConfigModStore.mutearDenuncias ? 0 : 0.03;
+
+    underAttack.volume = denunciasVolumen;
+    toing.volume = denunciasVolumen;
 
     Signal.coneccion.on("nuevaDenuncia", (denuncia) => {
-        underAttack.play()
-        console.log(denuncia)
-        denuncias = [denuncia, ...denuncias]
+        underAttack.play();
+        console.log(denuncia);
+        denuncias = [denuncia, ...denuncias];
         mostrar = $ajustesConfigModStore.autoDesplegarDenuncias;
-    })
+    });
 
     Signal.coneccion.on("denunciasRechazadas", (ids) => {
-        if(ids.length == 0) return
-        toing.play()
+        if (ids.length == 0) return;
+        toing.play();
 
-        denuncias = denuncias.map(d => {
-            if(ids.includes(d.id)) 
-                d.estado = EstadoDenuncia.Rechazada
-            return d
-        })
-    })
+        denuncias = denuncias.map((d) => {
+            if (ids.includes(d.id)) d.estado = EstadoDenuncia.Rechazada;
+            return d;
+        });
+    });
 
     Signal.coneccion.on("denunciasAceptadas", (ids) => {
-        if(ids.length == 0) return
-        toing.play()
+        if (ids.length == 0) return;
+        toing.play();
 
-        denuncias = denuncias.map(d => {
-            if(ids.includes(d.id)) 
-                d.estado = EstadoDenuncia.Aceptada
-            return d
-        })
-    })
+        denuncias = denuncias.map((d) => {
+            if (ids.includes(d.id)) d.estado = EstadoDenuncia.Aceptada;
+            return d;
+        });
+    });
 </script>
 
-
 <svelte:head>
-    <title>{denunciasActivas.length != 0?`{${denunciasActivas.length}}!`:''} {document.title.split("!").pop()}</title>
+    <title
+        >{denunciasActivas.length != 0 ? `{${denunciasActivas.length}}!` : ""}
+        {document.title.split("!").pop()}</title
+    >
 </svelte:head>
 {#if $globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar}
-
-    <Button icon dense on:click={() => mostrar = !mostrar } style="position:relative">
+    <Button
+        icon
+        dense
+        on:click={() => (mostrar = !mostrar)}
+        style="position:relative"
+    >
         <!-- <Ripple /> -->
         <span class="fe fe-alert-circle" />
-        {#if denuncias.filter(d => d.estado == EstadoDenuncia.NoRevisada).length != 0}
+        {#if denuncias.filter((d) => d.estado == EstadoDenuncia.NoRevisada).length != 0}
             <div class="noti-cont" style="position: absolute;">
-                <span>{denuncias.filter(d => d.estado == EstadoDenuncia.NoRevisada).length}</span>
+                <span
+                    >{denuncias.filter(
+                        (d) => d.estado == EstadoDenuncia.NoRevisada
+                    ).length}</span
+                >
             </div>
         {/if}
     </Button>
@@ -84,7 +97,6 @@
             </ul>
         </div>
     {/if}
-
 {/if}
 
 <style>
@@ -102,17 +114,15 @@
         max-height: 90vh;
         overflow-x: scroll;
     }
-    ul :global(.hilo) 
-    {
+    ul :global(.hilo) {
         width: 100%;
-        height: 100px !important
+        height: 100px !important;
     }
-    ul :global(.hilo img) 
-    {
+    ul :global(.hilo img) {
         height: fit-content;
     }
 
-    @media(max-width:600px) {
+    @media (max-width: 600px) {
         .denuncias-nav {
             left: 8px;
             right: 0 !important;
