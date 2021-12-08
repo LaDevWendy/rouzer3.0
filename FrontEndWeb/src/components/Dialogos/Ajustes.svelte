@@ -131,6 +131,10 @@
                     />
                 </div>
             {/if}
+            <Checkbox
+                bind:checked={$ajustesConfigStore.mutearRisas}
+                right>Mutear risas</Checkbox
+            >
         </ExpansionPanel>
 
         <ExpansionPanel bind:group name="Auto censura">

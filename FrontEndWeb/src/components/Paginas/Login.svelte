@@ -39,7 +39,7 @@
             return;
         }
         console.log("chan");
-        window.location = "/";
+        // window.location = "/";
         // location.reload();
     }
 </script>

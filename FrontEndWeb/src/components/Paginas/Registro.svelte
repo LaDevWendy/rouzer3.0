@@ -32,7 +32,7 @@
             error = e.response.data;
             return;
         }
-        window.location = "/";
+        // window.location = "/";
         // location.reload();
     }
 </script>

@@ -21,6 +21,7 @@
             >{ban.usuarioId}</a
         >
     </p>
+    <p>FP: {ban.fingerPrint}</p>
     <p>Aclaracion: {ban.aclaracion || " "}</p>
     <p>Motivo: {MotivoDenuncia.aString(ban.motivo)}</p>
     <p>Fecha: {formatearTiempo(ban.creacion)}</p>

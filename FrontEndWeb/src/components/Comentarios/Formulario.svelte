@@ -10,6 +10,7 @@
     import globalStore from "../../globalStore";
     // import AudioInput from "../AudioInput.svelte";
     import { fpPromise } from "../../fingerprint";
+    import ajustesConfigStore from "../Dialogos/ajustesConfigStore";
 
     let dispatch = createEventDispatcher();
 
@@ -27,6 +28,8 @@
     let mostrarNombre = false;
 
     const risas = new Audio("/audio/risas.mp3");
+    const risasVolumen = $ajustesConfigStore.mutearRisas ? 0 : 1;
+    risas.volume = risasVolumen;
 
     let espera = 0;
     $: if (espera != 0) {

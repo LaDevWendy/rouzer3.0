@@ -1,4 +1,4 @@
-import {HubConnectionBuilder} from '@microsoft/signalr'
+import { HubConnectionBuilder } from '@microsoft/signalr'
 
 // const coneccion = new HubConnectionBuilder().withUrl("/hub").build()
 
@@ -35,9 +35,9 @@ Signal.coneccion.start().then(() => {
     // Signal.colaDeSubscripciones.forEach(s => {
     //     s()
     // })
-    
+
 }).catch(console.error)
 
 Signal.coneccion.on("domado", () => window.location.href = "/Domado")
 
-export default  Signal
+export default Signal

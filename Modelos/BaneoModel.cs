@@ -32,7 +32,7 @@ namespace Modelos
         public string Ip { get; set; }
 
         public UsuarioModel Usuario { get; set; }
-        [JsonIgnore]
+        
         public string FingerPrint { get; set; }
     }
 

@@ -10,7 +10,8 @@ let configInicial = {
     catClasicas: false,
     palabrasHideadas: "",
     usarColorPersonalizado: false,
-    colorPersonalizado: 'blue'
+    colorPersonalizado: 'blue',
+    mutearRisas: false,
 }
 
 // Cargo configuracion gudardada

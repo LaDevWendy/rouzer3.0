@@ -133,7 +133,7 @@
 
     onMount(() => {
         window.addEventListener("paste", (e) => {
-            input.files = e.clipboardData.files;
+            if (e.clipboardData.files) input.files = e.clipboardData.files;
             actualizarArchivo();
         });
     });

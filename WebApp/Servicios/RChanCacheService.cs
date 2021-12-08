@@ -91,8 +91,6 @@ namespace Servicios
 
             banCache.IpsBaneadas = banCache.BaneosActivos.Select(b => b.Ip).ToHashSet();
             banCache.IdsBaneadas = banCache.BaneosActivos.Select(b => b.UsuarioId).ToHashSet();
-            banCache.FingerPrintsBaneadas = banCache.BaneosActivos.Select(b => b.FingerPrint).ToHashSet();
-
         }
 
         public void Dispose()
@@ -106,6 +104,5 @@ namespace Servicios
         public List<BaneoModel> BaneosActivos { get; set; } = new List<BaneoModel>();
         public HashSet<string> IpsBaneadas { get; set; }
         public HashSet<string> IdsBaneadas { get; set; }
-        public HashSet<string> FingerPrintsBaneadas { get; set; }
     }
 }

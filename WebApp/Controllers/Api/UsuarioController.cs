@@ -71,7 +71,7 @@ namespace WebApp.Controllers
             }
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var res = await CheckeosRegistro(model.Captcha, model.Codigo, model.FingerPrint);
+            var res = await CheckeosRegistro(model.Captcha, model.Codigo);
 
             if (res != null) return res;
 
@@ -87,7 +87,7 @@ namespace WebApp.Controllers
             if (createResult.Succeeded)
             {
                 await signInManager.SignInAsync(user, true);
-                return Redirect("/");
+                return this.RedirectJson("/");
 
             }
             else
@@ -99,7 +99,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> Inicio(InicioVM model)
         {
-            var res = await CheckeosRegistro(model.Captcha, model.Codigo, model.FingerPrint);
+            var res = await CheckeosRegistro(model.Captcha, model.Codigo);
             if (res != null) return res;
 
             UsuarioModel user = new UsuarioModel
@@ -126,7 +126,7 @@ namespace WebApp.Controllers
             }
         }
 
-        private async Task<ActionResult> CheckeosRegistro(string captcha, string codigo, string fingerPrint)
+        private async Task<ActionResult> CheckeosRegistro(string captcha, string codigo)
         {
             var pasoElCaptcha = await this.captcha.Verificar(captcha);
 
@@ -152,7 +152,7 @@ namespace WebApp.Controllers
 
             string ip = HttpContext.GetIp();
 
-            var banActivo = await context.Bans.BansActivos(User.GetId(), ip, fingerPrint).FirstOrDefaultAsync();
+            var banActivo = await context.Bans.BansActivos(User.GetId(), ip).FirstOrDefaultAsync();
             if (banActivo != null)
             {
                 return this.RedirectJson($"/Domado/{banActivo.Id}");
@@ -189,7 +189,7 @@ namespace WebApp.Controllers
         {
             if (string.IsNullOrWhiteSpace(token))
             {
-                if (!User.Identity.IsAuthenticated) return this.Redirect("/Inicio");
+                if (!User.Identity.IsAuthenticated) return Redirect("/Inicio");
                 token = (await userManager.GetUserAsync(User)).Token;
             }
             return View("Token", new { token });
@@ -213,7 +213,7 @@ namespace WebApp.Controllers
             //Checkeo ban
             string ip = HttpContext.GetIp();
             var ban = (await context.Bans
-                .Where(b => b.UsuarioId == user.Id || b.Ip == ip || b.FingerPrint == model.FingerPrint)
+                .Where(b => b.UsuarioId == user.Id || b.Ip == ip)
                 .ToListAsync())
                 .FirstOrDefault(b => b.Expiracion > DateTimeOffset.Now);
 
@@ -231,18 +231,19 @@ namespace WebApp.Controllers
         public async Task<ActionResult> Domado(string id)
         {
             string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            var ban = await context.Bans
-                .OrderByDescending(b => b.Expiracion)
-                // .Where(b => !b.Visto)
-                .Include(b => b.Hilo)
-                .Include(b => b.Comentario)
-                .FirstOrDefaultAsync(b => b.UsuarioId == User.GetId() || b.Ip == ip);
 
-            if (ban is null && !string.IsNullOrWhiteSpace(id))
+            BaneoModel ban;
+            if (!string.IsNullOrWhiteSpace(id))
             {
                 ban = await context.Bans
+                    .OrderByDescending(b => b.Expiracion)
                     .Include(b => b.Hilo)
+                    .Include(b => b.Comentario)
                     .FirstOrDefaultAsync(b => b.Id == id);
+            }
+            else
+            {
+                ban = await context.Bans.OrderByDescending(b => b.Expiracion).Include(b => b.Hilo).Include(b => b.Comentario).FirstOrDefaultAsync(b => b.UsuarioId == User.GetId() || b.Ip == ip);
             }
 
             if (ban is null) return Redirect("/");
@@ -297,12 +298,11 @@ namespace WebApp.Controllers
             //Checkeo ban
             string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             var ban = (await context.Bans
-                .Where(b => b.UsuarioId == user.Id || b.Ip == ip || b.FingerPrint == model.FingerPrint)
+                .Where(b => b.UsuarioId == user.Id || b.Ip == ip)
                 .ToListAsync())
                 .FirstOrDefault(b => b.Expiracion > DateTimeOffset.Now);
 
             if (ban != null) return this.RedirectJson($"/Domado/{ban.Id}");
-
             var result = await signInManager.PasswordSignInAsync(user, model.Contraseña, true, false);
             if (result.Succeeded) return this.RedirectJson("/");
 
