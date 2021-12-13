@@ -671,23 +671,25 @@ namespace Servicios
 
             logger.LogInformation($"Limpiando medias viejos {mediasABorrar.Count()}");
 
-            var eliminados = 0;
+            // var eliminados = 0;
+            var eliminados = new List<MediaModel>();
             foreach (var m in mediasABorrar)
             {
                 try
                 {
                     await Eliminar(m.Id);
-                    context.Remove(m);
-                    await context.SaveChangesAsync();
-                    eliminados++;
+                    eliminados.Add(m);
+                    //eliminados++;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                 }
             }
-            logger.LogInformation($"${eliminados} archivos multimedia eliminados");
-            return eliminados;
+            context.RemoveRange(eliminados);
+            var n = await context.SaveChangesAsync();
+            logger.LogInformation($"${n} archivos multimedia eliminados");
+            return n;
         }
 
         protected bool EsFormatoValido(string contentType)

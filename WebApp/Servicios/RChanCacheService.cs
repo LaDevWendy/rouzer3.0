@@ -57,7 +57,7 @@ namespace Servicios
         {
             using var scope = services.CreateScope();
             var hiloService = scope.ServiceProvider.GetService<IHiloService>();
-            int count = 0, maxTries = 3;
+            int count = 0, maxTries = 1;
             while (count < maxTries)
             {
                 try

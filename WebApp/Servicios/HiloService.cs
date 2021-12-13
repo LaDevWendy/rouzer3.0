@@ -422,7 +422,7 @@ namespace Servicios
             int limpiados = 0;
             foreach (var h in hilosALimpiar)
             {
-                logger.LogInformation($"Limpeando hilo {h.Titulo}({limpiados}/{total})");
+                //logger.LogInformation($"Limpeando hilo {h.Titulo}({limpiados}/{total})");
                 try
                 {
                     await LimpiarHilo(h);
