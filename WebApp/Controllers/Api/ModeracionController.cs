@@ -261,6 +261,12 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> Banear(BanViewModel model)
         {
+            if (model.EliminarAdjunto || model.EliminarAudio)
+            {
+                var res = await CheckeoEliminar(model.Password);
+                if (res != null) return res;
+            }
+
             // var baneado = context.Users.FirstOrDefault(u => u.Id )
             var comentario = await context.Comentarios.FirstOrDefaultAsync(c => c.Id == model.ComentarioId);
             var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == model.HiloId);
@@ -331,6 +337,22 @@ namespace WebApp.Controllers
             return Json(new ApiResponse($"Usuario Baneado {(mediaEliminado ? "; imagen/video eliminado" : "")} {(model.Desaparecer ? "; Usuario desaparecido" : "")}"));
         }
 
+        private async Task<ActionResult> CheckeoEliminar(string password)
+        {
+            var user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == User.GetId());
+            if (user == null) ModelState.AddModelError("Nick", "No se encontro el usuario");
+
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var contraseñaCorrecta = (await signInManager.CheckPasswordSignInAsync(user, password, false)).Succeeded;
+            if (!contraseñaCorrecta)
+            {
+                ModelState.AddModelError("Contraseña", "La constraseña es incorrecta");
+                return BadRequest(ModelState);
+            }
+            return null;
+        }
+
         [HttpPost]
         public async Task<ActionResult> RemoverBan(string id)
         {
@@ -374,6 +396,11 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> EliminarComentarios(BorrarCreacionesVm model)
         {
+            if (model.BorrarMedia || model.BorrarAudio)
+            {
+                var res = await CheckeoEliminar(model.Password);
+                if (res != null) return res;
+            }
             var comentarios = await context.Comentarios
                 .Where(c => model.Ids.Contains(c.Id))
                 .Where(c => c.Estado != ComentarioEstado.Eliminado)
@@ -452,10 +479,17 @@ namespace WebApp.Controllers
             public string[] Ids { get; set; }
             public bool BorrarMedia { get; set; }
             public bool BorrarAudio { get; set; }
+            public string Password { get; set; } = "";
         }
         [HttpPost]
         public async Task<ActionResult> BorrarHilo(BorrarCreacionesVm vc)
         {
+            if (vc.BorrarMedia || vc.BorrarAudio)
+            {
+                var res = await CheckeoEliminar(vc.Password);
+                if (res != null) return res;
+            }
+
             var hilos = await context.Hilos
                 .Where(h => vc.Ids.Contains(h.Id))
                 .Where(h => h.Estado != HiloEstado.Eliminado)
@@ -572,13 +606,16 @@ namespace WebApp.Controllers
 
         public class EliminarMediaVm
         {
-            public string MediaId { get; set; }
-            public bool EliminarElementos { get; set; }
+            public string[] Ids { get; set; }
+            public string Password { get; set; } = "";
         }
         [HttpPost]
-        public async Task<ActionResult> EliminarMedia(string[] ids)
+        public async Task<ActionResult> EliminarMedia(EliminarMediaVm model)
         {
-            var medias = await context.Medias.Where(m => ids.Contains(m.Id)).ToListAsync();
+            var res = await CheckeoEliminar(model.Password);
+            if (res != null) return res;
+
+            var medias = await context.Medias.Where(m => model.Ids.Contains(m.Id)).ToListAsync();
             foreach (var m in medias)
             {
                 var mediaEliminado = await mediaService.Eliminar(m.Id);
@@ -637,5 +674,6 @@ namespace WebApp.Controllers
         public bool EliminarAdjunto { get; set; }
         public bool EliminarAudio { get; set; }
         public bool Desaparecer { get; set; }
+        public string Password { get; set; } = "";
     }
 }

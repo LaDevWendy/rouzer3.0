@@ -144,11 +144,12 @@ export default class RChanClient {
             importancia: Number(importancia),
         })
     }
-    static borrarHilos(ids, borrarMedia = false, borrarAudio = false) {
+    static borrarHilos(ids, borrarMedia = false, borrarAudio = false, password = "") {
         return axios.post("/api/Moderacion/BorrarHilo", {
             ids,
             borrarMedia,
-            borrarAudio
+            borrarAudio,
+            password
         })
     }
     static borrarHilo(id, borrarMedia = false) {
@@ -175,7 +176,7 @@ export default class RChanClient {
             comentarioId
         })
     }
-    static banear(motivo, aclaracion, duracion, usuarioId, hiloId = "", comentarioId = "", eliminarElemento = true, eliminarAdjunto = false, eliminarAudio = false, desaparecer = false) {
+    static banear(motivo, aclaracion, duracion, usuarioId, hiloId = "", comentarioId = "", eliminarElemento = true, eliminarAdjunto = false, eliminarAudio = false, desaparecer = false, password = "") {
         return axios.post("/api/Moderacion/Banear", {
             motivo,
             aclaracion,
@@ -186,6 +187,7 @@ export default class RChanClient {
             hiloId,
             comentarioId,
             desaparecer,
+            password
         })
     }
 
@@ -214,11 +216,12 @@ export default class RChanClient {
         return axios.post(`/api/Moderacion/RechazarDenuncia/${denunciaId}`)
     }
 
-    static eliminarComentarios(ids, borrarMedia = false, borrarAudio = false) {
+    static eliminarComentarios(ids, borrarMedia = false, borrarAudio = false, password = "") {
         return axios.post(`/api/Moderacion/EliminarComentarios`, {
             ids,
             borrarMedia,
-            borrarAudio
+            borrarAudio,
+            password
         })
     }
 
@@ -235,11 +238,12 @@ export default class RChanClient {
     static generarNuevoLinkDeInvitacion() {
         return axios.post(`/api/Administracion/GenerarNuevoLinkDeInvitacion`)
     }
-    static eliminarMedias(ids) {
-        return axios.post(`/api/Moderacion/EliminarMedia`, ids)
+    static eliminarMedias(ids, password) {
+        return axios.post(`/api/Moderacion/EliminarMedia`, { ids, password })
     }
-    static eliminarMedia(mediaId) {
-        return axios.post(`/api/Moderacion/EliminarMedia`, [mediaId])
+    static eliminarMedia(mediaId, password) {
+        let ids = [mediaId]
+        return axios.post(`/api/Moderacion/EliminarMedia`, { ids, password })
     }
     static limpiarRozesViejos() {
         return axios.post(`/api/Administracion/LimpiarRozesViejos`)

@@ -102,7 +102,8 @@
 				{#if $globalStore.usuario.esMod}
 					{#if hilo.media && hilo.media != MediaType.Eliminado}
 						<Button
-							on:click={() => abrir.eliminarMedia(hilo.media.id)}
+							on:click={() =>
+								abrir.eliminarMedia([hilo.media.id])}
 							>Eliminar media</Button
 						>
 					{/if}

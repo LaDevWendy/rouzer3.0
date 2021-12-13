@@ -4,10 +4,10 @@
     import Dialogo from "../Dialogo.svelte";
     import DialogoBan from "./DialogoBan.svelte";
     import DialogoReporte from "./DialogoReporte.svelte";
-    import { Checkbox } from "svelte-mui";
     import config from "../../config";
     import globalStore from "../../globalStore";
     import ajustesConfigStore from "./ajustesConfigStore";
+    import { Textfield, Checkbox } from "svelte-mui";
 
     const dialogosStore = writable({
         dialogoAbierto: "ninguno",
@@ -21,6 +21,7 @@
         eliminarMedia: false,
         eliminarAudio: false,
         mediaEliminarDependientes: true,
+        password: "",
     });
 
     function abrirReporte(hiloId, comentarioId = null) {
@@ -115,12 +116,18 @@
     visible={$dialogosStore.dialogoAbierto == "eliminarHilo"}
     textoActivador="Eliminar"
     titulo="Eliminar roz"
-    accion={() =>
-        RChanClient.borrarHilos(
+    accion={() => {
+        let password = $dialogosStore.password;
+        let eliminarMedia = $dialogosStore.eliminarMedia;
+        $dialogosStore.eliminarMedia = false;
+        $dialogosStore.password = "";
+        return RChanClient.borrarHilos(
             [$dialogosStore.hiloId],
-            $dialogosStore.eliminarMedia,
-            $dialogosStore.eliminarAudio
-        )}
+            eliminarMedia,
+            $dialogosStore.eliminarAudio,
+            password
+        );
+    }}
 >
     <span slot="activador" />
     <div slot="body">
@@ -129,6 +136,16 @@
             <Checkbox bind:checked={$dialogosStore.eliminarMedia} right
                 >Eliminar Archivos</Checkbox
             >
+            {#if $dialogosStore.eliminarMedia}
+                <Textfield
+                    autocomplete="new-password"
+                    label="Contraseña"
+                    type="password"
+                    required
+                    bind:value={$dialogosStore.password}
+                    message="contraseña"
+                />
+            {/if}
             <!--<Checkbox bind:checked={$dialogosStore.eliminarAudio} right
                 >Eliminar Audio</Checkbox
             >-->
@@ -161,12 +178,18 @@
     visible={$dialogosStore.dialogoAbierto == "eliminarComentarios"}
     textoActivador="Eliminar"
     titulo="Eliminar comentario"
-    accion={() =>
-        RChanClient.eliminarComentarios(
+    accion={() => {
+        let password = $dialogosStore.password;
+        let eliminarMedia = $dialogosStore.eliminarMedia;
+        $dialogosStore.eliminarMedia = false;
+        $dialogosStore.password = "";
+        return RChanClient.eliminarComentarios(
             $dialogosStore.comentariosIds,
-            $dialogosStore.eliminarMedia,
-            $dialogosStore.eliminarAudio
-        )}
+            eliminarMedia,
+            $dialogosStore.eliminarAudio,
+            password
+        );
+    }}
 >
     <span slot="activador" />
     <div slot="body">
@@ -175,6 +198,16 @@
             <Checkbox bind:checked={$dialogosStore.eliminarMedia} right
                 >Eliminar Archivos</Checkbox
             >
+            {#if $dialogosStore.eliminarMedia}
+                <Textfield
+                    autocomplete="new-password"
+                    label="Contraseña"
+                    type="password"
+                    required
+                    bind:value={$dialogosStore.password}
+                    message="contraseña"
+                />
+            {/if}
             <!--<Checkbox bind:checked={$dialogosStore.eliminarAudio} right
                 >Eliminar Audio</Checkbox
             >-->
@@ -193,11 +226,24 @@
     visible={$dialogosStore.dialogoAbierto == "eliminarMedia"}
     textoActivador="Eliminar"
     titulo="Eliminar la imagen/video"
-    accion={() => RChanClient.eliminarMedia($dialogosStore.mediaId)}
+    accion={() => {
+        let password = $dialogosStore.password;
+        $dialogosStore.eliminarMedia = false;
+        $dialogosStore.password = "";
+        return RChanClient.eliminarMedias($dialogosStore.mediaId, password);
+    }}
 >
     <span slot="activador" />
     <div slot="body">
-        ¿Estas seguro de que queres borrar el media {$dialogosStore.mediaId}?
+        ¿Estas seguro/a de que querés borrarlo?
+        <Textfield
+            autocomplete="new-password"
+            label="Contraseña"
+            type="password"
+            required
+            bind:value={$dialogosStore.password}
+            message="contraseña"
+        />
         <!--<Checkbox bind:checked={$dialogosStore.mediaEliminarDependientes} right
             >Eliminar todos los elementos con este archivo?</Checkbox
         >-->

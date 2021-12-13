@@ -3,7 +3,7 @@
     import { MotivoDenuncia } from "../../enums";
 
     import Dialogo from "../Dialogo.svelte";
-    import { Checkbox } from "svelte-mui";
+    import { Textfield, Checkbox } from "svelte-mui";
     import globalStore from "../../globalStore";
 
     let motivo;
@@ -20,6 +20,7 @@
     export let usuarioId;
     export let visible = false;
 
+    let password = "";
     function banear() {
         return RChanClient.banear(
             motivo,
@@ -31,7 +32,8 @@
             eliminarElemento,
             eliminarAdjunto,
             eliminarAudio,
-            desaparecer
+            desaparecer,
+            password
         );
     }
 </script>
@@ -90,6 +92,16 @@
                 >
                     Eliminar adjunto(imagen/video)</Checkbox
                 >
+                {#if eliminarAdjunto}
+                    <Textfield
+                        autocomplete="new-password"
+                        label="Contraseña"
+                        type="password"
+                        required
+                        bind:value={password}
+                        message="contraseña"
+                    />
+                {/if}
                 <!--<Checkbox
                 style="padding: 0 8px"
                 title="Borra el audio del servidor"

@@ -16,7 +16,7 @@
 
     let eliminando = false;
 
-    async function eliminarMedias() {
+    /*async function eliminarMedias() {
         try {
             eliminando = true;
             await RChanClient.eliminarMedias(selecionados.map((s) => s.id));
@@ -26,6 +26,11 @@
             selecionados = [];
         } catch (error) {}
         eliminando = false;
+    }*/
+
+    async function eliminarMedias() {
+        abrir.eliminarMedia(selecionados.map((s) => s.id));
+        seleccionados = [];
     }
 </script>
 

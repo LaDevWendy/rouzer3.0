@@ -281,7 +281,7 @@
                 </li>
                 <li on:click={() => abrir.ban(hilo.id)}>Banear <Ripple /></li>
                 {#if $globalStore.usuario.esMod}
-                    <li on:click={() => abrir.eliminarMedia(hilo.media.id)}>
+                    <li on:click={() => abrir.eliminarMedia([hilo.media.id])}>
                         Eliminar media <Ripple />
                     </li>
                 {/if}

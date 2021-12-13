@@ -4,7 +4,6 @@
     import Comentario from "./Comentario.svelte";
     import Formulario from "./Formulario.svelte";
     import globalStore from "../../globalStore";
-    import DialogoReporte from "../Dialogos/DialogoReporte.svelte";
     import Signal from "../../signal";
     import CarpetaMedia from "./CarpetaMedia.svelte";
     import { onMount, tick } from "svelte";

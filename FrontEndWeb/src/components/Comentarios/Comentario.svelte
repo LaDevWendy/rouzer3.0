@@ -295,7 +295,7 @@
                     {#if $globalStore.usuario.esMod && comentario.media && comentario.media.tipo != MediaType.Eliminado}
                         <Menuitem
                             on:click={() =>
-                                abrir.eliminarMedia(comentario.media.id)}
+                                abrir.eliminarMedia([comentario.media.id])}
                             >Eliminar media</Menuitem
                         >
                     {/if}
