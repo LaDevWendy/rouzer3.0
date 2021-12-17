@@ -597,6 +597,7 @@
 
     .comentario .header .id {
         cursor: pointer;
+        margin-right: auto;
     }
 
     .comentario .tag {
