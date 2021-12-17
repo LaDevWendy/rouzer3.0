@@ -17,8 +17,19 @@ if (Cookie.getJSON('categoriasActivas')) {
     // Quitar este despues (es para activar la categoria programacion automaticamente)
     // data.categoriasActivas = [...data.categoriasActivas, 38]
 
-} else
+    if (Cookie.getJSON('v')) {
+        if (new Number(Cookie.getJSON('v')) != 1) {
+            data.categoriasActivas = [...data.categoriasActivas, 45]
+        }
+    } else {
+        Cookie.set('v', 1);
+        data.categoriasActivas = [...data.categoriasActivas, 45]
+    }
+} else {
     Cookie.set('categoriasActivas', data.categoriasActivas)
+    Cookie.set('v', 1);
+}
+
 
 data.gruposActivos = []
 if (Cookie.getJSON('gruposActivos')) {

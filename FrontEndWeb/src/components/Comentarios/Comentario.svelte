@@ -16,6 +16,7 @@
     import RChanClient from "../../RChanClient";
     // import Audio from "../Audio.svelte";
     import MediaType from "../../MediaType";
+    import Spinner from "../Spinner.svelte";
 
     export let comentario;
     export let hilo = { id: null };
@@ -37,7 +38,9 @@
 
     let windowsWidh = window.screen.width;
 
-    let visible = !$globalStore.comentariosOcultos.has(comentario.id);
+    let visible =
+        !$globalStore.comentariosOcultos.has(comentario.id) ||
+        comentario.propio;
 
     let dispatch = createEventDispatcher();
 
@@ -147,6 +150,31 @@
             RChanClient.eliminarComentarios([comentario.id]);
         }
     }
+
+    let stickeando = false;
+    async function togglesticky() {
+        stickeando = true;
+        try {
+            let res = await RChanClient.toggleSticky(comentario.id);
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+        stickeando = false;
+    }
+
+    let ignorando = false;
+    async function toggleignorar() {
+        ignorando = true;
+        try {
+            let res = await RChanClient.toggleIgnorar(comentario.id);
+            comentario.ignorado = !comentario.ignorado;
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+        ignorando = false;
+    }
 </script>
 
 <div
@@ -159,6 +187,7 @@
     class:comentarioMod={comentario.rango > CreacionRango.Auxliar}
     class:comentarioAuxiliar={comentario.rango == CreacionRango.Auxliar}
     class:propio={comentario.propio}
+    class:sticky={comentario.sticky}
     r-id={comentario.id}
     id="{comentario.id}{esRespuesta ? '-res' : ''}"
     style={comentario.respuestas && comentario.respuestas.length > 0
@@ -174,7 +203,7 @@
             R: {comentario.respuestas && comentario.respuestas.length}
         </div>
         <div class="respuestas">
-            {#each comentario.respuestas as r}
+            {#each comentario.respuestas as r (r)}
                 <a
                     href="#{r}"
                     class="restag"
@@ -245,13 +274,24 @@
                         class=""
                         ><i class="fe fe-more-vertical relative" /></span
                     >
-                    <li on:click={() => toggle()}>
-                        {visible
-                            ? comentario.propio
-                                ? "Ignorar"
-                                : "Ocultar"
-                            : "Mostrar"}
-                    </li>
+                    {#if comentario.op}
+                        <Spinner cargando={stickeando}>
+                            <li on:click={() => togglesticky()}>
+                                {comentario.sticky ? "Desanclar" : "Anclar"}
+                            </li></Spinner
+                        >
+                    {/if}
+                    {#if comentario.propio}
+                        <Spinner cargando={ignorando}>
+                            <li on:click={toggleignorar}>
+                                {comentario.ignorado ? "Seguir" : "Ignorar"}
+                            </li></Spinner
+                        >
+                    {:else}
+                        <li on:click={toggle}>
+                            {visible ? "Ocultar" : "Mostrar"}
+                        </li>
+                    {/if}
                     <li
                         on:click={() =>
                             abrir.reporte(
@@ -314,14 +354,55 @@
                     >
                         <icon class="fe fe-flag" />
                     </Button>
-                    <Button
-                        icon
-                        color="white"
-                        style="width:32px;height:16px;"
-                        on:click={toggle}
-                    >
-                        <icon class="fe fe-eye-off" />
-                    </Button>
+                    {#if comentario.op}
+                        <Button
+                            icon
+                            color={comentario.sticky
+                                ? "var(--color6)"
+                                : "var(--color-texto2)"}
+                            style="width:32px;height:16px;"
+                            disabled={stickeando}
+                            on:click={togglesticky}
+                            title={comentario.sticky ? "Desanclar" : "Anclar"}
+                        >
+                            <Spinner cargando={stickeando}>
+                                <icon class="fe fe-anchor" /></Spinner
+                            >
+                        </Button>
+                    {/if}
+                    {#if comentario.propio}
+                        <Button
+                            icon
+                            color="var(--color-texto2)"
+                            style="width:32px;height:16px;"
+                            disabled={ignorando}
+                            on:click={toggleignorar}
+                            title={comentario.ignorado
+                                ? "Recibir notificaciones"
+                                : "Ignorar notificaciones"}
+                            ><Spinner cargando={ignorando}>
+                                {#if comentario.ignorado}
+                                    <icon class="fe fe-bell" />
+                                {:else}
+                                    <icon class="fe fe-bell-off" />
+                                {/if}
+                            </Spinner>
+                        </Button>
+                    {:else}
+                        <Button
+                            icon
+                            color={"var(--color-texto2)"}
+                            style="width:32px;height:16px;"
+                            on:click={toggle}
+                            title={visible ? "Ocultar" : "Mostrar"}
+                        >
+                            {#if visible}
+                                <icon class="fe fe-eye-off" />
+                            {:else}
+                                <icon class="fe fe-eye" />
+                            {/if}
+                        </Button>
+                    {/if}
                 </div>
             {/if}
         </div>
@@ -849,6 +930,9 @@
     }
     .propio {
         border-bottom: solid 2px var(--color7);
+    }
+    .sticky {
+        border-top: solid 2px var(--color6);
     }
     /* @media(max-width >600px) {} */
 

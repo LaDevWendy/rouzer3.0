@@ -28,8 +28,6 @@
     let mostrarNombre = false;
 
     const risas = new Audio("/audio/risas.mp3");
-    const risasVolumen = $ajustesConfigStore.mutearRisas ? 0 : 1;
-    risas.volume = risasVolumen;
 
     let espera = 0;
     $: if (espera != 0) {
@@ -80,7 +78,9 @@
                     audio
                 );
             }
-            risas.play();
+            if (!$ajustesConfigStore.mutearRisas) {
+                risas.play();
+            }
             if (!$globalStore.usuario.esMod) {
                 espera = config.general.tiempoEntreComentarios;
             }

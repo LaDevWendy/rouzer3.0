@@ -19,7 +19,7 @@
     import Halloween from "./Especiales/Halloween.svelte";
     import Estadisticas from "./Estadisticas.svelte";
     import RChanClient from "../RChanClient";
-    import Lucesitas from './Lucesitas.svelte'
+    import Lucesitas from "./Lucesitas.svelte";
     // import Cuetitos from './Especiales/Cuetitos.svelte'
     // import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
 
@@ -96,7 +96,7 @@
     bind:offsetHeight={height}
 >
     <nav style="height:0">
-        <Lucesitas/>
+        <Lucesitas />
         <div class="nav-principal" class:modoSticky={scrollY > 50}>
             <div
                 class="fondo"
@@ -122,13 +122,13 @@
             </a>
             <!-- <CuentaRegresiva/> -->
             <!-- <MensajeRotativo/> -->
-            <div class="estadisticas">
-                <!-- {#if mostrarComputadorasConectadas}
+            <!--<div class="estadisticas">
+                 {#if mostrarComputadorasConectadas}
                     <span transition:fade={{duration: 5000 }}   on:introend="{() => mostrarComputadorasConectadas = false}">
                         {computadorasConectadas} computadora{computadorasConectadas!=1?'s':''} conectada{computadorasConectadas!=1?'s':''}
                     </span>
-                {/if} -->
-            </div>
+                {/if} 
+            </div>-->
             {#if protocoloMessi}
                 <div class="messi" />
             {:else if protocoloSerenito}

@@ -13,6 +13,8 @@ namespace Modelos
 
         public HiloModel Hilo { get; set; }
         public UsuarioModel Usuario { get; set; }
+        public bool Sticky { get; set; } = false;
+        public bool Ignorado { get; set; } = false;
     }
     public enum ComentarioEstado
     {

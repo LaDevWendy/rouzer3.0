@@ -29,19 +29,19 @@ namespace Servicios
             this.context = context;
         }
 
-        public async Task Notificar(HiloModel hilo, ComentarioModel comentario) 
+        public async Task Notificar(HiloModel hilo, ComentarioModel comentario)
         {
             var comentariosRespondidos = Regex.Matches(comentario.Contenido, @"&gt;&gt;([A-Z0-9]{8})")
-                .Select( m => m.Groups[1].Value)
-                .Distinct() 
+                .Select(m => m.Groups[1].Value)
+                .Distinct()
                 .ToList();
 
             var notis = await context.Comentarios
                 .Where(c => comentariosRespondidos.Contains(c.Id) && c.HiloId == hilo.Id)
                 .Where(c => c.UsuarioId != comentario.UsuarioId)
+                .Where(c => !c.Ignorado)
                 .Select(c => new UserNoti(context.Notificaciones.FirstOrDefault(n => n.UsuarioId == c.UsuarioId && n.HiloId == comentario.HiloId && n.Tipo == NotificacionType.Respuesta), c.UsuarioId))
                 .ToListAsync();
-                
 
             var ids = notis.Select(u => u.UsuarioId).ToList();
             await EnviarNotificacionTiempoReal(hilo, comentario, ids, NotificacionType.Respuesta);
@@ -81,19 +81,19 @@ namespace Servicios
 
         private void ActualizarNotificaciones(List<UserNoti> userNoti, ComentarioModel comentario, NotificacionType tipo)
         {
-              userNoti.ForEach(un =>
-            {
-                if (un.Notificacion is null)
-                {
-                    var nuevaNoti = new NotificacionModel(hashService.Random(), un.UsuarioId, comentario, tipo);
-                    context.Notificaciones.Add(nuevaNoti);
-                }
-                else
-                {
-                    un.Notificacion.Conteo++;
-                    un.Notificacion.Actualizacion = DateTimeOffset.Now;
-                }
-            });
+            userNoti.ForEach(un =>
+          {
+              if (un.Notificacion is null)
+              {
+                  var nuevaNoti = new NotificacionModel(hashService.Random(), un.UsuarioId, comentario, tipo);
+                  context.Notificaciones.Add(nuevaNoti);
+              }
+              else
+              {
+                  un.Notificacion.Conteo++;
+                  un.Notificacion.Actualizacion = DateTimeOffset.Now;
+              }
+          });
         }
 
         private class UserNoti

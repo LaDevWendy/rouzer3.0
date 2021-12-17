@@ -273,4 +273,12 @@ export default class RChanClient {
         })
     }
 
+    static toggleSticky(id) {
+        return axios.post(`/api/Comentario/Stickear/${id}`)
+    }
+
+    static toggleIgnorar(id) {
+        return axios.post(`/api/Comentario/Ignorar/${id}`)
+    }
+
 }

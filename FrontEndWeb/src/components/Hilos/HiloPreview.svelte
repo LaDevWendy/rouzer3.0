@@ -297,7 +297,7 @@
         flex-direction: column;
         position: absolute;"
         >
-            <Button icon color="white" on:click={toggle}>
+            <Button icon color="var(--color-texto2)" on:click={toggle}>
                 <icon class="fe fe-eye-off" />
             </Button>
             <Button

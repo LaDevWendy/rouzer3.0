@@ -29,6 +29,16 @@
     let bloque = 100;
     let limite = bloque;
 
+    let idComentarioPropio = "";
+    Signal.coneccion.on("ComentarioPropio", (id) => {
+        idComentarioPropio = id;
+    });
+
+    let idComentarioDecorado = "";
+    Signal.coneccion.on("SoyOp", (id) => {
+        idComentarioDecorado = id;
+    });
+
     let infLoadActivo = true;
     function cargarNuevosComentarios() {
         comentarios = [...nuevosComentarios, ...comentarios];
@@ -37,6 +47,7 @@
         comentarios.forEach(cargarRespuestas);
         // Añadir el restag a los comentarios tageados por este comentario
         comentarios = comentarios;
+        stickies = stickies;
         infLoadActivo = comentarios.length >= limite;
     }
 
@@ -73,14 +84,34 @@
 
     comentarios.forEach(agregarComentarioADiccionario);
     comentarios.forEach(cargarRespuestas);
+    let stickies;
+    listarStickies();
 
     function onComentarioCreado(comentario) {
+        if (comentario.id == idComentarioPropio) {
+            comentario.propio = true;
+        }
+        if (comentario.id == idComentarioDecorado) {
+            comentario.op = true;
+        }
         nuevosComentarios = [comentario, ...nuevosComentarios];
         comentario.respuestas = [];
         if ($comentariosStore.modoVivo) cargarNuevosComentarios();
     }
 
     Signal.coneccion.on("NuevoComentario", onComentarioCreado);
+    Signal.coneccion.on("NuevoSticky", (id, sticky) => {
+        diccionarioComentarios[id].sticky = sticky;
+        comentarios = comentarios;
+        if (sticky) {
+            if (!stickies.some((s) => s.id == id)) {
+                stickies.unshift(diccionarioComentarios[id]);
+                stickies = stickies.sort((c1, c2) => c2.creacion - c1.creacion);
+            }
+        } else {
+            stickies = stickies.filter((s) => s.id != id);
+        }
+    });
     Signal.subscribirseAHilo(hilo.id);
     Signal.coneccion.on("ComentariosEliminados", (ids) => {
         if (!$globalStore.usuario.esMod) {
@@ -88,6 +119,11 @@
             nuevosComentarios = nuevosComentarios.filter(
                 (c) => !ids.includes(c.id)
             );
+            stickies = stickies.filter((s) => !ids.includes(s.id));
+            ids.forEach((id) => {
+                delete diccionarioComentarios[id];
+            });
+            diccionarioComentarios = diccionarioComentarios;
         } else {
             if (ids.length == 0) return;
             comentarios = comentarios.map((c) => {
@@ -98,7 +134,12 @@
                 if (ids.includes(c.id)) c.estado = ComentarioEstado.eliminado;
                 return c;
             });
+            stickies = stickies.map((s) => {
+                if (ids.includes(s.id)) s.estado = ComentarioEstado.eliminado;
+                return s;
+            });
         }
+        console.log("test");
     });
 
     let resaltando = false;
@@ -193,6 +234,19 @@
         }
     }
     export let hide;
+
+    function listarStickies() {
+        stickies = comentarios.filter((c) => c.sticky);
+    }
+
+    function mostrarRespuestas(e) {
+        let resp = diccionarioRespuestas[e.detail]
+            .map((c) => diccionarioComentarios[c])
+            .filter((c) => c != undefined);
+        if (resp.length > 0) {
+            historialRespuestas = [resp];
+        }
+    }
 </script>
 
 <svelte:window bind:scrollY />
@@ -203,9 +257,9 @@
 />
 <div class="comentarios">
     <PilaRespuestas
-        {diccionarioComentarios}
-        {diccionarioRespuestas}
-        historial={historialRespuestas}
+        bind:diccionarioComentarios
+        bind:diccionarioRespuestas
+        bind:historial={historialRespuestas}
     />
     {#if !$configStore.general.modoMessi || $globalStore.usuario.esMod}
         <Formulario
@@ -288,6 +342,26 @@
         </div>
     </div>
     <Spinner cargando={!cargarComentarios}>
+        <div class="lista-stickies">
+            {#each stickies as comentario (comentario.id)}
+                <li transition:fly|local={{ y: -50, duration: 250 }}>
+                    <Comentario
+                        on:colorClick={(e) =>
+                            resaltarComentariosDeUsuario(
+                                e.detail.usuarioId || ""
+                            )}
+                        {hilo}
+                        bind:comentario
+                        bind:comentariosDic={diccionarioComentarios}
+                        respuetasCompactas={modoTelefono}
+                        on:tagClickeado={tagCliqueado}
+                        on:idUnicoClickeado={idUnicoClickeado}
+                        on:irAComentario={irAComentario}
+                        on:motrarRespuestas={mostrarRespuestas}
+                    />
+                </li>
+            {/each}
+        </div>
         <div class="lista-comentarios">
             {#each comentarios.slice(0, limite) as comentario (comentario.id)}
                 <li transition:fly|local={{ y: -50, duration: 250 }}>
@@ -303,13 +377,7 @@
                         on:tagClickeado={tagCliqueado}
                         on:idUnicoClickeado={idUnicoClickeado}
                         on:irAComentario={irAComentario}
-                        on:motrarRespuestas={(e) => {
-                            historialRespuestas = [
-                                diccionarioRespuestas[e.detail].map(
-                                    (c) => diccionarioComentarios[c]
-                                ),
-                            ];
-                        }}
+                        on:motrarRespuestas={mostrarRespuestas}
                     />
                 </li>
             {/each}
@@ -345,6 +413,28 @@
 </div>
 
 <style>
+    .lista-stickies :global(.comentario-flotante .color) {
+        box-shadow: none !important;
+    }
+    .lista-stickies :global(.sticky) {
+        padding: 5px;
+        margin-bottom: 4px;
+        font-size: 0.9rem;
+    }
+    .lista-stickies :global(.sticky .color) {
+        width: 40px;
+        height: 40px;
+        box-shadow: 0px 0px 1px 1px var(--color6);
+    }
+    .lista-stickies :global(.sticky .color:after) {
+        display: none;
+    }
+    .lista-stickies :global(.sticky .media) {
+        width: 25%;
+    }
+    .lista-stickies :global(.sticky .abierto) {
+        width: 25%;
+    }
     .espacio-vacio {
         height: 200px;
         /* scroll-snap-align: center; */

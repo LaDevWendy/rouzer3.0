@@ -21,7 +21,7 @@ using Microsoft.Extensions.Options;
 
 namespace WebApp.Controllers
 {
-    [ApiController, Route("api/Comentario/{action}")]
+    [ApiController, Route("api/Comentario/{action}/{id?}")]
     public class ComentarioApiControlelr : Controller
     {
         private readonly IComentarioService comentarioService;
@@ -193,6 +193,8 @@ namespace WebApp.Controllers
             var model = new ComentarioViewModel(comentario, hilo);
             model.EsOp = hilo.UsuarioId == User.GetId();
 
+            await rchanHub.Clients.User(comentario.UsuarioId).SendAsync("ComentarioPropio", comentario.Id);
+            await rchanHub.Clients.User(comentario.Hilo.UsuarioId).SendAsync("SoyOp", comentario.Id);
             await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoComentario", model);
             await rchanHub.Clients.Group("home").SendAsync("HiloComentado", hilo.Id, comentario.Contenido);
 
@@ -257,6 +259,17 @@ namespace WebApp.Controllers
                 await AutoDenunciar(denunciaAutomatica);
             }
 
+            if (censorService.BuscarPalabras(comentario.FingerPrint))
+            {
+                DenunciaVM denunciaAutomatica = new DenunciaVM();
+                denunciaAutomatica.Tipo = TipoElemento.Comentario;
+                denunciaAutomatica.Motivo = MotivoDenuncia.ContenidoIlegal;
+                denunciaAutomatica.HiloId = hilo.Id;
+                denunciaAutomatica.ComentarioId = id;
+                denunciaAutomatica.Aclaracion = $"[Denuncia automática] Usuario sospechoso FP: {comentario.FingerPrint}";
+                await AutoDenunciar(denunciaAutomatica);
+            }
+
             return new ApiResponse("Comentario creado!");
         }
 
@@ -313,6 +326,53 @@ namespace WebApp.Controllers
             });
 
             return new ApiResponse("Denuncia enviada");
+        }
+
+
+        [HttpPost]
+        async public Task<ActionResult<ApiResponse>> Stickear(string id = "")
+        {
+            var comentario = await context.Comentarios.Include(c => c.Hilo).FirstOrDefaultAsync(c => c.Id == id);
+            if (comentario == null)
+            {
+                ModelState.AddModelError("Error", "No existe ese comentario.");
+                return BadRequest(ModelState);
+            }
+            if (comentario.Hilo.UsuarioId != User.GetId())
+            {
+                ModelState.AddModelError("Error", "No sos el OP.");
+                return BadRequest(ModelState);
+            }
+            comentario.Sticky = !comentario.Sticky;
+            await context.SaveChangesAsync();
+            await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoSticky", id, comentario.Sticky);
+            if (comentario.Sticky)
+            {
+                return Ok("Comentario stickeado");
+            }
+            return Ok("Comentario desestickeado");
+        }
+
+        async public Task<ActionResult<ApiResponse>> Ignorar(string id = "")
+        {
+            var comentario = await context.Comentarios.FirstOrDefaultAsync(c => c.Id == id);
+            if (comentario == null)
+            {
+                ModelState.AddModelError("Error", "No existe ese comentario.");
+                return BadRequest(ModelState);
+            }
+            if (comentario.UsuarioId != User.GetId())
+            {
+                ModelState.AddModelError("Error", "No es tu comentario.");
+                return BadRequest(ModelState);
+            }
+            comentario.Ignorado = !comentario.Ignorado;
+            await context.SaveChangesAsync();
+            if (comentario.Ignorado)
+            {
+                return Ok("Comentario ignorado");
+            }
+            return Ok("Comentario no ignorado");
         }
     }
 }

@@ -711,10 +711,10 @@ button:active {
   width: 350px;
 }
 
-.comentario-flotante .header{
+/*.comentario-flotante .header{
   flex-wrap: nowrap !important;
   justify-content: flex-start !important;
-}
+}*/
 
 #crear-hilo-form {
   position: fixed;
@@ -970,10 +970,10 @@ input:-webkit-autofill {
 } */
 
 /* Navidad */
-.hilo > .hilo-in::after{
-  content:"";
-  background:url(/imagenes/arbol2.png);
-  background-size:cover;
+.hilo > .hilo-in::after {
+  content: "";
+  background: url(/imagenes/arbol2.png);
+  background-size: cover;
   top: 69%;
   right: 1%;
   width: 20%;
@@ -983,12 +983,12 @@ input:-webkit-autofill {
   background-size: 100%;
   background-repeat: no-repeat;
 }
-.hilo-preview-mod .hilo .hilo-in::after{
+.hilo-preview-mod .hilo .hilo-in::after {
   display: none;
 }
-h3{
-  z-index:1
+h3 {
+  z-index: 1;
 }
-.infos{
-  z-index:1
+.infos {
+  z-index: 1;
 }

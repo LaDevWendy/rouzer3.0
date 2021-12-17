@@ -293,15 +293,21 @@ namespace WebApp.Controllers
             context.Bans.Add(ban);
             // Si se marco la opcion para eliminar elemento, borro el hilo o el comentario
 
-            if (comentario != null && model.EliminarElemento && comentario.Estado != ComentarioEstado.Eliminado)
+            if (comentario != null && model.EliminarElemento)
             {
-                await comentarioService.Eliminar(comentario.Id);
-                await historial.RegistrarEliminacion(User.GetId(), comentario.HiloId, comentario.Id);
+                if (comentario.Estado != ComentarioEstado.Eliminado)
+                {
+                    await comentarioService.Eliminar(comentario.Id);
+                    await historial.RegistrarEliminacion(User.GetId(), comentario.HiloId, comentario.Id);
+                }
             }
-            else if (hilo != null && model.EliminarElemento && hilo.Estado != HiloEstado.Eliminado)
+            else if (hilo != null && model.EliminarElemento)
             {
-                await hiloService.EliminarHilos(hilo.Id);
-                await historial.RegistrarEliminacion(User.GetId(), hilo.Id);
+                if (hilo.Estado != HiloEstado.Eliminado)
+                {
+                    await hiloService.EliminarHilos(hilo.Id);
+                    await historial.RegistrarEliminacion(User.GetId(), hilo.Id);
+                }
             }
 
             bool mediaEliminado = false;

@@ -20,6 +20,8 @@ namespace Modelos
             this.Nombre = comentario?.Nombre ?? "";
             this.Rango = comentario.Rango;
             this.Audio = comentario.Audio;
+            this.Sticky = comentario.Sticky;
+            this.Ignorado = comentario.Ignorado;
         }
 
         public ComentarioViewModel(ComentarioModel comentario, HiloModel hilo = null, string requestUsuarioId = null)
@@ -32,10 +34,13 @@ namespace Modelos
             this.Rango = comentario.Rango;
             this.Propio = requestUsuarioId == comentario.UsuarioId;
             this.Audio = comentario.Audio;
+            this.Sticky = comentario.Sticky;
+            this.Ignorado = comentario.Ignorado;
 
             if (hilo != null)
             {
                 this.EsOp = comentario.UsuarioId == hilo.UsuarioId;
+                this.OP = requestUsuarioId == hilo.UsuarioId;
 
                 if (hilo.Flags.Contains("d"))
                 {
@@ -105,6 +110,9 @@ namespace Modelos
         public string IdUnico { get; set; } = "";
 
         public string Color { get; set; } = "naranja";
+        public bool Sticky { get; set; } = false;
+        public bool OP { get; set; } = false;
+        public bool Ignorado { get; set; } = false;
 
         private string CalcularColor(HiloModel hilo = null)
         {

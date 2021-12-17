@@ -118,7 +118,7 @@ namespace Servicios
                 .OrderByDescending(c => c.Creacion)
                 .Include(c => c.Media)
                 .Include(c => c.Audio)
-                .Select(c => new ComentarioViewModel(c, hilo, null))
+                .Select(c => new ComentarioViewModel(c, hilo, userId))
                 .ToListAsync();
 
             if (!string.IsNullOrEmpty(userId))

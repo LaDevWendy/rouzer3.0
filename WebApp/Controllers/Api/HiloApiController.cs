@@ -231,6 +231,16 @@ namespace WebApp.Controllers
                 await AutoDenunciar(denunciaAutomatica);
             }
 
+            if (censorService.BuscarPalabras(hilo.FingerPrint))
+            {
+                DenunciaVM denunciaAutomatica = new DenunciaVM();
+                denunciaAutomatica.Tipo = TipoElemento.Hilo;
+                denunciaAutomatica.Motivo = MotivoDenuncia.ContenidoIlegal;
+                denunciaAutomatica.HiloId = id;
+                denunciaAutomatica.Aclaracion = $"[Denuncia automática] Usuario sospechoso FP: {hilo.FingerPrint}";
+                await AutoDenunciar(denunciaAutomatica);
+            }
+
             return Created($"/Hilo/{id}", null);
         }
 
