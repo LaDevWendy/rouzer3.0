@@ -25,7 +25,8 @@ namespace Servicios
             this.ubicacionDeArchivo = ubicacionDeArchivo;
             this.rchanHub = rchanHub;
 
-            Task.Run(async () => {
+            Task.Run(async () =>
+            {
                 var r = new Random();
                 while (true)
                 {
@@ -33,11 +34,13 @@ namespace Servicios
                     await Task.Delay(r.Next(7) * 1000);
                 }
             });
-            
-            Task.Run(async () => {
+
+            Task.Run(async () =>
+            {
                 while (true)
                 {
                     estadisticas = JsonSerializer.Deserialize<Estadisticas>(await File.ReadAllTextAsync(ubicacionDeArchivo));
+                    await GetEstadisticasAsync();
                     await Task.Delay(1000);
                 }
             });
@@ -56,6 +59,7 @@ namespace Servicios
         public async Task<Estadisticas> GetEstadisticasAsync()
         {
             estadisticas.ComputadorasConectadas = RChanHub.NumeroDeUsuariosConectados;
+            estadisticas.MaxComputadorasConectadas = Math.Max(estadisticas.ComputadorasConectadas, estadisticas.MaxComputadorasConectadas);
             return estadisticas;
         }
 
