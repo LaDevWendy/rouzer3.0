@@ -170,6 +170,12 @@ h4 {
   gap: 10px;
 }
 
+@media (max-width: 600px) {
+  .hilo-completo > .contenido {
+    margin-top: 60px;
+  }
+}
+
 .contenido .media {
   float: left;
   margin-right: 10px;
@@ -453,6 +459,12 @@ h3 {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .hilo-list {
+    padding-top: 60px;
+  }
 }
 
 @media (min-width: 600px) {

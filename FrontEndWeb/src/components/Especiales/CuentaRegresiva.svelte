@@ -1,25 +1,27 @@
 <script>
-    import {cuentaRegresivaStore} from './CuentaRegresivaStore'
+    import { cuentaRegresivaStore } from "./CuentaRegresivaStore";
 
-    let dias = 0
-    let horas = 0 
-    let minutos = 0
-    let segundos = 0
+    let dias = 0;
+    let horas = 0;
+    let minutos = 0;
+    let segundos = 0;
 
     // let futureDate = new Date(new Date().getTime() + 5000)
     // let fechaFutura = new Date("Dec 31 2020 19:13:00")
     // let fechaActual = new Date();
-    let reproduciendoSoleado = false
+    let reproduciendoSoleado = false;
 
     // let soleado  = new Audio("/audio/soleado.mp3")
     let countDown = () => {
         $cuentaRegresivaStore.fechaActual = new Date();
-        let myDate = $cuentaRegresivaStore.fechaFutura - $cuentaRegresivaStore.fechaActual;
-        
+        let myDate =
+            $cuentaRegresivaStore.fechaFutura -
+            $cuentaRegresivaStore.fechaActual;
+
         dias = Math.floor(myDate / 1000 / 60 / 60 / 24);
-        horas = Math.floor(myDate / 1000 / 60 / 60 ) % 24;
-        minutos = Math.floor(myDate / 1000 / 60  ) % 60;
-        segundos = Math.floor(myDate / 1000 ) % 60;
+        horas = Math.floor(myDate / 1000 / 60 / 60) % 24;
+        minutos = Math.floor(myDate / 1000 / 60) % 60;
+        segundos = Math.floor(myDate / 1000) % 60;
 
         // if($cuentaRegresivaStore.fechaFutura < $cuentaRegresivaStore.fechaActual && !reproduciendoSoleado) {
         //     soleado.currentTime = ($cuentaRegresivaStore.fechaActual.getTime() - $cuentaRegresivaStore.fechaFutura.getTime()) / 1000
@@ -29,37 +31,35 @@
         //         console.log(e);
         //     }
         //     reproduciendoSoleado = true;
-            
+
         // }
-    }
+    };
 
+    countDown();
 
-
-
-    countDown()
-
-    setInterval(countDown, 1000)
+    setInterval(countDown, 1000);
 </script>
+
 <div class="cuenta-regresiva">
     {#if $cuentaRegresivaStore.fechaFutura > $cuentaRegresivaStore.fechaActual}
         <span>Se viene en</span>
         <div class="countdown-container">
             <span id="hours" class="big-text">{horas}</span>
-            <span>Hora{horas != 1 ?'s':''}</span>
+            <span>Hora{horas != 1 ? "s" : ""}</span>
             <span id="min" class="big-text">{minutos}</span>
-            <span>Minuto{minutos != 1 ?'s':''}</span>
+            <span>Minuto{minutos != 1 ? "s" : ""}</span>
             <span id="sec" class="big-text">{segundos}</span>
-            <span>Segundo{segundos != 1 ?'s':''}</span>
+            <span>Segundo{segundos != 1 ? "s" : ""}</span>
         </div>
     {:else}
         <!-- <div>Feliz dia 100</div> -->
-        <!-- <div>2021</div> -->
+        <div style="top: 12px; position: relative">2022</div>
     {/if}
 </div>
 
 <style>
     .cuenta-regresiva {
-        font-family: 'euroFighter';
+        font-family: "euroFighter";
         font-size: 20px;
         color: gold;
         text-align: center;
@@ -71,13 +71,10 @@
 
     @media (max-width: 600px) {
         .cuenta-regresiva {
-            font-size: 4px !important;
-            height: 100%;
+            top: 48px;
         }
     }
     :global(.modoSticky) .cuenta-regresiva {
         font-size: 13px;
     }
-
 </style>
-

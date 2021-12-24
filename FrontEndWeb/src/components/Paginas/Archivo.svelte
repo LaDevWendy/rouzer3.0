@@ -1,12 +1,16 @@
 <script>
-    import Tiempo from "../Tiempo.svelte"
+    import Tiempo from "../Tiempo.svelte";
 
-    let hilos = window.model
-    let cadenaDeBusqueda = ""
+    let hilos = window.model;
+    let cadenaDeBusqueda = "";
 
-    $:hilosFiltrados = hilos
-        .filter(h =>cadenaDeBusqueda == "" || h.titulo.toLowerCase().includes(cadenaDeBusqueda))
+    $: hilosFiltrados = hilos.filter(
+        (h) =>
+            cadenaDeBusqueda == "" ||
+            h.titulo.toLowerCase().includes(cadenaDeBusqueda)
+    );
 </script>
+
 <ul class="archivo-list">
     <h1>Roz archivados {hilos.length}</h1>
     <input
@@ -17,15 +21,21 @@
     />
     {#each hilosFiltrados as h (h.id)}
         <li class:historico={h.historico}>
-            <a href="/Hilo/{h.id}">{h.titulo}</a> <Tiempo date={h.bump}/>
+            <a href="/Hilo/{h.id}">{h.titulo}</a>
+            <Tiempo date={h.bump} />
         </li>
     {/each}
 </ul>
 
 <style>
     .archivo-list {
-        margin:0 auto;
+        margin: 0 auto;
         max-width: 600px;
+    }
+    @media (max-width: 600px) {
+        .archivo-list {
+            margin-top: 120px;
+        }
     }
 
     li {
@@ -44,7 +54,7 @@
         padding: 10px;
     }
     input {
-        margin-bottom:  10px;
+        margin-bottom: 10px;
     }
     .historico {
         background: var(--color6);

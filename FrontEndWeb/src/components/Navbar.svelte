@@ -20,7 +20,7 @@
     import Estadisticas from "./Estadisticas.svelte";
     import RChanClient from "../RChanClient";
     import Lucesitas from "./Lucesitas.svelte";
-    // import Cuetitos from './Especiales/Cuetitos.svelte'
+    import Cuetitos from "./Especiales/Cuetitos.svelte";
     // import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
 
     export let notificaciones = window.notificaciones || [];
@@ -102,7 +102,7 @@
                 class="fondo"
                 style="position:absolute;left:0;top:0;width:100%"
             >
-                <!-- <Cuetitos/> -->
+                <Cuetitos />
                 <!-- <CuentaRegresiva/> -->
                 <Estadisticas />
             </div>
