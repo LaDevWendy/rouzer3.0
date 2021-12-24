@@ -27,6 +27,7 @@
     export let respuetasCompactas = false;
 
     export let esRespuesta = false;
+    export let esSticky = false;
 
     comentario.estado = comentario.estado || ComentarioEstado.normal;
 
@@ -105,7 +106,7 @@
         let selection = document.getSelection();
         if (selection.anchorNode) {
             let spans = document
-                .getElementById(id)
+                .getElementById(esSticky ? `${id}-sticky` : id)
                 .getElementsByClassName("contenido")[0]
                 .getElementsByTagName("span");
             let flag1 = false,
@@ -189,7 +190,7 @@
     class:propio={comentario.propio}
     class:sticky={comentario.sticky}
     r-id={comentario.id}
-    id="{comentario.id}{esRespuesta ? '-res' : ''}"
+    id="{comentario.id}{esRespuesta ? '-res' : ''}{esSticky ? '-sticky' : ''}"
     style={comentario.respuestas && comentario.respuestas.length > 0
         ? "padding-bottom: 20px"
         : ""}

@@ -351,6 +351,7 @@
                                 e.detail.usuarioId || ""
                             )}
                         {hilo}
+                        esSticky={true}
                         bind:comentario
                         bind:comentariosDic={diccionarioComentarios}
                         respuetasCompactas={modoTelefono}
@@ -425,6 +426,7 @@
         width: 40px;
         height: 40px;
         box-shadow: 0px 0px 1px 1px var(--color6);
+        margin: 5px 5px;
     }
     .lista-stickies :global(.sticky .color:after) {
         display: none;
@@ -432,8 +434,8 @@
     .lista-stickies :global(.sticky .media) {
         width: 25%;
     }
-    .lista-stickies :global(.sticky .abierto) {
-        width: 25%;
+    .lista-stickies :global(.sticky .media.abierto) {
+        width: 100%;
     }
     .espacio-vacio {
         height: 200px;

@@ -9,55 +9,54 @@ export default [
             --color5: orangered;
             --color2: white;
             --color-texto1: black;
-            --color-texto2: orangered;
+            --color-texto2: #808080;
             --color4: orangered;
             --color7: #ffc253ed;
-        }
-        
+            --color8: #eebd64;
+            --color3: #ffdead;
+            --color9: #d6d6d6;
+            --color1: #ffc83e;
+       }
         .media-input {
             background: orangered !important;
-        }
-        
+       }
         .comentario .id {
             background: black !important;
-        }
-        
+       }
         .crear-hilo-boton, .categoria, .comentario .tag, comentario, .media-input, .cuerpo, .respuestas-compactas {
             color: white !important;
-        }
-        
+       }
         .comentario {
             background: #ffffffdb;
-        }
+       }
         .comentario:hover {
             background: #ffeaeadb !important;
-        }
-        
+       }
         .menu-principal-header {
             background: #fff;
-        }
-        .menu-principal,
-        .menu-principal h1,
-        .menu-principal-header {
+       }
+        .menu-principal, .menu-principal h1, .menu-principal-header {
             color: orangered;
-        }
-        
+       }
         #fondo-global {
-            background-image: url(https://www.carpixel.net/w/4ea482b90e147057f9d64b18d765772e/porsche-911-gt3-r-hybrid-wallpaper-hd-49401.jpg) !important;
-            
-        }
-
+            background-image: url(https://i.ibb.co/dPWZVdY/carpixel-net-2010-porsche-911-gt3-r-hybrid-49401-hd.jpg) !important;
+       filter: saturate(0.75);
+       }
         .media-input, .menu-principal-header {
-            background-image: url(https://www.carpixel.net/w/4ea482b90e147057f9d64b18d765772e/porsche-911-gt3-r-hybrid-wallpaper-hd-49401.jpg) !important;
+            background-image: url(https://i.ibb.co/dPWZVdY/carpixel-net-2010-porsche-911-gt3-r-hybrid-49401-hd.jpg) !important;
             background-size: cover !important;
-        }
+       }
         textarea {
             border: 2px solid var(--color5);
-            background: white !important
-        }
+            background: white !important 
+       }
         .cuerpo {
             color:black !important;
-        }`
+       }
+        body::-webkit-scrollbar-thumb{
+            background-color: var(--color2);
+       }
+       `
     },
     {
         nombre: 'Legacy',

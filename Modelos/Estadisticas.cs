@@ -10,7 +10,7 @@ namespace Modelos
         public int HilosCreados { get; set; }
         public int ComentariosCreados { get; set; }
         public int MaxComputadorasConectadas { get; set; } = 1;
-        public float Estabilidad => (float)(2.5f * Math.Sin(2 * Math.PI * DateTimeOffset.Now.Second / 60f) + 2.5f * Math.Sin(2 * Math.PI * DateTimeOffset.Now.Minute / 60f) + 90f * ((1f - (float)(ComputadorasConectadas * ComputadorasConectadas)) / ((float)(MaxComputadorasConectadas / MaxComputadorasConectadas))) + 5f);
+        public float Estabilidad => (float)(2.5f * Math.Sin(2f * Math.PI * DateTimeOffset.Now.Second / 60f) + 2.5f * Math.Sin(2f * Math.PI * DateTimeOffset.Now.Minute / 60f) + 90f * (1 - (float)Math.Pow(((double)ComputadorasConectadas) / MaxComputadorasConectadas, 4f)) + 5f);
     }
 
     public class Perlin

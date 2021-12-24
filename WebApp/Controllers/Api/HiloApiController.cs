@@ -330,7 +330,7 @@ namespace WebApp.Controllers
                     d.Tipo == denuncia.Tipo && denuncia.HiloId == d.HiloId && d.ComentarioId == denuncia.ComentarioId);
 
             string ip = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            yaDenuncio = yaDenuncio || denunciasIp.Contains(vc.HiloId + vc.ComentarioId ?? "" + ip);
+            yaDenuncio = yaDenuncio || denunciasIp.Contains(vc.HiloId + (vc.ComentarioId ?? "") + ip);
 
             if (yaDenuncio) ModelState.AddModelError("hilo", "Ya fue denunciado");
 
@@ -346,7 +346,7 @@ namespace WebApp.Controllers
 
             await context.SaveChangesAsync();
 
-            denunciasIp.Add(vc.HiloId + vc.ComentarioId ?? "" + ip);
+            denunciasIp.Add(vc.HiloId + (vc.ComentarioId ?? "") + ip);
 
             //Mandar denuncia a los medz
             denuncia = await context.Denuncias
