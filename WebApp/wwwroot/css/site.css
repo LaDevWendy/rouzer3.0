@@ -170,11 +170,11 @@ h4 {
   gap: 10px;
 }
 
-@media (max-width: 600px) {
+/*@media (max-width: 600px) {
   .hilo-completo > .contenido {
     margin-top: 60px;
   }
-}
+}*/
 
 .contenido .media {
   float: left;
@@ -461,11 +461,11 @@ h3 {
   flex-wrap: wrap;
 }
 
-@media (max-width: 600px) {
+/*@media (max-width: 600px) {
   .hilo-list {
     padding-top: 60px;
   }
-}
+}*/
 
 @media (min-width: 600px) {
   .hilo {
@@ -982,6 +982,7 @@ input:-webkit-autofill {
 } */
 
 /* Navidad */
+/*
 .hilo > .hilo-in::after {
   content: "";
   background: url(/imagenes/arbol2.png);
@@ -998,6 +999,7 @@ input:-webkit-autofill {
 .hilo-preview-mod .hilo .hilo-in::after {
   display: none;
 }
+*/
 h3 {
   z-index: 1;
 }

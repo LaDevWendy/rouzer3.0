@@ -30,9 +30,9 @@
         display: flex;
         margin-bottom: 8px !important;
     }
-    @media (max-width: 600px) {
+    /*@media (max-width: 600px) {
         .moderacion-nav {
             padding-top: 60px !important;
         }
-    }
+    }*/
 </style>

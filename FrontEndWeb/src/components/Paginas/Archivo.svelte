@@ -32,11 +32,11 @@
         margin: 0 auto;
         max-width: 600px;
     }
-    @media (max-width: 600px) {
+    /*@media (max-width: 600px) {
         .archivo-list {
             margin-top: 120px;
         }
-    }
+    }*/
 
     li {
         background: var(--color7);

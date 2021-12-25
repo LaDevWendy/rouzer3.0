@@ -27,7 +27,7 @@
     let mostrarRango = false;
     let mostrarNombre = false;
 
-    const risas = new Audio("/audio/risas.mp3");
+    //const risas = new Audio("/audio/risas.mp3");
 
     let espera = 0;
     $: if (espera != 0) {
@@ -78,9 +78,9 @@
                     audio
                 );
             }
-            if (!$ajustesConfigStore.mutearRisas) {
+            /*if (!$ajustesConfigStore.mutearRisas) {
                 risas.play();
-            }
+            }*/
             if (!$globalStore.usuario.esMod) {
                 espera = config.general.tiempoEntreComentarios;
             }

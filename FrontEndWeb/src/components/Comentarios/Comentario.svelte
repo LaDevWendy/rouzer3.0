@@ -526,6 +526,7 @@
         border-radius: 4px;
     }
     /* Gorritos */
+    /*
     .color-rojo::after,
     .color-verde::after,
     .color-multi::after,
@@ -580,7 +581,7 @@
         width: 50px;
         background-size: 100%;
         background-repeat: no-repeat;
-    }
+    }*/
 
     .comentario .header {
         grid-template-areas: color;
