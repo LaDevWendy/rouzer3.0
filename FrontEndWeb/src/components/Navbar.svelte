@@ -22,6 +22,7 @@
     // import Lucesitas from "./Lucesitas.svelte";
     // import Cuetitos from "./Especiales/Cuetitos.svelte";
     // import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
+    // import ajustesConfigStore from "./Dialogos/ajustesConfigStore";
 
     export let notificaciones = window.notificaciones || [];
 
@@ -102,7 +103,9 @@
                 class="fondo"
                 style="position:absolute;left:0;top:0;width:100%"
             >
-                <!-- <Cuetitos /> -->
+                <!--{#if !$ajustesConfigStore.desactivarCuetitos}
+                    <Cuetitos />
+                {/if}-->
                 <!-- <CuentaRegresiva/> -->
                 <Estadisticas />
             </div>
@@ -387,6 +390,19 @@
         width: 32px;
         transform: rotate(-4deg) scaleX(-1);
         background: url(/imagenes/colores/gorrito.png) 0% 0% / 85% no-repeat;
+        background-repeat: no-repeat;
+    }*/
+
+    /*.rozed::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 32px;
+        width: 32px;
+        transform: rotate(-4deg) scaleX(-1);
+        background: url(https://i.ibb.co/K60c4kz/gorro-resize.png) 0% 0% / 85%
+            no-repeat;
         background-repeat: no-repeat;
     }*/
 

@@ -134,6 +134,10 @@
             <!--<Checkbox
                 bind:checked={$ajustesConfigStore.mutearRisas}
                 right>Mutear risas</Checkbox
+            >
+            <Checkbox
+                bind:checked={$ajustesConfigStore.desactivarCuetitos}
+                right>Desactivar cuetitos</Checkbox
             >-->
         </ExpansionPanel>
 

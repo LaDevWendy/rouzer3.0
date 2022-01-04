@@ -42,18 +42,26 @@
 
 <div class="cuenta-regresiva">
     {#if $cuentaRegresivaStore.fechaFutura > $cuentaRegresivaStore.fechaActual}
-        <span>Se viene en</span>
+        <span>Contacto en</span>
         <div class="countdown-container">
-            <span id="hours" class="big-text">{horas}</span>
-            <span>Hora{horas != 1 ? "s" : ""}</span>
-            <span id="min" class="big-text">{minutos}</span>
-            <span>Minuto{minutos != 1 ? "s" : ""}</span>
+            {#if dias > 0}
+                <span id="days" class="big-text">{dias}</span>
+                <span>Día{dias != 1 ? "s" : ""}</span>
+            {/if}
+            {#if horas > 0}
+                <span id="hours" class="big-text">{horas}</span>
+                <span>Hora{horas != 1 ? "s" : ""}</span>
+            {/if}
+            {#if minutos > 0}
+                <span id="min" class="big-text">{minutos}</span>
+                <span>Minuto{minutos != 1 ? "s" : ""}</span>
+            {/if}
             <span id="sec" class="big-text">{segundos}</span>
             <span>Segundo{segundos != 1 ? "s" : ""}</span>
         </div>
     {:else}
         <!-- <div>Feliz dia 100</div> -->
-        <div style="top: 12px; position: relative">2022</div>
+        <div class="msg">2022</div>
     {/if}
 </div>
 
@@ -67,11 +75,24 @@
         padding-top: 4px;
         width: 100%;
         pointer-events: none !important;
+        z-index: 1;
+    }
+    .msg {
+        top: 15px;
+        position: relative;
     }
 
     @media (max-width: 600px) {
         .cuenta-regresiva {
-            top: 48px;
+            font-size: 6px !important;
+            height: 100%;
+        }
+        :global(.modoSticky) :global(.cuenta-regresiva) {
+            font-size: 4px !important;
+        }
+        .msg {
+            font-size: 10px;
+            top: 70%;
         }
     }
     :global(.modoSticky) .cuenta-regresiva {

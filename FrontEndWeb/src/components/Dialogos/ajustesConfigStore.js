@@ -12,6 +12,7 @@ let configInicial = {
     usarColorPersonalizado: false,
     colorPersonalizado: 'blue',
     mutearRisas: false,
+    desactivarCuetitos: false,
 }
 
 // Cargo configuracion gudardada

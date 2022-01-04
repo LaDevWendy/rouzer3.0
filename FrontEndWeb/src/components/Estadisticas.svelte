@@ -91,6 +91,8 @@
         align-self: baseline;
         border-radius: 0 0 4px 4px;
         color: var(--color2);
+        /*color: var(--color5);
+        border: var(--color5) 1px dotted;*/
         padding: 1px 2px;
         cursor: pointer;
     }

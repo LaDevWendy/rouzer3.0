@@ -583,6 +583,38 @@
         background-repeat: no-repeat;
     }*/
 
+    /* Año nuevo */
+    /*.color::after {
+        content: "";
+        background: url(https://i.ibb.co/K60c4kz/gorro-resize.png);
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        height: 26px;
+        width: 26px;
+        background-size: 85%;
+        background-repeat: no-repeat;
+        transform: rotate(-4deg);
+    }
+    .color::before {
+        background: url(https://i.ibb.co/dkM9zH8/tie-recolor.png);
+        content: "";
+        position: absolute;
+        top: 52px;
+        height: 16px;
+        width: 30px;
+        background-size: 100%;
+        background-repeat: no-repeat;
+    }
+    .color-invertido::after,
+    .color-invertido::before {
+        filter: invert(1);
+    }
+    .color-negro::after,
+    .color-negro::before {
+        filter: grayscale(1);
+    }*/
+
     .comentario .header {
         grid-template-areas: color;
         display: flex;

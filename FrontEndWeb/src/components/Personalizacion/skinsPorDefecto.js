@@ -85,55 +85,48 @@ export default [
     {
         nombre: 'Romed',
         style: `body {
-            --color5: #db9124;
+            --color1: #800000;
             --color2: #6c1108;
+            --color3: #560e06;
+            --color4: #a62416;
+            --color5: #db9124;
+            --color7: #450b05;
+            --color8: #560e06;
+            --color9: #2a0000;
             --color-texto1: #db9124;
             --color-texto2: #db9124;
-            --color4: #a62416;
-            --color7: #e9e3d6;
-        
-        }
-        
+       }
         .media-input, .menu-principal-header {
             background: url(https://wallpaperaccess.com/full/308552.jpg) !important;
             background-size: cover !important;
-            
-        }
+       }
         #crear-hilo-form .media-input {
             background-position-x: -120px !important;
-        }
-         .menu-principal-header {
+       }
+        .menu-principal-header {
             background: url(https://wallpaperaccess.com/full/308552.jpg) !important;
             background-size: cover !important;
-            
-        }
-        
+       }
         .comentario .id, .favorita {
             background: #6c1108 !important;
-        }
-        
+       }
         .crear-hilo-boton, .categoria, .comentario .tag, comentario, .media-input, .cuerpo {
             color: white !important;
-        }
-        
+       }
         .comentario {
             background: #c7c0b1;
-            color: black
-        }
+            color: black 
+       }
         .comentario:hover {
             background: #e3dccc !important;
-        }
-        
+       }
         .menu-principal-header, .nav-principal {
             background-size: 100%;
             background-position-y: -500px;
-        }
-        .menu-principal,
-        .menu-principal h1,
-        .menu-principal-header {
+       }
+        .menu-principal, .menu-principal h1, .menu-principal-header {
             color: #db9124;
-        }
-        
+       }
         #fondo-global {
             position: fixed;
             top: 0;
@@ -144,22 +137,26 @@ export default [
             background-size: cover;
             background-position-x: -500px;
             z-index: -1;
-        }
-        
+       }
         textarea {
             border: 2px solid var(--color5);
             background: #c7c0b1 !important;
-            color: black
-        }
-        
+            color: black 
+       }
         .nav-principal h3, .crear-hilo-boton, .cuerpo h1, .version {
             font-family:serif !important;
-            text-transform: uppercase  !important;
+            text-transform: uppercase !important;
             font-weight: 800;
-        }
+       }
         .noti-cont {
-            color: white
-        }`
+            color: white 
+       }
+        .cargar-nuevos-hilos{
+            background-color: var(--color2);
+       }
+        .resaltado .contenido {
+            color: white;
+       }`
     },
     {
         nombre: 'Skin de usuario 1',
