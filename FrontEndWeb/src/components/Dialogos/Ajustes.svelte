@@ -139,6 +139,18 @@
                 bind:checked={$ajustesConfigStore.desactivarCuetitos}
                 right>Desactivar cuetitos</Checkbox
             >-->
+            <hr />
+            <div style="display:flex;align-items: baseline;gap: 10px;">
+                <label for="comentarioModo">Comentarios: </label>
+                <select
+                    bind:value={$ajustesConfigStore.comentarioModo}
+                    name="comentarioModo"
+                >
+                    <option value="0">Carga total</option>
+                    <option value="1">Carga parcial</option>
+                    <option value="2">Carga por páginas</option>
+                </select>
+            </div>
         </ExpansionPanel>
 
         <ExpansionPanel bind:group name="Auto censura">

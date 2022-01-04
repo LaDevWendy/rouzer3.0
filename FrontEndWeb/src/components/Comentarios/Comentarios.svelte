@@ -17,7 +17,7 @@
     import selectorStore from "../Moderacion/selectorStore";
     import { ComentarioEstado } from "../../enums";
     import InfiniteLoading from "svelte-infinite-loading";
-    import Ajustes from "../Dialogos/Ajustes.svelte";
+    import NavegadorPaginas from "./NavegadorPaginas.svelte";
 
     export let hilo;
     export let comentarios;
@@ -26,8 +26,13 @@
     let modoTelefono = $globalStore.esCelular;
     let nuevosComentarios = [];
     let comentariosStore = localStore("Comentarios", { modoVivo: false });
+
+    // Modo 1 y modo 2
     let bloque = 100;
     let limite = bloque;
+    let infLoadActivo = $ajustesConfigStore.comentarioModo == "1";
+    let paginaMaxima = Math.ceil(comentarios.length / bloque);
+    // ---------------
 
     let idComentarioPropio = "";
     Signal.coneccion.on("ComentarioPropio", (id) => {
@@ -39,7 +44,6 @@
         idComentarioDecorado = id;
     });
 
-    let infLoadActivo = true;
     function cargarNuevosComentarios() {
         comentarios = [...nuevosComentarios, ...comentarios];
         nuevosComentarios.forEach(agregarComentarioADiccionario);
@@ -48,7 +52,12 @@
         // Añadir el restag a los comentarios tageados por este comentario
         comentarios = comentarios;
         stickies = stickies;
-        infLoadActivo = comentarios.length >= limite;
+        if ($ajustesConfigStore.comentarioModo == "1") {
+            infLoadActivo = comentarios.length >= limite;
+        }
+        if ($ajustesConfigStore.comentarioModo == "2") {
+            paginaMaxima = Math.floor(comentarios.length / bloque);
+        }
     }
 
     let diccionarioRespuestas = {};
@@ -176,16 +185,47 @@
     }
 
     let comentarioUrl = window.location.hash.replace("#", "");
+    let paginaActual = 1;
+    let pagina = 1;
+    let cargarComentarios = false;
+
+    function scrollAComentario(comentarioId) {
+        let comentarioDOM = document.getElementById(comentarioId);
+        if (comentarioDOM) comentarioDOM.scrollIntoView({ block: "center" });
+    }
 
     async function irAComentario(comentarioId) {
         if (typeof comentarioId != "string") comentarioId = comentarioId.detail;
         if (!diccionarioComentarios[comentarioId]) return;
-        let pos = comentarios.findIndex((c) => c.id == comentarioId);
-        if (pos - limite > 0) limite = Math.ceil(pos / bloque) * bloque;
-        await tick();
         diccionarioComentarios[comentarioId].resaltado = true;
-        let comentarioDOM = document.getElementById(comentarioId);
-        if (comentarioDOM) comentarioDOM.scrollIntoView({ block: "center" });
+        if ($ajustesConfigStore.comentarioModo == "1") {
+            let pos = comentarios.findIndex((c) => c.id == comentarioId);
+            if (pos - limite > 0) {
+                cargarComentarios = false;
+                setTimeout(async () => {
+                    cargarComentarios = true;
+                    limite = (Math.floor(pos / bloque) + 1) * bloque;
+                    await tick();
+                    scrollAComentario(comentarioId);
+                }, 120);
+                return;
+            }
+        }
+        if ($ajustesConfigStore.comentarioModo == "2") {
+            let pos = comentarios.findIndex((c) => c.id == comentarioId);
+            let pag = Math.floor(pos / bloque) + 1;
+            if (paginaActual != pag) {
+                cargarComentarios = false;
+                setTimeout(async () => {
+                    cargarComentarios = true;
+                    paginaActual = pag;
+                    await tick();
+                    scrollAComentario(comentarioId);
+                }, 120);
+                return;
+            }
+        }
+        scrollAComentario(comentarioId);
     }
 
     onMount(() => irAComentario(comentarioUrl));
@@ -207,7 +247,6 @@
     let carpetaMedia = false;
     let historialRespuestas = [];
 
-    let cargarComentarios = false;
     onMount(async () => {
         setTimeout(async () => {
             cargarComentarios = true;
@@ -246,6 +285,19 @@
         if (resp.length > 0) {
             historialRespuestas = [resp];
         }
+    }
+
+    async function cambiarPagina() {
+        cargarComentarios = false;
+        setTimeout(async () => {
+            pagina = Math.max(pagina, 1);
+            pagina = Math.min(pagina, paginaMaxima);
+            paginaActual = pagina;
+            cargarComentarios = true;
+            await tick();
+            let id = comentarios[(paginaActual - 1) * bloque].id;
+            scrollAComentario(id);
+        }, 60);
     }
 </script>
 
@@ -299,7 +351,7 @@
                         : "background:white"}
                 />
             </Button>
-            {#if comentarios.length > bloque}
+            {#if $ajustesConfigStore.comentarioModo == "1" && comentarios.length > bloque}
                 <Button
                     on:click={() => {
                         spinnerAcciones = true;
@@ -327,7 +379,14 @@
                         spinnerAcciones = true;
                         setTimeout(() => {
                             irAComentario(
-                                comentarios[comentarios.length - 1].id
+                                comentarios[
+                                    $ajustesConfigStore.comentarioModo == "2"
+                                        ? Math.min(
+                                              paginaActual * bloque - 1,
+                                              comentarios.length - 1
+                                          )
+                                        : comentarios.length - 1
+                                ].id
                             ).then(() => {
                                 spinnerAcciones = false;
                             });
@@ -337,7 +396,10 @@
                     icon
                     ><icon class="fe fe-arrow-down" />
                 </Button>
-                <Spinner cargando={spinnerAcciones} />
+                <Spinner
+                    cargando={$ajustesConfigStore.comentarioModo == "1" &&
+                        spinnerAcciones}
+                />
             {/if}
         </div>
     </div>
@@ -364,24 +426,110 @@
             {/each}
         </div>
         <div class="lista-comentarios">
-            {#each comentarios.slice(0, limite) as comentario (comentario.id)}
-                <li transition:fly|local={{ y: -50, duration: 250 }}>
-                    <Comentario
-                        on:colorClick={(e) =>
-                            resaltarComentariosDeUsuario(
-                                e.detail.usuarioId || ""
-                            )}
-                        {hilo}
-                        bind:comentario
-                        bind:comentariosDic={diccionarioComentarios}
-                        respuetasCompactas={modoTelefono}
-                        on:tagClickeado={tagCliqueado}
-                        on:idUnicoClickeado={idUnicoClickeado}
-                        on:irAComentario={irAComentario}
-                        on:motrarRespuestas={mostrarRespuestas}
-                    />
-                </li>
-            {/each}
+            {#if $ajustesConfigStore.comentarioModo == "0"}
+                {#each comentarios as comentario (comentario.id)}
+                    <li transition:fly|local={{ y: -50, duration: 250 }}>
+                        <Comentario
+                            on:colorClick={(e) =>
+                                resaltarComentariosDeUsuario(
+                                    e.detail.usuarioId || ""
+                                )}
+                            {hilo}
+                            bind:comentario
+                            bind:comentariosDic={diccionarioComentarios}
+                            respuetasCompactas={modoTelefono}
+                            on:tagClickeado={tagCliqueado}
+                            on:idUnicoClickeado={idUnicoClickeado}
+                            on:irAComentario={irAComentario}
+                            on:motrarRespuestas={mostrarRespuestas}
+                        />
+                    </li>
+                {/each}
+            {/if}
+            {#if $ajustesConfigStore.comentarioModo == "1"}
+                {#each comentarios.slice(0, limite) as comentario (comentario.id)}
+                    <li transition:fly|local={{ y: -50, duration: 250 }}>
+                        <Comentario
+                            on:colorClick={(e) =>
+                                resaltarComentariosDeUsuario(
+                                    e.detail.usuarioId || ""
+                                )}
+                            {hilo}
+                            bind:comentario
+                            bind:comentariosDic={diccionarioComentarios}
+                            respuetasCompactas={modoTelefono}
+                            on:tagClickeado={tagCliqueado}
+                            on:idUnicoClickeado={idUnicoClickeado}
+                            on:irAComentario={irAComentario}
+                            on:motrarRespuestas={mostrarRespuestas}
+                        />
+                    </li>
+                {/each}
+            {/if}
+            {#if $ajustesConfigStore.comentarioModo == "2"}
+                <NavegadorPaginas
+                    id="navegador-paginas"
+                    bind:pagina
+                    bind:paginaActual
+                    on:irAlPrimero={() => {
+                        pagina = 1;
+                        cambiarPagina();
+                    }}
+                    on:irAlAnterior={() => {
+                        pagina = paginaActual - 1;
+                        cambiarPagina();
+                    }}
+                    on:irAlSiguiente={() => {
+                        pagina = paginaActual + 1;
+                        cambiarPagina();
+                    }}
+                    on:irAlUltimo={() => {
+                        pagina = paginaMaxima;
+                        cambiarPagina();
+                    }}
+                    on:irAlIndicado={() => cambiarPagina()}
+                />
+                {#each comentarios.slice((paginaActual - 1) * bloque, paginaActual * bloque) as comentario (comentario.id)}
+                    <li transition:fly|local={{ y: -50, duration: 250 }}>
+                        <Comentario
+                            on:colorClick={(e) =>
+                                resaltarComentariosDeUsuario(
+                                    e.detail.usuarioId || ""
+                                )}
+                            {hilo}
+                            bind:comentario
+                            bind:comentariosDic={diccionarioComentarios}
+                            respuetasCompactas={modoTelefono}
+                            on:tagClickeado={tagCliqueado}
+                            on:idUnicoClickeado={idUnicoClickeado}
+                            on:irAComentario={irAComentario}
+                            on:motrarRespuestas={mostrarRespuestas}
+                        />
+                    </li>
+                {/each}
+                <NavegadorPaginas
+                    id="navegador-paginas"
+                    bind:pagina
+                    bind:paginaActual
+                    on:irAlPrimero={() => {
+                        pagina = 1;
+                        cambiarPagina();
+                    }}
+                    on:irAlAnterior={() => {
+                        pagina = paginaActual - 1;
+                        cambiarPagina();
+                    }}
+                    on:irAlSiguiente={() => {
+                        pagina = paginaActual + 1;
+                        cambiarPagina();
+                    }}
+                    on:irAlUltimo={() => {
+                        pagina = paginaMaxima;
+                        cambiarPagina();
+                    }}
+                    on:irAlIndicado={() => cambiarPagina()}
+                />
+            {/if}
             {#if mostrarFormularioFlotante && !$globalStore.esCelular && scrollY > 300}
                 <div
                     class="formulario-flotante"

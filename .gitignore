@@ -451,3 +451,7 @@ WebApp/wwwroot/js/css/bundle.css
 WebApp/wwwroot/js/css/bundle.css.map
 WebApp/generalsettings.json
 WebApp/generalsettings.json.save
+docker-compose.yml
+.gitignore
+rchan.dockerfile
+proxy.dockerfile
