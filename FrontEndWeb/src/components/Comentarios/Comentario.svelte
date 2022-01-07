@@ -94,7 +94,7 @@
     }
 
     function seleccionar() {
-        if (!$globalStore.usuario.esMod) return;
+        if (!$globalStore.usuario.esAuxiliar) return;
         selectorStore.selecionar(comentario.id);
     }
 

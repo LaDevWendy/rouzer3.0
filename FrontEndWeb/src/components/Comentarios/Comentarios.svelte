@@ -24,6 +24,8 @@
     export let spams;
 
     let modoTelefono = $globalStore.esCelular;
+    $ajustesConfigStore.comentarioModo =
+        $ajustesConfigStore.comentarioModo || "1";
     let nuevosComentarios = [];
     let comentariosStore = localStore("Comentarios", { modoVivo: false });
 
@@ -56,7 +58,7 @@
             infLoadActivo = comentarios.length >= limite;
         }
         if ($ajustesConfigStore.comentarioModo == "2") {
-            paginaMaxima = Math.floor(comentarios.length / bloque);
+            paginaMaxima = Math.ceil(comentarios.length / bloque);
         }
     }
 
@@ -467,28 +469,30 @@
                 {/each}
             {/if}
             {#if $ajustesConfigStore.comentarioModo == "2"}
-                <NavegadorPaginas
-                    id="navegador-paginas"
-                    bind:pagina
-                    bind:paginaActual
-                    on:irAlPrimero={() => {
-                        pagina = 1;
-                        cambiarPagina();
-                    }}
-                    on:irAlAnterior={() => {
-                        pagina = paginaActual - 1;
-                        cambiarPagina();
-                    }}
-                    on:irAlSiguiente={() => {
-                        pagina = paginaActual + 1;
-                        cambiarPagina();
-                    }}
-                    on:irAlUltimo={() => {
-                        pagina = paginaMaxima;
-                        cambiarPagina();
-                    }}
-                    on:irAlIndicado={() => cambiarPagina()}
-                />
+                {#if comentarios.length > bloque}
+                    <NavegadorPaginas
+                        id="navegador-paginas"
+                        bind:pagina
+                        bind:paginaActual
+                        on:irAlPrimero={() => {
+                            pagina = 1;
+                            cambiarPagina();
+                        }}
+                        on:irAlAnterior={() => {
+                            pagina = paginaActual - 1;
+                            cambiarPagina();
+                        }}
+                        on:irAlSiguiente={() => {
+                            pagina = paginaActual + 1;
+                            cambiarPagina();
+                        }}
+                        on:irAlUltimo={() => {
+                            pagina = paginaMaxima;
+                            cambiarPagina();
+                        }}
+                        on:irAlIndicado={() => cambiarPagina()}
+                    />
+                {/if}
                 {#each comentarios.slice((paginaActual - 1) * bloque, paginaActual * bloque) as comentario (comentario.id)}
                     <li transition:fly|local={{ y: -50, duration: 250 }}>
                         <Comentario
@@ -507,28 +511,30 @@
                         />
                     </li>
                 {/each}
-                <NavegadorPaginas
-                    id="navegador-paginas"
-                    bind:pagina
-                    bind:paginaActual
-                    on:irAlPrimero={() => {
-                        pagina = 1;
-                        cambiarPagina();
-                    }}
-                    on:irAlAnterior={() => {
-                        pagina = paginaActual - 1;
-                        cambiarPagina();
-                    }}
-                    on:irAlSiguiente={() => {
-                        pagina = paginaActual + 1;
-                        cambiarPagina();
-                    }}
-                    on:irAlUltimo={() => {
-                        pagina = paginaMaxima;
-                        cambiarPagina();
-                    }}
-                    on:irAlIndicado={() => cambiarPagina()}
-                />
+                {#if comentarios.length > bloque}
+                    <NavegadorPaginas
+                        id="navegador-paginas"
+                        bind:pagina
+                        bind:paginaActual
+                        on:irAlPrimero={() => {
+                            pagina = 1;
+                            cambiarPagina();
+                        }}
+                        on:irAlAnterior={() => {
+                            pagina = paginaActual - 1;
+                            cambiarPagina();
+                        }}
+                        on:irAlSiguiente={() => {
+                            pagina = paginaActual + 1;
+                            cambiarPagina();
+                        }}
+                        on:irAlUltimo={() => {
+                            pagina = paginaMaxima;
+                            cambiarPagina();
+                        }}
+                        on:irAlIndicado={() => cambiarPagina()}
+                    />
+                {/if}
             {/if}
             {#if mostrarFormularioFlotante && !$globalStore.esCelular && scrollY > 300}
                 <div
