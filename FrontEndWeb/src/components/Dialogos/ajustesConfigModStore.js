@@ -1,7 +1,7 @@
-import {localStore} from '../../localStore'
+import { localStore } from '../../localStore'
 
 const ajustesConfigMod = localStore("ajustesConfigMod", {
-    mutearDenuncias: false,
+    volumenDenuncias: 0.03,
     autoDesplegarDenuncias: true,
 })
 export default ajustesConfigMod

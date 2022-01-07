@@ -27,7 +27,7 @@
     const underAttack = new Audio("/audio/underAttack.mp3");
     const toing = new Audio("/audio/toing.mp3");
 
-    const denunciasVolumen = $ajustesConfigModStore.mutearDenuncias ? 0 : 0.03;
+    const denunciasVolumen = $ajustesConfigModStore.volumenDenuncias || 0.03;
 
     underAttack.volume = denunciasVolumen;
     toing.volume = denunciasVolumen;

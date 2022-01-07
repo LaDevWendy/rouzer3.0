@@ -169,10 +169,18 @@
 
         {#if $globalStore.usuario.esAuxiliar}
             <ExpansionPanel bind:group name="Mod">
-                <Checkbox
-                    bind:checked={$ajustesConfigModStore.mutearDenuncias}
-                    right>Mutear denuncias</Checkbox
+                <label for="volumen-denuncias"
+                    >Volumen denuncias: {$ajustesConfigModStore.volumenDenuncias ||
+                        0.03}</label
                 >
+                <input
+                    name="volumen-denuncias"
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    bind:value={$ajustesConfigModStore.volumenDenuncias}
+                />
                 <Checkbox
                     bind:checked={$ajustesConfigModStore.autoDesplegarDenuncias}
                     right>Auto desplegar denuncias</Checkbox
