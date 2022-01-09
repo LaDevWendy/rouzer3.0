@@ -1,20 +1,17 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore;
-using System.Text.Json;
-using Microsoft.Extensions.Logging;
-using Servicios;
-using System.Collections.Generic;
-using Modelos;
-using System.Threading.Tasks;
 using Data;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Modelos;
+using Servicios;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 using WebApp.Otros;
-using Microsoft.Extensions.Hosting;
 
 namespace WebApp.Controllers
 {
@@ -92,6 +89,43 @@ namespace WebApp.Controllers
                     IncluirStickies = true
                 }),
                 CategoriasActivas = categorias.ToList()
+            };
+            return View("Index", vm);
+        }
+        [HttpGet("/Nuevos")]
+        public async Task<IActionResult> Nuevos()
+        {
+            int[] categorias;
+            if (User.Identity.IsAuthenticated)
+            {
+                categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
+                HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
+                if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+            }
+            else
+            {
+                categorias = categoriasOpts.Value.Public().Ids().ToArray();
+            }
+
+            var ocultos = (await context.HiloAcciones
+                .Where(a => a.UsuarioId == User.GetId() && a.Hideado)
+                .Select(a => a.HiloId)
+                .ToArrayAsync())
+                .ToHashSet();
+
+            var vm = new HiloListViewModel
+            {
+
+                Hilos = rchanCacheService.hilosIndex
+                    .Select((h, index) => new { h, index })
+                    .OrderBy(a => rchanCacheService.creacionIndex[a.index])
+                    .Select(a => a.h)
+                    .Where(h => !ocultos.Contains(h.Id) && categorias.Contains(h.CategoriaId))
+                    .Where(h => h.Sticky == 0)
+                    .Take(16)
+                    .ToList(),
+                CategoriasActivas = categorias.ToList(),
+                Nuevos = true
             };
             return View("Index", vm);
         }
@@ -264,4 +298,5 @@ public class HiloListViewModel
     public List<HiloViewModel> Hilos { get; set; }
     public List<int> CategoriasActivas { get; set; }
     public bool Serios { get; set; } = false;
+    public bool Nuevos { get; set; } = false;
 }

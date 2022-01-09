@@ -230,6 +230,11 @@
             <a href="/Archivo">
                 <li><icon class="fe fe-book" /> Archivo <Ripple /></li>
             </a>
+            <a href="/Nuevos">
+                <li>
+                    <icon class="fe fe-trending-up" /> Nuevos <Ripple />
+                </li>
+            </a>
             <a href="/Serios">
                 <li>
                     <Icon

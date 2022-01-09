@@ -444,7 +444,7 @@ namespace WebApp.Controllers
         }
 
         [AllowAnonymous]
-        async public Task<ActionResult> CargarMas([FromQuery] DateTimeOffset ultimoBump, [FromQuery] string categorias, [FromQuery] bool serios = false)
+        async public Task<ActionResult> CargarMas([FromQuery] DateTimeOffset ultimoBump, [FromQuery] DateTimeOffset ultimoCreacion, [FromQuery] string categorias, [FromQuery] bool serios = false, [FromQuery] bool nuevos = false)
         {
             var categoriasActivas = categorias.Split(",").Select(c => Convert.ToInt32(c)).ToHashSet();
             var ocultos = (await context.HiloAcciones
@@ -464,12 +464,26 @@ namespace WebApp.Controllers
             //     .Take(16)
             //     .AViewModel(context)
             //     .ToListAsync();
-            var hilos = rchanCacheService.hilosIndex
-                .Where(h => categoriasActivas.Contains(h.CategoriaId) && !ocultos.Contains(h.Id) && h.Sticky == 0)
-                .Where(h => h.Bump < ultimoBump)
-                .Where(h => !serios || h.Serio)
-                .Take(16);
+            IEnumerable<HiloViewModel> hilos;
 
+            if (nuevos)
+            {
+                hilos = rchanCacheService.hilosIndex
+                    .Select((h, index) => new { h, index })
+                    .OrderBy(a => rchanCacheService.creacionIndex[a.index])
+                    .Select(a => a.h)
+                    .Where(h => categoriasActivas.Contains(h.CategoriaId) && !ocultos.Contains(h.Id) && h.Sticky == 0)
+                    .Where(h => h.Creacion < ultimoCreacion)
+                    .Take(16);
+            }
+            else
+            {
+                hilos = rchanCacheService.hilosIndex
+                    .Where(h => categoriasActivas.Contains(h.CategoriaId) && !ocultos.Contains(h.Id) && h.Sticky == 0)
+                    .Where(h => h.Bump < ultimoBump)
+                    .Where(h => !serios || h.Serio)
+                    .Take(16);
+            }
 
             return Ok(hilos);
         }
