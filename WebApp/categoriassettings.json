@@ -43,8 +43,8 @@
         },
         {
             "Id": 7,
-            "Nombre": "Desarrollo personal",
-            "NombreCorto": "DESP",
+            "Nombre": "Fitness",
+            "NombreCorto": "GYM",
             "Nsfw": false,
             "Public": true
         },
@@ -127,8 +127,8 @@
         },
         {
             "Id": 19,
-            "Nombre": "Putaku",
-            "NombreCorto": "PTKU",
+            "Nombre": "Animu",
+            "NombreCorto": "ANM",
             "Nsfw": false,
             "Public": true
         },

@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <h1 class="mantenimiento">En mantenimiento, en instantes volvemos... (apretá F5 F5 F5 F5...)</h1>
+    <h1 class="mantenimiento">Agregando cosas, ok? en instantes volvemos... (apretá F5 F5 F5 F5...)</h1>
     <img src="imagenes/chocamo.jpg" alt="">
     <audio src="audio/chocamo.mp3" autoplay></audio>
 
@@ -19,7 +19,6 @@
 </body>
 
 <script>
-
     async function inicio() {
         console.log("uuf");
         try {
@@ -55,7 +54,7 @@
         display: block;
         background: #cc1d24;
     }
-
+    
     img {
         position: fixed;
         bottom: 0;
@@ -67,17 +66,17 @@
         max-width: 100%;
         animation: ani 0.1s infinite;
     }
-
+    
     h1 {
         color: white;
         font-family: Helvetica;
     }
-
+    
     .mantenimiento {
         position: fixed;
         z-index: 1;
     }
-
+    
     .audioPrompt {
         position: absolute;
         display: flex;
@@ -89,16 +88,14 @@
         height: 100vh;
         color: white;
     }
-
+    
     @keyframes ani {
         0% {
             transform: translateX(10px);
         }
-
         50% {
             transform: translateX(-10px);
         }
-
         100% {
             transform: translateX(10px);
         }

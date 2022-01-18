@@ -45,6 +45,7 @@
 
     function onHiloCreado(hilo) {
         if (noCargarNuevos) return;
+        if (hiloList.serios && !hilo.serio) return;
         if (hiloList.categoriasActivas.includes(hilo.categoriaId)) {
             nuevoshilos = [hilo, ...nuevoshilos];
         }
@@ -76,7 +77,6 @@
 
     async function cargarViejos({ detail: { loaded, complete } }) {
         if (hiloList.hilos.length == 0) complete();
-
         try {
             let { data } = await RChanClient.cargarMasHilos(
                 hiloList.hilos[hiloList.hilos.length - 1].bump,

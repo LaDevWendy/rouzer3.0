@@ -248,6 +248,20 @@ namespace WebApp.Controllers
                 .ToListAsync();
             return View("Index", new HiloListViewModel { Hilos = hilos, CategoriasActivas = categorias.ToList(), Serios = true });
         }
+        [HttpGet("/Archivo/Historicos")]
+        public async Task<IActionResult> HistoricosAsync()
+        {
+            var hilos = await context.Hilos
+                .AsNoTracking()
+                .OrdenadosPorBump()
+                .FiltrarEliminados()
+                .FiltrarOcultosDeUsuario(User.GetId(), context)
+                .Where(h => h.Flags.Contains("h"))
+                .AViewModel(context)
+                .ToListAsync();
+            var vm = new HiloListViewModel { Hilos = hilos, CategoriasActivas = new List<int>() };
+            return View("Index", vm);
+        }
 
         private UsuarioVm GetUserInfo()
         {
