@@ -42,7 +42,7 @@ namespace WebApp
 
                 var migs = await ctx.Database.GetPendingMigrationsAsync();
 
-                if(migs.Count() != 0) 
+                if (migs.Count() != 0)
                 {
                     var migrations = ctx.Database.GetPendingMigrations();
                     logger.LogInformation("Applicando migraciones pendientes");
@@ -57,24 +57,32 @@ namespace WebApp
                     }
                 }
 
-                var um = scope.ServiceProvider.GetService<SignInManager<UsuarioModel>>().UserManager;
-                
-                var admin = (await um.GetUsersForClaimAsync(new Claim("Role", "admin"))).FirstOrDefault();
+                var um =
+                    scope.ServiceProvider.GetService<SignInManager<UsuarioModel>>().UserManager;
 
-                if(admin is null)
+                var admin = (
+                    await um.GetUsersForClaimAsync(new Claim("Role", "admin"))
+                ).FirstOrDefault();
+
+                if (admin is null)
                 {
-                    var pepe = um.Users.FirstOrDefault(u =>u.UserName == "pepe");
-                    if(pepe is null) {
-                        var r = await um.CreateAsync(new UsuarioModel {UserName = "pepe"}, "contraseña");
+                    var pepe = um.Users.FirstOrDefault(u => u.UserName == "pepe");
+                    if (pepe is null)
+                    {
+                        var r = await um.CreateAsync(
+                            new UsuarioModel { UserName = "pepe" },
+                            "contraseña"
+                        );
                     }
-                    pepe = um.Users.FirstOrDefault(u =>u.UserName == "pepe");
+                    pepe = um.Users.FirstOrDefault(u => u.UserName == "pepe");
                     await um.AddClaimAsync(pepe, new Claim("Role", "admin"));
                 }
 
                 // Inicializar estadisticas
                 var estadisticasService = scope.ServiceProvider.GetService<EstadisticasService>();
-                
-                await estadisticasService.Inicializar(new Estadisticas 
+
+                await estadisticasService.Inicializar(
+                    new Estadisticas
                     {
                         ComentariosCreados = ctx.Comentarios.Count(),
                         HilosCreados = ctx.Hilos.Count(),
@@ -87,19 +95,30 @@ namespace WebApp
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder
-                    .ConfigureAppConfiguration(cb => {
-                        cb.AddJsonFile("appsettings.json",false, true);
-                        cb.AddJsonFile("categoriassettings.json",false, true);
-                        cb.AddJsonFile("grupossettings.json",false, true);
-                        cb.AddJsonFile("generalsettings.json",false, true);
-                        cb.AddCommandLine(args);
-                        cb.AddEnvironmentVariables();
-                    })
-                    .UseStartup<Startup>()
-                        .UseUrls("http://0.0.0.0:5000/");
-                });
+                .ConfigureWebHostDefaults(
+                    webBuilder =>
+                    {
+                        webBuilder
+                            .ConfigureAppConfiguration(
+                                cb =>
+                                {
+                                    cb.AddJsonFile("appsettings.json", false, true);
+                                    cb.AddJsonFile("categoriassettings.json", false, true);
+                                    cb.AddJsonFile("grupossettings.json", false, true);
+                                    cb.AddJsonFile("generalsettings.json", false, true);
+                                    cb.AddCommandLine(args);
+                                    cb.AddEnvironmentVariables();
+                                }
+                            )
+                            .UseStartup<Startup>()
+                            .UseUrls("http://0.0.0.0:5000/")
+                            .UseKestrel(
+                                options =>
+                                {
+                                    options.Limits.MaxRequestBodySize = 31457280;
+                                }
+                            );
+                    }
+                );
     }
 }

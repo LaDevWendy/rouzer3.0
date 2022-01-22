@@ -568,8 +568,8 @@ namespace Servicios
             // Obtener tamaño
             long size = MediaExtension.GetFileSize(url);
 
-            // Si es mayor a 10mb se rechaza
-            if (size < 0 || size > 10485760)
+            // Si es mayor a 30mb se rechaza
+            if (size < 0 || size > 31457280)
                 throw new Exception("Archivo muy pesado.");
 
             //Obtener tipo
