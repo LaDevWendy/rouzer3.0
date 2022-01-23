@@ -17,6 +17,7 @@
     import NadieLoSabra from "./Especiales/NadieLoSabra.svelte";
     import AlertaPortenho from "./Especiales/AlertaPortenho.svelte";
     import AlertaNenazo from "./Especiales/AlertaNenazo.svelte";
+    import AlertaProvinciano from "./Especiales/AlertaProvinciano.svelte";
     import Halloween from "./Especiales/Halloween.svelte";
     import Estadisticas from "./Estadisticas.svelte";
     import RChanClient from "../RChanClient";
@@ -92,6 +93,7 @@
 <AlertaPortenho />
 <Halloween />
 <AlertaNenazo />
+<AlertaProvinciano />
 <header
     class:oculta
     class:protocoloMessi
