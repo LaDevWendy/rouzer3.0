@@ -17,6 +17,7 @@
 }
 <!DOCTYPE html>
 <html xml:lang="es" lang="es" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <script>window.token = "@Xsrf.GetAndStoreTokens(Context).RequestToken"</script>
     <script defer src="~/js/bundle.js?v=@version"></script>
@@ -33,15 +34,16 @@
     <title>@generalOptions.Value.Nombre @ViewData["Title"]</title>
     @* <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_o5hd5vvqpoqiwwmi.css"> *@
 
-            <!-- ICONOS -->
+    <!-- ICONOS -->
     @* <link rel="stylesheet" href="https://cdn.rawgit.com/luizbills/feather-icon-font/v4.7.0/dist/feather.css"> *@
     <link rel="stylesheet" href="~/iconos/iconos.css?v=@version" />
     <link rel="stylesheet" href="~/css/site.css?v=@version" />
     <link rel="stylesheet" href="~/js/css/bundle.css?v=@version" />
-    <link rel="stylesheet" type="text/css" href="~/css/flags32-both.css?v=@version"/>
+    <link rel="stylesheet" type="text/css" href="~/css/flags32-both.css?v=@version" />
     <style id="skin"></style>
     <style id="portenho"></style>
     <style id="halloween"></style>
+    <style id="nenazo"></style>
 
     <script src="https://hcaptcha.com/1/api.js" async defer></script>
 
@@ -50,22 +52,22 @@
         UsuarioModel user = null;
         if (Context.User != null)
         {
-            // The example uses base class, IdentityUser, yours may be called 
+            // The example uses base class, IdentityUser, yours may be called
             // ApplicationUser if you have added any extra fields to the model
             var userManager = Context.RequestServices
-                .GetRequiredService<UserManager<UsuarioModel>>();
+            .GetRequiredService<UserManager<UsuarioModel>>();
             var signInManager = Context.RequestServices
-                .GetRequiredService<SignInManager<UsuarioModel>>();
+            .GetRequiredService<SignInManager<UsuarioModel>>();
 
             user = await userManager.GetUserAsync(Context.User);
 
-            if(user is null)
+            if (user is null)
             {
                 await signInManager.SignOutAsync();
                 Context.User = null;
             }
 
-            if(signInManager.IsSignedIn(Context.User))
+            if (signInManager.IsSignedIn(Context.User))
             {
                 await signInManager.RefreshSignInAsync(user);
             }
@@ -74,17 +76,20 @@
     }
 
     @{
-        string GenerarUserName(string username) 
+        string GenerarUserName(string username)
         {
-            if(username is null) return null;
+            if (username is null) return null;
 
-            if(username.Contains("Anon.")) {
-                username = "Anon" ;
+            if (username.Contains("Anon."))
+            {
+                username = "Anon";
             }
             return username;
         }
-        var globalState = new {
-            Usuario = new {
+        var globalState = new
+        {
+            Usuario = new
+            {
                 EstaAutenticado = User.Identity.IsAuthenticated,
                 UserName = GenerarUserName(User.Identity.Name),
                 @* Role = User.Claims.FirstOrDefault(c => c.ValueType == "Role").Value, *@
@@ -96,12 +101,14 @@
         };
 
 
-        var gnrlOpt = (GeneralPublicOptions)  generalOptions.Value;
-        var configurafionPublica = new {
+        var gnrlOpt = (GeneralPublicOptions)generalOptions.Value;
+        var configurafionPublica = new
+        {
             Categorias = categoriasOpt.Value,
             Grupos = gruposOpt.Value,
             HCaptchaSiteKey = config.GetValue<string>("HCaptcha:SiteKey"),
-            General =  new {
+            General = new
+            {
                 gnrlOpt.TiempoEntreComentarios,
                 gnrlOpt.TiempoEntreHilos,
                 gnrlOpt.LimiteArchivo,
@@ -115,18 +122,20 @@
                 gnrlOpt.Flags,
                 gnrlOpt.Nombre,
                 gnrlOpt.Mensaje,
-            } 
+            }
         };
 
-        var estadisticas = new {
+        var estadisticas = new
+        {
             computadorasConectadas = RChanHub.NumeroDeUsuariosConectados
         };
     }
-    
+
     @{
         List<DenunciaModel> denuncias = null;
-        if ((User?.EsAuxiliar(gnrlOpt.ModoSerenito) ?? false) || (User?.EsMod() ?? false)) {
-            denuncias =  await _context.Denuncias
+        if ((User?.EsAuxiliar(gnrlOpt.ModoSerenito) ?? false) || (User?.EsMod() ?? false))
+        {
+            denuncias = await _context.Denuncias
             .Where(d => d.Estado == EstadoDenuncia.NoRevisada)
             .OrderByDescending(d => d.Creacion)
             .Take(100)
@@ -142,13 +151,14 @@
     }
     <script>
         window.config = @Json.Serialize(configurafionPublica)
-        window.globalState = @Json.Serialize(globalState)
+            window.globalState = @Json.Serialize(globalState)
 
-        window.denuncias = @Json.Serialize(denuncias);
+                window.denuncias = @Json.Serialize(denuncias);
         window.estadisticas = @Json.Serialize(await estadisticasService.GetEstadisticasAsync());        
     </script>
 
 </head>
+
 <body>
     @* <mini-profiler /> *@
     <environment names="Development">
@@ -158,45 +168,47 @@
         <p>Esta Autenticado: @User.Identity.IsAuthenticated</p>
         @foreach (var cliam in User.Claims)
         {
-            <p>@cliam.Type: @cliam.Value</p>
+        <p>@cliam.Type: @cliam.Value</p>
         }
-    </div> *@
+        </div> *@
 
-       @* Notificaciones *@
-            @if(User.Identity.IsAuthenticated){
+    @* Notificaciones *@
+    @if (User.Identity.IsAuthenticated)
+    {
 
 
-                var notificaciones = await _context.Notificaciones
-                    .Where(n => n.UsuarioId == User.GetId())
-                    .Select(n => new NotificacionViewModel{
-                        Id = n.Id,
-                        HiloId = n.HiloId,
-                        HiloTitulo = _context.Hilos.First(h => h.Id == n.HiloId).Titulo,
-                        HiloImagen = n.Hilo.Media.VistaPreviaCuadrado,
-                        ComentarioId = n.ComentarioId,
-                        Tipo = n.Tipo,
-                        Conteo = n.Conteo,
-                    })
-                    .AsNoTracking()
-                    .ToListAsync();
+        var notificaciones = await _context.Notificaciones
+        .Where(n => n.UsuarioId == User.GetId())
+        .Select(n => new NotificacionViewModel
+        {
+            Id = n.Id,
+            HiloId = n.HiloId,
+            HiloTitulo = _context.Hilos.First(h => h.Id == n.HiloId).Titulo,
+            HiloImagen = n.Hilo.Media.VistaPreviaCuadrado,
+            ComentarioId = n.ComentarioId,
+            Tipo = n.Tipo,
+            Conteo = n.Conteo,
+        })
+        .AsNoTracking()
+        .ToListAsync();
 
-                <script>
-                    window.notificaciones = @Json.Serialize(notificaciones)
-                </script>
-                
-                @* <div class="debug notdi-debug">
-                    @Json.Serialize(notificaciones)
-                </div> *@
+        <script>
+            window.notificaciones = @Json.Serialize(notificaciones)
+        </script>
+
+        @* <div class="debug notdi-debug">
+            @Json.Serialize(notificaciones)
+            </div> *@
     }
     <div id="svelte-navbar"></div>
-        @RenderBody()
+    @RenderBody()
     </div>
 
     @* <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2019 - WebApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        &copy; 2019 - WebApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
-    </footer> *@
+        </footer> *@
 
 
     @* <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script> *@
@@ -206,4 +218,5 @@
     <div id="fondo-global" style="transform:translatez(0);-webkit-transform:translatez(0);"></div>
     @RenderSection("Scripts", required: false)
 </body>
+
 </html>

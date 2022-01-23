@@ -1,6 +1,6 @@
 <script>
     import { configStore } from "../../config";
-    import { onDestroy } from 'svelte';
+    import { onDestroy } from "svelte";
     let activado = false;
 
     $: activado = $configStore.general.flags.includes("portenho");
@@ -26,12 +26,11 @@
     document.addEventListener(visibilityChange, handleVisibilityChange, false);
 
     function handleVisibilityChange() {
-        sonido.volume = activado && !document[hidden]
-            ? (sonido.volume = 1)
-            : (sonido.volume = 0);
+        sonido.volume = activado && !document[hidden];
     }
 
-    $: activado && !document[hidden] ? (sonido.volume = 1) : (sonido.volume = 0);
+    $: sonido.volume = activado && !document[hidden];
+
     $: if (activado) {
         try {
             sonido.play();
