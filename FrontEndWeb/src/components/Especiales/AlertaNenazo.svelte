@@ -47,9 +47,123 @@
             console.log(error);
         }
 
-        document.getElementById(
-            "nenazo"
-        ).innerHTML = `body{--color1:#51d1f6;--color2:#51d1f6;--color3:#6fbbd3;--color4:#6fbbd3;--color5:#add8e6;--color6:#ff4000;--color7:#d1ebf7;--color8:#b3d5e0;--color9:#2a6478;--color-texto1:#18171c;--color-texto2:var(--color-texto1);--primary:var(--color-texto1)}#fondo-global,.image-preview,.menu-principal-header,.video-preview{filter:brightness(3) hue-rotate(-23deg)}.hilo>.hilo-in::after,.media::after{content:"";background:url(/imagenes/nenazo.gif);background-size:contain;top:0;left:0;width:100%;height:100%;position:absolute}.hilo-in::after{opacity:0}.hilo-in{border:1px solid var(--color5)}.hilo-in,.media,.nav-categorias,.panel,li>.comentario{animation-name:shake;animation-duration:.82s;animation-iteration-count:infinite}.hilo:nth-child(4n+1)>.hilo-in,li:nth-child(2n)>.comentario{animation-delay:.2s}.hilo:nth-child(4n+2)>.hilo-in{animation-delay:.6s}.hilo:nth-child(4n+3)>.hilo-in{animation-delay:.4s}.panel{animation-delay:.4s}.nav-categorias{animation-delay:.5s}.hilo>.hilo-in::after{animation-duration:7.5s;animation-name:nenazo1;animation-iteration-count:infinite}.hilo:nth-child(4n+1)>.hilo-in::after{animation-delay:1.875s}.hilo:nth-child(4n+2)>.hilo-in::after{animation-delay:3.75s}.hilo:nth-child(4n+3)>.hilo-in::after{animation-delay:5.625s}.hilo>.hilo-in:hover::after,.media:hover::after{opacity:0!important;z-index:-10}@keyframes nenazo1{0%,10%,100%,90%{opacity:0}40%,60%{opacity:1}}@keyframes shake{10%,90%{transform:translate3d(-1px,0,0)}20%,80%{transform:translate3d(2px,0,0)}30%,50%,70%{transform:translate3d(-4px,0,0)}40%,60%{transform:translate3d(4px,0,0)}}`;
+        document.getElementById("nenazo").innerHTML = `
+body{
+    --color1:#51d1f6;
+    --color2:#51d1f6;
+    --color3:#6fbbd3;
+    --color4:#6fbbd3;
+    --color5:#add8e6;
+    --color6:#ff4000;
+    --color7:#d1ebf7;
+    --color8:#b3d5e0;
+    --color9:#2a6478;
+    --color-texto1:#18171c;
+    --color-texto2:var(--color-texto1);
+    --primary:var(--color-texto1)
+}
+#fondo-global{
+     background: linear-gradient(to right, var(--color2), var(--color2)), url(/imagenes/rosed.png);
+     background-blend-mode: color, normal;
+}
+ .menu-principal-header{
+     background: linear-gradient(to right, var(--color2), var(--color2)), url(/imagenes/rose2.jpg);
+     background-blend-mode: color, normal;
+     background-position-y: -100px;
+     background-size: cover;
+}
+ .image-preview, .video-preview{
+     background: linear-gradient(to right, var(--color2), var(--color2)), url(/imagenes/rose2.jpg) !important;
+     background-blend-mode: color, normal;
+}
+.hilo>.hilo-in::after,.media::after{
+    content:"";
+    background:url(/imagenes/nenazo.gif);
+    background-size:cover;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    position:absolute
+}
+.media::after{
+     animation: nenazo2 15s;
+     animation-iteration-count:infinite;
+}
+.hilo-in::after{
+    opacity:0
+}
+.hilo-in{
+    border:1px solid var(--color5)
+}
+.hilo-in,.media,.nav-categorias,.panel,li>.comentario{
+    animation-name:shake;
+    animation-duration:.82s;
+    animation-iteration-count:infinite
+}
+.hilo:nth-child(4n+1)>.hilo-in,li:nth-child(2n)>.comentario{
+    animation-delay:.2s
+}
+.hilo:nth-child(4n+2)>.hilo-in{
+    animation-delay:.6s
+}
+.hilo:nth-child(4n+3)>.hilo-in{
+    animation-delay:.4s
+}
+.panel{
+    animation-delay:.4s
+}
+.nav-categorias{
+    animation-delay:.5s
+}
+.hilo>.hilo-in::after{
+    animation:nenazo1 7.5s, nenazo2 15s;
+    animation-iteration-count:infinite
+}
+.hilo:nth-child(4n+1)>.hilo-in::after{
+    animation-delay:1.875s
+}
+.hilo:nth-child(4n+2)>.hilo-in::after{
+    animation-delay:3.75s
+}
+.hilo:nth-child(4n+3)>.hilo-in::after{
+    animation-delay:5.625s
+}
+.hilo>.hilo-in:hover::after,.media:hover::after{
+    opacity:0!important;
+    z-index:-10
+}
+@keyframes nenazo1{
+    0%,10%,100%,90%{
+        opacity:0
+    }
+    40%,60%{
+        opacity:1
+    }
+}
+@keyframes nenazo2{
+     0%{
+         background-position: left;
+    }
+     50%{
+         background-position: right;
+    }
+}
+@keyframes shake{
+    10%,90%{
+        transform:translate3d(-1px,0,0)
+    }
+    20%,80%{
+        transform:translate3d(2px,0,0)
+    }
+    30%,50%,70%{
+        transform:translate3d(-4px,0,0)
+    }
+    40%,60%{
+        transform:translate3d(4px,0,0)
+    }
+}
+`;
     } else {
         document.getElementById("nenazo").innerHTML = ``;
     }
