@@ -1,5 +1,4 @@
-export default [
-    {
+export default [{
         nombre: 'Classic',
         style: ``
     },
@@ -156,6 +155,37 @@ export default [
        }
         .resaltado .contenido {
             color: white;
+       }`
+    },
+    {
+        nombre: 'Light',
+        style: `body{
+            --color1: #6999c9;
+            --color2: #6999c9;
+            --color3: #73a8dd;
+            --color4: #3b83bd;
+            --color5: rgb(156 29 29);
+            --color7: #0096d2;
+            --color8: #7C6C8A;
+            --color9: #417ab4;
+            --primary: #800000;
+       }
+        .verde{
+            color: #00ff00;
+       }
+        #fondo-global{
+            background: linear-gradient(to right, var(--color2), var(--color2)), url(/imagenes/rosed.png), linear-gradient(to right, var(--color2), var(--color2));
+            background-blend-mode: color, overlay;
+       }
+        .menu-principal-header{
+            background: linear-gradient(to right, var(--color2), var(--color2)), url(/imagenes/rose2.jpg), linear-gradient(to right, var(--color2), var(--color2));
+            background-blend-mode: color, overlay;
+            background-position-y: -100px;
+            background-size: cover;
+       }
+        .image-preview, .video-preview{
+            background: linear-gradient(to right, var(--color2), var(--color2)), url(/imagenes/rose2.jpg), linear-gradient(to right, var(--color2), var(--color2)) !important;
+            background-blend-mode: color, overlay;
        }`
     },
     {

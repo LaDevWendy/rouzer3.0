@@ -553,6 +553,11 @@ namespace WebApp.Controllers
                 return Json(ModelState);
             }
 
+            if (categoriaAntigua == vc.CategoriaId)
+            {
+                return Json(new ApiResponse("Categoria cambiada!"));
+            }
+
             hilo.CategoriaId = vc.CategoriaId;
 
             var denunciasPorCategoriaIncorrecta = await context.Denuncias
