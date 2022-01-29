@@ -25,6 +25,7 @@ namespace Modelos
             this.Encuesta = hilo.Encuesta != null;
             this.Audio = hilo.Audio;
             this.Audios = hilo.Flags.Contains("a");
+            this.TrendIndex = hilo.TrendIndex;
         }
 
         public int CantidadComentarios { get; set; }
@@ -50,6 +51,7 @@ namespace Modelos
         public bool Serio { get; set; }
         public bool Concentracion { get; set; }
         public bool Audios { get; set; }
+        public double TrendIndex { get; set; }
     }
 
     public class HiloViewModelMod : HiloViewModel

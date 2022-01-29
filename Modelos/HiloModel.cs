@@ -18,9 +18,12 @@ namespace Modelos
 
         public Encuesta Encuesta { get; set; }
 
+        public double TrendIndex { get; set; } = (new Random()).NextDouble();
+
     }
 
-    public enum HiloEstado {
+    public enum HiloEstado
+    {
         Normal,
         Archivado,
         Eliminado,

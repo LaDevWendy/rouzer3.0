@@ -22,6 +22,7 @@ namespace Servicios
 
         public List<HiloViewModel> hilosIndex { get; private set; } = new List<HiloViewModel>();
         public int[] creacionIndex { get; private set; } = new int[10000];
+        public int[] trendIndex { get; private set; } = new int[10000];
 
         public BanCache banCache { get; private set; } = new BanCache();
 
@@ -70,11 +71,21 @@ namespace Servicios
                         CategoriasId = todasLasCategorias,
                     });
                     count = maxTries;
+
+                    // Orden por creación
                     var indicesInvertidos = hilosIndex.Select((h, index) => new { h, index }).OrderByDescending(a => a.h.Creacion).Select(a => a.index).ToList();
                     var index = 0;
                     foreach (var idx in indicesInvertidos)
                     {
                         creacionIndex[idx] = index++;
+                    }
+
+                    // Orden por tendencia
+                    indicesInvertidos = hilosIndex.Select((h, index) => new { h, index }).OrderByDescending(a => a.h.TrendIndex).Select(a => a.index).ToList();
+                    index = 0;
+                    foreach (var idx in indicesInvertidos)
+                    {
+                        trendIndex[idx] = index++;
                     }
                 }
                 catch (Exception e)

@@ -196,6 +196,9 @@ namespace WebApp
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddHostedService<RChanBackgroundService>();
 
+            services.AddSingleton<RChanTrendService>();
+            services.AddHostedService<RChanTrendService>(provider => provider.GetService<RChanTrendService>());
+
             services.AddSingleton<RChanCacheService>();
             services.AddHostedService<RChanCacheService>(provider => provider.GetService<RChanCacheService>());
 

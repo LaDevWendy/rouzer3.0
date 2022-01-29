@@ -444,7 +444,7 @@ namespace WebApp.Controllers
         }
 
         [AllowAnonymous]
-        async public Task<ActionResult> CargarMas([FromQuery] DateTimeOffset ultimoBump, [FromQuery] DateTimeOffset ultimoCreacion, [FromQuery] string categorias, [FromQuery] bool serios = false, [FromQuery] bool nuevos = false)
+        async public Task<ActionResult> CargarMas([FromQuery] DateTimeOffset ultimoBump, [FromQuery] DateTimeOffset ultimoCreacion, [FromQuery] double ultimoTrend, [FromQuery] string categorias, [FromQuery] bool serios = false, [FromQuery] bool nuevos = false, [FromQuery] bool tendencias = false)
         {
             var categoriasActivas = categorias.Split(",").Select(c => Convert.ToInt32(c)).ToHashSet();
             var ocultos = (await context.HiloAcciones
@@ -475,16 +475,26 @@ namespace WebApp.Controllers
                     .Where(h => categoriasActivas.Contains(h.CategoriaId) && !ocultos.Contains(h.Id) && h.Sticky == 0)
                     .Where(h => h.Creacion < ultimoCreacion)
                     .Take(16);
+                return Ok(hilos);
             }
-            else
+
+            if (tendencias)
             {
                 hilos = rchanCacheService.hilosIndex
+                    .Select((h, index) => new { h, index })
+                    .OrderBy(a => rchanCacheService.trendIndex[a.index])
+                    .Select(a => a.h)
+                    .Where(h => categoriasActivas.Contains(h.CategoriaId) && !ocultos.Contains(h.Id) && h.Sticky == 0)
+                    .Where(h => (h.TrendIndex > 1.0) && (h.TrendIndex < ultimoTrend))
+                    .Take(16);
+                return Ok(hilos);
+            }
+
+            hilos = rchanCacheService.hilosIndex
                     .Where(h => categoriasActivas.Contains(h.CategoriaId) && !ocultos.Contains(h.Id) && h.Sticky == 0)
                     .Where(h => h.Bump < ultimoBump)
                     .Where(h => !serios || h.Serio)
                     .Take(16);
-            }
-
             return Ok(hilos);
         }
         [AllowAnonymous]

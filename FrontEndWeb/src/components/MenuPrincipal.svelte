@@ -237,7 +237,7 @@
             </a>
             <a href="/Nuevos">
                 <li>
-                    <icon class="fe fe-trending-up" /> Nuevos <Ripple />
+                    <icon class="fe fe-refresh-cw" /> Nuevos <Ripple />
                 </li>
             </a>
             <a href="/Serios">
@@ -247,6 +247,11 @@
                         style="padding-right: 23px;"
                         ><svelte:component this={serio} /></Icon
                     > Serios <Ripple />
+                </li>
+            </a>
+            <a href="/Tendencias">
+                <li>
+                    <icon class="fe fe-trending-up" /> Tendencias <Ripple />
                 </li>
             </a>
             <hr />

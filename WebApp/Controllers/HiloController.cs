@@ -115,17 +115,51 @@ namespace WebApp.Controllers
 
             var vm = new HiloListViewModel
             {
-
                 Hilos = rchanCacheService.hilosIndex
                     .Select((h, index) => new { h, index })
                     .OrderBy(a => rchanCacheService.creacionIndex[a.index])
                     .Select(a => a.h)
                     .Where(h => !ocultos.Contains(h.Id) && categorias.Contains(h.CategoriaId))
-                    .Where(h => h.Sticky == 0)
                     .Take(16)
                     .ToList(),
                 CategoriasActivas = categorias.ToList(),
                 Nuevos = true
+            };
+            return View("Index", vm);
+        }
+
+        [HttpGet("/Tendencias")]
+        public async Task<IActionResult> Tendencias()
+        {
+            int[] categorias;
+            if (User.Identity.IsAuthenticated)
+            {
+                categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
+                HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
+                if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+            }
+            else
+            {
+                categorias = categoriasOpts.Value.Public().Ids().ToArray();
+            }
+
+            var ocultos = (await context.HiloAcciones
+                .Where(a => a.UsuarioId == User.GetId() && a.Hideado)
+                .Select(a => a.HiloId)
+                .ToArrayAsync())
+                .ToHashSet();
+
+            var vm = new HiloListViewModel
+            {
+                Hilos = rchanCacheService.hilosIndex
+                    .Select((h, index) => new { h, index })
+                    .OrderBy(a => rchanCacheService.trendIndex[a.index])
+                    .Select(a => a.h)
+                    .Where(h => (h.TrendIndex > 1.0) && categorias.Contains(h.CategoriaId) && !ocultos.Contains(h.Id))
+                    .Take(16)
+                    .ToList(),
+                CategoriasActivas = categorias.ToList(),
+                Tendencias = true
             };
             return View("Index", vm);
         }
@@ -313,4 +347,5 @@ public class HiloListViewModel
     public List<int> CategoriasActivas { get; set; }
     public bool Serios { get; set; } = false;
     public bool Nuevos { get; set; } = false;
+    public bool Tendencias { get; set; } = false;
 }

@@ -31,6 +31,7 @@ namespace Servicios
         Task LimpiarHilo(string id);
         Task LimpiarHilo(HiloModel hilo);
         Task LimpiarHilosViejos();
+        Task ActualizarTendencias();
 
     }
 
@@ -442,6 +443,16 @@ namespace Servicios
             logger.LogInformation($"{hilosALimpiar.Count()} hilos limpiados, {ArchivosLimpiados} archivos limpiados y {AudiosLimpiados} audios limpiados.");
 
         }
+
+        public async Task ActualizarTendencias()
+        {
+            var haceDiezMinutos = DateTime.Now.AddMinutes(-10);
+            foreach (var h in _context.Hilos.FiltrarNoActivos().ToList())
+            {
+                h.TrendIndex = _context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal && c.Creacion > haceDiezMinutos).Count() + 0.7 * h.TrendIndex;
+            }
+            await _context.SaveChangesAsync();
+        }
     }
 
     public class GetHilosOptions
@@ -473,7 +484,8 @@ namespace Servicios
                 Serio = h.Flags.Contains("s"),
                 Concentracion = h.Flags.Contains("c"),
                 Encuesta = h.Encuesta != null,
-                CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count()
+                CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
+                TrendIndex = h.TrendIndex
             });
         }
         public static IQueryable<HiloViewModelMod> AViewModelMod(this IQueryable<HiloModel> hilos, RChanContext context)
@@ -496,6 +508,7 @@ namespace Servicios
                 Encuesta = h.Encuesta != null,
                 CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                 UsuarioId = h.UsuarioId,
+                TrendIndex = h.TrendIndex
             });
         }
 

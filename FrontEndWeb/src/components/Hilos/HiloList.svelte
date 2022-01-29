@@ -81,9 +81,11 @@
             let { data } = await RChanClient.cargarMasHilos(
                 hiloList.hilos[hiloList.hilos.length - 1].bump,
                 hiloList.hilos[hiloList.hilos.length - 1].creacion,
+                hiloList.hilos[hiloList.hilos.length - 1].trendIndex,
                 hiloList.categoriasActivas,
                 hiloList.serios,
-                hiloList.nuevos
+                hiloList.nuevos,
+                hiloList.tendencias
             );
             hiloList.hilos = [...hiloList.hilos, ...data];
             if (data.length == 0) complete();
