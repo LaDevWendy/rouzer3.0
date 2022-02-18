@@ -45,6 +45,7 @@
 
     function onHiloCreado(hilo) {
         if (noCargarNuevos) return;
+        if (hiloList.tendencias) return;
         if (hiloList.serios && !hilo.serio) return;
         if (hiloList.categoriasActivas.includes(hilo.categoriaId)) {
             nuevoshilos = [hilo, ...nuevoshilos];

@@ -141,6 +141,7 @@
     }
     a {
         position: relative;
+        overflow: auto;
     }
     a:hover .desplegable,
     a:active .desplegable {

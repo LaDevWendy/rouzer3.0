@@ -18,6 +18,9 @@
 </div>
 
 <style>
+    .texto {
+        overflow: auto;
+    }
     .mediaExpandido {
         display: flex;
         flex-wrap: wrap;

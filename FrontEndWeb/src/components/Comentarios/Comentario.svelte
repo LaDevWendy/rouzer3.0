@@ -455,6 +455,7 @@
     }
     .comentario .contenido {
         grid-area: cuerpo;
+        overflow: auto;
     }
     .mediaExpandido {
         display: flex;
