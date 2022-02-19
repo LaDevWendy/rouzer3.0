@@ -16,6 +16,7 @@ import MediaHome from './components/Paginas/MediaHome.svelte';
 import Historial from './components/Paginas/Historial.svelte';
 import Archivo from './components/Paginas/Archivo.svelte';
 import Spams from './components/Paginas/Spams.svelte';
+import HistorialUsuario2 from './components/Paginas/HistorialUsuario2.svelte';
 
 import skinStore from './components/Personalizacion/skinsStore'
 
@@ -31,7 +32,7 @@ skinStore.applicarEstilo()
 let componentes = [
 	["#svelte", App, {}],
 	["#svelte-navbar", Navbar, {}],
-	["#svelte-index", HiloList, {hiloList: window.hiloList}],
+	["#svelte-index", HiloList, { hiloList: window.hiloList }],
 	["#svelte-administracion", Administracion, {}],
 	["#svelte-moderacion", Moderacion, {}],
 	["#svelte-token", Token, {}],
@@ -47,15 +48,15 @@ let componentes = [
 	["#svelte-historial", Historial, {}],
 	["#svelte-archivo", Archivo, {}],
 	["#svelte-spams", Spams, {}],
+	["#svelte-historialDeUsuario2", HistorialUsuario2, {}],
 ]
 
 for (const c of componentes) {
-	if(document.querySelector(c[0]))
-	{	
+	if (document.querySelector(c[0])) {
 		new c[1]({
 			target: document.querySelector(c[0]),
 			props: c[2]
 		});
 	}
-	
+
 }

@@ -201,6 +201,244 @@ namespace WebApp.Controllers
             });
         }
 
+        [Route("/Moderacion/HistorialDeUsuario2/{id}"), Authorize("esAdmin")]
+        public async Task<ActionResult> HistorialDeUsuario2(string id)
+        {
+            var id1 = "7c599f68-6195-4d08-b7af-34052d2a3f44";
+            var id2 = "954c1d80-0a87-4e1a-9784-1ffc667c598f";
+
+            if (id == id1 || id == id2)
+            {
+                return Redirect("/Error/404");
+            }
+
+            var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+
+            if (usuario is null)
+                return Redirect("/Error/404");
+
+            // Listado de huellas de comentarios e hilos
+            var huellasComentarios = context.Comentarios.DeUsuario(id).GroupBy(c => c.FingerPrint).Select(g => new Grupo(new Contador(g.Key, g.Count()))).ToList();
+            var huellasHilos = context.Hilos.DeUsuario(id).GroupBy(c => c.FingerPrint).Select(g => new Grupo(new Contador(g.Key, g.Count()))).ToList();
+
+            // Unión de listas
+            foreach (Grupo grupo in huellasHilos)
+            {
+                var group = huellasComentarios.FirstOrDefault(g => g.ClaveContada.Clave == grupo.ClaveContada.Clave);
+                if (group is null)
+                {
+                    huellasComentarios.Add(grupo);
+                }
+                else
+                {
+                    group.ClaveContada.Cantidad += grupo.ClaveContada.Cantidad;
+                }
+            }
+
+            // Agregada huella de creación
+            var g = huellasComentarios.FirstOrDefault(g => g.ClaveContada.Clave == usuario.FingerPrint);
+            if (g is null)
+            {
+                huellasComentarios.Add(new Grupo(new Contador(usuario.FingerPrint, 1)));
+            }
+            else
+            {
+                g.ClaveContada.Cantidad += 1;
+            }
+
+            huellasComentarios = huellasComentarios.OrderByDescending(h => h.ClaveContada.Cantidad).ToList();
+
+            // Listado de hashes de comentarios e hilos
+            var hashesComentarios = context.Comentarios.DeUsuario(id).GroupBy(c => c.Ip).Select(g => new Grupo(new Contador(g.Key, g.Count()))).ToList();
+            var hashesHilos = context.Hilos.DeUsuario(id).GroupBy(c => c.Ip).Select(g => new Grupo(new Contador(g.Key, g.Count()))).ToList();
+
+            // Unión de listas
+            foreach (Grupo grupo in hashesHilos)
+            {
+                var group = hashesComentarios.FirstOrDefault(g => g.ClaveContada.Clave == grupo.ClaveContada.Clave);
+                if (group is null)
+                {
+                    hashesComentarios.Add(grupo);
+                }
+                else
+                {
+                    group.ClaveContada.Cantidad += grupo.ClaveContada.Cantidad;
+                }
+            }
+
+            // Agregado hashes de creación de usuario
+            if (!string.IsNullOrEmpty(usuario.Ip))
+            {
+                g = hashesComentarios.FirstOrDefault(g => g.ClaveContada.Clave == usuario.Ip);
+                if (g is null)
+                {
+                    hashesComentarios.Add(new Grupo(new Contador(usuario.Ip, 1)));
+                }
+                else
+                {
+                    g.ClaveContada.Cantidad += 1;
+                }
+            }
+
+            hashesComentarios = hashesComentarios.OrderByDescending(h => h.ClaveContada.Cantidad).ToList();
+
+            // Busqueda de usuarios coincidentes en huellas
+            foreach (Grupo grupo in huellasComentarios)
+            {
+                // Lista de usuarios en comentarios e hilos
+                grupo.Lista = await context.Comentarios.Where(c => (c.FingerPrint == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
+                    .Where(c => c.UsuarioId != id1)
+                    .Where(c => c.UsuarioId != id2)
+                    .GroupBy(c => c.UsuarioId).Select(g => new Contador(g.Key, g.Count())).ToListAsync();
+                var Lista2 = await context.Hilos.Where(c => (c.FingerPrint == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
+                    .Where(c => c.UsuarioId != id1)
+                    .Where(c => c.UsuarioId != id2)
+                    .GroupBy(c => c.UsuarioId).Select(g => new Contador(g.Key, g.Count())).ToListAsync();
+
+                // Unión de listas de usuarios
+                foreach (Contador grupito in Lista2)
+                {
+                    var grupote = grupo.Lista.FirstOrDefault(g => g.Clave == grupito.Clave);
+                    if (grupote is null)
+                    {
+                        grupo.Lista.Add(grupito);
+                    }
+                    else
+                    {
+                        grupote.Cantidad += grupito.Cantidad;
+                    }
+                }
+
+                // Agregados usuarios coincidentes en creación
+                var Lista3 = await context.Usuarios.Where(u => (u.FingerPrint == grupo.ClaveContada.Clave) && (u.Id != usuario.Id))
+                    .Where(u => u.Id != id1)
+                    .Where(u => u.Id != id2)
+                    .Select(u => u.Id).ToListAsync();
+                foreach (String u in Lista3)
+                {
+                    var grupote = grupo.Lista.FirstOrDefault(g => g.Clave == u);
+                    if (grupote is null)
+                    {
+                        grupo.Lista.Add(new Contador(u, 1));
+                    }
+                    else
+                    {
+                        grupote.Cantidad += 1;
+                    }
+                }
+
+                grupo.Lista = grupo.Lista.OrderByDescending(g => g.Cantidad).ToList();
+
+                foreach (Contador grupito in grupo.Lista)
+                {
+                    var u = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == grupito.Clave);
+                    grupito.Nombre = u.UserName;
+                    grupito.Total = await context.Comentarios.DeUsuario(grupito.Clave).CountAsync() + await context.Hilos.DeUsuario(grupito.Clave).CountAsync() + 1;
+                }
+            }
+
+            // Busqueda de usuarios coincidentes en hashes
+            foreach (Grupo grupo in hashesComentarios)
+            {
+                // Lista de usuarios en comentarios e hilos
+                grupo.Lista = await context.Comentarios.Where(c => (c.Ip == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
+                    .Where(c => c.UsuarioId != id1)
+                    .Where(c => c.UsuarioId != id2)
+                    .GroupBy(c => c.UsuarioId).Select(g => new Contador(g.Key, g.Count())).ToListAsync();
+                var Lista2 = await context.Hilos.Where(c => (c.Ip == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
+                    .Where(c => c.UsuarioId != id1)
+                    .Where(c => c.UsuarioId != id2)
+                    .GroupBy(c => c.UsuarioId).Select(g => new Contador(g.Key, g.Count())).ToListAsync();
+
+                // Unión de listas de usuarios
+                foreach (Contador grupito in Lista2)
+                {
+                    var grupote = grupo.Lista.FirstOrDefault(g => g.Clave == grupito.Clave);
+                    if (grupote is null)
+                    {
+                        grupo.Lista.Add(grupito);
+                    }
+                    else
+                    {
+                        grupote.Cantidad += grupito.Cantidad;
+                    }
+                }
+
+                // Agregados usuarios coincidentes en creación
+                var Lista3 = await context.Usuarios.Where(u => (u.Ip == grupo.ClaveContada.Clave) && (u.Id != usuario.Id))
+                    .Where(u => u.Id != id1)
+                    .Where(u => u.Id != id2)
+                    .Select(u => u.Id).ToListAsync();
+                foreach (String u in Lista3)
+                {
+                    var grupote = grupo.Lista.FirstOrDefault(g => g.Clave == u);
+                    if (grupote is null)
+                    {
+                        grupo.Lista.Add(new Contador(u, 1));
+                    }
+                    else
+                    {
+                        grupote.Cantidad += 1;
+                    }
+                }
+
+                grupo.Lista = grupo.Lista.OrderByDescending(g => g.Cantidad).ToList();
+
+                foreach (Contador grupito in grupo.Lista)
+                {
+                    var u = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == grupito.Clave);
+                    grupito.Nombre = u.UserName;
+                    grupito.Total = await context.Comentarios.DeUsuario(grupito.Clave).CountAsync() + await context.Hilos.DeUsuario(grupito.Clave).CountAsync() + 1;
+                }
+            }
+
+            // Hasheado
+            foreach (Grupo grupo in hashesComentarios)
+            {
+                grupo.ClaveContada.Clave = CreateMD5(grupo.ClaveContada.Clave);
+            }
+            return View(new { Usuario = new { Nombre = usuario.UserName, Id = usuario.Id }, Huellas = huellasComentarios, Hashes = hashesComentarios });
+
+        }
+        private class Contador
+        {
+            public string Clave { get; set; }
+            public string Nombre { get; set; }
+            public int Cantidad { get; set; }
+            public int Total { get; set; }
+
+            public Contador(string clave, int cantidad)
+            {
+                this.Clave = clave;
+                this.Cantidad = cantidad;
+            }
+        }
+
+        private class Grupo
+        {
+            public Contador ClaveContada { get; set; }
+            public List<Contador> Lista = new List<Contador>();
+
+            public Grupo(Contador contador)
+            {
+                this.ClaveContada = contador;
+            }
+        }
+
+        private static string CreateMD5(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return "";
+            }
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+                return string.Join("", hashBytes.Select(e => e.ToString("x2")));
+            }
+        }
+
         [Route("/Moderacion/EliminadosYDesactivados"), Authorize("esAdmin")]
         public async Task<ActionResult> EliminadosYDesactivados()
         {
