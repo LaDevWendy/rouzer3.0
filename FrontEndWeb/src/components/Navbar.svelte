@@ -21,6 +21,7 @@
     import Halloween from "./Especiales/Halloween.svelte";
     import Estadisticas from "./Estadisticas.svelte";
     import RChanClient from "../RChanClient";
+    import GeneracionZoe from "./Especiales/GeneracionZoe.svelte";
     // import Lucesitas from "./Lucesitas.svelte";
     // import Cuetitos from "./Especiales/Cuetitos.svelte";
     // import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
@@ -94,6 +95,7 @@
 <Halloween />
 <AlertaNenazo />
 <AlertaProvinciano />
+<GeneracionZoe />
 <header
     class:oculta
     class:protocoloMessi
