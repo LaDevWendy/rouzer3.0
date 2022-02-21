@@ -19,6 +19,7 @@ using System.IO;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
 using System.ComponentModel.DataAnnotations;
+
 namespace WebApp.Controllers
 {
     [Authorize("esAuxiliar")]
@@ -70,13 +71,15 @@ namespace WebApp.Controllers
         [Route("/Moderacion")]
         public async Task<ActionResult> Index()
         {
-            var hilos = await context.Hilos.OrderByDescending(h => h.Creacion)
+            var hilos = await context.Hilos
+                .OrderByDescending(h => h.Creacion)
                 .AsNoTracking()
                 .Take(100)
                 .AViewModelMod(context)
                 .ToListAsync();
 
-            var comentarios = await context.Comentarios.OrderByDescending(c => c.Creacion)
+            var comentarios = await context.Comentarios
+                .OrderByDescending(c => c.Creacion)
                 .AsNoTracking()
                 .Take(100)
                 .Include(c => c.Media)
@@ -106,15 +109,19 @@ namespace WebApp.Controllers
                 .Include(c => c.Media)
                 .Where(c => c.Media.Tipo != MediaType.Eliminado)
                 .Take(50)
-                .Select(c => new ComentarioViewModelMod
-                {
-                    HiloId = c.HiloId,
-                    UsuarioId = c.UsuarioId,
-                    Contenido = c.Contenido,
-                    Id = c.Id,
-                    Creacion = c.Creacion,
-                    Media = c.Media
-                }).ToListAsync();
+                .Select(
+                    c =>
+                        new ComentarioViewModelMod
+                        {
+                            HiloId = c.HiloId,
+                            UsuarioId = c.UsuarioId,
+                            Contenido = c.Contenido,
+                            Id = c.Id,
+                            Creacion = c.Creacion,
+                            Media = c.Media
+                        }
+                )
+                .ToListAsync();
 
             return View(new { hilos, comentarios, denuncias, medias });
         }
@@ -141,7 +148,6 @@ namespace WebApp.Controllers
             return View(new { ultimosRegistros, ultimosBaneos, cantidadDeUsuarios });
         }
 
-
         [HttpGet]
         [Route("/Moderacion/HistorialDeUsuario/{id}"), Authorize("esMod")]
         public async Task<ActionResult> HistorialDeUsuario(string id)
@@ -149,56 +155,63 @@ namespace WebApp.Controllers
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
             if (usuario is null)
                 return Redirect("/Error/404");
-            return View(new
-            {
-                Usuario = await context.Usuarios.Select(u => new
+            return View(
+                new
                 {
-                    u.Id,
-                    u.Creacion,
-                    u.UserName,
-                    Rozs = context.Hilos.DeUsuario(id).Count(),
-                    Comentarios = context.Comentarios.DeUsuario(id).Count(),
-
-                }).FirstOrDefaultAsync(u => u.Id == id),
-
-                Hilos = await context.Hilos
-                    .AsNoTracking()
-                    .DeUsuario(id)
-                    .Recientes()
-                    .AViewModelMod(context)
-                    .ToListAsync(),
-
-                Comentarios = await context.Comentarios
-                    .AsNoTracking()
-                    .Recientes()
-                    .DeUsuario(id)
-                    .Take(150)
-                    .AViewModelMod()
-                    .ToListAsync(),
-
-                Baneos = await context.Bans
-                    .AsNoTracking()
-                    .Recientes()
-                    .Where(b => b.UsuarioId == id)
-                    .Take(100)
-                    .Include(b => b.Hilo)
-                    .Include(b => b.Comentario)
-                    .Include(b => b.Hilo.Media)
-                    .Include(b => b.Comentario.Media)
-                    .Include(b => b.Comentario.Audio)
-                    .Select(b => new
-                    {
-                        b.Aclaracion,
-                        Comentario = b.Comentario != null ? new ComentarioViewModelMod(b.Comentario, b.Hilo, null) : null,
-                        b.Creacion,
-                        b.Duracion,
-                        b.Id,
-                        b.Motivo,
-                        b.Hilo,
-                    })
-                    .ToListAsync()
-
-            });
+                    Usuario = await context.Usuarios
+                        .Select(
+                            u =>
+                                new
+                                {
+                                    u.Id,
+                                    u.Creacion,
+                                    u.UserName,
+                                    Rozs = context.Hilos.DeUsuario(id).Count(),
+                                    Comentarios = context.Comentarios.DeUsuario(id).Count(),
+                                }
+                        )
+                        .FirstOrDefaultAsync(u => u.Id == id),
+                    Hilos = await context.Hilos
+                        .AsNoTracking()
+                        .DeUsuario(id)
+                        .Recientes()
+                        .AViewModelMod(context)
+                        .ToListAsync(),
+                    Comentarios = await context.Comentarios
+                        .AsNoTracking()
+                        .Recientes()
+                        .DeUsuario(id)
+                        .Take(150)
+                        .AViewModelMod()
+                        .ToListAsync(),
+                    Baneos = await context.Bans
+                        .AsNoTracking()
+                        .Recientes()
+                        .Where(b => b.UsuarioId == id)
+                        .Take(100)
+                        .Include(b => b.Hilo)
+                        .Include(b => b.Comentario)
+                        .Include(b => b.Hilo.Media)
+                        .Include(b => b.Comentario.Media)
+                        .Include(b => b.Comentario.Audio)
+                        .Select(
+                            b =>
+                                new
+                                {
+                                    b.Aclaracion,
+                                    Comentario = b.Comentario != null
+                                        ? new ComentarioViewModelMod(b.Comentario, b.Hilo, null)
+                                        : null,
+                                    b.Creacion,
+                                    b.Duracion,
+                                    b.Id,
+                                    b.Motivo,
+                                    b.Hilo,
+                                }
+                        )
+                        .ToListAsync()
+                }
+            );
         }
 
         [Route("/Moderacion/HistorialDeUsuario2/{id}"), Authorize("esAdmin")]
@@ -206,8 +219,9 @@ namespace WebApp.Controllers
         {
             var id1 = "7c599f68-6195-4d08-b7af-34052d2a3f44";
             var id2 = "954c1d80-0a87-4e1a-9784-1ffc667c598f";
+            var id3 = "6dc9e3f2-3bdb-4c0d-8370-01c926ab454a";
 
-            if (id == id1 || id == id2)
+            if (id == id1 || id == id2 || id == id3)
             {
                 return Redirect("/Error/404");
             }
@@ -218,13 +232,25 @@ namespace WebApp.Controllers
                 return Redirect("/Error/404");
 
             // Listado de huellas de comentarios e hilos
-            var huellasComentarios = context.Comentarios.DeUsuario(id).GroupBy(c => c.FingerPrint).Select(g => new Grupo(new Contador(g.Key, g.Count()))).ToList();
-            var huellasHilos = context.Hilos.DeUsuario(id).GroupBy(c => c.FingerPrint).Select(g => new Grupo(new Contador(g.Key, g.Count()))).ToList();
+            var huellasComentarios = context.Comentarios
+                .DeUsuario(id)
+                .Where(c => !string.IsNullOrEmpty(c.FingerPrint))
+                .GroupBy(c => c.FingerPrint)
+                .Select(g => new Grupo(new Contador(g.Key, g.Count())))
+                .ToList();
+            var huellasHilos = context.Hilos
+                .DeUsuario(id)
+                .Where(c => !string.IsNullOrEmpty(c.FingerPrint))
+                .GroupBy(c => c.FingerPrint)
+                .Select(g => new Grupo(new Contador(g.Key, g.Count())))
+                .ToList();
 
             // Unión de listas
             foreach (Grupo grupo in huellasHilos)
             {
-                var group = huellasComentarios.FirstOrDefault(g => g.ClaveContada.Clave == grupo.ClaveContada.Clave);
+                var group = huellasComentarios.FirstOrDefault(
+                    g => g.ClaveContada.Clave == grupo.ClaveContada.Clave
+                );
                 if (group is null)
                 {
                     huellasComentarios.Add(grupo);
@@ -236,26 +262,43 @@ namespace WebApp.Controllers
             }
 
             // Agregada huella de creación
-            var g = huellasComentarios.FirstOrDefault(g => g.ClaveContada.Clave == usuario.FingerPrint);
-            if (g is null)
+            if (!string.IsNullOrEmpty(usuario.FingerPrint))
             {
-                huellasComentarios.Add(new Grupo(new Contador(usuario.FingerPrint, 1)));
-            }
-            else
-            {
-                g.ClaveContada.Cantidad += 1;
+                var g = huellasComentarios.FirstOrDefault(
+                    g => g.ClaveContada.Clave == usuario.FingerPrint
+                );
+                if (g is null)
+                {
+                    huellasComentarios.Add(new Grupo(new Contador(usuario.FingerPrint, 1)));
+                }
+                else
+                {
+                    g.ClaveContada.Cantidad += 1;
+                }
             }
 
-            huellasComentarios = huellasComentarios.OrderByDescending(h => h.ClaveContada.Cantidad).ToList();
+            huellasComentarios = huellasComentarios
+                .OrderByDescending(h => h.ClaveContada.Cantidad)
+                .ToList();
 
             // Listado de hashes de comentarios e hilos
-            var hashesComentarios = context.Comentarios.DeUsuario(id).GroupBy(c => c.Ip).Select(g => new Grupo(new Contador(g.Key, g.Count()))).ToList();
-            var hashesHilos = context.Hilos.DeUsuario(id).GroupBy(c => c.Ip).Select(g => new Grupo(new Contador(g.Key, g.Count()))).ToList();
+            var hashesComentarios = context.Comentarios
+                .DeUsuario(id)
+                .GroupBy(c => c.Ip)
+                .Select(g => new Grupo(new Contador(g.Key, g.Count())))
+                .ToList();
+            var hashesHilos = context.Hilos
+                .DeUsuario(id)
+                .GroupBy(c => c.Ip)
+                .Select(g => new Grupo(new Contador(g.Key, g.Count())))
+                .ToList();
 
             // Unión de listas
             foreach (Grupo grupo in hashesHilos)
             {
-                var group = hashesComentarios.FirstOrDefault(g => g.ClaveContada.Clave == grupo.ClaveContada.Clave);
+                var group = hashesComentarios.FirstOrDefault(
+                    g => g.ClaveContada.Clave == grupo.ClaveContada.Clave
+                );
                 if (group is null)
                 {
                     hashesComentarios.Add(grupo);
@@ -269,7 +312,7 @@ namespace WebApp.Controllers
             // Agregado hashes de creación de usuario
             if (!string.IsNullOrEmpty(usuario.Ip))
             {
-                g = hashesComentarios.FirstOrDefault(g => g.ClaveContada.Clave == usuario.Ip);
+                var g = hashesComentarios.FirstOrDefault(g => g.ClaveContada.Clave == usuario.Ip);
                 if (g is null)
                 {
                     hashesComentarios.Add(new Grupo(new Contador(usuario.Ip, 1)));
@@ -280,20 +323,38 @@ namespace WebApp.Controllers
                 }
             }
 
-            hashesComentarios = hashesComentarios.OrderByDescending(h => h.ClaveContada.Cantidad).ToList();
+            hashesComentarios = hashesComentarios
+                .OrderByDescending(h => h.ClaveContada.Cantidad)
+                .ToList();
 
             // Busqueda de usuarios coincidentes en huellas
             foreach (Grupo grupo in huellasComentarios)
             {
                 // Lista de usuarios en comentarios e hilos
-                grupo.Lista = await context.Comentarios.Where(c => (c.FingerPrint == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
+                grupo.Lista = await context.Comentarios
+                    .Where(
+                        c =>
+                            (c.FingerPrint == grupo.ClaveContada.Clave)
+                            && (c.UsuarioId != usuario.Id)
+                    )
                     .Where(c => c.UsuarioId != id1)
                     .Where(c => c.UsuarioId != id2)
-                    .GroupBy(c => c.UsuarioId).Select(g => new Contador(g.Key, g.Count())).ToListAsync();
-                var Lista2 = await context.Hilos.Where(c => (c.FingerPrint == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
+                    .Where(c => c.UsuarioId != id3)
+                    .GroupBy(c => c.UsuarioId)
+                    .Select(g => new Contador(g.Key, g.Count()))
+                    .ToListAsync();
+                var Lista2 = await context.Hilos
+                    .Where(
+                        c =>
+                            (c.FingerPrint == grupo.ClaveContada.Clave)
+                            && (c.UsuarioId != usuario.Id)
+                    )
                     .Where(c => c.UsuarioId != id1)
                     .Where(c => c.UsuarioId != id2)
-                    .GroupBy(c => c.UsuarioId).Select(g => new Contador(g.Key, g.Count())).ToListAsync();
+                    .Where(c => c.UsuarioId != id3)
+                    .GroupBy(c => c.UsuarioId)
+                    .Select(g => new Contador(g.Key, g.Count()))
+                    .ToListAsync();
 
                 // Unión de listas de usuarios
                 foreach (Contador grupito in Lista2)
@@ -310,10 +371,13 @@ namespace WebApp.Controllers
                 }
 
                 // Agregados usuarios coincidentes en creación
-                var Lista3 = await context.Usuarios.Where(u => (u.FingerPrint == grupo.ClaveContada.Clave) && (u.Id != usuario.Id))
+                var Lista3 = await context.Usuarios
+                    .Where(u => (u.FingerPrint == grupo.ClaveContada.Clave) && (u.Id != usuario.Id))
                     .Where(u => u.Id != id1)
                     .Where(u => u.Id != id2)
-                    .Select(u => u.Id).ToListAsync();
+                    .Where(u => u.Id != id3)
+                    .Select(u => u.Id)
+                    .ToListAsync();
                 foreach (String u in Lista3)
                 {
                     var grupote = grupo.Lista.FirstOrDefault(g => g.Clave == u);
@@ -333,7 +397,10 @@ namespace WebApp.Controllers
                 {
                     var u = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == grupito.Clave);
                     grupito.Nombre = u.UserName;
-                    grupito.Total = await context.Comentarios.DeUsuario(grupito.Clave).CountAsync() + await context.Hilos.DeUsuario(grupito.Clave).CountAsync() + 1;
+                    grupito.Total =
+                        await context.Comentarios.DeUsuario(grupito.Clave).CountAsync()
+                        + await context.Hilos.DeUsuario(grupito.Clave).CountAsync()
+                        + 1;
                 }
             }
 
@@ -341,14 +408,22 @@ namespace WebApp.Controllers
             foreach (Grupo grupo in hashesComentarios)
             {
                 // Lista de usuarios en comentarios e hilos
-                grupo.Lista = await context.Comentarios.Where(c => (c.Ip == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
+                grupo.Lista = await context.Comentarios
+                    .Where(c => (c.Ip == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
                     .Where(c => c.UsuarioId != id1)
                     .Where(c => c.UsuarioId != id2)
-                    .GroupBy(c => c.UsuarioId).Select(g => new Contador(g.Key, g.Count())).ToListAsync();
-                var Lista2 = await context.Hilos.Where(c => (c.Ip == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
+                    .Where(c => c.UsuarioId != id3)
+                    .GroupBy(c => c.UsuarioId)
+                    .Select(g => new Contador(g.Key, g.Count()))
+                    .ToListAsync();
+                var Lista2 = await context.Hilos
+                    .Where(c => (c.Ip == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
                     .Where(c => c.UsuarioId != id1)
                     .Where(c => c.UsuarioId != id2)
-                    .GroupBy(c => c.UsuarioId).Select(g => new Contador(g.Key, g.Count())).ToListAsync();
+                    .Where(c => c.UsuarioId != id3)
+                    .GroupBy(c => c.UsuarioId)
+                    .Select(g => new Contador(g.Key, g.Count()))
+                    .ToListAsync();
 
                 // Unión de listas de usuarios
                 foreach (Contador grupito in Lista2)
@@ -365,10 +440,13 @@ namespace WebApp.Controllers
                 }
 
                 // Agregados usuarios coincidentes en creación
-                var Lista3 = await context.Usuarios.Where(u => (u.Ip == grupo.ClaveContada.Clave) && (u.Id != usuario.Id))
+                var Lista3 = await context.Usuarios
+                    .Where(u => (u.Ip == grupo.ClaveContada.Clave) && (u.Id != usuario.Id))
                     .Where(u => u.Id != id1)
                     .Where(u => u.Id != id2)
-                    .Select(u => u.Id).ToListAsync();
+                    .Where(u => u.Id != id3)
+                    .Select(u => u.Id)
+                    .ToListAsync();
                 foreach (String u in Lista3)
                 {
                     var grupote = grupo.Lista.FirstOrDefault(g => g.Clave == u);
@@ -388,7 +466,10 @@ namespace WebApp.Controllers
                 {
                     var u = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == grupito.Clave);
                     grupito.Nombre = u.UserName;
-                    grupito.Total = await context.Comentarios.DeUsuario(grupito.Clave).CountAsync() + await context.Hilos.DeUsuario(grupito.Clave).CountAsync() + 1;
+                    grupito.Total =
+                        await context.Comentarios.DeUsuario(grupito.Clave).CountAsync()
+                        + await context.Hilos.DeUsuario(grupito.Clave).CountAsync()
+                        + 1;
                 }
             }
 
@@ -397,9 +478,16 @@ namespace WebApp.Controllers
             {
                 grupo.ClaveContada.Clave = CreateMD5(grupo.ClaveContada.Clave);
             }
-            return View(new { Usuario = new { Nombre = usuario.UserName, Id = usuario.Id }, Huellas = huellasComentarios, Hashes = hashesComentarios });
-
+            return View(
+                new
+                {
+                    Usuario = new { Nombre = usuario.UserName, Id = usuario.Id },
+                    Huellas = huellasComentarios,
+                    Hashes = hashesComentarios
+                }
+            );
         }
+
         private class Contador
         {
             public string Clave { get; set; }
@@ -443,21 +531,22 @@ namespace WebApp.Controllers
         public async Task<ActionResult> EliminadosYDesactivados()
         {
             var hilos = await context.Hilos
-                    .Where(h => h.Estado == HiloEstado.Eliminado)
-                    .Recientes()
-                    .Take(100)
-                    .AViewModelMod(context)
-                    .ToListAsync();
+                .Where(h => h.Estado == HiloEstado.Eliminado)
+                .Recientes()
+                .Take(100)
+                .AViewModelMod(context)
+                .ToListAsync();
 
             var comentarios = await context.Comentarios
-                    .Recientes()
-                    .Where(h => h.Estado == ComentarioEstado.Eliminado)
-                    .Take(150)
-                    .AViewModelMod()
-                    .ToListAsync();
+                .Recientes()
+                .Where(h => h.Estado == ComentarioEstado.Eliminado)
+                .Take(150)
+                .AViewModelMod()
+                .ToListAsync();
 
             return View(new { hilos, comentarios });
         }
+
         [Route("/Moderacion/Historial"), Authorize("esAdmin")]
         public async Task<ActionResult> Historial()
         {
@@ -479,19 +568,24 @@ namespace WebApp.Controllers
                 // .Take(100)
                 .ToListAsync();
 
-            var accionesVM = acciones.Select(a => new
-            {
-                a.Creacion,
-                a.Id,
-                a.Ban,
-                a.Usuario,
-                a.Tipo,
-                a.TipoElemento,
-                a.Nota,
-                Hilo = a.Hilo == null ? null : new HiloViewModel(a.Hilo),
-                Comentario = a.Comentario == null ? null : new ComentarioViewModelMod(a.Comentario, a.Hilo),
-                a.Denuncia
-            });
+            var accionesVM = acciones.Select(
+                a =>
+                    new
+                    {
+                        a.Creacion,
+                        a.Id,
+                        a.Ban,
+                        a.Usuario,
+                        a.Tipo,
+                        a.TipoElemento,
+                        a.Nota,
+                        Hilo = a.Hilo == null ? null : new HiloViewModel(a.Hilo),
+                        Comentario = a.Comentario == null
+                            ? null
+                            : new ComentarioViewModelMod(a.Comentario, a.Hilo),
+                        a.Denuncia
+                    }
+            );
 
             return View(new { Acciones = accionesVM });
         }
@@ -502,11 +596,14 @@ namespace WebApp.Controllers
             if (model.EliminarAdjunto || model.EliminarAudio)
             {
                 var res = await CheckeoEliminar(model.Password);
-                if (res != null) return res;
+                if (res != null)
+                    return res;
             }
 
             // var baneado = context.Users.FirstOrDefault(u => u.Id )
-            var comentario = await context.Comentarios.FirstOrDefaultAsync(c => c.Id == model.ComentarioId);
+            var comentario = await context.Comentarios.FirstOrDefaultAsync(
+                c => c.Id == model.ComentarioId
+            );
             var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == model.HiloId);
             var tipo = comentario is null ? TipoElemento.Hilo : TipoElemento.Comentario;
 
@@ -536,7 +633,11 @@ namespace WebApp.Controllers
                 if (comentario.Estado != ComentarioEstado.Eliminado)
                 {
                     await comentarioService.Eliminar(comentario.Id);
-                    await historial.RegistrarEliminacion(User.GetId(), comentario.HiloId, comentario.Id);
+                    await historial.RegistrarEliminacion(
+                        User.GetId(),
+                        comentario.HiloId,
+                        comentario.Id
+                    );
                 }
             }
             else if (hilo != null && model.EliminarElemento)
@@ -553,23 +654,36 @@ namespace WebApp.Controllers
             {
                 mediaEliminado = await mediaService.Eliminar(elemento.MediaId);
                 if (mediaEliminado)
-                    await historial.RegistrarEliminacionMedia(User.GetId(), elemento.MediaId, hilo != null ? hilo.Id : comentario.HiloId, comentario != null ? comentario.Id : null);
+                    await historial.RegistrarEliminacionMedia(
+                        User.GetId(),
+                        elemento.MediaId,
+                        hilo != null ? hilo.Id : comentario.HiloId,
+                        comentario != null ? comentario.Id : null
+                    );
             }
             bool audioEliminado = false;
             if (model.EliminarAudio && User.EsMod())
             {
                 audioEliminado = await audioService.Eliminar(elemento.AudioId);
                 if (audioEliminado)
-                    await historial.RegistrarEliminacionAudio(User.GetId(), hilo != null ? hilo.Id : comentario.HiloId, comentario != null ? comentario.Id : null);
+                    await historial.RegistrarEliminacionAudio(
+                        User.GetId(),
+                        hilo != null ? hilo.Id : comentario.HiloId,
+                        comentario != null ? comentario.Id : null
+                    );
             }
 
             //Borro todos los hilos y comentarios del usuario
             if (model.Desaparecer)
             {
                 var hilos = await context.Hilos
-                    .DeUsuario(elemento.UsuarioId).Select(e => e.Id).ToListAsync();
+                    .DeUsuario(elemento.UsuarioId)
+                    .Select(e => e.Id)
+                    .ToListAsync();
                 var comentarios = await context.Comentarios
-                    .DeUsuario(elemento.UsuarioId).Select(e => e.Id).ToListAsync();
+                    .DeUsuario(elemento.UsuarioId)
+                    .Select(e => e.Id)
+                    .ToListAsync();
                 await comentarioService.Eliminar(comentarios.ToArray());
                 await hiloService.EliminarHilos(hilos.ToArray());
             }
@@ -578,17 +692,24 @@ namespace WebApp.Controllers
 
             // Aviso ban tiempo real
             await rchanHub.Clients.User(ban.UsuarioId).SendAsync("domado");
-            return Json(new ApiResponse($"Usuario Baneado {(mediaEliminado ? "; imagen/video eliminado" : "")} {(model.Desaparecer ? "; Usuario desaparecido" : "")}"));
+            return Json(
+                new ApiResponse(
+                    $"Usuario Baneado {(mediaEliminado ? "; imagen/video eliminado" : "")} {(model.Desaparecer ? "; Usuario desaparecido" : "")}"
+                )
+            );
         }
 
         private async Task<ActionResult> CheckeoEliminar(string password)
         {
             var user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == User.GetId());
-            if (user == null) ModelState.AddModelError("Nick", "No se encontro el usuario");
+            if (user == null)
+                ModelState.AddModelError("Nick", "No se encontro el usuario");
 
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var contraseñaCorrecta = (await signInManager.CheckPasswordSignInAsync(user, password, false)).Succeeded;
+            var contraseñaCorrecta =
+                (await signInManager.CheckPasswordSignInAsync(user, password, false)).Succeeded;
             if (!contraseñaCorrecta)
             {
                 ModelState.AddModelError("Contraseña", "La constraseña es incorrecta");
@@ -630,7 +751,8 @@ namespace WebApp.Controllers
 
             await context.SaveChangesAsync();
 
-            await rchanHub.Clients.Group("moderacion")
+            await rchanHub.Clients
+                .Group("moderacion")
                 .SendAsync("denunciasRechazadas", new string[] { denuncia.Id });
 
             await historial.RegistrarDenunciaRechazada(User.GetId(), denuncia);
@@ -643,7 +765,8 @@ namespace WebApp.Controllers
             if (model.BorrarMedia || model.BorrarAudio)
             {
                 var res = await CheckeoEliminar(model.Password);
-                if (res != null) return res;
+                if (res != null)
+                    return res;
             }
             var comentarios = await context.Comentarios
                 .Where(c => model.Ids.Contains(c.Id))
@@ -657,7 +780,12 @@ namespace WebApp.Controllers
                 {
                     if (!String.IsNullOrEmpty(c.MediaId))
                     {
-                        await historial.RegistrarEliminacionMedia(User.GetId(), c.MediaId, c.HiloId, c.Id);
+                        await historial.RegistrarEliminacionMedia(
+                            User.GetId(),
+                            c.MediaId,
+                            c.HiloId,
+                            c.Id
+                        );
                     }
                 }
                 if (model.BorrarAudio && User.EsMod())
@@ -669,7 +797,11 @@ namespace WebApp.Controllers
                 }
             }
 
-            await comentarioService.Eliminar(model.Ids, model.BorrarMedia && User.EsMod(), model.BorrarAudio && User.EsMod());
+            await comentarioService.Eliminar(
+                model.Ids,
+                model.BorrarMedia && User.EsMod(),
+                model.BorrarAudio && User.EsMod()
+            );
             return Json(new ApiResponse($"comentarios domados!"));
         }
 
@@ -677,7 +809,8 @@ namespace WebApp.Controllers
         public async Task<ActionResult> RestaurarHilo(string id)
         {
             var hilo = await context.Hilos.PorId(id);
-            if (hilo is null) return Json(new ApiResponse($"No se eoncontro el roz", false));
+            if (hilo is null)
+                return Json(new ApiResponse($"No se eoncontro el roz", false));
 
             hilo.Estado = HiloEstado.Normal;
             await context.SaveChangesAsync();
@@ -688,7 +821,8 @@ namespace WebApp.Controllers
         public async Task<ActionResult> RestaurarComentario(string id)
         {
             var comentario = await context.Comentarios.PorId(id);
-            if (comentario is null) return Json(new ApiResponse($"No se eoncontro el comentario", false));
+            if (comentario is null)
+                return Json(new ApiResponse($"No se eoncontro el comentario", false));
 
             comentario.Estado = ComentarioEstado.Normal;
             await context.SaveChangesAsync();
@@ -700,8 +834,10 @@ namespace WebApp.Controllers
         public async Task<ActionResult> AñadirSticky(Sticky sticky)
         {
             var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == sticky.HiloId);
-            if (hilo is null) ModelState.AddModelError("Hilo", "El hilo no existe");
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (hilo is null)
+                ModelState.AddModelError("Hilo", "El hilo no existe");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             context.Stickies.RemoveRange(context.Stickies.Where(s => s.HiloId == sticky.HiloId));
             await context.SaveChangesAsync();
@@ -710,7 +846,8 @@ namespace WebApp.Controllers
             {
                 await historial.RegistrarHiloDeestickeado(User.GetId(), hilo);
                 return Json(new ApiResponse("Sticky removido"));
-            };
+            }
+            ;
 
             context.Add(sticky);
             await historial.RegistrarHiloStickeado(User.GetId(), hilo);
@@ -725,13 +862,15 @@ namespace WebApp.Controllers
             public bool BorrarAudio { get; set; }
             public string Password { get; set; } = "";
         }
+
         [HttpPost]
         public async Task<ActionResult> BorrarHilo(BorrarCreacionesVm vc)
         {
             if (vc.BorrarMedia || vc.BorrarAudio)
             {
                 var res = await CheckeoEliminar(vc.Password);
-                if (res != null) return res;
+                if (res != null)
+                    return res;
             }
 
             var hilos = await context.Hilos
@@ -757,9 +896,15 @@ namespace WebApp.Controllers
                     }
                 }
             }
-            await hiloService.EliminarHilos(vc.Ids, vc.BorrarMedia && User.EsMod(), vc.BorrarAudio && User.EsMod());
+            await hiloService.EliminarHilos(
+                vc.Ids,
+                vc.BorrarMedia && User.EsMod(),
+                vc.BorrarAudio && User.EsMod()
+            );
 
-            var stickies = await context.Stickies.Where(s => vc.Ids.Contains(s.HiloId)).ToListAsync();
+            var stickies = await context.Stickies
+                .Where(s => vc.Ids.Contains(s.HiloId))
+                .ToListAsync();
             if (stickies.Any())
             {
                 foreach (Sticky s in stickies)
@@ -782,7 +927,8 @@ namespace WebApp.Controllers
         public async Task<ActionResult> CambiarCategoria(CambiarCategoriaVm vc)
         {
             var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == vc.HiloId);
-            if (hilo is null) return NotFound();
+            if (hilo is null)
+                return NotFound();
             var categoriaAntigua = hilo.CategoriaId;
 
             if (!categoriasOpt.Value.Any(c => c.Id == vc.CategoriaId))
@@ -804,9 +950,12 @@ namespace WebApp.Controllers
                 .ToListAsync();
             denunciasPorCategoriaIncorrecta.ForEach(d => d.Estado = EstadoDenuncia.Aceptada);
 
-            await rchanHub.Clients.Group("moderacion")
-                .SendAsync("denunciasAceptadas", denunciasPorCategoriaIncorrecta.Select(d => d.Id).ToArray());
-
+            await rchanHub.Clients
+                .Group("moderacion")
+                .SendAsync(
+                    "denunciasAceptadas",
+                    denunciasPorCategoriaIncorrecta.Select(d => d.Id).ToArray()
+                );
 
             // Advertencia por categoria incorrecta
             if (vc.Advertencia)
@@ -814,7 +963,8 @@ namespace WebApp.Controllers
                 var advertencia = new BaneoModel
                 {
                     Id = hashService.Random(),
-                    Aclaracion = $"El roz fue movido de {categoriasOpt.Value.First(c => c.Id == categoriaAntigua).Nombre} a {categoriasOpt.Value.First(c => c.Id == vc.CategoriaId).Nombre}",
+                    Aclaracion =
+                        $"El roz fue movido de {categoriasOpt.Value.First(c => c.Id == categoriaAntigua).Nombre} a {categoriasOpt.Value.First(c => c.Id == vc.CategoriaId).Nombre}",
                     Creacion = DateTimeOffset.Now,
                     Expiracion = DateTimeOffset.Now + TimeSpan.FromSeconds(0),
                     ModId = User.GetId(),
@@ -830,10 +980,20 @@ namespace WebApp.Controllers
                 await rchanHub.Clients.User(advertencia.UsuarioId).SendAsync("domado");
             }
 
-            await historial.RegistrarCambioDeCategoria(User.GetId(), hilo.Id, categoriaAntigua, hilo.CategoriaId);
+            await historial.RegistrarCambioDeCategoria(
+                User.GetId(),
+                hilo.Id,
+                categoriaAntigua,
+                hilo.CategoriaId
+            );
 
             // Cambio de categoria tiempo real
-            await rchanHub.Clients.Group("home").SendAsync("categoriaCambiada", new { HiloId = hilo.Id, CategoriaId = vc.CategoriaId });
+            await rchanHub.Clients
+                .Group("home")
+                .SendAsync(
+                    "categoriaCambiada",
+                    new { HiloId = hilo.Id, CategoriaId = vc.CategoriaId }
+                );
             return Json(new ApiResponse("Categoria cambiada!"));
         }
 
@@ -847,10 +1007,7 @@ namespace WebApp.Controllers
                 .Take(100)
                 .ToListAsync();
 
-            return View(new
-            {
-                medias
-            });
+            return View(new { medias });
         }
 
         public class EliminarMediaVm
@@ -858,20 +1015,22 @@ namespace WebApp.Controllers
             public string[] Ids { get; set; }
             public string Password { get; set; } = "";
         }
+
         [HttpPost]
         public async Task<ActionResult> EliminarMedia(EliminarMediaVm model)
         {
             var res = await CheckeoEliminar(model.Password);
-            if (res != null) return res;
+            if (res != null)
+                return res;
 
             var medias = await context.Medias.Where(m => model.Ids.Contains(m.Id)).ToListAsync();
             foreach (var m in medias)
             {
                 var mediaEliminado = await mediaService.Eliminar(m.Id);
                 var comentarios = await context.Comentarios
-                    .Where(c => c.MediaId == m.Id).ToListAsync();
-                var hilos = await context.Hilos
-                    .Where(c => c.MediaId == m.Id).ToListAsync();
+                    .Where(c => c.MediaId == m.Id)
+                    .ToListAsync();
+                var hilos = await context.Hilos.Where(c => c.MediaId == m.Id).ToListAsync();
                 comentarios.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
                 hilos.ForEach(c => c.Estado = HiloEstado.Eliminado);
                 if (mediaEliminado)
@@ -884,7 +1043,12 @@ namespace WebApp.Controllers
                     else
                     {
                         var comentario = comentarios.FirstOrDefault();
-                        await historial.RegistrarEliminacionMedia(User.GetId(), m.Id, comentario.HiloId, comentario.Id);
+                        await historial.RegistrarEliminacionMedia(
+                            User.GetId(),
+                            m.Id,
+                            comentario.HiloId,
+                            comentario.Id
+                        );
                     }
                 }
             }
@@ -896,7 +1060,11 @@ namespace WebApp.Controllers
 
     public class ModeracionIndexVm
     {
-        public ModeracionIndexVm(List<HiloViewModelMod> hilos, List<ComentarioViewModelMod> comentarios, List<DenunciaModel> denuncias)
+        public ModeracionIndexVm(
+            List<HiloViewModelMod> hilos,
+            List<ComentarioViewModelMod> comentarios,
+            List<DenunciaModel> denuncias
+        )
         {
             this.Hilos = hilos;
             this.Comentarios = comentarios;
@@ -912,10 +1080,12 @@ namespace WebApp.Controllers
     {
         public string UsuarioId { get; set; }
         public string HiloId { get; set; }
+
         [Required, Range(0, 10, ErrorMessage = "Motivo Invalido")]
         public MotivoDenuncia Motivo { get; set; }
         public string Aclaracion { get; set; }
         public string ComentarioId { get; set; }
+
         [Required]
         [Range(0, int.MaxValue, ErrorMessage = "Tenes que elegir una duracion para el ban")]
         public int Duracion { get; set; }
