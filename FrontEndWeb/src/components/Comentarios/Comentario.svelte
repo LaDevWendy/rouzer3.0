@@ -756,6 +756,22 @@
         animation: navideño 0.4s infinite;
     }
 
+    .color-ruso {
+        background: linear-gradient(
+            #ffffff 33.3%,
+            #0039a6 33.3%,
+            #0039a6 66.3%,
+            #d52b1e 66.3%,
+            #d52b1e 100%
+        );
+        color: black;
+    }
+
+    .color-ucraniano {
+        background: linear-gradient(#0057b7 50%, #ffd700 50%, #ffd700 100%);
+        color: black;
+    }
+
     @keyframes navideño {
         33.3% {
             background: linear-gradient(
