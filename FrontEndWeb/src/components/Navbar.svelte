@@ -22,6 +22,7 @@
     import Estadisticas from "./Estadisticas.svelte";
     import RChanClient from "../RChanClient";
     import GeneracionZoe from "./Especiales/GeneracionZoe.svelte";
+    import Corte from "./Especiales/Corte.svelte";
     // import Lucesitas from "./Lucesitas.svelte";
     // import Cuetitos from "./Especiales/Cuetitos.svelte";
     // import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
@@ -96,6 +97,7 @@
 <AlertaNenazo />
 <AlertaProvinciano />
 <GeneracionZoe />
+<Corte />
 <header
     class:oculta
     class:protocoloMessi
