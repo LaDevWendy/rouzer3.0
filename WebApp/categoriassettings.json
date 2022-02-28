@@ -1,5 +1,6 @@
 {
-    "Categorias": [{
+    "Categorias": [
+        {
             "Id": 1,
             "Nombre": "General",
             "NombreCorto": "GNRL",
@@ -311,6 +312,13 @@
             "Id": 45,
             "Nombre": "Moda",
             "NombreCorto": "MODA",
+            "Nsfw": false,
+            "Public": true
+        },
+        {
+            "Id": 46,
+            "Nombre": "Guerra",
+            "NombreCorto": "WAR",
             "Nsfw": false,
             "Public": true
         }

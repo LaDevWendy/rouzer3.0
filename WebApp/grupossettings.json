@@ -1,5 +1,6 @@
 {
-    "Grupos": [{
+    "Grupos": [
+        {
             "Id": 2,
             "Nombre": "Ayuda",
             "Categorias": [
@@ -71,6 +72,7 @@
             "Nombre": "Política y actualidad",
             "Categorias": [
                 29,
+                46,
                 32,
                 17
             ]
