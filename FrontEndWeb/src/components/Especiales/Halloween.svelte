@@ -16,15 +16,16 @@ body {
   --color7: #603300;
 }
 /*.hilo>.hilo-in::after{
-    content:"";
-    background:url(/imagenes/bats.png);
-    background-size:cover;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    position:absolute
-}*/
+     content:"";
+     background:url(/imagenes/bats.png);
+     background-size:cover;
+     top:0;
+     left:0;
+     width:100%;
+     height:100%;
+     position:absolute 
+}
+*/
 #fondo-global,
 .media-input,
 .menu-principal-header {
@@ -84,21 +85,16 @@ body {
 .color-ario.dado {
   color: #00abec !important;
 }
-.color-blanco.dado, .color-ruso.dado, .color-ucraniano.dado {
+.color-blanco.dado,
+.color-ruso.dado,
+.color-ucraniano.dado {
   color: black !important;
 }
-.lista-stickies .sticky .color::after{
-  display: none;
+.lista-stickies .sticky .color::after {
+  height: 40px;
+  width: 40px;
 }
-.lista-stickies .sticky .color{
-  color: #fff !important;
-}
-.lista-stickies .sticky .color-ario {
-  color: #00abec !important;
-}
-.lista-stickies .sticky .color-blanco, .lista-stickies .sticky .color-ruso, .lista-stickies .sticky .color-ucraniano {
-  color: black !important;
-}`;
+`;
   } else {
     document.getElementById("halloween").innerHTML = ``;
   }
