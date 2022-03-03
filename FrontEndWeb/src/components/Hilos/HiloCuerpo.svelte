@@ -18,9 +18,9 @@
 </div>
 
 <style>
-    .texto {
+    /*.texto {
         overflow: auto;
-    }
+    }*/
     .mediaExpandido {
         display: flex;
         flex-wrap: wrap;

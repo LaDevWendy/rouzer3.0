@@ -15,27 +15,30 @@ data.categoriasActivas = config.categorias.filter(c => !c.nsfw).map(c => c.id)
 if (Cookie.getJSON('categoriasActivas')) {
     if (Cookie.getJSON('version')) {
         let version = Cookie.getJSON('version')[0]
-        if (version === "guedita") {
+        if (version === "guedita2") {
             data.categoriasActivas = Cookie.getJSON('categoriasActivas')
-            data.version = ["guedita"]
+            data.version = ["guedita2"]
         } else {
+            data.categoriasActivas = Cookie.getJSON('categoriasActivas')
             data.categoriasActivas = [...data.categoriasActivas, 46]
-            data.version = ["guedita"]
+            data.version = ["guedita2"]
             Cookie.set('categoriasActivas', data.categoriasActivas)
-            Cookie.set('version', ["guedita"])
+            Cookie.set('version', data.version)
         }
     } else {
+        data.categoriasActivas = Cookie.getJSON('categoriasActivas')
         data.categoriasActivas = [...data.categoriasActivas, 46]
-        data.version = ["guedita"]
+        data.version = ["guedita2"]
         Cookie.set('categoriasActivas', data.categoriasActivas)
-        Cookie.set('version', ["guedita"])
+        Cookie.set('version', data.version)
     }
-
-    // Quitar este despues (es para activar la categoria programacion automaticamente)
-    // data.categoriasActivas = [...data.categoriasActivas, 38]
+    /*
+        data.categoriasActivas = Cookie.getJSON('categoriasActivas')
+            // Quitar este despues (es para activar la categoria programacion automaticamente)
+        data.categoriasActivas = [...data.categoriasActivas, 46]*/
 } else {
     Cookie.set('categoriasActivas', data.categoriasActivas)
-    Cookie.set('version', ["guedita"])
+    Cookie.set('version', ["guedita2"])
 }
 
 

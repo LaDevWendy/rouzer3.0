@@ -203,6 +203,15 @@
             );
             return;
         }
+        // WAR
+        if (shortcuts.estaPresionada("w") && $globalStore.usuario.esAuxiliar) {
+            e.preventDefault();
+            console.log(
+                (await RChanClient.cambiarCategoria(hilo.id, 46, false)).data
+                    .mensaje
+            );
+            return;
+        }
         if (shortcuts.estaPresionada("c") && $globalStore.usuario.esAuxiliar) {
             e.preventDefault();
             abrir.cambiarCategoria(hilo.id);
