@@ -63,6 +63,7 @@ namespace WebApp
                 .AddRazorRuntimeCompilation();
             services.AddMvc(opts =>
             {
+                opts.Filters.Add<VPNFilter>();
                 opts.Filters.Add<RestriccionDeAccesoAction>();
                 opts.Filters.Add<BanFilter>();
                 opts.Filters.Add<ProtocoloMessi>();

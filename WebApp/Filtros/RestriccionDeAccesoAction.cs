@@ -20,7 +20,7 @@ public class RestriccionDeAccesoAction : IAsyncActionFilter
         var ctx = context.HttpContext;
         string url = ctx.Request.Path.ToString().ToLower();
 
-        var accionesPermitidas = new string[]{"chocamo", "hub", "domado", "login", "inicio", "restaurarsesion", "registro"};
+        var accionesPermitidas = new string[] { "chocamo", "hub", "domado", "login", "inicio", "restaurarsesion", "registro" };
         if (accionesPermitidas.Where(a => url.Contains(a)).Any())
         {
             await next();

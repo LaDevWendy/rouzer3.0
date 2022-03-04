@@ -36,6 +36,7 @@ namespace Servicios
         protected readonly IWebHostEnvironment env;
         protected readonly ILogger<MediaService> logger;
         protected readonly string[] exclude = { "youtu", "bitchute", "dailymotion", "dai.ly", "pornhub" };
+        private HttpClient client = new HttpClient();
 
         public MediaService(string carpetaDeAlmacenamiento, RChanContext context, IWebHostEnvironment env, ILogger<MediaService> logger
 )
@@ -243,11 +244,11 @@ namespace Servicios
                 }
             }
 
-            var vistaPrevia = await new HttpClient().GetAsync($"https://img.youtube.com/vi/{id}/maxresdefault.jpg");
+            var vistaPrevia = await client.GetAsync($"https://img.youtube.com/vi/{id}/maxresdefault.jpg");
 
             if (!vistaPrevia.IsSuccessStatusCode)
             {
-                vistaPrevia = await new HttpClient().GetAsync($"https://img.youtube.com/vi/{id}/hqdefault.jpg");
+                vistaPrevia = await client.GetAsync($"https://img.youtube.com/vi/{id}/hqdefault.jpg");
             }
 
             if (!vistaPrevia.IsSuccessStatusCode) return null;
@@ -327,7 +328,7 @@ namespace Servicios
                     return mediaAntiguo;
                 }
             }
-            var httpResponse = await new HttpClient().GetAsync(url);
+            var httpResponse = await client.GetAsync(url);
             if (!httpResponse.IsSuccessStatusCode) return null;
 
             string httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
@@ -335,7 +336,7 @@ namespace Servicios
             if (!match.Success) return null;
 
             string vistaPreviaUrl = match.Value;
-            var vistaPrevia = await new HttpClient().GetAsync(vistaPreviaUrl);
+            var vistaPrevia = await client.GetAsync(vistaPreviaUrl);
             if (!vistaPrevia.IsSuccessStatusCode) return null;
 
             MediaModel media = null;
@@ -413,7 +414,7 @@ namespace Servicios
                 }
             }
 
-            var vistaPrevia = await new HttpClient().GetAsync($"https://www.dailymotion.com/thumbnail/video/{id}");
+            var vistaPrevia = await client.GetAsync($"https://www.dailymotion.com/thumbnail/video/{id}");
 
             if (!vistaPrevia.IsSuccessStatusCode) return null;
 
@@ -491,7 +492,7 @@ namespace Servicios
                 }
             }
 
-            var httpResponse = await new HttpClient().GetAsync($"https://pornhub.com/embed/{id}");
+            var httpResponse = await client.GetAsync($"https://pornhub.com/embed/{id}");
             if (!httpResponse.IsSuccessStatusCode) return null;
 
             string httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
@@ -499,7 +500,7 @@ namespace Servicios
             if (!match.Success) return null;
 
             string vistaPreviaUrl = match.Groups[1].Value.Replace("\\", "");
-            var vistaPrevia = await new HttpClient().GetAsync(vistaPreviaUrl);
+            var vistaPrevia = await client.GetAsync(vistaPreviaUrl);
             if (!vistaPrevia.IsSuccessStatusCode) return null;
 
             MediaModel media = null;

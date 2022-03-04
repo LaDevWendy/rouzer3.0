@@ -18,6 +18,10 @@ namespace WebApp.Controllers
         [Route("/Error/{id}")]
         public IActionResult PageNotFound(string id)
         {
+            if (id == "Prohibido")
+            {
+                return View("Prohibido");
+            }
             return View("PageNotFound");
         }
     }

@@ -101,7 +101,8 @@ namespace WebApp.Controllers
                 config.ModoMessi,
                 config.ModoSerenito,
                 config.Flags,
-                config.PalabrasCensuradas
+                config.PalabrasCensuradas,
+                config.ProhibirVPNs
             });
 
             return Json(new ApiResponse("Configuracion actualizada"));

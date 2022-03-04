@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Data;
@@ -11,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 using Modelos;
+using NetTools;
 
 namespace Servicios
 {
@@ -19,6 +23,7 @@ namespace Servicios
         private readonly IServiceProvider services;
         private readonly ILogger<RChanCacheService> logger;
         private Timer timer;
+        private Timer timer2;
 
         public List<HiloViewModel> hilosIndex { get; private set; } = new List<HiloViewModel>();
         public int[] creacionIndex { get; private set; } = new int[10000];
@@ -28,30 +33,37 @@ namespace Servicios
 
         private int[] todasLasCategorias;
 
+        private HttpClient client = new HttpClient();
+        public List<string> listaVPNs { get; private set; } = new List<string>();
+        public ConcurrentDictionary<string, bool> ipsSeguras { get; private set; } = new ConcurrentDictionary<string, bool>();
+
         public RChanCacheService(IServiceProvider services, ILogger<RChanCacheService> logger)
         {
             this.services = services;
             this.logger = logger;
             todasLasCategorias = services.GetService<IOptions<List<Categoria>>>().Value.Select(c => c.Id).ToArray();
-
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             timer = new Timer(async (state) =>
             {
-                var t1 = DateTimeOffset.Now;
+                //var t1 = DateTimeOffset.Now;
                 await ActualizarHilos();
                 // Console.WriteLine("Cache actualizado en " + (DateTimeOffset.Now - t1).TotalMilliseconds);
                 await ActualizarBaneos();
-            },
-                null, 0, (int)TimeSpan.FromSeconds(4).TotalMilliseconds);
+            }, null, 0, (int)TimeSpan.FromSeconds(4).TotalMilliseconds);
+            timer2 = new Timer(async (state) =>
+            {
+                await ActualizarListaVPNs();
+            }, null, 0, (int)TimeSpan.FromHours(24).TotalMilliseconds);
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
             timer.Change(Timeout.Infinite, 0);
+            timer2.Change(Timeout.Infinite, 0);
             return Task.CompletedTask;
         }
 
@@ -111,9 +123,57 @@ namespace Servicios
             banCache.IdsBaneadas = banCache.BaneosActivos.Select(b => b.UsuarioId).ToHashSet();
         }
 
+        public async Task ActualizarListaVPNs()
+        {
+            var intentos = 0;
+            var intentosMax = 25;
+
+            while (intentos < intentosMax)
+            {
+                try
+                {
+                    string result = await client.GetStringAsync("https://raw.githubusercontent.com/X4BNet/lists_vpn/main/ipv4.txt");
+                    listaVPNs = Regex.Split(result, "\r\n|\r|\n").ToList();
+                    //listaVPNs = Regex.Split("\n", "\r\n|\r|\n").ToList(); // Test
+                    List<string> nuevasIpsNoSeguras = new List<string>();
+                    foreach (var ip in ipsSeguras.Keys)
+                    {
+                        if (!String.IsNullOrEmpty(ip))
+                        {
+                            var ipParsed = IPAddressRange.Parse(ip);
+                            foreach (var vpn in listaVPNs)
+                            {
+                                if (!String.IsNullOrEmpty(vpn))
+                                {
+                                    var range = IPAddressRange.Parse(vpn);
+                                    if (range.Contains(ipParsed))
+                                    {
+                                        nuevasIpsNoSeguras.Add(ip);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (var ip in nuevasIpsNoSeguras)
+                    {
+                        ipsSeguras.Remove(ip, out bool jejeTaBien);
+                    }
+                    intentos = intentosMax;
+                    logger.LogInformation("Lista de VPNs actualizada.");
+                }
+                catch (Exception e)
+                {
+                    intentos++;
+                    logger.LogTrace(e, "ActualizarListaVPNs exception.");
+                }
+            }
+        }
+
         public void Dispose()
         {
             timer?.Dispose();
+            timer2?.Dispose();
         }
     }
 

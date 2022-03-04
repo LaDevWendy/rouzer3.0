@@ -5,17 +5,21 @@ using System.Threading.Tasks;
 
 namespace WebApp
 {
-    public class GeneralOptions : GeneralPublicOptions {
+    public class GeneralOptions : GeneralPublicOptions
+    {
         public int LimiteBump { get; set; }
 
         public int HilosMaximosPorCategoria { get; set; }
         public bool ModoPrivado { get; set; }
-        
-        public async Task Guardar(string ubicacion) {
-            var configActualizado = new {
+
+        public async Task Guardar(string ubicacion)
+        {
+            var configActualizado = new
+            {
                 General = this
             };
-            await File.WriteAllTextAsync(ubicacion, JsonSerializer.Serialize(configActualizado, new JsonSerializerOptions{
+            await File.WriteAllTextAsync(ubicacion, JsonSerializer.Serialize(configActualizado, new JsonSerializerOptions
+            {
                 WriteIndented = true,
             }));
         }
@@ -31,7 +35,7 @@ namespace WebApp
         public bool RegistroAbierto { get; set; }
         public int NumeroMaximoDeCuentasPorIp { get; set; }
         public string LinkDeInvitacion { get; set; }
-        
+
         public RestriccionDeAcceso RestriccionDeAcceso { get; set; }
         public string MensajePaginaDeChoque { get; set; } = "Chocamo";
         public bool ModoMessi { get; set; }
@@ -43,12 +47,13 @@ namespace WebApp
         public bool CaptchaRegistro { get; set; }
 
         public string Flags { get; set; } = "";
-        
+
         public string Version { get; set; }
 
         public string Nombre { get; set; } = "Rozed";
         public string Mensaje { get; set; } = "Union de miserables";
         public string PalabrasCensuradas { get; set; }
+        public bool ProhibirVPNs { get; set; }
     }
 
     public enum RestriccionDeAcceso

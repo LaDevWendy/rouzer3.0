@@ -10,30 +10,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using NetTools;
 using Servicios;
 
 namespace WebApp
 {
     public class BanFilter : IAsyncActionFilter
     {
-        private readonly SignInManager<UsuarioModel> sm;
         private readonly RChanContext dbContext;
         private readonly RChanCacheService cacheService;
-        private readonly HashService hashService;
-        private readonly AccionesDeModeracionService historial;
 
-        public BanFilter(SignInManager<UsuarioModel> sm, RChanContext dbContext, RChanCacheService cacheService, HashService hashService, AccionesDeModeracionService historial)
+        public BanFilter(RChanContext dbContext, RChanCacheService cacheService)
         {
             this.cacheService = cacheService;
-            this.sm = sm;
             this.dbContext = dbContext;
-            this.hashService = hashService;
-            this.historial = historial;
         }
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var ctx = context.HttpContext;
-            if (Regex.IsMatch(ctx.Request.Path, @"^\/Domado(?:/[a-zA-Z0-9]*)?") || ctx.Request.Path.Value.Contains("omado"))
+            if (Regex.IsMatch(ctx.Request.Path, @"^\/Domado(?:/[a-zA-Z0-9]*)?") ||
+                ctx.Request.Path.Value.Contains("omado"))
             {
                 await next();
                 return;
