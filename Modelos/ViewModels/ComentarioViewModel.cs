@@ -1,10 +1,9 @@
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Modelos;
-using Newtonsoft.Json;
 
 namespace Modelos
 {
@@ -110,6 +109,7 @@ namespace Modelos
         public bool EsOp { get; set; }
         public MediaModel Media { get; set; }
         public AudioModel Audio { get; set; }
+        public string HiloId { get; set; }
 
         [
             JsonProperty(
@@ -253,8 +253,6 @@ namespace Modelos
             UsuarioId = comentario.UsuarioId;
             Estado = comentario.Estado;
         }
-
-        public string HiloId { get; set; }
         public string UsuarioId { get; set; }
         public ComentarioEstado Estado { get; set; }
         public string Username { get; set; }

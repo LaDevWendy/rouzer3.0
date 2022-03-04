@@ -69,6 +69,20 @@ namespace WebApp
                 .BansActivos(usuarioId, ip)
                 .FirstOrDefaultAsync()) != null;
         }
+        public static IQueryable<ComentarioViewModel> AViewModel(this IQueryable<ComentarioModel> comentarios)
+        {
+            return comentarios.Select(c => new ComentarioViewModel
+            {
+                HiloId = c.HiloId,
+                Contenido = c.Contenido,
+                Id = c.Id,
+                Creacion = c.Creacion,
+                Media = c.Media,
+                Rango = c.Rango,
+                Nombre = c.Nombre,
+                Audio = c.Audio
+            });
+        }
         public static IQueryable<ComentarioViewModelMod> AViewModelMod(this IQueryable<ComentarioModel> comentarios)
         {
             return comentarios.Select(c => new ComentarioViewModelMod

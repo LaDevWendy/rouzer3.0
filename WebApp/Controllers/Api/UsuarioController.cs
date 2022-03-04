@@ -308,6 +308,21 @@ namespace WebApp.Controllers
 
             return BadRequest(ModelState);
         }
+
+        [HttpGet, Route("/MisComentarios")]
+        public async Task<ActionResult> MisComentarios()
+        {
+            var id = User.GetId();
+            var Comentarios = await context.Comentarios
+                        .AsNoTracking()
+                        .Recientes()
+                        .DeUsuario(id)
+                        .AViewModel()
+                        .Take(150)
+                        .ToListAsync();
+            Comentarios.ForEach(c => c.Propio = true);
+            return View(new { Comentarios = Comentarios });
+        }
     }
 
     public class RegistroVM
