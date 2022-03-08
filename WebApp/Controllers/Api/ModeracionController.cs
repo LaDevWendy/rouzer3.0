@@ -226,19 +226,21 @@ namespace WebApp.Controllers
                 return Redirect("/Error/404");
             }
 
-            var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+            var usuario = await context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
 
             if (usuario is null)
                 return Redirect("/Error/404");
 
             // Listado de huellas de comentarios e hilos
             var huellasComentarios = context.Comentarios
+                .AsNoTracking()
                 .DeUsuario(id)
                 .Where(c => !string.IsNullOrEmpty(c.FingerPrint))
                 .GroupBy(c => c.FingerPrint)
                 .Select(g => new Grupo(new Contador(g.Key, g.Count())))
                 .ToList();
             var huellasHilos = context.Hilos
+                .AsNoTracking()
                 .DeUsuario(id)
                 .Where(c => !string.IsNullOrEmpty(c.FingerPrint))
                 .GroupBy(c => c.FingerPrint)
@@ -283,11 +285,13 @@ namespace WebApp.Controllers
 
             // Listado de hashes de comentarios e hilos
             var hashesComentarios = context.Comentarios
+                .AsNoTracking()
                 .DeUsuario(id)
                 .GroupBy(c => c.Ip)
                 .Select(g => new Grupo(new Contador(g.Key, g.Count())))
                 .ToList();
             var hashesHilos = context.Hilos
+                .AsNoTracking()
                 .DeUsuario(id)
                 .GroupBy(c => c.Ip)
                 .Select(g => new Grupo(new Contador(g.Key, g.Count())))
@@ -332,6 +336,7 @@ namespace WebApp.Controllers
             {
                 // Lista de usuarios en comentarios e hilos
                 grupo.Lista = await context.Comentarios
+                    .AsNoTracking()
                     .Where(
                         c =>
                             (c.FingerPrint == grupo.ClaveContada.Clave)
@@ -344,6 +349,7 @@ namespace WebApp.Controllers
                     .Select(g => new Contador(g.Key, g.Count()))
                     .ToListAsync();
                 var Lista2 = await context.Hilos
+                    .AsNoTracking()
                     .Where(
                         c =>
                             (c.FingerPrint == grupo.ClaveContada.Clave)
@@ -372,6 +378,7 @@ namespace WebApp.Controllers
 
                 // Agregados usuarios coincidentes en creación
                 var Lista3 = await context.Usuarios
+                    .AsNoTracking()
                     .Where(u => (u.FingerPrint == grupo.ClaveContada.Clave) && (u.Id != usuario.Id))
                     .Where(u => u.Id != id1)
                     .Where(u => u.Id != id2)
@@ -395,11 +402,11 @@ namespace WebApp.Controllers
 
                 foreach (Contador grupito in grupo.Lista)
                 {
-                    var u = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == grupito.Clave);
+                    var u = await context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Id == grupito.Clave);
                     grupito.Nombre = u.UserName;
                     grupito.Total =
-                        await context.Comentarios.DeUsuario(grupito.Clave).CountAsync()
-                        + await context.Hilos.DeUsuario(grupito.Clave).CountAsync()
+                        await context.Comentarios.AsNoTracking().DeUsuario(grupito.Clave).CountAsync()
+                        + await context.Hilos.AsNoTracking().DeUsuario(grupito.Clave).CountAsync()
                         + 1;
                 }
             }
@@ -409,6 +416,7 @@ namespace WebApp.Controllers
             {
                 // Lista de usuarios en comentarios e hilos
                 grupo.Lista = await context.Comentarios
+                    .AsNoTracking()
                     .Where(c => (c.Ip == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
                     .Where(c => c.UsuarioId != id1)
                     .Where(c => c.UsuarioId != id2)
@@ -417,6 +425,7 @@ namespace WebApp.Controllers
                     .Select(g => new Contador(g.Key, g.Count()))
                     .ToListAsync();
                 var Lista2 = await context.Hilos
+                    .AsNoTracking()
                     .Where(c => (c.Ip == grupo.ClaveContada.Clave) && (c.UsuarioId != usuario.Id))
                     .Where(c => c.UsuarioId != id1)
                     .Where(c => c.UsuarioId != id2)
@@ -441,6 +450,7 @@ namespace WebApp.Controllers
 
                 // Agregados usuarios coincidentes en creación
                 var Lista3 = await context.Usuarios
+                    .AsNoTracking()
                     .Where(u => (u.Ip == grupo.ClaveContada.Clave) && (u.Id != usuario.Id))
                     .Where(u => u.Id != id1)
                     .Where(u => u.Id != id2)
@@ -464,11 +474,11 @@ namespace WebApp.Controllers
 
                 foreach (Contador grupito in grupo.Lista)
                 {
-                    var u = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == grupito.Clave);
+                    var u = await context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Id == grupito.Clave);
                     grupito.Nombre = u.UserName;
                     grupito.Total =
-                        await context.Comentarios.DeUsuario(grupito.Clave).CountAsync()
-                        + await context.Hilos.DeUsuario(grupito.Clave).CountAsync()
+                        await context.Comentarios.AsNoTracking().DeUsuario(grupito.Clave).CountAsync()
+                        + await context.Hilos.AsNoTracking().DeUsuario(grupito.Clave).CountAsync()
                         + 1;
                 }
             }

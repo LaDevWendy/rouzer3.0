@@ -317,7 +317,8 @@ namespace WebApp.Controllers
                         .AsNoTracking()
                         .Recientes()
                         .DeUsuario(id)
-                        .Where(c => c.Estado == ComentarioEstado.Normal)
+                        .Include(c => c.Hilo)
+                        .Where(c => c.Estado == ComentarioEstado.Normal && c.Hilo.Estado != HiloEstado.Eliminado)
                         .AViewModel()
                         .Take(150)
                         .ToListAsync();

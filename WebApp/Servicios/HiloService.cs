@@ -440,7 +440,7 @@ namespace Servicios
             var ArchivosLimpiados = await mediaService.LimpiarMediasHuerfanos();
             var AudiosLimpiados = await audioService.LimpiarAudiosHuerfanos();
 
-            logger.LogInformation($"{hilosALimpiar.Count()} hilos limpiados, {ArchivosLimpiados} archivos limpiados y {AudiosLimpiados} audios limpiados.");
+            logger.LogInformation($"{limpiados} hilos limpiados, {ArchivosLimpiados} archivos limpiados y {AudiosLimpiados} audios limpiados.");
 
         }
 
