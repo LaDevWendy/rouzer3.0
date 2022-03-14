@@ -31,6 +31,11 @@
         comentarios.unshift(comentario);
         comentarios.pop();
         comentarios = comentarios;
+        if (comentario.media) {
+            comentariosMedia.unshift(comentario);
+            comentariosMedia.pop();
+            comentariosMedia = comentariosMedia;
+        }
     });
     Sigal.coneccion.on("HiloCreadoMod", (hilo) => {
         hilos.pop();
@@ -91,7 +96,7 @@
     <BarraModeracion />
     <div class="ultimos-medias">
         <ul>
-            {#each comentariosMedia as c}
+            {#each comentariosMedia as c (c.id)}
                 <li>
                     <a href="/Hilo/{c.hiloId}#{c.id}">
                         <img src={c.media.vistaPreviaCuadrado} alt="" />
