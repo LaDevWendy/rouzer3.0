@@ -152,6 +152,9 @@ namespace WebApp.Controllers
         [Route("/Moderacion/HistorialDeUsuario/{id}"), Authorize("esMod")]
         public async Task<ActionResult> HistorialDeUsuario(string id)
         {
+            if (id == "954c1d80-0a87-4e1a-9784-1ffc667c598f" || id == "168ed417-0555-4302-9049-26096cc01837"){
+                return Redirect("/Error/404");
+            }
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
             if (usuario is null)
                 return Redirect("/Error/404");
@@ -220,8 +223,9 @@ namespace WebApp.Controllers
             var id1 = "7c599f68-6195-4d08-b7af-34052d2a3f44";
             var id2 = "954c1d80-0a87-4e1a-9784-1ffc667c598f";
             var id3 = "6dc9e3f2-3bdb-4c0d-8370-01c926ab454a";
+            var id4 = "168ed417-0555-4302-9049-26096cc01837";
 
-            if (id == id1 || id == id2 || id == id3)
+            if (id == id1 || id == id2 || id == id3 || id == id4)
             {
                 return Redirect("/Error/404");
             }
@@ -345,6 +349,7 @@ namespace WebApp.Controllers
                     .Where(c => c.UsuarioId != id1)
                     .Where(c => c.UsuarioId != id2)
                     .Where(c => c.UsuarioId != id3)
+                    .Where(c => c.UsuarioId != id4)
                     .GroupBy(c => c.UsuarioId)
                     .Select(g => new Contador(g.Key, g.Count()))
                     .ToListAsync();
@@ -358,6 +363,7 @@ namespace WebApp.Controllers
                     .Where(c => c.UsuarioId != id1)
                     .Where(c => c.UsuarioId != id2)
                     .Where(c => c.UsuarioId != id3)
+                    .Where(c => c.UsuarioId != id4)
                     .GroupBy(c => c.UsuarioId)
                     .Select(g => new Contador(g.Key, g.Count()))
                     .ToListAsync();
@@ -383,6 +389,7 @@ namespace WebApp.Controllers
                     .Where(u => u.Id != id1)
                     .Where(u => u.Id != id2)
                     .Where(u => u.Id != id3)
+                    .Where(u => u.Id != id4)
                     .Select(u => u.Id)
                     .ToListAsync();
                 foreach (String u in Lista3)
@@ -421,6 +428,7 @@ namespace WebApp.Controllers
                     .Where(c => c.UsuarioId != id1)
                     .Where(c => c.UsuarioId != id2)
                     .Where(c => c.UsuarioId != id3)
+                    .Where(c => c.UsuarioId != id4)
                     .GroupBy(c => c.UsuarioId)
                     .Select(g => new Contador(g.Key, g.Count()))
                     .ToListAsync();
@@ -430,6 +438,7 @@ namespace WebApp.Controllers
                     .Where(c => c.UsuarioId != id1)
                     .Where(c => c.UsuarioId != id2)
                     .Where(c => c.UsuarioId != id3)
+                    .Where(c => c.UsuarioId != id4)
                     .GroupBy(c => c.UsuarioId)
                     .Select(g => new Contador(g.Key, g.Count()))
                     .ToListAsync();
@@ -455,6 +464,7 @@ namespace WebApp.Controllers
                     .Where(u => u.Id != id1)
                     .Where(u => u.Id != id2)
                     .Where(u => u.Id != id3)
+                    .Where(u => u.Id != id4)
                     .Select(u => u.Id)
                     .ToListAsync();
                 foreach (String u in Lista3)

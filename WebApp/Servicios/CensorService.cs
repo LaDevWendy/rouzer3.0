@@ -45,7 +45,7 @@ namespace Servicios
         public bool CensorText(string text)
         {
             if (text == null)
-                throw new ArgumentNullException("text");
+                throw new ArgumentNullException("text"); // Corregir esto
             foreach (string censoredWord in CensoredWords)
             {
                 string regularExpression = ToRegexPattern(censoredWord);

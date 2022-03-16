@@ -135,7 +135,8 @@
 		top: 60px;
 		position: -webkit-sticky;
 		max-height: calc(100vh - 75px);
-		overflow: auto;
+		overflow-x: hidden;
+		overflow-y: auto;
 	}
 	@media (max-width: 992px) {
 		.hilo-completo {

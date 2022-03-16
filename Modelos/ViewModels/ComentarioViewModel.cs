@@ -253,6 +253,7 @@ namespace Modelos
             UsuarioId = comentario.UsuarioId;
             Estado = comentario.Estado;
         }
+
         public string UsuarioId { get; set; }
         public ComentarioEstado Estado { get; set; }
         public string Username { get; set; }

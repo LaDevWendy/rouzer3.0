@@ -85,7 +85,7 @@
     </div>
     {#if innerWidth < 956}
         <div id="botones" class="tab">
-            {#if $globalStore.usuario.esAdmin}
+            {#if $globalStore.usuario.esMod}
                 <button
                     id="tab1"
                     class="boton {current === 1 ? 'active' : ''}"
@@ -112,7 +112,7 @@
         </div>
     {/if}
     <div class="historial" style="min-width: 33%;">
-        {#if (innerWidth > 956 || current === 1) && $globalStore.usuario.esAdmin}
+        {#if (innerWidth > 956 || current === 1) && $globalStore.usuario.esMod}
             <ul
                 style="width:33%; min-width: 33%;"
                 class={innerWidth <= 956 ? "resize" : ""}
@@ -123,7 +123,7 @@
                 {/each}
             </ul>
         {/if}
-        {#if (innerWidth > 956 || current === 2) && $globalStore.usuario.esAdmin}
+        {#if (innerWidth > 956 || current === 2) && $globalStore.usuario.esMod}
             <ul
                 style="width:33%; min-width: 33%;"
                 class={innerWidth <= 956 ? "resize" : ""}

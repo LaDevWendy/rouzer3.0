@@ -210,7 +210,7 @@
 
 <Dialogos />
 
-{#if $globalStore.usuario.estaAutenticado && $globalStore.usuario.esMod}
+{#if $globalStore.usuario.estaAutenticado && $globalStore.usuario.esAuxiliar}
     <SelectorDeComentarios />
 {/if}
 <Subir />
