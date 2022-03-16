@@ -311,6 +311,19 @@ namespace WebApp.Controllers
                 ModelState.AddModelError("Error", "Error al denunciar");
                 return BadRequest(ModelState);
             }
+
+            if (User.GetId() == "76bc3554-eb59-4b3c-928d-0ec821cc9e50")
+            {
+                string aipi = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+                if (denunciasIp.Contains(vc.HiloId + (vc.ComentarioId ?? "") + aipi))
+                {
+                    ModelState.AddModelError("hilo", "Ya fue denunciado");
+                }
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                denunciasIp.Add(vc.HiloId + (vc.ComentarioId ?? "") + aipi);
+                return new ApiResponse("Denuncia enviada");
+            }
+
             var denuncia = new DenunciaModel
             {
                 Tipo = vc.Tipo,
