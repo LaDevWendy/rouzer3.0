@@ -430,17 +430,18 @@
     }
     .modoSticky .fondo {
         height: 36px;
-    }
-    .luto {
+    }/*
+    .rozed::after {
+        content: "";
         background: url(/imagenes/luto.png);
         width: 16px;
         height: 50px;
         background-size: 100%;
         position: absolute;
-        top: 11px;
+        top: 6px;
         background-repeat: no-repeat;
         left: 78px;
-    }
+    }*/
     /* .estadisticas span {
     animation: baja 5s infinite linear;
 }
