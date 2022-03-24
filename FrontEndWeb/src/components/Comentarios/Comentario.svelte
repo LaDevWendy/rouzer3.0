@@ -223,7 +223,9 @@
         class="color color-{comentario.color} ns"
         class:dado={comentario.dados != undefined && comentario.dados != -1}
     >
-        {#if comentario.dados != undefined && comentario.dados != -1}
+        {#if comentario.millon > 0}
+            {comentario.millon}
+        {:else if comentario.dados != undefined && comentario.dados != -1}
             {comentario.dados}
         {:else if comentario.rango}
             {CreacionRango.aString(comentario.rango).toUpperCase()}
@@ -235,9 +237,9 @@
         {#if comentario.esOp} <span class="nick tag tag-op">OP</span>{/if}
         <span
             on:click={seleccionar}
-            class:nombreResaltado={comentario.nombre}
+            class:nombreResaltado={comentario.nombre || comentario.millon > 0}
             class="nick nombre cptr"
-            >{comentario.nombre || "Gordo"}
+            >{comentario.millon > 0 ? "Especial" : comentario.nombre || "Gordo"}
         </span>
         {#if comentario.banderita}
             <span class="banderita f32"
@@ -719,7 +721,9 @@
     .color-uff {
         background: url(/imagenes/colores/uff.jpg);
         background-size: 100%;
-        color: transparent;
+        color: #00000040;
+        font-size: 2rem;
+        font-family: "euroFighter";
     }
     .color-serio {
         background: #354e67;

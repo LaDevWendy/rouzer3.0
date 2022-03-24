@@ -22,7 +22,7 @@ namespace Modelos
             this.Audio = comentario.Audio;
             this.Sticky = comentario.Sticky;
             this.Ignorado = comentario.Ignorado;
-            this.Millon = comentario.Flags.Contains("m");
+            this.Millon = comentario.Flags.Contains("m") ? comentario.Flags.ToCharArray().Count(c => c == 'm') : 0;
         }
 
         public ComentarioViewModel(
@@ -41,7 +41,7 @@ namespace Modelos
             this.Audio = comentario.Audio;
             this.Sticky = comentario.Sticky;
             this.Ignorado = comentario.Ignorado;
-            this.Millon = comentario.Flags != null && comentario.Flags.Contains("m");
+            this.Millon = comentario.Flags.Contains("m") ? comentario.Flags.ToCharArray().Count(c => c == 'm') : 0;
 
             if (hilo != null)
             {
@@ -137,11 +137,11 @@ namespace Modelos
         public bool Sticky { get; set; } = false;
         public bool OP { get; set; } = false;
         public bool Ignorado { get; set; } = false;
-        public bool Millon { get; set; } = false;
+        public int Millon { get; set; } = 0;
 
         private string CalcularColor(HiloModel hilo = null)
         {
-            if (this.Millon) return "uff";
+            if (this.Millon > 0) return "uff";
             var r = new Random(
                 Creacion.Millisecond
                     + Creacion.Second * 60

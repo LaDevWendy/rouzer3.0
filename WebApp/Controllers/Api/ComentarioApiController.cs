@@ -207,7 +207,11 @@ namespace WebApp.Controllers
 
             if (estadisticas.ComentariosCreados % 1000000 == 0)
             {
-                comentario.Flags += "m";
+                var n = estadisticas.ComentariosCreados / 1000000;
+                for (int i = 0; i < n; i++)
+                {
+                    comentario.Flags += "m";
+                }
             }
 
             string id = await comentarioService.Guardar(comentario);
