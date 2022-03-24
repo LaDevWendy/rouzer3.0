@@ -152,7 +152,8 @@ namespace WebApp.Controllers
         [Route("/Moderacion/HistorialDeUsuario/{id}"), Authorize("esMod")]
         public async Task<ActionResult> HistorialDeUsuario(string id)
         {
-            if ((User.GetId() != "954c1d80-0a87-4e1a-9784-1ffc667c598f") && (id == "954c1d80-0a87-4e1a-9784-1ffc667c598f" || id == "168ed417-0555-4302-9049-26096cc01837")){
+            if ((User.GetId() != "954c1d80-0a87-4e1a-9784-1ffc667c598f") && (id == "168ed417-0555-4302-9049-26096cc01837"))
+            {
                 return Redirect("/Error/404");
             }
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);

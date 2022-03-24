@@ -25,6 +25,8 @@
     //let audioInput;
 
     let mostrarRango = false;
+    let mostrarRangoAdmin = false;
+    let mostrarRangoDev = false;
     let mostrarNombre = false;
 
     //const risas = new Audio("/audio/risas.mp3");
@@ -66,7 +68,9 @@
                     audio,
                     "",
                     mostrarNombre && $globalStore.usuario.esAdmin,
-                    mostrarRango
+                    mostrarRango,
+                    mostrarRangoAdmin,
+                    mostrarRangoDev
                 );
             } else {
                 await RChanClient.crearComentario(
@@ -143,6 +147,18 @@
                     ></span
                 >
                 {#if $globalStore.usuario.esAdmin}
+                    <span style="width: fit-content;margin-right: auto;"
+                        ><Checkbox bind:checked={mostrarRangoAdmin} right
+                            >Admin</Checkbox
+                        ></span
+                    >
+                    {#if $globalStore.usuario.esDev}
+                        <span style="width: fit-content;margin-right: auto;"
+                            ><Checkbox bind:checked={mostrarRangoDev} right
+                                >Dev</Checkbox
+                            ></span
+                        >
+                    {/if}
                     <span style="width: fit-content;margin-right: auto;"
                         ><Checkbox bind:checked={mostrarNombre} right
                             >Nombre</Checkbox

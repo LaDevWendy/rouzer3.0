@@ -101,21 +101,26 @@ namespace WebApp
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy("esDev", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("Role", "dev");
+                });
                 options.AddPolicy("esAdmin", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("Role", "admin");
+                    policy.RequireClaim("Role", "dev admin".Split(" "));
                 });
                 options.AddPolicy("esMod", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("Role", "admin mod".Split(" "));
+                    policy.RequireClaim("Role", "dev admin mod".Split(" "));
                 });
                 options.AddPolicy("esAuxiliar", policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.AddRequirements(new AuxiliarAuthorizationRequirement());
-                    policy.RequireClaim("Role", "admin mod auxiliar".Split(" "));
+                    policy.RequireClaim("Role", "dev admin mod auxiliar".Split(" "));
                 });
             });
             services.AddRazorPages();
@@ -294,21 +299,25 @@ namespace WebApp
 
     public static class Extensiones
     {
+        public static bool EsDev(this ClaimsPrincipal user)
+        {
+            return user.HasClaim("Role", "dev");
+        }
         public static bool EsAdmin(this ClaimsPrincipal user)
         {
-            return user.HasClaim("Role", "admin");
+            return user.HasClaim("Role", "admin") || user.HasClaim("Role", "dev");
         }
         public static bool EsMod(this ClaimsPrincipal user)
         {
             return user.HasClaim("Role", "mod")
-                || user.HasClaim("Role", "admin");
+                || user.HasClaim("Role", "admin") || user.HasClaim("Role", "dev");
         }
         public static bool EsAuxiliar(this ClaimsPrincipal user, bool modoSerenito = false)
         {
             if (!modoSerenito && user.HasClaim("Role", "auxiliar")) return false;
             return user.HasClaim("Role", "mod")
                 || user.HasClaim("Role", "admin")
-                || user.HasClaim("Role", "auxiliar");
+                || user.HasClaim("Role", "auxiliar") || user.HasClaim("Role", "dev");
         }
         public static string GetId(this ClaimsPrincipal user)
         {

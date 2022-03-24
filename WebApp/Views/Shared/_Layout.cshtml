@@ -99,7 +99,8 @@
                 EsAdmin = User.EsAdmin(),
                 EsMod = User.EsMod(),
                 EsAuxiliar = User.EsAuxiliar(generalOptions.Value.ModoSerenito),
-                TieneToken = !string.IsNullOrWhiteSpace(user?.Token)
+                TieneToken = !string.IsNullOrWhiteSpace(user?.Token),
+                EsDev = User.EsDev()
             }
         };
 

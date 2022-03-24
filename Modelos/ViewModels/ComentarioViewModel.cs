@@ -22,6 +22,7 @@ namespace Modelos
             this.Audio = comentario.Audio;
             this.Sticky = comentario.Sticky;
             this.Ignorado = comentario.Ignorado;
+            this.Millon = comentario.Flags.Contains("m");
         }
 
         public ComentarioViewModel(
@@ -40,6 +41,7 @@ namespace Modelos
             this.Audio = comentario.Audio;
             this.Sticky = comentario.Sticky;
             this.Ignorado = comentario.Ignorado;
+            this.Millon = comentario.Flags != null && comentario.Flags.Contains("m");
 
             if (hilo != null)
             {
@@ -58,10 +60,10 @@ namespace Modelos
                 if (!hilo.Flags.Contains("b") && !hilo.Flags.Contains("s"))
                 {
                     this.Banderita = comentario.Pais;
-                    if (comentario.UsuarioId == "954c1d80-0a87-4e1a-9784-1ffc667c598f")
+                    /*if (comentario.UsuarioId == "954c1d80-0a87-4e1a-9784-1ffc667c598f")
                     {
                         this.Banderita = "py";
-                    }
+                    }*/
                     if (comentario.UsuarioId == "7c599f68-6195-4d08-b7af-34052d2a3f44")
                     {
                         this.Banderita = "cl";
@@ -135,9 +137,11 @@ namespace Modelos
         public bool Sticky { get; set; } = false;
         public bool OP { get; set; } = false;
         public bool Ignorado { get; set; } = false;
+        public bool Millon { get; set; } = false;
 
         private string CalcularColor(HiloModel hilo = null)
         {
+            if (this.Millon) return "uff";
             var r = new Random(
                 Creacion.Millisecond
                     + Creacion.Second * 60

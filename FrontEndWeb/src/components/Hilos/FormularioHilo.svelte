@@ -36,6 +36,8 @@
     $: encuestaArray = [...encuesta];
     $: console.log(encuesta);
 
+    let mostrarRangoDev = false;
+    let mostrarRangoAdmin = false;
     let mostrarRango = false;
     let mostrarNombre = false;
 
@@ -85,7 +87,9 @@
                     captcha,
                     [...encuesta],
                     mostrarNombre && $globalStore.usuario.esAdmin,
-                    mostrarRango
+                    mostrarRango,
+                    mostrarRangoAdmin,
+                    mostrarRangoDev
                 );
             }
             if (r.status == 201) {
@@ -239,6 +243,18 @@
                         ></span
                     >
                     {#if $globalStore.usuario.esAdmin}
+                        <span style="width: fit-content;margin-right: auto;"
+                            ><Checkbox bind:checked={mostrarRangoAdmin} right
+                                >Tag_Admin</Checkbox
+                            ></span
+                        >
+                        {#if $globalStore.usuario.esDev}
+                            <span style="width: fit-content;margin-right: auto;"
+                                ><Checkbox bind:checked={mostrarRangoDev} right
+                                    >Tag_Dev</Checkbox
+                                ></span
+                            >
+                        {/if}
                         <span style="width: fit-content;margin-right: auto;"
                             ><Checkbox bind:checked={mostrarNombre} right
                                 >Nombre</Checkbox

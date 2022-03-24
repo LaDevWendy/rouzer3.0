@@ -9,6 +9,7 @@
 
     let model = window.model;
     let error = null;
+    let nickDev = "";
     let nickAdmin = "";
     let nickMod = "";
     let nickAux = "";
@@ -101,6 +102,26 @@
                     <li>
                         {a.userName} <span class="sep" /><Button
                             on:click={() => eliminar(a.id, "admin")}
+                            >Eliminar</Button
+                        >
+                    </li>
+                {/each}
+                <hr />
+                <li class="header">Developers</li>
+                <li class="noback">
+                    <input
+                        bind:value={nickDev}
+                        type="text"
+                        placeholder="Id o nick del usuario"
+                    />
+                    <Button on:click={() => añadir(nickDev, "dev")}
+                        >Añadir</Button
+                    >
+                </li>
+                {#each model.devs as d (d.id)}
+                    <li>
+                        {d.userName} <span class="sep" /><Button
+                            on:click={() => eliminar(d.id, "dev")}
                             >Eliminar</Button
                         >
                     </li>

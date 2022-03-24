@@ -171,7 +171,20 @@ namespace WebApp.Controllers
             }
 
             // Agrego rango y nombre
-            if (User.EsMod())
+            if (User.EsDev())
+            {
+                if (vm.MostrarNombre) comentario.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
+                if (vm.MostrarRango) comentario.Rango = CreacionRango.Mod;
+                if (vm.MostrarRangoAdmin) comentario.Rango = CreacionRango.Admin;
+                if (vm.MostrarRangoDev) comentario.Rango = CreacionRango.Dev;
+            }
+            if (!User.EsDev() && User.EsAdmin())
+            {
+                if (vm.MostrarNombre) comentario.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
+                if (vm.MostrarRango) comentario.Rango = CreacionRango.Mod;
+                if (vm.MostrarRangoAdmin) comentario.Rango = CreacionRango.Admin;
+            }
+            if (!User.EsAdmin() && User.EsMod())
             {
                 if (vm.MostrarNombre) comentario.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
                 if (vm.MostrarRango) comentario.Rango = CreacionRango.Mod;
@@ -188,6 +201,15 @@ namespace WebApp.Controllers
                 comentario.Pais = paisValue.ToString().ToLower();
             }
 
+            await estadisticasService.RegistrarNuevoComentario();
+
+            var estadisticas = await estadisticasService.GetEstadisticasAsync();
+
+            if (estadisticas.ComentariosCreados % 1000000 == 0)
+            {
+                comentario.Flags += "m";
+            }
+
             string id = await comentarioService.Guardar(comentario);
 
             var model = new ComentarioViewModel(comentario, hilo);
@@ -202,9 +224,6 @@ namespace WebApp.Controllers
             await rchanHub.Clients.Group("moderacion").SendAsync("NuevoComentarioMod", comentarioMod);
 
             await notificacioensService.Notificar(hilo, comentario);
-
-
-            await estadisticasService.RegistrarNuevoComentario();
 
             // Checkear si es historico
             if (!hilo.Flags.Contains("h"))

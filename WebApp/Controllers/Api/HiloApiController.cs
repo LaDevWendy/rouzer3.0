@@ -207,7 +207,20 @@ namespace WebApp.Controllers
             });
 
             //Agrego rango y nombre
-            if (User.EsMod())
+            if (User.EsDev())
+            {
+                if (vm.MostrarNombre) hilo.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
+                if (vm.MostrarRango) hilo.Rango = CreacionRango.Mod;
+                if (vm.MostrarRangoAdmin) hilo.Rango = CreacionRango.Admin;
+                if (vm.MostrarRangoDev) hilo.Rango = CreacionRango.Dev;
+            }
+            if (!User.EsDev() && User.EsAdmin())
+            {
+                if (vm.MostrarNombre) hilo.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
+                if (vm.MostrarRango) hilo.Rango = CreacionRango.Mod;
+                if (vm.MostrarRangoAdmin) hilo.Rango = CreacionRango.Admin;
+            }
+            if (!User.EsAdmin() && User.EsMod())
             {
                 if (vm.MostrarNombre) hilo.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
                 if (vm.MostrarRango) hilo.Rango = CreacionRango.Mod;

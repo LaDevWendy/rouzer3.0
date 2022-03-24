@@ -19,6 +19,7 @@ namespace Modelos
         public AudioModel Audio { get; set; }
         public string AudioId { get; set; }
         public string FingerPrint { get; set; }
+        public string Flags { get; set; } = "";
     }
 
     public enum CreacionRango
@@ -27,5 +28,6 @@ namespace Modelos
         Auxiliar,
         Mod,
         Admin,
+        Dev
     }
 }

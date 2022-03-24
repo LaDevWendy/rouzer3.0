@@ -185,8 +185,10 @@
         $selectorStore.seleccionados.has(comentario.id)}
     class="comentario {windowsWidh <= 400 ? 'comentario-movil' : ''}"
     class:eliminado={comentario.estado == ComentarioEstado.eliminado}
-    class:comentarioMod={comentario.rango > CreacionRango.Auxliar}
-    class:comentarioAuxiliar={comentario.rango == CreacionRango.Auxliar}
+    class:comentarioDev={comentario.rango == CreacionRango.Dev}
+    class:comentarioAdmin={comentario.rango == CreacionRango.Admin}
+    class:comentarioMod={comentario.rango == CreacionRango.Mod}
+    class:comentarioAuxiliar={comentario.rango == CreacionRango.Auxiliar}
     class:propio={comentario.propio}
     class:sticky={comentario.sticky}
     r-id={comentario.id}
@@ -714,6 +716,11 @@
         background-size: 100%;
         color: transparent;
     }
+    .color-uff {
+        background: url(/imagenes/colores/uff.jpg);
+        background-size: 100%;
+        color: transparent;
+    }
     .color-serio {
         background: #354e67;
     }
@@ -895,6 +902,28 @@
         }
     }
 
+    .comentarioDev {
+        border-top: solid 2px;
+        border-color: greenyellow;
+    }
+
+    .comentarioDev > .color {
+        background: black;
+        color: greenyellow !important;
+        font-family: "Courier New", Courier, monospace;
+        text-transform: lowercase;
+    }
+
+    .comentarioAdmin {
+        border-top: solid 2px;
+        animation: borde-luz-admin 10s infinite alternate-reverse;
+    }
+
+    .comentarioAdmin > .color {
+        animation: lucesAdmin 10s infinite alternate-reverse;
+        color: gold !important;
+    }
+
     .comentarioMod {
         border-top: solid 2px;
         animation: borde-luz 0.3s infinite alternate-reverse;
@@ -944,6 +973,31 @@
         100% {
             background: blue;
             border-color: blue;
+        }
+    }
+    @keyframes borde-luz-admin {
+        0% {
+            border-color: #630b57;
+        }
+        50% {
+            border-color: #800080;
+        }
+        100% {
+            border-color: #4c2882;
+        }
+    }
+    @keyframes lucesAdmin {
+        0% {
+            background: #630b57;
+            border-color: #630b57;
+        }
+        50% {
+            background: #800080;
+            border-color: #800080;
+        }
+        100% {
+            background: #4c2882;
+            border-color: #4c2882;
         }
     }
 

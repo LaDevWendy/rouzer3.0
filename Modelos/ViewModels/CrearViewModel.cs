@@ -14,6 +14,8 @@ namespace Modelos
         public IFormFile Audio { get; set; }
         public string Link { get; set; }
         public bool MostrarRango { get; set; } = false;
+        public bool MostrarRangoAdmin { get; set; } = false;
+        public bool MostrarRangoDev { get; set; } = false;
         public bool MostrarNombre { get; set; } = false;
         public string FingerPrint { get; set; }
     }

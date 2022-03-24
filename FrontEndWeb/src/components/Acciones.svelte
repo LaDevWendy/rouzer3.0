@@ -21,6 +21,19 @@
         await RChanClient.agregar("favoritos", hilo.id);
         acciones.favorito = !acciones.favorito;
     }
+
+    let rango = "";
+    if (hilo.rango > CreacionRango.Anon) {
+        if (hilo.rango == CreacionRango.Mod) {
+            rango = "mod";
+        }
+        if (hilo.rango == CreacionRango.Admin) {
+            rango = "adm";
+        }
+        if (hilo.rango == CreacionRango.Dev) {
+            rango = "dev";
+        }
+    }
 </script>
 
 <div class="panel acciones">
@@ -51,7 +64,7 @@
     >
 
     {#if hilo.rango > CreacionRango.Anon || hilo.nombre}
-        <span class="mod">
+        <span class={rango}>
             {#if hilo.rango > CreacionRango.Anon}
                 {CreacionRango.aString(hilo.rango).toUpperCase()}
             {/if}
@@ -82,5 +95,40 @@
         padding: 6px;
         border-radius: 4px;
         border-top: 2px red solid;
+    }
+    .adm {
+        color: gold;
+        text-transform: uppercase;
+        font-family: sans-serif;
+        font-weight: bold;
+        animation: lucesAdmin 10s infinite alternate-reverse;
+        margin-left: auto;
+        padding: 6px;
+        border-radius: 4px;
+        border-top: 2px gold solid;
+    }
+    @keyframes lucesAdmin {
+        0% {
+            background: #630b57;
+        }
+        50% {
+            background: #800080;
+        }
+        100% {
+            background: #4c2882;
+        }
+    }
+    .dev {
+        color: greenyellow;
+        text-transform: uppercase;
+        font-family: sans-serif;
+        font-weight: bold;
+        background: black;
+        margin-left: auto;
+        padding: 6px;
+        border-radius: 4px;
+        border-top: 2px greenyellow solid;
+        font-family: "Courier New", Courier, monospace;
+        text-transform: lowercase;
     }
 </style>

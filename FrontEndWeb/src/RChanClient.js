@@ -41,7 +41,7 @@ axios.interceptors.request.use(function (config) {
 
 export default class RChanClient {
     // Acciones
-    static crearHilo(titulo, categoria, contenido, fingerPrint, archivo, link = "", audio = null, captcha = "", encuesta = [], mostrarNombre = false, mostrarRango = false) {
+    static crearHilo(titulo, categoria, contenido, fingerPrint, archivo, link = "", audio = null, captcha = "", encuesta = [], mostrarNombre = false, mostrarRango = false, mostrarRangoAdmin = false, mostrarRangoDev = false) {
         let form = new FormData()
         form.append("Titulo", titulo)
         form.append("CategoriaId", categoria)
@@ -50,25 +50,29 @@ export default class RChanClient {
         form.append("Link", link)
         form.append("captcha", captcha)
         form.append("encuesta", JSON.stringify(encuesta))
-        if (mostrarNombre || mostrarRango) {
-            form.append('mostrarNombre', mostrarNombre)
-            form.append('mostrarRango', mostrarRango)
+        if (mostrarNombre || mostrarRango || mostrarRangoAdmin || mostrarRangoDev) {
+            form.append('MostrarNombre', mostrarNombre)
+            form.append('MostrarRango', mostrarRango)
+            form.append('MostrarRangoAdmin', mostrarRangoAdmin)
+            form.append('MostrarRangoDev', mostrarRangoDev)
         }
         form.append("Audio", audio);
         form.append("FingerPrint", fingerPrint);
         return axios.post("/api/Hilo/Crear", form)
     }
 
-    static crearComentario(hiloId, contenido, fingerPrint, archivo = null, link = "", audio = null, captcha = "", mostrarNombre = false, mostrarRango = false) {
+    static crearComentario(hiloId, contenido, fingerPrint, archivo = null, link = "", audio = null, captcha = "", mostrarNombre = false, mostrarRango = false, mostrarRangoAdmin = false, mostrarRangoDev = false) {
         let form = new FormData();
         form.append('HiloId', hiloId)
         form.append('Contenido', contenido)
         form.append('Archivo', archivo)
         form.append("Link", link)
         form.append('captcha', captcha)
-        if (mostrarNombre || mostrarRango) {
-            form.append('mostrarNombre', mostrarNombre)
-            form.append('mostrarRango', mostrarRango)
+        if (mostrarNombre || mostrarRango || mostrarRangoAdmin || mostrarRangoDev) {
+            form.append('MostrarNombre', mostrarNombre)
+            form.append('MostrarRango', mostrarRango)
+            form.append('MostrarRangoAdmin', mostrarRangoAdmin)
+            form.append('MostrarRangoDev', mostrarRangoDev)
         }
         form.append("Audio", audio)
         form.append("FingerPrint", fingerPrint)
