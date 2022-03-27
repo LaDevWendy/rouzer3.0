@@ -33,13 +33,19 @@
         nuevoshilos = nuevoshilos.filter((h) => !ids.includes(h.id));
     });
     Signal.coneccion.on("categoriaCambiada", (data) => {
-        var hilo = hiloList.hilos.filter((h) => h.id == data.hiloId);
+        let hilo = hiloList.hilos.filter((h) => h.id == data.hiloId);
         if (hilo.length != 0) {
             hilo[0].categoriaId = data.categoriaId;
             hiloList.hilos = hiloList.hilos;
         }
+        hilo = nuevoshilos.filter((h) => h.id == data.hiloId);
+        if (hilo.length != 0) {
+            hilo[0].categoriaId = data.categoriaId;
+            nuevoshilos = nuevoshilos;
+        }
         if (!hiloList.categoriasActivas.includes(data.categoriaId)) {
             hiloList.hilos = hiloList.hilos.filter((h) => h.id != data.hiloId);
+            nuevoshilos = nuevoshilos.filter((h) => h.id != data.hiloId);
         }
     });
 
