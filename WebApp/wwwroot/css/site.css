@@ -1074,3 +1074,14 @@ h3 {
 .infos {
     z-index: 1;
 }
+
+
+/*.rozed {
+    background: linear-gradient(to bottom, #75AADB, #75AADB 33%, #FFFFFF 33%, #FFFFFF 66%, #75AADB 66%, #75AADB 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.rozed>span {
+    -webkit-text-fill-color: var(--color-texto1) !important;
+}*/
