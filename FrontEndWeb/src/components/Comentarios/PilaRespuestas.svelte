@@ -20,6 +20,7 @@
     );
 
     export let historial = [];
+    export let comentarioStore;
 
     function atras() {
         historial.pop();
@@ -50,6 +51,7 @@
                         <Comentario
                             prevenirScroll={true}
                             comentario={c}
+                            bind:comentarioStore
                             respuetasCompactas={true}
                             on:tagClickeado={(e) =>
                                 agregarComentariosAPila([

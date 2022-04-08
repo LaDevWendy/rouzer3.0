@@ -12,7 +12,7 @@
     import ajustesConfigStore from "../Dialogos/ajustesConfigStore";
     import Spinner from "../Spinner.svelte";
     import { localStore } from "../../localStore";
-    import comentarioStore from "./comentarioStore";
+    // import comentarioStore from "./comentarioStore";
     import SpamList from "../SpamList.svelte";
     import selectorStore from "../Moderacion/selectorStore";
     import { ComentarioEstado } from "../../enums";
@@ -24,15 +24,15 @@
     export let spams;
 
     let modoTelefono = $globalStore.esCelular;
-    $ajustesConfigStore.comentarioModo =
-        $ajustesConfigStore.comentarioModo || "1";
+    let comentarioModo = $ajustesConfigStore.comentarioModo || "1";
+    let tagClasico = $ajustesConfigStore.tagClasico;
     let nuevosComentarios = [];
     let comentariosStore = localStore("Comentarios", { modoVivo: false });
 
     // Modo 1 y modo 2
     let bloque = 50;
     let limite = bloque;
-    let infLoadActivo = $ajustesConfigStore.comentarioModo == "1";
+    let infLoadActivo = comentarioModo == "1";
     let paginaMaxima = Math.ceil(comentarios.length / bloque);
     // ---------------
 
@@ -54,10 +54,10 @@
         // Añadir el restag a los comentarios tageados por este comentario
         comentarios = comentarios;
         stickies = stickies;
-        if ($ajustesConfigStore.comentarioModo == "1") {
+        if (comentarioModo == "1") {
             infLoadActivo = comentarios.length >= limite;
         }
-        if ($ajustesConfigStore.comentarioModo == "2") {
+        if (comentarioModo == "2") {
             paginaMaxima = Math.ceil(comentarios.length / bloque);
         }
     }
@@ -180,7 +180,7 @@
 
     function tagCliqueado(e) {
         if (!diccionarioComentarios[e.detail]) return;
-        if (modoTelefono && !$ajustesConfigStore.tagClasico) {
+        if (modoTelefono && !tagClasico) {
             e.preventDefault();
             historialRespuestas = [[diccionarioComentarios[e.detail]]];
         }
@@ -203,7 +203,7 @@
         if (typeof comentarioId != "string") comentarioId = comentarioId.detail;
         if (!diccionarioComentarios[comentarioId]) return;
         diccionarioComentarios[comentarioId].resaltado = true;
-        if ($ajustesConfigStore.comentarioModo == "1") {
+        if (comentarioModo == "1") {
             let pos = comentarios.findIndex((c) => c.id == comentarioId);
             if (pos - limite > 0) {
                 cargarComentarios = false;
@@ -216,7 +216,7 @@
                 return;
             }
         }
-        if ($ajustesConfigStore.comentarioModo == "2") {
+        if (comentarioModo == "2") {
             let pos = comentarios.findIndex((c) => c.id == comentarioId);
             let pag = Math.floor(pos / bloque) + 1;
             if (paginaActual != pag) {
@@ -263,8 +263,9 @@
     let mostrarFormularioFlotante = false;
 
     let scrollY = 0;
+    let comentarioStore = "";
     $: mostrarFormularioFlotante =
-        $comentarioStore && comentarioStore.length != 0;
+        comentarioStore && comentarioStore.length != 0;
 
     let spinnerAcciones = false;
     function cargarViejos({ detail: { loaded, complete } }) {
@@ -278,6 +279,7 @@
         }
     }
     export let hide;
+    let hide_flag = false;
 
     function listarStickies() {
         stickies = comentarios.filter((c) => c.sticky);
@@ -317,12 +319,15 @@
         bind:diccionarioComentarios
         bind:diccionarioRespuestas
         bind:historial={historialRespuestas}
+        bind:comentarioStore
     />
     {#if !$configStore.general.modoMessi || $globalStore.usuario.esMod}
         <Formulario
             {hilo}
+            bind:comentarioStore
             on:comentarioCreado={cargarNuevosComentarios}
             bind:hide
+            bind:hide_flag
         />
     {/if}
 
@@ -356,7 +361,7 @@
                         : "background:white"}
                 />
             </Button>
-            {#if $ajustesConfigStore.comentarioModo == "1" && comentarios.length > bloque}
+            {#if comentarioModo == "1" && comentarios.length > bloque}
                 <Button
                     on:click={() => {
                         spinnerAcciones = true;
@@ -385,7 +390,7 @@
                         setTimeout(() => {
                             irAComentario(
                                 comentarios[
-                                    $ajustesConfigStore.comentarioModo == "2"
+                                    comentarioModo == "2"
                                         ? Math.min(
                                               paginaActual * bloque - 1,
                                               comentarios.length - 1
@@ -401,10 +406,7 @@
                     icon
                     ><icon class="fe fe-arrow-down" />
                 </Button>
-                <Spinner
-                    cargando={$ajustesConfigStore.comentarioModo == "1" &&
-                        spinnerAcciones}
-                />
+                <Spinner cargando={comentarioModo == "1" && spinnerAcciones} />
             {/if}
         </div>
     </div>
@@ -420,6 +422,7 @@
                         {hilo}
                         esSticky={true}
                         bind:comentario
+                        bind:comentarioStore
                         bind:comentariosDic={diccionarioComentarios}
                         respuetasCompactas={modoTelefono}
                         on:tagClickeado={tagCliqueado}
@@ -431,7 +434,7 @@
             {/each}
         </div>
         <div class="lista-comentarios">
-            {#if $ajustesConfigStore.comentarioModo == "0"}
+            {#if comentarioModo == "0"}
                 {#each comentarios as comentario (comentario.id)}
                     <li transition:fly|local={{ y: -50, duration: 250 }}>
                         <Comentario
@@ -441,6 +444,7 @@
                                 )}
                             {hilo}
                             bind:comentario
+                            bind:comentarioStore
                             bind:comentariosDic={diccionarioComentarios}
                             respuetasCompactas={modoTelefono}
                             on:tagClickeado={tagCliqueado}
@@ -451,7 +455,7 @@
                     </li>
                 {/each}
             {/if}
-            {#if $ajustesConfigStore.comentarioModo == "1"}
+            {#if comentarioModo == "1"}
                 {#each comentarios.slice(0, limite) as comentario (comentario.id)}
                     <li transition:fly|local={{ y: -50, duration: 250 }}>
                         <Comentario
@@ -461,6 +465,7 @@
                                 )}
                             {hilo}
                             bind:comentario
+                            bind:comentarioStore
                             bind:comentariosDic={diccionarioComentarios}
                             respuetasCompactas={modoTelefono}
                             on:tagClickeado={tagCliqueado}
@@ -471,12 +476,12 @@
                     </li>
                 {/each}
             {/if}
-            {#if $ajustesConfigStore.comentarioModo == "2"}
+            {#if comentarioModo == "2"}
                 {#if comentarios.length > bloque}
                     <NavegadorPaginas
-                        id="navegador-paginas"
                         bind:pagina
                         bind:paginaActual
+                        bind:totalPaginas={paginaMaxima}
                         on:irAlPrimero={() => {
                             pagina = 1;
                             cambiarPagina();
@@ -505,6 +510,7 @@
                                 )}
                             {hilo}
                             bind:comentario
+                            bind:comentarioStore
                             bind:comentariosDic={diccionarioComentarios}
                             respuetasCompactas={modoTelefono}
                             on:tagClickeado={tagCliqueado}
@@ -516,9 +522,9 @@
                 {/each}
                 {#if comentarios.length > bloque}
                     <NavegadorPaginas
-                        id="navegador-paginas"
                         bind:pagina
                         bind:paginaActual
+                        bind:totalPaginas={paginaMaxima}
                         on:irAlPrimero={() => {
                             pagina = 1;
                             cambiarPagina();
@@ -539,14 +545,17 @@
                     />
                 {/if}
             {/if}
-            {#if mostrarFormularioFlotante && !$globalStore.esCelular && scrollY > 300}
+            {#if mostrarFormularioFlotante && !modoTelefono && scrollY > 300}
                 <div
                     class="formulario-flotante"
                     transition:fly|local={{ x: -50, duration: 100 }}
                 >
                     <Formulario
                         {hilo}
+                        bind:comentarioStore
                         on:comentarioCreado={cargarNuevosComentarios}
+                        bind:hide
+                        bind:hide_flag
                     />
                     <div
                         class="cerrar-comentario-flotante cpt"

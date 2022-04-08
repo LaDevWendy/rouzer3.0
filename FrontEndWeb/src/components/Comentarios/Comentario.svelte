@@ -3,7 +3,7 @@
     import { createEventDispatcher } from "svelte";
     import { Menuitem, Button, Icon, Ripple } from "svelte-mui";
     import Menu from "../Menu.svelte";
-    import comentarioStore from "./comentarioStore";
+    //import comentarioStore from "./comentarioStore";
     import { fly } from "svelte/transition";
     import ajustesConfigStore from "../Dialogos/ajustesConfigStore";
     import Tiempo from "../Tiempo.svelte";
@@ -28,6 +28,7 @@
 
     export let esRespuesta = false;
     export let esSticky = false;
+    export let comentarioStore;
 
     comentario.estado = comentario.estado || ComentarioEstado.normal;
 
@@ -101,8 +102,8 @@
     if (!Array.isArray(comentario.respuestas)) comentario.respuestas = [];
 
     function tagear(id) {
-        if (!$comentarioStore.includes(`>>${comentario.id}\n`))
-            $comentarioStore += `>>${comentario.id}\n`;
+        if (!comentarioStore.includes(`>>${comentario.id}\n`))
+            comentarioStore += `>>${comentario.id}\n`;
         let selection = document.getSelection();
         if (selection.anchorNode) {
             let spans = document
@@ -116,7 +117,7 @@
                 flag2 = flag2 || spans[i] == selection.anchorNode.parentElement;
             }
             let text = selection.toString().trim();
-            if (flag1 && flag2 && text != "") $comentarioStore += `>${text}\n`;
+            if (flag1 && flag2 && text != "") comentarioStore += `>${text}\n`;
         }
     }
 
@@ -431,7 +432,11 @@
             transition:fly|local={{ x: -50, duration: 150 }}
             class="comentario-flotante"
         >
-            <svelte:self comentario={respuestaMostrada} esRespuesta={true} />
+            <svelte:self
+                comentario={respuestaMostrada}
+                {comentarioStore}
+                esRespuesta={true}
+            />
         </div>
     {/if}
 </div>

@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from "svelte";
     import { Button, Checkbox } from "svelte-mui";
-    import comentarioStore from "./comentarioStore";
+    //import comentarioStore from "./comentarioStore";
     import RChanClient from "../../RChanClient";
     import ErrorValidacion from "../ErrorValidacion.svelte";
     import MediaInput from "../MediaInput.svelte";
@@ -15,10 +15,11 @@
     let dispatch = createEventDispatcher();
 
     export let hilo;
+    export let comentarioStore;
 
     let cargando = false;
 
-    $comentarioStore;
+    // $comentarioStore;
     let media;
     let mediaInput;
     let audio = null;
@@ -36,14 +37,14 @@
         setTimeout(() => espera--, 1000);
     }
     let error = null;
-    let hide_flag = false;
+    export let hide_flag;
     export let hide;
     async function crearComentario() {
         if (espera != 0 || cargando) return;
 
         try {
             cargando = true;
-            var comentarioConFlag = $comentarioStore;
+            var comentarioConFlag = comentarioStore;
             if (comentarioConFlag != "") {
                 comentarioConFlag += "\n";
             }
@@ -101,7 +102,7 @@
         }
 
         cargando = false;
-        $comentarioStore = "";
+        comentarioStore = "";
         media.archivo = null;
         error = null;
     }
@@ -127,7 +128,7 @@
     {/if}-->
     <textarea
         on:focus={onFocus}
-        bind:value={$comentarioStore}
+        bind:value={comentarioStore}
         cols="30"
         rows="10"
         placeholder="Que dificil discutir con pibes..."
