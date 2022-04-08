@@ -1,5 +1,5 @@
 <script>
-    import { Textfield, Button, Ripple, Checkbox } from "svelte-mui";
+    import { Button, Checkbox } from "svelte-mui";
     import RChanClient from "../../RChanClient";
     import Captcha from "../Captcha.svelte";
     import ErrorValidacion from "../ErrorValidacion.svelte";

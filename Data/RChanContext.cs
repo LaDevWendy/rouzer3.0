@@ -20,25 +20,26 @@ namespace Data
         {
             this.connectionString = connectionString;
         }
-        public RChanContext() {}
+        public RChanContext() { }
 
         public DbSet<HiloModel> Hilos { get; set; }
         public DbSet<HiloAccionModel> HiloAcciones { get; set; }
         public DbSet<ComentarioModel> Comentarios { get; set; }
         public DbSet<MediaModel> Medias { get; set; }
         public DbSet<UsuarioModel> Usuarios { get; set; }
-        public DbSet<NotificacionModel> Notificaciones{ get; set; }
+        public DbSet<NotificacionModel> Notificaciones { get; set; }
         public DbSet<DenunciaModel> Denuncias { get; set; }
         public DbSet<Sticky> Stickies { get; set; }
         public DbSet<BaneoModel> Bans { get; set; }
         public DbSet<AccionDeModeracion> AccionesDeModeracion { get; set; }
         public DbSet<SpamModel> Spams { get; set; }
         public DbSet<AudioModel> Audios { get; set; }
+        public DbSet<ApelacionModel> Apelaciones { get; set; }
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            if(!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseNpgsql(connectionString ?? "Server=127.0.0.1;Port=5433;Database=RozedEnd;User Id=postgres;Password=jejetabien;");
             }
@@ -87,7 +88,6 @@ namespace Data
                 .WithMany()
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
-
 
             modelBuilder.Entity<BaneoModel>().HasIndex(b => b.Expiracion);
             modelBuilder.Entity<BaneoModel>().HasIndex(b => b.Ip);

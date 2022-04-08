@@ -72,3 +72,18 @@ export class TipoAccion {
         return string
     }
 }
+
+export class ApelacionEstado {
+    static Pendiente = 0
+    static Aceptada = 1
+    static Rechazada = 2
+
+    static aString(rango) {
+        let keys = Object.keys(ApelacionEstado)
+        let string = ""
+        keys.forEach(k => {
+            if (ApelacionEstado[k] == rango) string = k;
+        });
+        return string
+    }
+}

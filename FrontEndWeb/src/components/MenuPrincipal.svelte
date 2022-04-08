@@ -305,6 +305,11 @@
                         />
                     </li>
                 </a>
+                <a href="/Administracion/Apelaciones">
+                    <li>
+                        <icon class="fe fe-triangle" /> Apelaciones <Ripple />
+                    </li>
+                </a>
             {/if}
             <hr />
         </ul>

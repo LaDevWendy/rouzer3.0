@@ -4,7 +4,7 @@
     import ComentarioMod from "../Moderacion/ComentarioMod.svelte";
     import HiloPreviewMod from "../Moderacion/HiloPreviewMod.svelte";
     import { MotivoDenuncia } from "../../enums";
-    import { formatearTiempo, formatearTimeSpan } from "../../helper";
+    //import { formatearTiempo, formatearTimeSpan } from "../../helper";
     import BanPreview from "../Moderacion/BanPreview.svelte";
     import { HiloEstado } from "../../enums";
     import { ComentarioEstado } from "../../enums";

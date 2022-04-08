@@ -10,7 +10,7 @@
     import globalStore from "../../globalStore";
     // import AudioInput from "../AudioInput.svelte";
     import { fpPromise } from "../../fingerprint";
-    import ajustesConfigStore from "../Dialogos/ajustesConfigStore";
+    // import ajustesConfigStore from "../Dialogos/ajustesConfigStore";
 
     let dispatch = createEventDispatcher();
 

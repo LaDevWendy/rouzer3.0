@@ -4,7 +4,7 @@
     import Comentario from "../Comentarios/Comentario.svelte";
     import HiloPreviewMod from "../Moderacion/HiloPreviewMod.svelte";
     import Denuncia from "../Denuncia.svelte";
-    import { formatearTiempo, formatearTimeSpan } from "../../helper";
+    //import { formatearTiempo, formatearTimeSpan } from "../../helper";
     import Dialogo from "../Dialogo.svelte";
     import RChanClient from "../../RChanClient";
     import Tiempo from "../Tiempo.svelte";

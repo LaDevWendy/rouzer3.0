@@ -257,6 +257,26 @@ namespace WebApp.Controllers
 
             // await signInManager.SignOutAsync();
 
+            var apelacion = await context.Apelaciones.FirstOrDefaultAsync(a => a.BanId == ban.Id);
+
+            if (apelacion is null)
+            {
+                return View("Ban", new
+                {
+                    Ban = new
+                    {
+                        Hilo = ban?.Hilo?.Titulo ?? " ",
+                        ban.Id,
+                        ban.Tipo,
+                        ban.Creacion,
+                        ban.Expiracion,
+                        ban.Duracion,
+                        Motivo = ban.Motivo.ToString("g"),
+                        ban.Aclaracion,
+                    }
+                });
+            }
+
             return View("Ban", new
             {
                 Ban = new
@@ -269,9 +289,46 @@ namespace WebApp.Controllers
                     ban.Duracion,
                     Motivo = ban.Motivo.ToString("g"),
                     ban.Aclaracion,
+                },
+                Apelacion = new
+                {
+                    apelacion.Estado,
+                    apelacion.Descripcion
                 }
             });
+
+
         }
+        [HttpPost, Authorize, Route("/Domado")]
+        public async Task<ActionResult> Apelar(ApelacionVM apelacionVM)
+        {
+            var ban = await context.Bans.FirstOrDefaultAsync(b => b.Id == apelacionVM.BanId);
+            if (ban == null)
+            {
+                if (ban is null) return Redirect("/Error/404");
+            }
+
+            var apelacionVigente = await context.Apelaciones.FirstOrDefaultAsync(a => a.BanId == ban.Id);
+            if (apelacionVigente != null)
+            {
+                ModelState.AddModelError("Basta:", "el ban ya fue apelado.");
+                return BadRequest(ModelState);
+            }
+
+            var apelacion = new ApelacionModel
+            {
+                Id = hashService.Random(),
+                Creacion = DateTimeOffset.Now,
+                Estado = ApelacionEstado.Pendiente,
+                BanId = ban.Id,
+                UsuarioId = User.GetId(),
+                Descripcion = apelacionVM.Descripcion
+            };
+            context.Apelaciones.Add(apelacion);
+            await context.SaveChangesAsync();
+            return Json(new ApiResponse("Apelación enviada. Será revisada por la administración."));
+        }
+
 
         [HttpPost, Route("/Logout")]
         public async Task<ActionResult> Logout()
@@ -348,6 +405,14 @@ namespace WebApp.Controllers
         public string Captcha { get; set; }
         public string Codigo { get; set; }
         public string FingerPrint { get; set; }
+    }
+
+    public class ApelacionVM
+    {
+        public string BanId { get; set; }
+        [Required(ErrorMessage = "Debe desarrollar su apelación")]
+        [MaxLength(280, ErrorMessage = "280 caracteres como máximo")]
+        public string Descripcion { get; set; }
     }
 
     public static class ControllerExtensions

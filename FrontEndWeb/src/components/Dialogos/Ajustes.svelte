@@ -1,11 +1,5 @@
 <script>
-    import {
-        Dialog,
-        Button,
-        Checkbox,
-        ExpansionPanel,
-        Ripple,
-    } from "svelte-mui";
+    import { Dialog, Button, Checkbox, ExpansionPanel } from "svelte-mui";
     import globalStore from "../../globalStore";
     import Skins from "../Personalizacion/Skins.svelte";
     import ajustesConfigStore from "./ajustesConfigStore";
@@ -170,8 +164,10 @@
         {#if $globalStore.usuario.esAuxiliar}
             <ExpansionPanel bind:group name="Mod">
                 <label for="volumen-denuncias"
-                    >Volumen denuncias: {$ajustesConfigModStore.volumenDenuncias ||
-                        0.03}</label
+                    >Volumen denuncias: {$ajustesConfigModStore.volumenDenuncias !=
+                    undefined
+                        ? $ajustesConfigModStore.volumenDenuncias
+                        : 0.03}</label
                 >
                 <input
                     name="volumen-denuncias"

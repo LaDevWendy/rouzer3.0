@@ -1,28 +1,24 @@
 <script>
     import { Ripple, Button } from "svelte-mui";
-    import config, { configStore } from "../config";
+    import { configStore } from "../config";
     import FormularioHilo from "./Hilos/FormularioHilo.svelte";
     import Notificaciones from "./Notificaciones.svelte";
     import MenuPrincipal from "./MenuPrincipal.svelte";
     import FormularioLogin from "./FormularioLogin.svelte";
     import globalStore from "../globalStore";
-    import MensajeRotativo from "./MensajeRotativo.svelte";
     import Dialogos from "./Dialogos/Dialogos.svelte";
     import DenunciasNav from "./Moderacion/DenunciasNav.svelte";
-    import Signal from "../signal";
     import SelectorDeComentarios from "./Moderacion/SelectorDeComentarios.svelte";
     import Subir from "./Subir.svelte";
-    import { onMount } from "svelte";
     import NavCategorias from "./NavCategorias.svelte";
-    import NadieLoSabra from "./Especiales/NadieLoSabra.svelte";
-    import AlertaPortenho from "./Especiales/AlertaPortenho.svelte";
-    import AlertaNenazo from "./Especiales/AlertaNenazo.svelte";
-    import AlertaProvinciano from "./Especiales/AlertaProvinciano.svelte";
-    import Halloween from "./Especiales/Halloween.svelte";
     import Estadisticas from "./Estadisticas.svelte";
-    import RChanClient from "../RChanClient";
-    import GeneracionZoe from "./Especiales/GeneracionZoe.svelte";
-    import Corte from "./Especiales/Corte.svelte";
+    // import NadieLoSabra from "./Especiales/NadieLoSabra.svelte";
+    // import AlertaPortenho from "./Especiales/AlertaPortenho.svelte";
+    // import AlertaNenazo from "./Especiales/AlertaNenazo.svelte";
+    // import AlertaProvinciano from "./Especiales/AlertaProvinciano.svelte";
+    // import Halloween from "./Especiales/Halloween.svelte";
+    // import GeneracionZoe from "./Especiales/GeneracionZoe.svelte";
+    // import Corte from "./Especiales/Corte.svelte";
     // import Lucesitas from "./Lucesitas.svelte";
     // import Cuetitos from "./Especiales/Cuetitos.svelte";
     // import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
@@ -32,14 +28,14 @@
 
     let mostrarMenu = false;
     let mostrarFormularioHilo = false;
-    let computadorasConectadas = window.estadisticas.computadorasConectadas;
+    //let computadorasConectadas = window.estadisticas.computadorasConectadas;
 
     let protocoloMessi = false;
     $: protocoloMessi = $configStore.general.modoMessi;
     let protocoloSerenito = false;
     //$: protocoloSerenito = $configStore.general.modoSerenito;
 
-    let mostrarComputadorasConectadas = false;
+    //let mostrarComputadorasConectadas = false;
 
     let oculta;
     let ocultarCategorias = false;
@@ -91,13 +87,13 @@
 
 <svelte:window on:scroll={onScroll} bind:scrollY />
 
-<NadieLoSabra />
+<!--<NadieLoSabra />
 <AlertaPortenho />
 <Halloween />
 <AlertaNenazo />
 <AlertaProvinciano />
 <GeneracionZoe />
-<Corte />
+<Corte />-->
 <header
     class:oculta
     class:protocoloMessi
@@ -430,7 +426,7 @@
     }
     .modoSticky .fondo {
         height: 36px;
-    }/*
+    } /*
     .rozed::after {
         content: "";
         background: url(/imagenes/luto.png);

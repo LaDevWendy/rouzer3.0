@@ -1,10 +1,7 @@
 <script>
     import { Button, Checkbox, Radio } from "svelte-mui";
-    import config from "../../config";
     import RChanClient from "../../RChanClient";
-    import Dialogo from "../Dialogo.svelte";
     import ErrorValidacion from "../ErrorValidacion.svelte";
-    import Sigal from "../../signal";
     import Tiempo from "../Tiempo.svelte";
 
     let model = window.model;

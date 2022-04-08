@@ -25,15 +25,15 @@
         }, 1);
     }
 
-    let hackYoutubeActivo = false;
-    let hackYoutubeLink = "";
+    //let hackYoutubeActivo = false;
+    //let hackYoutubeLink = "";
 
-    async function hackYoutube() {
+    /*async function hackYoutube() {
         var res = await RChanClient.hackYoutube(media.url);
         hackYoutubeLink = res.data.link;
         hackYoutubeActivo = true;
         abrirVideo();
-    }
+    }*/
 </script>
 
 <div
@@ -82,17 +82,17 @@
         {/if}
     {:else if media.tipo == MediaType.Youtube}
         {#if abierto}
-            {#if !hackYoutubeActivo}
-                <div class="youtube-container">
-                    <iframe
-                        title="youtube"
-                        allowfullscreen
-                        src="https://www.youtube.com/embed/{media.hash}?autoplay=1"
-                    />
-                </div>
-            {:else}
+            <!--{#if !hackYoutubeActivo}-->
+            <div class="youtube-container">
+                <iframe
+                    title="youtube"
+                    allowfullscreen
+                    src="https://www.youtube.com/embed/{media.hash}?autoplay=1"
+                />
+            </div>
+            <!--{:else}
                 <video bind:this={vid} loop controls src={hackYoutubeLink} />
-            {/if}
+            {/if}-->
             <Button on:click={() => (abierto = false)} class="cerrar" icon>
                 <i class="fe fe-x" />
             </Button>
@@ -106,7 +106,7 @@
             </Button>
         {/if}
         <div class="youtube-footer">
-            {#if !hackYoutubeActivo}
+            <!--{#if !hackYoutubeActivo}
                 <span
                     class="medialink cpt"
                     on:click={hackYoutube}
@@ -121,7 +121,7 @@
                 >
                     Volver <Ripple /></span
                 >
-            {/if}
+            {/if}-->
             <a
                 class="medialink"
                 target="_blanck"
@@ -139,7 +139,10 @@
                     scrolling="no"
                     frameborder="0"
                     style="border: none;"
-                    src="https://www.bitchute.com/embed/{media.hash.replace(/[a-zA-Z]*_/g,'')}/"
+                    src="https://www.bitchute.com/embed/{media.hash.replace(
+                        /[a-zA-Z]*_/g,
+                        ''
+                    )}/"
                     allow="autoplay"
                 />
             </div>
@@ -176,7 +179,10 @@
                     style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden"
                     frameborder="0"
                     type="text/html"
-                    src="https://www.dailymotion.com/embed/video/{media.hash.replace(/[a-zA-Z]*_/g,'')}?autoplay=1"
+                    src="https://www.dailymotion.com/embed/video/{media.hash.replace(
+                        /[a-zA-Z]*_/g,
+                        ''
+                    )}?autoplay=1"
                     width="100%"
                     height="100%"
                     allowfullscreen
@@ -199,24 +205,27 @@
             <a
                 class="medialink"
                 target="_blanck"
-                href="https://dai.ly/{media.hash.replace(/[a-zA-Z]*_/g,'')}"
+                href="https://dai.ly/{media.hash.replace(/[a-zA-Z]*_/g, '')}"
             >
                 Abrir en DailyMotion
                 <Ripple />
             </a>
         </div>
-        {:else if media.tipo == MediaType.PornHub}
+    {:else if media.tipo == MediaType.PornHub}
         {#if abierto}
             <div class="youtube-container">
                 <iframe
                     title="PornHub"
-                    src="https://www.pornhub.com/embed/{media.hash.replace(/[a-zA-Z]*_/g,'')}"
+                    src="https://www.pornhub.com/embed/{media.hash.replace(
+                        /[a-zA-Z]*_/g,
+                        ''
+                    )}"
                     frameborder="0"
                     width="100%"
                     height="100%"
                     scrolling="no"
-                    allowfullscreen>
-                </iframe>
+                    allowfullscreen
+                />
             </div>
             <Button on:click={() => (abierto = false)} class="cerrar" icon>
                 <i class="fe fe-x" />
@@ -234,7 +243,10 @@
             <a
                 class="medialink"
                 target="_blanck"
-                href="https://pornhub.com/view_video.php?viewkey={media.hash.replace(/[a-zA-Z]*_/g,'')}"
+                href="https://pornhub.com/view_video.php?viewkey={media.hash.replace(
+                    /[a-zA-Z]*_/g,
+                    ''
+                )}"
             >
                 Abrir en PornHub
                 <Ripple />

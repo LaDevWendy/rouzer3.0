@@ -289,4 +289,16 @@ export default class RChanClient {
         return axios.post(`/api/Comentario/Ignorar/${id}`)
     }
 
+    //Apelaciones
+    static aceptarApelacion(apelacionId) {
+        return axios.post(`/api/Administracion/AceptarApelacion/${apelacionId}`)
+    }
+    static rechazarApelacion(apelacionId) {
+        return axios.post(`/api/Administracion/RechazarApelacion/${apelacionId}`)
+    }
+
+    static apelar(banId, descripcion) {
+        return axios.post(`/Domado`, { banId, descripcion })
+    }
+
 }

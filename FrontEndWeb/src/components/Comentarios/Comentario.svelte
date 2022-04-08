@@ -468,9 +468,9 @@
     :global(.media) {
         margin-bottom: 10px;
     }
-    :global(audio) {
+    /*:global(audio) {
         margin-bottom: 10px;
-    }
+    }*/
 
     .comentario .texto {
         white-space: pre-wrap;
@@ -507,11 +507,11 @@
         clear: both;
     }
 
-    .contenido audio {
+    /*.contenido audio {
         float: left;
         margin-right: 10px;
         clear: both;
-    }
+    }*/
 
     .color {
         width: 50px;

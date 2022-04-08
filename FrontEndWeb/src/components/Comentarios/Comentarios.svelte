@@ -8,7 +8,7 @@
     import CarpetaMedia from "./CarpetaMedia.svelte";
     import { onMount, tick } from "svelte";
     import PilaRespuestas from "./PilaRespuestas.svelte";
-    import config, { configStore } from "../../config";
+    import { configStore } from "../../config";
     import ajustesConfigStore from "../Dialogos/ajustesConfigStore";
     import Spinner from "../Spinner.svelte";
     import { localStore } from "../../localStore";
@@ -30,7 +30,7 @@
     let comentariosStore = localStore("Comentarios", { modoVivo: false });
 
     // Modo 1 y modo 2
-    let bloque = 100;
+    let bloque = 50;
     let limite = bloque;
     let infLoadActivo = $ajustesConfigStore.comentarioModo == "1";
     let paginaMaxima = Math.ceil(comentarios.length / bloque);
@@ -75,12 +75,15 @@
             if (!diccionarioRespuestas[otraId])
                 diccionarioRespuestas[otraId] = [];
             diccionarioRespuestas[otraId].push(id);
-            diccionarioRespuestas[otraId] = diccionarioRespuestas[otraId].sort(
+            diccionarioRespuestas[otraId] = diccionarioRespuestas[
+                otraId
+            ].filter((id) => diccionarioComentarios[id]);
+            /*diccionarioRespuestas[otraId] = diccionarioRespuestas[otraId].sort(
                 (c1, c2) =>
                     diccionarioComentarios[c2].creacion.localeCompare(
                         diccionarioComentarios[c1].creacion
                     )
-            );
+            );*/
         }
         diccionarioComentarios = diccionarioComentarios;
         diccionarioRespuestas = diccionarioRespuestas;
@@ -123,6 +126,7 @@
             stickies = stickies.filter((s) => s.id != id);
         }
     });
+
     Signal.subscribirseAHilo(hilo.id);
     Signal.coneccion.on("ComentariosEliminados", (ids) => {
         if (!$globalStore.usuario.esMod) {
@@ -150,7 +154,6 @@
                 return s;
             });
         }
-        console.log("test");
     });
 
     let resaltando = false;
@@ -182,8 +185,8 @@
             historialRespuestas = [[diccionarioComentarios[e.detail]]];
         }
         comentarios.forEach((c) => (c.resaltado = false));
-        comentarios = comentarios;
         diccionarioComentarios[e.detail].resaltado = true;
+        comentarios = comentarios;
     }
 
     let comentarioUrl = window.location.hash.replace("#", "");

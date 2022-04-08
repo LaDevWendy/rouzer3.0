@@ -36,21 +36,25 @@
         let motivoReporte = motivo;
         let aclaracionReporte = aclaracion;
         if (motivoReporte === 0) {
-            if (categoria === -1) {
+            /*if (categoria === -1) {
                 let e = new ExceptionReporte("Especifique categoría");
                 throw e;
+            }*/
+            if (categoria != -1) {
+                if (aclaracionReporte != "") {
+                    aclaracionReporte += "\n";
+                }
+                aclaracionReporte += `[${
+                    config.categoriaPorId(categoria).nombre
+                }]`;
             }
-            if (aclaracionReporte != "") {
-                aclaracionReporte += "\n";
-            }
-            aclaracionReporte += `[${config.categoriaPorId(categoria).nombre}]`;
         }
-        if (aclaracionReporte === "" && motivoReporte != -1) {
+        /*if (aclaracionReporte === "" && motivoReporte != -1) {
             let e = new ExceptionReporte(
                 "Ingrese una breve descripción de su denuncia"
             );
             throw e;
-        }
+        }*/
         return RChanClient.Denunciar(
             tipo,
             hiloId,
@@ -109,11 +113,6 @@
             {/if}
         {/if}
 
-        <textarea
-            placeholder="Aclaracion {motivo === 0
-                ? '(opcional)'
-                : '(obligatoria)'}"
-            bind:value={aclaracion}
-        />
+        <textarea placeholder="Aclaracion" bind:value={aclaracion} />
     </div>
 </Dialogo>

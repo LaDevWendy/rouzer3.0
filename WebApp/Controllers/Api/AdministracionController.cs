@@ -298,6 +298,116 @@ namespace WebApp.Controllers
             await spamService.Remover(spam.Id);
             return Ok(new ApiResponse("RozPam Removido"));
         }
+
+        [Route("/Administracion/Apelaciones")]
+        public async Task<ActionResult> Apelaciones()
+        {
+            var apelacionesPendientes = await context.Apelaciones
+                .AsNoTracking()
+                .OrderByDescending(a => a.Creacion)
+                .Include(a => a.Usuario)
+                .Include(a => a.Ban)
+                .Include(a => a.Ban).ThenInclude(b => b.Hilo)
+                .Include(a => a.Ban).ThenInclude(b => b.Comentario)
+                .Include(a => a.Ban).ThenInclude(b => b.Hilo).ThenInclude(h => h.Media)
+                .Include(a => a.Ban).ThenInclude(b => b.Comentario).ThenInclude(c => c.Media)
+                .Where(a => a.Estado == ApelacionEstado.Pendiente)
+                .ToListAsync();
+
+            var apelacionesPendientesVM = apelacionesPendientes.Select(
+                a =>
+                    new
+                    {
+                        a.Creacion,
+                        a.Id,
+                        a.Ban,
+                        a.Usuario,
+                        a.Descripcion,
+                        a.Estado
+                    }
+            );
+
+            var apelacionesResueltas = await context.Apelaciones
+                .AsNoTracking()
+                .OrderByDescending(a => a.Creacion)
+                .Include(a => a.Usuario)
+                .Include(a => a.Ban)
+                .Include(a => a.Ban).ThenInclude(b => b.Hilo)
+                .Include(a => a.Ban).ThenInclude(b => b.Comentario)
+                .Include(a => a.Ban).ThenInclude(b => b.Hilo).ThenInclude(h => h.Media)
+                .Include(a => a.Ban).ThenInclude(b => b.Comentario).ThenInclude(c => c.Media)
+                .Where(a => a.Estado != ApelacionEstado.Pendiente)
+                .Take(100)
+                .ToListAsync();
+
+            var apelacionesResueltasVM = apelacionesResueltas.Select(
+                a =>
+                    new
+                    {
+                        a.Creacion,
+                        a.Id,
+                        a.Ban,
+                        a.Usuario,
+                        a.Descripcion,
+                        a.Estado
+                    }
+            );
+
+            return View(new { ApelacionesPendientes = apelacionesPendientesVM, ApelacionesResueltas = apelacionesResueltasVM });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AceptarApelacion(string id)
+        {
+            var apelacion = await context.Apelaciones.Include(a => a.Ban).FirstOrDefaultAsync(d => d.Id == id);
+
+            if (apelacion is null)
+            {
+                ModelState.AddModelError("Apelación", "No se encontro la apelación");
+                return BadRequest(ModelState);
+            }
+
+            if (apelacion.Estado == ApelacionEstado.Aceptada)
+                return Json(new ApiResponse("Apelación aceptada."));
+            else if (apelacion.Estado == ApelacionEstado.Rechazada)
+                return Json(new ApiResponse("No se puede aceptar una apelación rechazada"));
+
+            apelacion.Estado = ApelacionEstado.Aceptada;
+
+            var ahora = DateTimeOffset.Now;
+            if (apelacion.Ban.Expiracion > ahora)
+            {
+                apelacion.Ban.Expiracion = DateTimeOffset.Now;
+            }
+
+            await context.SaveChangesAsync();
+
+            return Json(new ApiResponse("Apelación aceptada"));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RechazarApelacion(string id)
+        {
+            var apelacion = await context.Apelaciones.Include(a => a.Ban).FirstOrDefaultAsync(d => d.Id == id);
+
+            if (apelacion is null)
+            {
+                ModelState.AddModelError("Apelación", "No se encontro la apelación");
+                return BadRequest(ModelState);
+            }
+
+            if (apelacion.Estado == ApelacionEstado.Rechazada)
+                return Json(new ApiResponse("Apelación rechazada."));
+            else if (apelacion.Estado == ApelacionEstado.Aceptada)
+                return Json(new ApiResponse("No se puede rechazar una apelación aceptada"));
+
+            apelacion.Estado = ApelacionEstado.Rechazada;
+
+            await context.SaveChangesAsync();
+
+            return Json(new ApiResponse("Apelación rechazada"));
+        }
+
     }
 }
 
