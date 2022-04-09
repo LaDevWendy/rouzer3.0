@@ -137,6 +137,7 @@
         width: 100%;
         background: url(/imagenes/roseban.png);
         background-repeat: no-repeat;
+        overflow-y: scroll;
     }
 
     @media (max-width: 1000px) {
@@ -149,6 +150,11 @@
         .ban {
             top: 300px;
             right: 0px;
+        }
+    }
+    @media (max-width: 460px) {
+        .ban {
+            top: 50px;
         }
     }
     .apelacion {

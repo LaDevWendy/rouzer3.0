@@ -10,7 +10,7 @@ h3,
 h2,
 h1 {
     overflow: hidden;
-    word-break: break-all;
+    overflow-wrap: break-word;
 }
 
 li {
@@ -576,12 +576,10 @@ h3 {
         opacity: 0;
         background-position: 0% 50%;
     }
-
     50% {
         opacity: 0.4;
         background-position: 100% 50%;
     }
-
     100% {
         opacity: 0;
         background-position: 0% 50%;
@@ -1075,6 +1073,10 @@ h3 {
 
 .infos {
     z-index: 1;
+}
+
+.rozed {
+    word-break: keep-all;
 }
 
 
