@@ -263,7 +263,7 @@
     let mostrarFormularioFlotante = false;
 
     let scrollY = 0;
-    let comentarioStore = "";
+    export let comentarioStore;
     $: mostrarFormularioFlotante =
         comentarioStore && comentarioStore.length != 0;
 

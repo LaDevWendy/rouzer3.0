@@ -19,6 +19,7 @@
 
 	let data = window.data || dataEjemplo;
 	let { hilo, comentarios, acciones, usuario, spams } = data;
+	let comentarioStore = "";
 
 	let dialogs = {
 		sticky: {
@@ -47,7 +48,11 @@
 
 		<Acciones bind:hilo bind:acciones />
 		{#if hilo.encuestaData}
-			<Encuesta bind:encuesta={hilo.encuestaData} hiloId={hilo.id} />
+			<Encuesta
+				bind:encuesta={hilo.encuestaData}
+				hiloId={hilo.id}
+				bind:comentarioStore
+			/>
 		{/if}
 
 		{#if $globalStore.usuario.esAuxiliar}
@@ -116,7 +121,13 @@
 
 		<HiloCuerpo {hilo} />
 	</div>
-	<Comentarios bind:comentarios {hilo} {spams} bind:hide={acciones.hideado} />
+	<Comentarios
+		bind:comentarios
+		{hilo}
+		{spams}
+		bind:hide={acciones.hideado}
+		bind:comentarioStore
+	/>
 </div>
 
 <style>
