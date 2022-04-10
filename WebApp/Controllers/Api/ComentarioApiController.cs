@@ -66,6 +66,14 @@ namespace WebApp.Controllers
         [HttpPost, Authorize, ValidateAntiForgeryToken]
         public async Task<ActionResult<ApiResponse>> Crear([FromForm] CrearComentarioViewModel vm)
         {
+            var tiempoDeEspera = await antiFlood.TiempoDeEspera(User);
+            if (tiempoDeEspera != new TimeSpan(0))
+            {
+                var minutos = tiempoDeEspera.Minutes;
+                ModelState.AddModelError("Para para", $"faltan {minutos} minuto{(minutos != 1 ? "s" : "")} para que puedas hacer tu primer comentario");
+                return BadRequest(ModelState);
+            }
+
             if (vm.Contenido is null) vm.Contenido = "";
             if (string.IsNullOrWhiteSpace(vm.Contenido) && vm.Archivo is null && string.IsNullOrWhiteSpace(vm.Link) && vm.Audio is null)
                 ModelState.AddModelError("uy!", "El comentario no puede estar vacio padre");

@@ -301,4 +301,8 @@ export default class RChanClient {
         return axios.post(`/Domado`, { banId, descripcion })
     }
 
+    static eliminarToken(usuarioId) {
+        return axios.post(`/api/Moderacion/EliminarToken/${usuarioId}`)
+    }
+
 }

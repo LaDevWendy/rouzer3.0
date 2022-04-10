@@ -54,6 +54,7 @@ namespace WebApp
         public string Mensaje { get; set; } = "Union de miserables";
         public string PalabrasCensuradas { get; set; }
         public bool ProhibirVPNs { get; set; }
+        public int TiempoDeEspera { get; set; }
     }
 
     public enum RestriccionDeAcceso

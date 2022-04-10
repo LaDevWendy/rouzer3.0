@@ -105,7 +105,8 @@ namespace WebApp.Controllers
                 config.ModoSerenito,
                 config.Flags,
                 config.PalabrasCensuradas,
-                config.ProhibirVPNs
+                config.ProhibirVPNs,
+                config.TiempoDeEspera
             });
 
             return Json(new ApiResponse("Configuracion actualizada"));

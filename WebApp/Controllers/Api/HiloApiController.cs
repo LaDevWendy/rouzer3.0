@@ -74,7 +74,16 @@ namespace WebApp.Controllers
 
         [Authorize]
         public async Task<ActionResult> Crear([FromForm] CrearHiloViewModel vm)
+
         {
+            var tiempoDeEspera = await antiFlood.TiempoDeEspera(User);
+            if (tiempoDeEspera != new TimeSpan(0))
+            {
+                var minutos = tiempoDeEspera.Minutes;
+                ModelState.AddModelError("Para para", $"faltan {minutos} minuto{(minutos != 1 ? "s" : "")} para que puedas crear tu primer roz");
+                return BadRequest(ModelState);
+            }
+
             bool existeLaCategoria = categoriasOpt.Value.Any(c => c.Id == vm.CategoriaId);
 
             if (!existeLaCategoria) ModelState.AddModelError("Categoria", "Ay no existe la categoria");
@@ -586,6 +595,14 @@ namespace WebApp.Controllers
         }
         async public Task<ActionResult> VotarEncuesta(VotarEncuestaVm model)
         {
+            var tiempoDeEspera = await antiFlood.TiempoDeEspera(User);
+            if (tiempoDeEspera != new TimeSpan(0))
+            {
+                var minutos = tiempoDeEspera.Minutes;
+                ModelState.AddModelError("Para para", $"faltan {minutos} minuto{(minutos != 1 ? "s" : "")} para que puedas votar");
+                return BadRequest(ModelState);
+            }
+
             var hilo = await context.Hilos.PorId(model.HiloId);
 
             if (hilo is null || hilo.Encuesta is null)

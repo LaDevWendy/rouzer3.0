@@ -46,15 +46,6 @@
 			>
 		</div>
 
-		<Acciones bind:hilo bind:acciones />
-		{#if hilo.encuestaData}
-			<Encuesta
-				bind:encuesta={hilo.encuestaData}
-				hiloId={hilo.id}
-				bind:comentarioStore
-			/>
-		{/if}
-
 		{#if $globalStore.usuario.esAuxiliar}
 			{#if hilo.estado == 2}
 				<span style="color:red"
@@ -117,6 +108,15 @@
 					</a>
 				{/if}
 			</div>
+		{/if}
+
+		<Acciones bind:hilo bind:acciones />
+		{#if hilo.encuestaData}
+			<Encuesta
+				bind:encuesta={hilo.encuestaData}
+				hiloId={hilo.id}
+				bind:comentarioStore
+			/>
 		{/if}
 
 		<HiloCuerpo {hilo} />

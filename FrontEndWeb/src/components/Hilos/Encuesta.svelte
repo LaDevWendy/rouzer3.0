@@ -4,6 +4,7 @@
     import RChanClient from "../../RChanClient";
     //import comentarioStore from "../Comentarios/comentarioStore";
     import Spinner from "../Spinner.svelte";
+    import ErrorValidacion from "../ErrorValidacion.svelte";
 
     export let encuesta;
     export let hiloId;
@@ -27,17 +28,22 @@
         }
     }
 
+    let error = null;
+
     async function votar(opcion) {
         try {
             votando = true;
             let res = await RChanClient.votarEncuesta(hiloId, opcion);
             comentarioStore = `[${opcion}]\n\n` + comentarioStore;
-        } catch (error) {}
-
-        encuesta.opciones.filter((o) => o.nombre == opcion)[0].votos++;
-        encuesta = encuesta;
+            encuesta.opciones.filter((o) => o.nombre == opcion)[0].votos++;
+            encuesta = encuesta;
+            estado = 2;
+        } catch (e) {
+            console.log(e.response.data);
+            error = e.response.data;
+            estado = 0;
+        }
         votando = false;
-        estado = 2;
     }
 
     function cerrar() {
@@ -61,6 +67,7 @@
 </script>
 
 <div class="encuesta">
+    <ErrorValidacion bind:error />
     {#if encuesta}
         <div class="preview" on:click={abrirEncuesta}>
             <Ripple color="var(--color5)" />

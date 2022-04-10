@@ -90,6 +90,10 @@ hilo-completo .acciones .fe,
     color: rgb(220, 60, 60);
 }
 
+.exito {
+    color: greenyellow;
+}
+
 .borde1,
 .hilo-in,
 .comentario {
@@ -490,7 +494,6 @@ h3 {
     flex-wrap: wrap;
 }
 
-
 /*@media (max-width: 600px) {
   .hilo-list {
     padding-top: 60px;
@@ -576,10 +579,12 @@ h3 {
         opacity: 0;
         background-position: 0% 50%;
     }
+
     50% {
         opacity: 0.4;
         background-position: 100% 50%;
     }
+
     100% {
         opacity: 0;
         background-position: 0% 50%;

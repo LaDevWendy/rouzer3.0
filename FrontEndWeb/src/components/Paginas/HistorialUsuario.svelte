@@ -1,6 +1,6 @@
 <script>
     import BarraModeracion from "../Moderacion/BarraModeracion.svelte";
-
+    import { Button } from "svelte-mui";
     import ComentarioMod from "../Moderacion/ComentarioMod.svelte";
     import HiloPreviewMod from "../Moderacion/HiloPreviewMod.svelte";
     import { MotivoDenuncia } from "../../enums";
@@ -10,6 +10,8 @@
     import { ComentarioEstado } from "../../enums";
     import Signal from "../../signal";
     import globalStore from "../../globalStore";
+    import ErrorValidacion from "../ErrorValidacion.svelte";
+    import RChanClient from "../../RChanClient";
 
     let innerWidth = window.innerWidth;
     let current = 3;
@@ -65,6 +67,23 @@
             comentarios = comentarios;
         }
     });
+
+    let exito = false;
+    let respuesta = null;
+    let error = null;
+
+    async function eliminarToken() {
+        try {
+            error = null;
+            respuesta = (await RChanClient.eliminarToken(usuario.id)).data;
+            exito = true;
+        } catch (e) {
+            console.log(e);
+            console.log(e.response.data);
+            exito = false;
+            error = e.response.data;
+        }
+    }
 </script>
 
 <svelte:window bind:innerWidth />
@@ -83,6 +102,15 @@
         <p>Numero de rozs(en db): {usuario.rozs}</p>
         <p>Numero de comentarios(en db): {usuario.comentarios}</p>
     </div>
+    {#if $globalStore.usuario.esAdmin && hilos.length == 0 && comentarios.length == 0}
+        <ErrorValidacion bind:error />
+        {#if exito}
+            <p class="exito">{respuesta.mensaje}</p>
+        {/if}
+        <Button raised color="var(--color5)" on:click={eliminarToken}
+            >Eliminar token</Button
+        >
+    {/if}
     {#if innerWidth < 956}
         <div id="botones" class="tab">
             {#if $globalStore.usuario.esMod}

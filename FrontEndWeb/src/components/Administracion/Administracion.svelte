@@ -213,6 +213,12 @@
                         />
                     </li>
                     <li>
+                        Tiempo de espera<input
+                            bind:value={model.config.tiempoDeEspera}
+                            type="number"
+                        />
+                    </li>
+                    <li>
                         Hilos maximos por categoria<input
                             bind:value={model.config.hilosMaximosPorCategoria}
                             type="number"

@@ -28,7 +28,6 @@
 
     export let esRespuesta = false;
     export let esSticky = false;
-    export let comentarioStore;
 
     comentario.estado = comentario.estado || ComentarioEstado.normal;
 
@@ -80,6 +79,10 @@
         dispatch("irAComentario", id);
     }
 
+    function tagear(id) {
+        dispatch("tagear", id);
+    }
+
     function ocultarRespuesta() {
         mostrandoRespuesta = false;
     }
@@ -100,26 +103,6 @@
     }
 
     if (!Array.isArray(comentario.respuestas)) comentario.respuestas = [];
-
-    function tagear(id) {
-        if (!comentarioStore.includes(`>>${comentario.id}\n`))
-            comentarioStore += `>>${comentario.id}\n`;
-        let selection = document.getSelection();
-        if (selection.anchorNode) {
-            let spans = document
-                .getElementById(esSticky ? `${id}-sticky` : id)
-                .getElementsByClassName("contenido")[0]
-                .getElementsByTagName("span");
-            let flag1 = false,
-                flag2 = false;
-            for (let i = 0; i < spans.length; i++) {
-                flag1 = flag1 || spans[i] == selection.anchorNode.parentElement;
-                flag2 = flag2 || spans[i] == selection.anchorNode.parentElement;
-            }
-            let text = selection.toString().trim();
-            if (flag1 && flag2 && text != "") comentarioStore += `>${text}\n`;
-        }
-    }
 
     function esOp(comentarioId) {
         let comentario = comentariosDic[comentarioId] || { esOp: false }; //??quitado
@@ -432,11 +415,7 @@
             transition:fly|local={{ x: -50, duration: 150 }}
             class="comentario-flotante"
         >
-            <svelte:self
-                comentario={respuestaMostrada}
-                {comentarioStore}
-                esRespuesta={true}
-            />
+            <svelte:self comentario={respuestaMostrada} esRespuesta={true} />
         </div>
     {/if}
 </div>

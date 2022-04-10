@@ -876,6 +876,50 @@ namespace WebApp.Controllers
             return Json(new ApiResponse("Hilo stickeado"));
         }
 
+        [HttpPost, Authorize("esAdmin")]
+        public async Task<ActionResult> EliminarToken(string id)
+        {
+            var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+            if (usuario is null)
+            {
+                ModelState.AddModelError("Usuario", "El usuario no existe");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var tieneHilos = await context.Hilos.AsNoTracking().AnyAsync(h => h.UsuarioId == id);
+            if (tieneHilos)
+            {
+                ModelState.AddModelError("Hilos", "El usuario ha creado hilos y no puede eliminarse el token");
+            }
+            var tieneComentarios = await context.Hilos.AsNoTracking().AnyAsync(c => c.UsuarioId == id);
+            if (tieneComentarios)
+            {
+                ModelState.AddModelError("Comentarios", "El usuario ha comentado hilos y no puede eliminarse el token");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var acciones = await context.HiloAcciones.Where(a => a.UsuarioId == id).ToListAsync();
+            var notis = await context.Notificaciones.Where(n => n.UsuarioId == id).ToListAsync();
+            var denuncias = await context.Denuncias.Where(d => d.UsuarioId == id).ToListAsync();
+            var accionesDeModeracion = await context.AccionesDeModeracion.Where(a => a.UsuarioId == id).ToListAsync();
+
+            context.RemoveRange(acciones);
+            context.RemoveRange(notis);
+            context.RemoveRange(denuncias);
+            context.RemoveRange(accionesDeModeracion);
+            context.Remove(usuario);
+
+            await context.SaveChangesAsync();
+
+            return Json(new ApiResponse("Token eliminado"));
+        }
+
         public class BorrarCreacionesVm
         {
             public string[] Ids { get; set; }
