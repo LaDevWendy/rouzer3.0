@@ -2,9 +2,12 @@
     import Comentario from "./Comentario.svelte";
     import { fly } from "svelte/transition";
     import { Button } from "svelte-mui";
+    import { createEventDispatcher } from "svelte";
 
     export let diccionarioRespuestas = {};
     export let diccionarioComentarios = {};
+
+    let dispatch = createEventDispatcher();
 
     let diccionarioComentariosMap = new Map(
         Object.keys(diccionarioComentarios).map((k) => [
@@ -20,7 +23,6 @@
     );
 
     export let historial = [];
-    export let comentarioStore;
 
     function atras() {
         historial.pop();
@@ -31,6 +33,11 @@
         comentarios = comentarios.filter((c) => c && c.id);
         comentarios = [...new Set(comentarios)];
         historial = [...historial, comentarios];
+    }
+
+    function tagear(id) {
+        if (typeof comentarioId != "string") id = id.detail;
+        dispatch("tagear", id);
     }
 </script>
 
@@ -51,7 +58,6 @@
                         <Comentario
                             prevenirScroll={true}
                             comentario={c}
-                            bind:comentarioStore
                             respuetasCompactas={true}
                             on:tagClickeado={(e) =>
                                 agregarComentariosAPila([
@@ -65,6 +71,7 @@
                                             diccionarioComentariosMap.get(id)
                                         )
                                 )}
+                            on:tagear={tagear}
                         />
                     </li>
                 {/each}

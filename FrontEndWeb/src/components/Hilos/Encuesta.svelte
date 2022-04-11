@@ -5,11 +5,14 @@
     //import comentarioStore from "../Comentarios/comentarioStore";
     import Spinner from "../Spinner.svelte";
     import ErrorValidacion from "../ErrorValidacion.svelte";
+    import { createEventDispatcher } from "svelte";
 
     export let encuesta;
     export let hiloId;
     export let votando = false;
-    export let comentarioStore;
+    //export let comentarioStore;
+
+    let dispatch = createEventDispatcher();
 
     let dialogo = false;
     let estado = 0; // 0 no voto // 1 votando // 2 voto //3 detalles
@@ -30,11 +33,15 @@
 
     let error = null;
 
+    async function agregarVotoAFormulario(opcion) {
+        dispatch("agregarVotoAFormulario", opcion);
+    }
+
     async function votar(opcion) {
         try {
             votando = true;
             let res = await RChanClient.votarEncuesta(hiloId, opcion);
-            comentarioStore = `[${opcion}]\n\n` + comentarioStore;
+            agregarVotoAFormulario(opcion);
             encuesta.opciones.filter((o) => o.nombre == opcion)[0].votos++;
             encuesta = encuesta;
             estado = 2;

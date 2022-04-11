@@ -35,6 +35,11 @@
 		},
 		categoria: { categoriaId: hilo.categoriaId },
 	};
+
+	function agregarVotoAFormulario(opcion) {
+		if (typeof opcion != "string") opcion = opcion.detail;
+		comentarioStore = `[${opcion}]\n\n` + comentarioStore;
+	}
 </script>
 
 <div class="hilo-completo" r-id={hilo.id}>
@@ -115,7 +120,7 @@
 			<Encuesta
 				bind:encuesta={hilo.encuestaData}
 				hiloId={hilo.id}
-				bind:comentarioStore
+				on:agregarVotoAFormulario={agregarVotoAFormulario}
 			/>
 		{/if}
 

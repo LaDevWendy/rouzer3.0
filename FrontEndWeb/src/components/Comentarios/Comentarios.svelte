@@ -308,7 +308,6 @@
     }
 
     function tagear(comentarioId) {
-        console.log(comentarioId.detail);
         if (typeof comentarioId != "string") comentarioId = comentarioId.detail;
         if (!comentarioStore.includes(`>>${comentarioId}\n`))
             comentarioStore += `>>${comentarioId}\n`;
@@ -345,7 +344,7 @@
         bind:diccionarioComentarios
         bind:diccionarioRespuestas
         bind:historial={historialRespuestas}
-        bind:comentarioStore
+        on:tagear={tagear}
     />
     {#if !$configStore.general.modoMessi || $globalStore.usuario.esMod}
         <Formulario
