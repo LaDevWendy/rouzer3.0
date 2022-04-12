@@ -479,9 +479,28 @@ namespace WebApp.Controllers
         }
 
         [AllowAnonymous]
-        async public Task<ActionResult> CargarMas([FromQuery] DateTimeOffset ultimoBump, [FromQuery] DateTimeOffset ultimoCreacion, [FromQuery] double ultimoTrend, [FromQuery] string categorias, [FromQuery] bool serios = false, [FromQuery] bool nuevos = false, [FromQuery] bool tendencias = false)
+        async public Task<ActionResult> CargarMas([FromQuery] DateTimeOffset ultimoBump, [FromQuery] DateTimeOffset ultimoCreacion, [FromQuery] double ultimoTrend, [FromQuery] string categorias, [FromQuery] bool serios = false, [FromQuery] bool nuevos = false, [FromQuery] bool tendencias = false, [FromQuery] bool categoria = false)
         {
             var categoriasActivas = categorias.Split(",").Select(c => Convert.ToInt32(c)).ToHashSet();
+
+            IEnumerable<HiloViewModel> hilos;
+
+            if (categoria)
+            {
+                hilos = await context.Hilos
+                    .AsNoTracking()
+                    .FiltrarNoActivos()
+                    .FiltrarPorCategoria(categoriasActivas.ToArray())
+                    .FiltrarOcultosDeUsuario(User.GetId(), context)
+                    .Where(h => !context.Stickies.Any(s => s.HiloId == h.Id && !s.Global))
+                    .Where(h => h.Bump < ultimoBump)
+                    .OrdenadosPorBump()
+                    .Take(16)
+                    .AViewModel(context)
+                    .ToListAsync();
+                return Ok(hilos);
+            }
+
             var ocultos = (await context.HiloAcciones
                 .Where(a => a.UsuarioId == User.GetId() && a.Hideado)
                 .Select(a => a.HiloId)
@@ -499,7 +518,6 @@ namespace WebApp.Controllers
             //     .Take(16)
             //     .AViewModel(context)
             //     .ToListAsync();
-            IEnumerable<HiloViewModel> hilos;
 
             if (nuevos)
             {

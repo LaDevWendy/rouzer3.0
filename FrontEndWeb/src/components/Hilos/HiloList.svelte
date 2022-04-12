@@ -92,7 +92,8 @@
                 hiloList.categoriasActivas,
                 hiloList.serios,
                 hiloList.nuevos,
-                hiloList.tendencias
+                hiloList.tendencias,
+                hiloList.categoria
             );
             hiloList.hilos = [...hiloList.hilos, ...data];
             if (data.length == 0) complete();

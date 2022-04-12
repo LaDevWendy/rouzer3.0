@@ -285,7 +285,18 @@ namespace Servicios
 
             var stickies = await _context.Stickies.Where(s => !s.Global).ToListAsync();
 
-            hilosStickies.ForEach(h => h.Sticky = stickies.First(s => s.HiloId == h.Id).Importancia);
+            hilosStickies.ForEach(h =>
+            {
+                var stck = stickies.FirstOrDefault(s => s.HiloId == h.Id);
+                if (stck != null)
+                {
+                    h.Sticky = stck.Importancia;
+                }
+                else
+                {
+                    h.Sticky = 1;
+                }
+            });
 
             return hilosStickies.OrderByDescending(h => h.Sticky).Concat(hilos).ToList();
         }

@@ -210,7 +210,8 @@ namespace WebApp.Controllers
                 //     .AViewModel(context)
                 //     .ToListAsync(),
                 Hilos = await hiloService.GetCategoria(cate.Id, User.GetId()),
-                CategoriasActivas = new int[] { cate.Id }.ToList()
+                CategoriasActivas = new int[] { cate.Id }.ToList(),
+                Categoria = true
             };
             return View("Index", vm);
         }
@@ -348,4 +349,5 @@ public class HiloListViewModel
     public bool Serios { get; set; } = false;
     public bool Nuevos { get; set; } = false;
     public bool Tendencias { get; set; } = false;
+    public bool Categoria { get; set; } = false;
 }
