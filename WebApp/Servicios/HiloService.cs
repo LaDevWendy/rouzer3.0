@@ -315,6 +315,7 @@ namespace Servicios
                 .FiltrarNoActivos()
                 .OrdenadosPorBump()
                 .FiltrarPorCategoria(hilo.CategoriaId)
+                .Where(h => !_context.Stickies.Any(s => s.HiloId == h.Id))
                 .Skip(options.Value.HilosMaximosPorCategoria)
                 .ToListAsync();
 

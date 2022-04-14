@@ -908,11 +908,13 @@ namespace WebApp.Controllers
             var notis = await context.Notificaciones.Where(n => n.UsuarioId == id).ToListAsync();
             var denuncias = await context.Denuncias.Where(d => d.UsuarioId == id).ToListAsync();
             var accionesDeModeracion = await context.AccionesDeModeracion.Where(a => a.UsuarioId == id).ToListAsync();
+            var apelaciones = await context.Apelaciones.Where(a => a.UsuarioId == id).ToListAsync();
 
             context.RemoveRange(acciones);
             context.RemoveRange(notis);
             context.RemoveRange(denuncias);
             context.RemoveRange(accionesDeModeracion);
+            context.RemoveRange(apelaciones);
             context.Remove(usuario);
 
             await context.SaveChangesAsync();
