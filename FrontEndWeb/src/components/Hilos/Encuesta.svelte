@@ -74,7 +74,7 @@
 </script>
 
 <div class="encuesta">
-    <ErrorValidacion bind:error />
+    <ErrorValidacion {error} />
     {#if encuesta}
         <div class="preview" on:click={abrirEncuesta}>
             <Ripple color="var(--color5)" />

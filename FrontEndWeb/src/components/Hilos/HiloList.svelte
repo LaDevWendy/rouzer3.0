@@ -141,7 +141,7 @@
         </div>
     {/if}
     {#each hiloList.hilos as hilo (hilo.id)}
-        <HiloPreview bind:hilo on:click={hiloCliqueado} />
+        <HiloPreview {hilo} on:click={hiloCliqueado} />
     {/each}
 </ul>
 <InfiniteLoading on:infinite={cargarViejos} distance={600}>

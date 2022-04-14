@@ -115,7 +115,7 @@
 			</div>
 		{/if}
 
-		<Acciones bind:hilo bind:acciones />
+		<Acciones {hilo} bind:acciones />
 		{#if hilo.encuestaData}
 			<Encuesta
 				bind:encuesta={hilo.encuestaData}
@@ -127,7 +127,7 @@
 		<HiloCuerpo {hilo} />
 	</div>
 	<Comentarios
-		bind:comentarios
+		{comentarios}
 		{hilo}
 		{spams}
 		bind:hide={acciones.hideado}

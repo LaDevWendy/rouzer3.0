@@ -212,7 +212,7 @@
     {/if}
 </div>
 
-<Dialog width="320" bind:visible>
+<Dialog width="320" {visible}>
     <div slot="title">Seleccionar dispositivo</div>
     <select bind:value={dispositivo} name="listaDeDispositivos">
         {#each listaDeDispositivos as opcion (opcion.value)}

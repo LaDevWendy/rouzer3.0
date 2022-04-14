@@ -61,7 +61,7 @@
         <p>{apelacion.descripcion}</p>
     </div>
     <div class="body">
-        <ErrorValidacion bind:error />
+        <ErrorValidacion {error} />
         {#if exito}
             <p class="exito">{respuesta.mensaje}</p>
         {/if}

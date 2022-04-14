@@ -170,7 +170,7 @@
                     </Button>
                 </a>
                 {#if $globalStore.usuario.estaAutenticado}
-                    <Notificaciones bind:notificaciones />
+                    <Notificaciones {notificaciones} />
                 {:else}
                     <a href="/Login" class="nav-boton" style="height:100%">
                         <!-- <Ripple/> -->
@@ -195,7 +195,7 @@
             {/if}
 
             <FormularioHilo bind:mostrar={mostrarFormularioHilo} />
-            <FormularioLogin />
+            <!--<FormularioLogin />-->
         </div>
     </nav>
     <div class="separador" style="height:48px" />

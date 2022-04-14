@@ -84,6 +84,24 @@
             error = e.response.data;
         }
     }
+
+    function onDblClick(e) {
+        if (!$globalStore.usuario.esAdmin) return;
+        e.preventDefault();
+        window.location = `/Moderacion/HistorialDeUsuario2/${usuario.id}`;
+    }
+
+    let touch = false;
+    function onTouchStart(e) {
+        if (!$globalStore.usuario.esAdmin) return;
+        e.preventDefault();
+        if (touch) {
+            window.location = `/Moderacion/HistorialDeUsuario2/${usuario.id}`;
+        } else {
+            touch = true;
+            setTimeout(() => (touch = false), 500);
+        }
+    }
 </script>
 
 <svelte:window bind:innerWidth />
@@ -94,7 +112,9 @@
         class="panel"
         style="background:var(--color6) !important;color:black; padding:8px 16px;"
     >
-        <h1 style>{usuario.userName}</h1>
+        <h1 on:dblclick={onDblClick} on:touchstart={onTouchStart}>
+            {usuario.userName}
+        </h1>
     </div>
     <div class="panel">
         <p>Id: {usuario.id}</p>
@@ -103,7 +123,7 @@
         <p>Numero de comentarios(en db): {usuario.comentarios}</p>
     </div>
     {#if $globalStore.usuario.esAdmin && hilos.length == 0 && comentarios.length == 0}
-        <ErrorValidacion bind:error />
+        <ErrorValidacion {error} />
         {#if exito}
             <p class="exito">{respuesta.mensaje}</p>
         {/if}

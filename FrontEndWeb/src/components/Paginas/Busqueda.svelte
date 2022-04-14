@@ -15,14 +15,14 @@
     async function buscar() {
         try {
             sinResultados = false;
-            let cargando = true;
+            cargando = true;
             let res = await RChanClient.buscar(cadenaDeBusqueda);
             sinResultados = res.data.length == 0;
             hiloList.hilos = res.data;
         } catch (e) {
             console.log(e);
         }
-        let cargando = false;
+        cargando = false;
     }
 </script>
 
@@ -49,7 +49,7 @@
         <h3 style="text-align:center">No se encontraron rozs</h3>
     {/if}
 
-    <HiloList bind:hiloList />
+    <HiloList {hiloList} />
 </main>
 
 <style>

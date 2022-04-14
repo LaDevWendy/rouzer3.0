@@ -90,7 +90,7 @@
         <div class="denuncias-nav">
             <ul>
                 {#each denuncias as d (d.id)}
-                    <Denuncia bind:denuncia={d} />
+                    <Denuncia denuncia={d} />
                 {:else}
                     <h3 style="text-align:center">No hay denuncias</h3>
                 {/each}

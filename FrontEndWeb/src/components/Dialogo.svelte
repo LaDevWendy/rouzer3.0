@@ -53,7 +53,7 @@
 
 <Dialog width="320" bind:visible>
     <div slot="title">{titulo}</div>
-    <ErrorValidacion bind:error />
+    <ErrorValidacion {error} />
 
     {#if exito}
         <p class="exito">{respuesta.mensaje}</p>

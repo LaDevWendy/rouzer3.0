@@ -79,6 +79,15 @@
         dispatch("irAComentario", id);
     }
 
+    function onClickRespuesta(e, id) {
+        resaltarCliqueado(id);
+        if (prevenirScroll) {
+            e.preventDefault();
+        } else {
+            irAComentario(id);
+        }
+    }
+
     function tagear(id) {
         dispatch("tagear", id);
     }
@@ -197,6 +206,7 @@
                     r-id={r}
                     on:mouseover={() => mostrarRespuesta(r)}
                     on:mouseleave={ocultarRespuesta}
+                    on:click={(e) => onClickRespuesta(e, r)}
                     >&gt;&gt;{r}{esOp(r) ? "(OP)" : ""}
                 </a>
             {/each}

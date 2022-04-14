@@ -341,8 +341,8 @@
 />
 <div class="comentarios">
     <PilaRespuestas
-        bind:diccionarioComentarios
-        bind:diccionarioRespuestas
+        {diccionarioComentarios}
+        {diccionarioRespuestas}
         bind:historial={historialRespuestas}
         on:tagear={tagear}
     />
@@ -446,8 +446,8 @@
                             )}
                         {hilo}
                         esSticky={true}
-                        bind:comentario
-                        bind:comentariosDic={diccionarioComentarios}
+                        {comentario}
+                        comentariosDic={diccionarioComentarios}
                         respuetasCompactas={modoTelefono}
                         on:tagClickeado={tagCliqueado}
                         on:idUnicoClickeado={idUnicoClickeado}
@@ -468,8 +468,8 @@
                                     e.detail.usuarioId || ""
                                 )}
                             {hilo}
-                            bind:comentario
-                            bind:comentariosDic={diccionarioComentarios}
+                            {comentario}
+                            comentariosDic={diccionarioComentarios}
                             respuetasCompactas={modoTelefono}
                             on:tagClickeado={tagCliqueado}
                             on:idUnicoClickeado={idUnicoClickeado}
@@ -489,8 +489,8 @@
                                     e.detail.usuarioId || ""
                                 )}
                             {hilo}
-                            bind:comentario
-                            bind:comentariosDic={diccionarioComentarios}
+                            {comentario}
+                            comentariosDic={diccionarioComentarios}
                             respuetasCompactas={modoTelefono}
                             on:tagClickeado={tagCliqueado}
                             on:idUnicoClickeado={idUnicoClickeado}
@@ -505,8 +505,8 @@
                 {#if comentarios.length > bloque}
                     <NavegadorPaginas
                         bind:pagina
-                        bind:paginaActual
-                        bind:totalPaginas={paginaMaxima}
+                        {paginaActual}
+                        totalPaginas={paginaMaxima}
                         on:irAlPrimero={() => {
                             pagina = 1;
                             cambiarPagina();
@@ -534,8 +534,8 @@
                                     e.detail.usuarioId || ""
                                 )}
                             {hilo}
-                            bind:comentario
-                            bind:comentariosDic={diccionarioComentarios}
+                            {comentario}
+                            comentariosDic={diccionarioComentarios}
                             respuetasCompactas={modoTelefono}
                             on:tagClickeado={tagCliqueado}
                             on:idUnicoClickeado={idUnicoClickeado}
@@ -548,8 +548,8 @@
                 {#if comentarios.length > bloque}
                     <NavegadorPaginas
                         bind:pagina
-                        bind:paginaActual
-                        bind:totalPaginas={paginaMaxima}
+                        {paginaActual}
+                        totalPaginas={paginaMaxima}
                         on:irAlPrimero={() => {
                             pagina = 1;
                             cambiarPagina();
