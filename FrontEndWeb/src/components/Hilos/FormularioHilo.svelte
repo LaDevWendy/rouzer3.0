@@ -317,6 +317,7 @@
 
     @media (max-width: 600px) {
         form {
+            top: 0;
             width: 100vw !important;
             height: calc(100vh - 50px) !important;
             max-height: calc(100vh - 50px) !important;
