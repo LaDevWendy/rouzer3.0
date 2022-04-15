@@ -202,7 +202,7 @@
             {#each comentario.respuestas as r (r)}
                 <a
                     href="#{r}"
-                    class="restag"
+                    class="res"
                     r-id={r}
                     on:mouseover={() => mostrarRespuesta(r)}
                     on:mouseleave={ocultarRespuesta}
@@ -1012,6 +1012,7 @@
     }
     @media (max-width: 600px) {
         .comentario :global(.restag),
+        .comentario :global(.res),
         .respuestas-compactas {
             font-weight: bold !important;
         }

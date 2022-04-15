@@ -194,9 +194,25 @@
     let pagina = 1;
     let cargarComentarios = false;
 
+    function isScrolledIntoView(el) {
+        var rect = el.getBoundingClientRect();
+        var elemTop = rect.top;
+        var elemBottom = rect.bottom;
+        var isVisible = elemTop >= 0 && elemBottom <= window.innerHeight;
+        return isVisible;
+    }
+
     function scrollAComentario(comentarioId) {
         let comentarioDOM = document.getElementById(comentarioId);
-        if (comentarioDOM) comentarioDOM.scrollIntoView({ block: "center" });
+        if (comentarioDOM) {
+            comentarioDOM.scrollIntoView({ block: "center" });
+            setTimeout(() => {
+                if (!isScrolledIntoView(comentarioDOM)) {
+                    console.log("Doble scroll");
+                    comentarioDOM.scrollIntoView({ block: "center" });
+                }
+            }, 120);
+        }
     }
 
     async function irAComentario(comentarioId) {
