@@ -415,6 +415,25 @@ namespace Servicios
         }
         public async Task LimpiarHilosViejos()
         {
+            var fechaDeCorteBans = DateTimeOffset.Now - TimeSpan.FromDays(28);
+            var bansQuery = _context.Bans
+                .Where(b => b.Motivo != MotivoDenuncia.ContenidoIlegal && b.Motivo != MotivoDenuncia.Doxxeo)
+                .Where(b => b.Expiracion < fechaDeCorteBans);
+
+            var apelaciones = await _context.Apelaciones
+                .Where(a => bansQuery.Any(b => b.Id == a.BanId))
+                .ToListAsync();
+
+            var n = apelaciones.Count;
+            _context.RemoveRange(apelaciones);
+            logger.LogInformation($"Borradas {n} apelaciones.");
+
+            var bans = await bansQuery.ToListAsync();
+            n = bans.Count;
+            _context.RemoveRange(bans);
+            logger.LogInformation($"Borrados {n} baneos.");
+            await _context.SaveChangesAsync();
+
             var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromHours(36);
             var hilosALimpiar = await _context.Hilos
                 .Where(h => (!h.Flags.Contains("h") & h.Estado == HiloEstado.Archivado) || h.Estado == HiloEstado.Eliminado)
