@@ -860,15 +860,14 @@ namespace WebApp.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            hilo.Estado = HiloEstado.Normal;
             context.Stickies.RemoveRange(context.Stickies.Where(s => s.HiloId == sticky.HiloId));
             await context.SaveChangesAsync();
-
             if (sticky.Importancia == 0)
             {
                 await historial.RegistrarHiloDeestickeado(User.GetId(), hilo);
                 return Json(new ApiResponse("Sticky removido"));
             }
-            ;
 
             context.Add(sticky);
             await historial.RegistrarHiloStickeado(User.GetId(), hilo);
