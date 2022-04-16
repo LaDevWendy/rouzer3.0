@@ -59,7 +59,11 @@
     <Button on:click={() => (mostrarReporte = true)} shaped color="red"
         ><i class="fe fe-flag" />Denunciar</Button
     >
-    <Button color="var(--color-texto1)" shaped disabled
+    <Button
+        color="var(--color-texto1)"
+        shaped
+        disabled
+        style="text-transform: inherit"
         ><i class="fe fe-clock" /><Tiempo date={hilo.creacion} /></Button
     >
 

@@ -415,10 +415,10 @@ namespace Servicios
         }
         public async Task LimpiarHilosViejos()
         {
-            var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromHours(48);
+            var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromHours(24);
             var hilosALimpiar = await _context.Hilos
                 .Where(h => (!h.Flags.Contains("h") & h.Estado == HiloEstado.Archivado) || h.Estado == HiloEstado.Eliminado)
-                .Where(h => h.Creacion < tiempoMinimoDeVida)
+                .Where(h => h.Bump < tiempoMinimoDeVida)
                 .Where(h => !_context.Bans.Any(b => b.HiloId == h.Id && b.ComentarioId == null))
                 .ToListAsync();
 
