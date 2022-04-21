@@ -712,6 +712,11 @@
         background-size: 100%;
         color: transparent;
     }
+    .color-tactico {
+        background: url(/imagenes/colores/tactico.jpg);
+        background-size: 100%;
+        color: #000000;
+    }
     .color-uff {
         background: url(/imagenes/colores/uff.jpg);
         background-size: 100%;

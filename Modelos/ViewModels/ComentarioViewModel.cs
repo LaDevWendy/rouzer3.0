@@ -23,6 +23,7 @@ namespace Modelos
             this.Sticky = comentario.Sticky;
             this.Ignorado = comentario.Ignorado;
             this.Millon = comentario.Flags.Contains("m") ? comentario.Flags.ToCharArray().Count(c => c == 'm') : 0;
+            this.Tactico = comentario.Flags.Contains("t");
         }
 
         public ComentarioViewModel(
@@ -42,6 +43,7 @@ namespace Modelos
             this.Sticky = comentario.Sticky;
             this.Ignorado = comentario.Ignorado;
             this.Millon = comentario.Flags.Contains("m") ? comentario.Flags.ToCharArray().Count(c => c == 'm') : 0;
+            this.Tactico = comentario.Flags.Contains("t");
 
             if (hilo != null)
             {
@@ -138,6 +140,7 @@ namespace Modelos
         public bool OP { get; set; } = false;
         public bool Ignorado { get; set; } = false;
         public int Millon { get; set; } = 0;
+        public bool Tactico { get; set; } = false;
 
         private string CalcularColor(HiloModel hilo = null)
         {
@@ -147,8 +150,32 @@ namespace Modelos
                     + Creacion.Second * 60
                     + Creacion.Minute * 60 * 60
                     + Creacion.Hour * 60 * 60 * 60
-                    + +Creacion.Day * 60 * 60 * 60 * 24
+                    + Creacion.Day * 60 * 60 * 60 * 24
             );
+
+            //Tactico
+
+            if (this.Creacion > DateTimeOffset.Parse("21/04/2022 9:00:00 PM +01:00"))
+            {
+                var n = 100000;
+                if (hilo != null && hilo.Flags.Contains("t"))
+                {
+                    n /= 10;
+                    if (hilo.Flags.ToCharArray().Count(c => c == 't') > 1)
+                    {
+                        n /= 10;
+                    }
+                }
+                if (this.Tactico)
+                {
+                    n /= 10;
+                }
+                if (r.Next(n) == 7)
+                {
+
+                    return "tactico";
+                }
+            }
 
             //Serio
             if (hilo != null && hilo.Flags.Contains("s"))

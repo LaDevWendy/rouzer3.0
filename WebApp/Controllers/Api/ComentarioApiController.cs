@@ -222,6 +222,13 @@ namespace WebApp.Controllers
                 }
             }
 
+            var regex = @"t(:?a|á)ctic(:?a|o)";
+            var match = Regex.Match(comentario.Contenido.ToLower(), regex);
+            if (match.Success)
+            {
+                comentario.Flags += "t";
+            }
+
             string id = await comentarioService.Guardar(comentario);
 
             var model = new ComentarioViewModel(comentario, hilo);

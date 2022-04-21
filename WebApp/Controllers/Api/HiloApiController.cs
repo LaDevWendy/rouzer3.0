@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using WebApp.Otros;
+using System.Text.RegularExpressions;
 
 namespace WebApp.Controllers
 {
@@ -197,6 +198,18 @@ namespace WebApp.Controllers
             if (hilo.Contenido.Contains(">>concentracion") && User.EsMod()) hilo.Flags += "c";
             if (hilo.Contenido.Contains(">>serio") && User.EsMod()) hilo.Flags += "si";
             if (hilo.Contenido.Contains(">>banderitas")) hilo.Flags += "b";
+
+            var regex = @"t(:?a|á)ctic(:?a|o)";
+            var match = Regex.Match(hilo.Titulo.ToLower(), regex);
+            if (match.Success)
+            {
+                hilo.Flags += "t";
+            }
+            match = Regex.Match(hilo.Contenido.ToLower(), regex);
+            if (match.Success)
+            {
+                hilo.Flags += "t";
+            }
 
             // Agrego el pais del uusario
             // if(Request.Headers.TryGetValue("cf-ipcountry", out var paisValue))
