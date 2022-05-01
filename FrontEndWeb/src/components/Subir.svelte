@@ -25,7 +25,7 @@
         background: rgba(7, 7, 26, 0.185);
         padding: 4px;
         border-radius: 10px 10px 0 0;
-        z-index: 999;
+        z-index: 8;
         transition: 0.2s;
         cursor: pointer;
         opacity: 0.5;

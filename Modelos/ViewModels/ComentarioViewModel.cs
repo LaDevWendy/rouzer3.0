@@ -154,9 +154,6 @@ namespace Modelos
             );
 
             //Tactico
-
-            if (this.Creacion > DateTimeOffset.Parse("21/04/2022 9:00:00 PM +01:00"))
-            {
                 var n = 100000;
                 if (hilo != null && hilo.Flags.Contains("t"))
                 {
@@ -175,7 +172,6 @@ namespace Modelos
 
                     return "tactico";
                 }
-            }
 
             //Serio
             if (hilo != null && hilo.Flags.Contains("s"))

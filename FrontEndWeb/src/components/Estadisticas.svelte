@@ -9,10 +9,16 @@
     let comentariosCreados = window.estadisticas.comentariosCreados;
     let estabilidad = window.estadisticas.estabilidad;
     let estadisticasStore = localStore("Estadisticas", { visible: false });
+    let maxComputadorasConectadas =
+        window.estadisticas.maxComputadorasConectadas;
 
     function formatear(numero) {
-        if (numero >= 1000000) return `${(numero / 1000000).toFixed(2)}M`;
-        if (numero >= 1000) return `${(numero / 1000).toFixed(2)}K`;
+        if (numero >= 1000000)
+            return `${(Math.trunc((numero * 1000) / 1000000) / 1000).toFixed(
+                3
+            )}M`;
+        if (numero >= 1000)
+            return `${(Math.trunc((numero * 100) / 1000) / 100).toFixed(2)}K`;
         return numero;
     }
     Signal.coneccion.on("estadisticasActualizadas", (estadisticas) => {
@@ -33,16 +39,22 @@
             class="estadisticas "
             on:click={() => ($estadisticasStore.visible = false)}
         >
-            <span style="right: 68%;" title="Computadoras conectadas"
+            <span
+                style="right: 68%;"
+                title="{computadorasConectadas} computadoras conectadas (máximo histórico {maxComputadorasConectadas})"
                 >{formatear(computadorasConectadas)}</span
             >
-            <span style="right: 50%;" title="Roz creados"
+            <span style="right: 50%;" title="{rozCreados} roz creados"
                 >{formatear(rozCreados)}</span
             >
-            <span style="right: 32%;" title="Comentarios creados"
+            <span
+                style="right: 32%;"
+                title="{comentariosCreados} comentarios creados"
                 >{formatear(comentariosCreados)}</span
             >
-            <span style="right: 16%" title="Estabilidad"
+            <span
+                style="right: 16%"
+                title="Estabilidad {estabilidad.toFixed(1)}"
                 >{estabilidad.toFixed(1)}%</span
             >
         </div>

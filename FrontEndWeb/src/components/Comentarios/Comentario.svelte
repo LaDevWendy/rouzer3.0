@@ -915,6 +915,7 @@
         color: greenyellow !important;
         font-family: "Courier New", Courier, monospace;
         text-transform: lowercase;
+        animation: none;
     }
 
     .comentarioAdmin {
