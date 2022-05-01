@@ -920,12 +920,14 @@
 
     .comentarioAdmin {
         border-top: solid 2px;
-        animation: borde-luz-admin 10s infinite alternate-reverse;
+        animation: borde-luz-admin 2s infinite alternate-reverse;
     }
 
     .comentarioAdmin > .color {
-        animation: lucesAdmin 10s infinite alternate-reverse;
-        color: gold !important;
+        animation: lucesAdmin 10s infinite alternate-reverse,
+            borde-luz-admin 2s infinite alternate-reverse;
+        color: white !important;
+        border-top: solid 2px;
     }
 
     .comentarioMod {
@@ -981,27 +983,24 @@
     }
     @keyframes borde-luz-admin {
         0% {
-            border-color: #630b57;
+            border-color: rgb(204 29 29);
         }
         50% {
-            border-color: #800080;
+            border-color: #242f3d;
         }
         100% {
-            border-color: #4c2882;
+            border-color: whitesmoke;
         }
     }
     @keyframes lucesAdmin {
         0% {
-            background: #630b57;
-            border-color: #630b57;
+            background: #1d334a;
         }
         50% {
-            background: #800080;
-            border-color: #800080;
+            background: #242f3d;
         }
         100% {
-            background: #4c2882;
-            border-color: #4c2882;
+            background: #003153;
         }
     }
 

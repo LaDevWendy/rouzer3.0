@@ -23,6 +23,9 @@
     }
 
     let rango = "";
+    if (hilo.nombre) {
+        rango = "mod";
+    }
     if (hilo.rango > CreacionRango.Anon) {
         if (hilo.rango == CreacionRango.Mod) {
             rango = "mod";
@@ -94,14 +97,14 @@
         text-transform: uppercase;
         font-family: sans-serif;
         font-weight: bold;
-        background: var(--color4);
+        background: #242f3d;
         margin-left: auto;
         padding: 6px;
         border-radius: 4px;
         border-top: 2px red solid;
     }
     .adm {
-        color: gold;
+        color: white;
         text-transform: uppercase;
         font-family: sans-serif;
         font-weight: bold;
@@ -109,17 +112,17 @@
         margin-left: auto;
         padding: 6px;
         border-radius: 4px;
-        border-top: 2px gold solid;
+        border-top: 2px red solid;
     }
     @keyframes lucesAdmin {
         0% {
-            background: #630b57;
+            background: #1d334a;
         }
         50% {
-            background: #800080;
+            background: #242f3d;
         }
         100% {
-            background: #4c2882;
+            background: #003153;
         }
     }
     .dev {
