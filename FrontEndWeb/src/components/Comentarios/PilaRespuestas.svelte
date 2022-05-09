@@ -9,7 +9,7 @@
 
     let dispatch = createEventDispatcher();
 
-    $: diccionarioComentariosMap = new Map(
+    /*$: diccionarioComentariosMap = new Map(
         Object.keys(diccionarioComentarios).map((k) => [
             k,
             diccionarioComentarios[k],
@@ -20,7 +20,7 @@
             k,
             diccionarioRespuestas[k],
         ])
-    );
+    );*/
 
     export let historial = [];
 
@@ -61,15 +61,13 @@
                             respuetasCompactas={true}
                             on:tagClickeado={(e) =>
                                 agregarComentariosAPila([
-                                    diccionarioComentariosMap.get(e.detail),
+                                    diccionarioComentarios[e.detail],
                                 ])}
                             on:motrarRespuestas={(e) =>
                                 agregarComentariosAPila(
-                                    diccionarioRespuestasMap
-                                        .get(e.detail)
-                                        .map((id) =>
-                                            diccionarioComentariosMap.get(id)
-                                        )
+                                    diccionarioRespuestas[e.detail].map(
+                                        (id) => diccionarioComentarios[id]
+                                    )
                                 )}
                             on:tagear={tagear}
                         />
