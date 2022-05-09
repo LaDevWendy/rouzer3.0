@@ -6,6 +6,7 @@
 
     export let media;
     export let modoCuadrado = false;
+    export let spoiler = false;
 
     $: vistaPrevia = modoCuadrado
         ? media.vistaPreviaCuadrado
@@ -15,7 +16,12 @@
     let oculto = false;
     let vid;
 
+    function quitarSpoiler() {
+        spoiler = false;
+    }
+
     function abrirVideo() {
+        quitarSpoiler();
         abierto = true;
         setTimeout(async () => {
             if (vid != undefined) {
@@ -41,6 +47,7 @@
     class:abierto
     class:modoCuadrado
     class:youtube={media.tipo == MediaType.Youtube}
+    class:spoiler
 >
     {#if !abierto}
         <div class="ocultar">
@@ -53,9 +60,20 @@
         <div style="height:64px;" />
     {:else if media.tipo == MediaType.Imagen}
         {#if media.esGif}
-            <a href="/Media/{media.url}" target="_blank">
-                <img src="/Media/{media.url}" alt="" srcset="" />
-            </a>
+            {#if spoiler}
+                <img
+                    src={vistaPrevia}
+                    on:click={quitarSpoiler}
+                    alt=""
+                    srcset=""
+                />
+            {:else}
+                <a href="/Media/{media.url}" target="_blank">
+                    <img src="/Media/{media.url}" alt="" srcset="" />
+                </a>
+            {/if}
+        {:else if spoiler}
+            <img src={vistaPrevia} on:click={quitarSpoiler} alt="" srcset="" />
         {:else}
             <a href="/Media/{media.url}" target="_blank">
                 <img src={vistaPrevia} alt="" srcset="" />
@@ -71,7 +89,12 @@
                 src="/Media/{media.url}"
                 style="margin-bottom: 16px;"
             />
-            <Button on:click={() => (abierto = false)} class="cerrar" icon>
+            <Button
+                on:click={() => (abierto = false)}
+                on:click={quitarSpoiler}
+                class="cerrar"
+                icon
+            >
                 <i class="fe fe-x" />
             </Button>
         {:else}
@@ -324,6 +347,7 @@
     .media .ocultar {
         opacity: 0;
         transition: 0.2s;
+        z-index: 1;
     }
     .media:hover .ocultar {
         opacity: 1;
@@ -347,5 +371,11 @@
         right: 0;
         border-radius: 50px 0px 0 50px;
         background-color: #1a212c63 !important;
+    }
+    .spoiler {
+        overflow: hidden;
+    }
+    .spoiler img {
+        filter: blur(10px);
     }
 </style>

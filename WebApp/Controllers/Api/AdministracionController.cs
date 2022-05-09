@@ -451,6 +451,8 @@ namespace WebApp.Controllers
                     return "x";
                 case FlagCodigo.Serio:
                     return "s";
+                case FlagCodigo.Spoiler:
+                    return "p";
                 default:
                     return "";
             }
@@ -495,4 +497,5 @@ public enum FlagCodigo
     IdUnico,
     Maximo,
     Serio,
+    Spoiler
 }

@@ -546,6 +546,7 @@ namespace Servicios
                 Serio = h.Flags.Contains("s"),
                 Concentracion = h.Flags.Contains("c"),
                 Maximo = h.Flags.Contains("x"),
+                Spoiler = h.Flags.Contains("p"),
                 Encuesta = h.Encuesta != null,
                 CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                 TrendIndex = h.TrendIndex
@@ -569,6 +570,7 @@ namespace Servicios
                 Serio = h.Flags.Contains("s"),
                 Concentracion = h.Flags.Contains("c"),
                 Maximo = h.Flags.Contains("x"),
+                Spoiler = h.Flags.Contains("p"),
                 Encuesta = h.Encuesta != null,
                 CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                 UsuarioId = h.UsuarioId,

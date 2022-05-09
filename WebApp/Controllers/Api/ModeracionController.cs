@@ -860,7 +860,10 @@ namespace WebApp.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            hilo.Estado = HiloEstado.Normal;
+            if (hilo.Estado == HiloEstado.Archivado)
+            {
+                hilo.Estado = HiloEstado.Normal;
+            }
             context.Stickies.RemoveRange(context.Stickies.Where(s => s.HiloId == sticky.HiloId));
             await context.SaveChangesAsync();
             if (sticky.Importancia == 0)

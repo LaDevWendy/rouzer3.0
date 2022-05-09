@@ -492,11 +492,24 @@ namespace WebApp.Controllers
         }
 
         [AllowAnonymous]
-        async public Task<ActionResult> CargarMas([FromQuery] DateTimeOffset ultimoBump, [FromQuery] DateTimeOffset ultimoCreacion, [FromQuery] double ultimoTrend, [FromQuery] string categorias, [FromQuery] bool serios = false, [FromQuery] bool nuevos = false, [FromQuery] bool tendencias = false, [FromQuery] bool categoria = false)
+        async public Task<ActionResult> CargarMas([FromQuery] DateTimeOffset ultimoBump,
+            [FromQuery] DateTimeOffset ultimoCreacion,
+            [FromQuery] double ultimoTrend,
+            [FromQuery] string categorias,
+            [FromQuery] bool serios = false,
+            [FromQuery] bool nuevos = false,
+            [FromQuery] bool tendencias = false,
+            [FromQuery] bool categoria = false,
+            [FromQuery] bool historicos = false)
         {
             var categoriasActivas = categorias.Split(",").Select(c => Convert.ToInt32(c)).ToHashSet();
 
-            IEnumerable<HiloViewModel> hilos;
+            IEnumerable<HiloViewModel> hilos = new List<HiloViewModel>(); ;
+
+            if (historicos)
+            {
+                return Ok(hilos);
+            }
 
             if (categoria)
             {

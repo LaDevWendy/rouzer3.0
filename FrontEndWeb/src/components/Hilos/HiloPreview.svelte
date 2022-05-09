@@ -234,7 +234,7 @@
     let vistaPrevia = media.vistaPreviaCuadrado;
 
     function esGif() {
-        if (media.url.includes(".gif")) {
+        if (media.url.includes(".gif") && !hilo.spoiler) {
             vistaPrevia = `/Media/${media.url}`;
         }
     }
@@ -322,7 +322,10 @@
     <a
         style="background:url({vistaPrevia})"
         href="/Hilo/{hilo.id}"
-        class="hilo-in{media.url.includes('.gif') ? ' es-gif' : ''}"
+        class="hilo-in{media.url.includes('.gif') && !hilo.spoiler
+            ? ' es-gif'
+            : ''}"
+        class:spoiler={hilo.spoiler}
         on:mouseover={esGif}
         on:mouseleave={reset}
         on:click={onClick}
@@ -393,6 +396,11 @@
                 >
                     1K
                 </div>{/if}
+            {#if hilo.spoiler}
+                <div
+                    class="info svelte-12j5r62 fe fe-alert-triangle"
+                    style="background: var(--color5);"
+                />{/if}
             {#if hilo.serio}
                 <div
                     class="info"
@@ -492,5 +500,18 @@
         background-repeat: no-repeat !important;
         background-position: center !important;
         background-size: cover !important;
+    }
+    .spoiler {
+        box-shadow: inset 0px 0px 40px 40px grey;
+        overflow: hidden;
+    }
+    .spoiler:before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: inherit;
+        border-radius: inherit;
+        filter: blur(10px);
     }
 </style>

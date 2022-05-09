@@ -94,4 +94,5 @@ export class Flag {
     static IdUnico = 3
     static Maximo = 4
     static Serio = 5
+    static Spoiler = 6
 }

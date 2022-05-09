@@ -195,7 +195,7 @@ export default class RChanClient {
         })
     }
 
-    static cargarMasHilos(ultimoBump, ultimoCreacion, ultimoTrend, categorias, serios = false, nuevos = false, tendencias = false, categoria = false) {
+    static cargarMasHilos(ultimoBump, ultimoCreacion, ultimoTrend, categorias, serios = false, nuevos = false, tendencias = false, categoria = false, historicos = false) {
         return axios.get('api/Hilo/CargarMas', {
             params: {
                 ultimoBump,
@@ -205,7 +205,8 @@ export default class RChanClient {
                 serios,
                 nuevos,
                 tendencias,
-                categoria
+                categoria,
+                historicos
             }
         })
     }

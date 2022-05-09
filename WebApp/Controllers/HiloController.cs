@@ -315,7 +315,7 @@ namespace WebApp.Controllers
                 .Where(h => h.Flags.Contains("h"))
                 .AViewModel(context)
                 .ToListAsync();
-            var vm = new HiloListViewModel { Hilos = hilos, CategoriasActivas = categorias.ToList() };
+            var vm = new HiloListViewModel { Hilos = hilos, CategoriasActivas = categorias.ToList(), Historicos = true };
             return View("Index", vm);
         }
 
@@ -371,4 +371,5 @@ public class HiloListViewModel
     public bool Nuevos { get; set; } = false;
     public bool Tendencias { get; set; } = false;
     public bool Categoria { get; set; } = false;
+    public bool Historicos { get; set; } = false;
 }

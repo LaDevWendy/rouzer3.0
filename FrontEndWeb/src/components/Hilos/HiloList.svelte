@@ -25,8 +25,6 @@
 
     let nuevoshilos = [];
 
-    noCargarNuevos = hiloList.hilos.every((h) => h.historico);
-
     Signal.subscribirAHome();
     Signal.coneccion.on("HiloCreado", onHiloCreado);
     Signal.coneccion.on("HiloComentado", onHiloComentado);
@@ -53,6 +51,7 @@
 
     function onHiloCreado(hilo) {
         if (noCargarNuevos) return;
+        if (hiloList.historicos) return;
         if (hiloList.tendencias) return;
         if (hiloList.serios && !hilo.serio) return;
         if (hiloList.categoriasActivas.includes(hilo.categoriaId)) {
@@ -95,7 +94,8 @@
                 hiloList.serios,
                 hiloList.nuevos,
                 hiloList.tendencias,
-                hiloList.categoria
+                hiloList.categoria,
+                hiloList.historicos
             );
             hiloList.hilos = [...hiloList.hilos, ...data];
             if (data.length == 0) complete();

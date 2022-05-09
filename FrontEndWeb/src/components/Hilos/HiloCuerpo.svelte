@@ -7,7 +7,11 @@
 </script>
 
 <div class="cuerpo markdown-body" class:mediaExpandido>
-    <Media media={hilo.media} bind:abierto={mediaExpandido} />
+    <Media
+        media={hilo.media}
+        spoiler={hilo.spoiler}
+        bind:abierto={mediaExpandido}
+    />
     {#if hilo.audio}
         <Audio urlBlobAudio={hilo.audio.url} />
     {/if}
