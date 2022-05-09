@@ -266,9 +266,17 @@ namespace WebApp.Controllers
         [HttpGet("/Serios")]
         public async Task<IActionResult> SeriosAsync()
         {
-            int[] categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
-            HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
-            if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+            int[] categorias;
+            if (User.Identity.IsAuthenticated)
+            {
+                categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
+                HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
+                if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+            }
+            else
+            {
+                categorias = categoriasOpts.Value.Public().Ids().ToArray();
+            }
 
             var hilos = await context.Hilos
                 .AsNoTracking()
@@ -286,15 +294,28 @@ namespace WebApp.Controllers
         [HttpGet("/Archivo/Historicos")]
         public async Task<IActionResult> HistoricosAsync()
         {
+            int[] categorias;
+            if (User.Identity.IsAuthenticated)
+            {
+                categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
+                HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
+                if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+            }
+            else
+            {
+                categorias = categoriasOpts.Value.Public().Ids().ToArray();
+            }
+
             var hilos = await context.Hilos
                 .AsNoTracking()
                 .OrdenadosPorBump()
                 .FiltrarEliminados()
                 .FiltrarOcultosDeUsuario(User.GetId(), context)
+                .FiltrarPorCategoria(categorias)
                 .Where(h => h.Flags.Contains("h"))
                 .AViewModel(context)
                 .ToListAsync();
-            var vm = new HiloListViewModel { Hilos = hilos, CategoriasActivas = new List<int>() };
+            var vm = new HiloListViewModel { Hilos = hilos, CategoriasActivas = categorias.ToList() };
             return View("Index", vm);
         }
 

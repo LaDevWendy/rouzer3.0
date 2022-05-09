@@ -25,6 +25,8 @@
 
     let nuevoshilos = [];
 
+    noCargarNuevos = hiloList.hilos.every((h) => h.historico);
+
     Signal.subscribirAHome();
     Signal.coneccion.on("HiloCreado", onHiloCreado);
     Signal.coneccion.on("HiloComentado", onHiloComentado);

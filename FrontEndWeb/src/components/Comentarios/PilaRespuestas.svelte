@@ -9,13 +9,13 @@
 
     let dispatch = createEventDispatcher();
 
-    let diccionarioComentariosMap = new Map(
+    $: diccionarioComentariosMap = new Map(
         Object.keys(diccionarioComentarios).map((k) => [
             k,
             diccionarioComentarios[k],
         ])
     );
-    let diccionarioRespuestasMap = new Map(
+    $: diccionarioRespuestasMap = new Map(
         Object.keys(diccionarioRespuestas).map((k) => [
             k,
             diccionarioRespuestas[k],
