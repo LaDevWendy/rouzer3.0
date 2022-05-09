@@ -70,6 +70,10 @@ namespace Modelos
                     {
                         this.Banderita = "cl";
                     }
+                    if(comentario.UsuarioId == "b16d173f-16e4-49c8-992e-5f7e03711f52")
+                    {
+                        this.Banderita = "ar";
+                    }
                     if (
                         !string.IsNullOrEmpty(comentario.Nombre)
                         || comentario.Rango != CreacionRango.Anon

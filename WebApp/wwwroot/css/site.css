@@ -494,6 +494,7 @@ h3 {
     flex-wrap: wrap;
 }
 
+
 /*@media (max-width: 600px) {
   .hilo-list {
     padding-top: 60px;
@@ -579,12 +580,10 @@ h3 {
         opacity: 0;
         background-position: 0% 50%;
     }
-
     50% {
         opacity: 0.4;
         background-position: 100% 50%;
     }
-
     100% {
         opacity: 0;
         background-position: 0% 50%;
@@ -956,6 +955,7 @@ button:active {
 
 .verde {
     color: #40bc4f;
+    white-space: normal;
 }
 
 ::-webkit-scrollbar {
