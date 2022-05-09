@@ -26,6 +26,7 @@ namespace Modelos
             this.Audio = hilo.Audio;
             this.Audios = hilo.Flags.Contains("a");
             this.TrendIndex = hilo.TrendIndex;
+            this.Maximo = hilo.Flags.Contains("x");
         }
 
         public int CantidadComentarios { get; set; }
@@ -52,6 +53,7 @@ namespace Modelos
         public bool Concentracion { get; set; }
         public bool Audios { get; set; }
         public double TrendIndex { get; set; }
+        public bool Maximo { get; set; }
     }
 
     public class HiloViewModelMod : HiloViewModel

@@ -257,8 +257,8 @@ namespace WebApp.Controllers
             if (hilo.Flags.Contains("c"))
             {
                 var cantidadComentarios = await context.Comentarios
-                    .Where(c => c.Estado == ComentarioEstado.Normal)
                     .Where(c => c.HiloId == hilo.Id)
+                    .Where(c => c.Estado == ComentarioEstado.Normal)
                     .CountAsync();
 
                 if (cantidadComentarios >= 500)
@@ -269,20 +269,61 @@ namespace WebApp.Controllers
                         .OrderByDescending(c => c.Creacion)
                         .Skip(10)
                         .ToListAsync();
-                    comentarioEliminar.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
 
-                    var comentarioBorrar = await context.Comentarios
+                    comentarioEliminar.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
+                    await context.SaveChangesAsync();
+
+                    var comentarioBorrar = context.Comentarios
                         .Where(c => c.HiloId == hilo.Id)
                         .Where(c => !context.Bans.Any(b => b.ComentarioId == c.Id))
-                        .Where(c => !context.Denuncias.Any(b => b.ComentarioId == c.Id))
-                        .Where(c => !context.Notificaciones.Any(b => b.ComentarioId == c.Id))
-                        .Where(c => c.Estado == ComentarioEstado.Normal)
-                        .OrderByDescending(c => c.Creacion)
-                        .Skip(10)
-                        .ToListAsync();
+                        .Where(c => c.Estado == ComentarioEstado.Eliminado);
 
+                    var denuncias = await context.Denuncias.Where(d => comentarioBorrar.Any(c => c.Id == d.ComentarioId)).ToListAsync();
+                    var notis = await context.Notificaciones.Where(d => comentarioBorrar.Any(c => c.Id == d.ComentarioId)).ToListAsync();
+                    var acciones = await context.AccionesDeModeracion.Where(d => comentarioBorrar.Any(c => c.Id == d.ComentarioId)).ToListAsync();
+
+                    context.AccionesDeModeracion.RemoveRange(acciones);
+                    context.Denuncias.RemoveRange(denuncias);
+                    context.Notificaciones.RemoveRange(notis);
                     context.Comentarios.RemoveRange(comentarioBorrar);
                 };
+            }
+
+            // Roz con maximo
+            if (hilo.Flags.Contains("x"))
+            {
+                var cantidadComentarios = await context.Comentarios
+                    .Where(c => c.HiloId == hilo.Id)
+                    .Where(c => c.Estado == ComentarioEstado.Normal)
+                    .CountAsync();
+                if (cantidadComentarios > 1000)
+                {
+                    var comentarioEliminar = await context.Comentarios
+                        .Where(c => c.HiloId == hilo.Id)
+                        .Where(c => c.Estado == ComentarioEstado.Normal)
+                        .OrderByDescending(c => c.Creacion)
+                        .Skip(1000)
+                        .ToListAsync();
+
+                    comentarioEliminar.ForEach(c => c.Estado = ComentarioEstado.Eliminado);
+                    await context.SaveChangesAsync();
+
+                    var primerComentarioEliminado = comentarioEliminar.First();
+                    var comentarioBorrar = context.Comentarios
+                        .Where(c => c.HiloId == hilo.Id)
+                        .Where(c => !context.Bans.Any(b => b.ComentarioId == c.Id))
+                        .Where(c => c.Estado == ComentarioEstado.Eliminado)
+                        .Where(c => c.Creacion <= primerComentarioEliminado.Creacion);
+
+                    var denuncias = await context.Denuncias.Where(d => comentarioBorrar.Any(c => c.Id == d.ComentarioId)).ToListAsync();
+                    var notis = await context.Notificaciones.Where(d => comentarioBorrar.Any(c => c.Id == d.ComentarioId)).ToListAsync();
+                    var acciones = await context.AccionesDeModeracion.Where(d => comentarioBorrar.Any(c => c.Id == d.ComentarioId)).ToListAsync();
+
+                    context.AccionesDeModeracion.RemoveRange(acciones);
+                    context.Denuncias.RemoveRange(denuncias);
+                    context.Notificaciones.RemoveRange(notis);
+                    context.Comentarios.RemoveRange(comentarioBorrar);
+                }
             }
 
             await context.SaveChangesAsync();

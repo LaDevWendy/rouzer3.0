@@ -86,3 +86,12 @@ export class ApelacionEstado {
         return string
     }
 }
+
+export class Flag {
+    static Banderitas = 0
+    static Concentracion = 1
+    static Dados = 2
+    static IdUnico = 3
+    static Maximo = 4
+    static Serio = 5
+}

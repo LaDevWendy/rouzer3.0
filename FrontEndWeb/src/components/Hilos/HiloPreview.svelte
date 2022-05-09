@@ -386,6 +386,13 @@
                 >
                     <span class="fe fe-puas" />
                 </div>{/if}
+            {#if hilo.maximo}
+                <div
+                    class="info"
+                    style="border-radius: 4px !important; margin: 0 2px; background: var(--color3);"
+                >
+                    1K
+                </div>{/if}
             {#if hilo.serio}
                 <div
                     class="info"

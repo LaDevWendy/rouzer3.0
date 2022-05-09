@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Modelos
 {
     public class DenunciaModel
-    {   
+    {
         public string Id { get; set; }
         public DateTimeOffset Creacion { get; set; } = DateTimeOffset.Now;
         public string UsuarioId { get; set; } = "Anonimo";
@@ -18,7 +18,7 @@ namespace Modelos
         public MotivoDenuncia Motivo { get; set; }
         public string Aclaracion { get; set; } = "";
 
-        public EstadoDenuncia  Estado { get; set; } = EstadoDenuncia.NoRevisada;
+        public EstadoDenuncia Estado { get; set; } = EstadoDenuncia.NoRevisada;
 
         public HiloModel Hilo { get; set; }
         public ComentarioModel Comentario { get; set; }

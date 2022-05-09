@@ -409,6 +409,53 @@ namespace WebApp.Controllers
             return Json(new ApiResponse("Apelación rechazada"));
         }
 
+        [HttpPost]
+        public async Task<ActionResult> AñadirFlag(FlagVM fvm)
+        {
+            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == fvm.HiloId);
+            if (hilo is null)
+            {
+                ModelState.AddModelError("Hilo", "No se encontro el hilo");
+                return BadRequest(ModelState);
+            }
+
+            string estado = "";
+            if (hilo.Flags.Contains(FlagString(fvm.Flag)))
+            {
+                hilo.Flags = hilo.Flags.Replace(FlagString(fvm.Flag), "");
+                estado = "quitada";
+            }
+            else
+            {
+                hilo.Flags += FlagString(fvm.Flag);
+                estado = "agregada";
+            }
+
+            await context.SaveChangesAsync();
+            return Json(new ApiResponse($"Flag {estado}"));
+        }
+
+        private string FlagString(FlagCodigo fc)
+        {
+            switch (fc)
+            {
+                case FlagCodigo.Banderitas:
+                    return "b";
+                case FlagCodigo.Concentracion:
+                    return "c";
+                case FlagCodigo.Dados:
+                    return "d";
+                case FlagCodigo.IdUnico:
+                    return "i";
+                case FlagCodigo.Maximo:
+                    return "x";
+                case FlagCodigo.Serio:
+                    return "s";
+                default:
+                    return "";
+            }
+        }
+
     }
 }
 
@@ -434,3 +481,18 @@ public class CrearSpamVM
     public int Duracion { get; set; }
 }
 
+public class FlagVM
+{
+    public string HiloId { get; set; }
+    public FlagCodigo Flag { get; set; }
+}
+
+public enum FlagCodigo
+{
+    Banderitas,
+    Concentracion,
+    Dados,
+    IdUnico,
+    Maximo,
+    Serio,
+}

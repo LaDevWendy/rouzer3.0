@@ -3,7 +3,6 @@
 	import Acciones from "./components/Acciones.svelte";
 	import Tiempo from "./components/Tiempo.svelte";
 	import { Button, Dialog, Checkbox, Textfield } from "svelte-mui";
-
 	import config from "./config";
 	import RChanClient from "./RChanClient";
 	import ErrorValidacion from "./components/ErrorValidacion.svelte";
@@ -16,6 +15,7 @@
 	import { HiloEstado } from "./enums";
 	import { onMount, tick } from "svelte";
 	import MediaType from "./MediaType";
+	import { Flag } from "./enums";
 
 	let data = window.data || dataEjemplo;
 	let { hilo, comentarios, acciones, usuario, spams } = data;
@@ -34,6 +34,12 @@
 			},
 		},
 		categoria: { categoriaId: hilo.categoriaId },
+		flag: {
+			flag: "",
+			async accion() {
+				return await RChanClient.añadirFlag(hilo.id, dialogs.flag.flag);
+			},
+		},
 	};
 
 	function agregarVotoAFormulario(opcion) {
@@ -58,6 +64,27 @@
 				>
 			{/if}
 			<div class="acciones-mod panel">
+				{#if $globalStore.usuario.esAdmin}
+					<Dialogo
+						textoActivador="Flag"
+						titulo="Configurar flag"
+						accion={dialogs.flag.accion}
+					>
+						<div slot="body">
+							<p>Agregar o quitar flag</p>
+							<select bind:value={dialogs.flag.flag} name="flag">
+								<option
+									value="-1"
+									selected="selected"
+									disabled="disabled">Flag</option
+								>
+								{#each Object.keys(Flag) as k}
+									<option value={Flag[k]}>{k}</option>
+								{/each}
+							</select>
+						</div>
+					</Dialogo>
+				{/if}
 				{#if $globalStore.usuario.esMod}
 					<Dialogo
 						textoActivador="Sticky"

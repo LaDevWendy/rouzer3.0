@@ -397,6 +397,15 @@ namespace Servicios
             {
                 _context.Remove(hilo);
             }
+            else if (baneos.Any(b => b.ComentarioId == null))
+            {
+                var comentarios = await _context.Comentarios
+                    .Where(c => c.Hilo.Id == hilo.Id)
+                    .Where(c => !_context.Bans.Any(b => b.ComentarioId == c.Id))
+                    .Where(c => c.MediaId != null)
+                    .ToListAsync();
+                _context.RemoveRange(comentarios);
+            }
             else
             {
                 var comentarios = await _context.Comentarios
@@ -413,6 +422,7 @@ namespace Servicios
             var hilo = await _context.Hilos.PorId(id);
             if (hilo != null) await LimpiarHilo(hilo);
         }
+
         public async Task LimpiarHilosViejos()
         {
             var fechaDeCorteBans = DateTimeOffset.Now - TimeSpan.FromDays(28);
@@ -434,20 +444,19 @@ namespace Servicios
             logger.LogInformation($"Borrados {n} baneos.");
             await _context.SaveChangesAsync();
 
-            var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromHours(36);
+            var tiempoMinimoDeVida = DateTimeOffset.Now - TimeSpan.FromHours(48);
             var hilosALimpiar = await _context.Hilos
                 .Where(h => (!h.Flags.Contains("h") & h.Estado == HiloEstado.Archivado) || h.Estado == HiloEstado.Eliminado)
                 .Where(h => h.Bump < tiempoMinimoDeVida)
-                .Where(h => !_context.Bans.Any(b => b.HiloId == h.Id && b.ComentarioId == null))
+                //.Where(h => !_context.Bans.Any(b => b.HiloId == h.Id && b.ComentarioId == null))
                 .ToListAsync();
 
-            // Marcar  hilos archivados con mas de dos dias como eliminados
+            // Marcar hilos archivados baneados como eliminados
             var hilosArchivadosConBaneo = await _context.Hilos
                 .Where(h => h.Estado == HiloEstado.Archivado)
                 .Where(h => _context.Bans.Any(b => b.HiloId == h.Id))
                 .Where(h => h.Bump < tiempoMinimoDeVida)
                 .ToListAsync();
-
             hilosArchivadosConBaneo.ForEach(h => h.Estado = HiloEstado.Eliminado);
 
             int total = hilosALimpiar.Count();
@@ -467,6 +476,28 @@ namespace Servicios
                     throw e;
                 }
             }
+
+            var comentariosEliminados = _context.Comentarios
+                .Where(c => c.Estado == ComentarioEstado.Eliminado)
+                .Where(c => !_context.Bans.Any(b => b.ComentarioId == c.Id))
+                .Where(c => c.MediaId != null)
+                .Where(c => c.Creacion < tiempoMinimoDeVida);
+
+            var notis = _context.Notificaciones.
+                Where(n => comentariosEliminados.Any(c => c.Id == n.ComentarioId));
+            var denuncias = _context.Denuncias.
+                Where(n => comentariosEliminados.Any(c => c.Id == n.ComentarioId));
+            var acciones = _context.AccionesDeModeracion.
+                Where(n => comentariosEliminados.Any(c => c.Id == n.ComentarioId));
+
+            _context.AccionesDeModeracion.RemoveRange(acciones);
+            _context.Notificaciones.RemoveRange(notis);
+            _context.Denuncias.RemoveRange(denuncias);
+
+            n = await comentariosEliminados.CountAsync();
+            _context.Comentarios.RemoveRange(comentariosEliminados);
+            logger.LogInformation($"Borrados {n} comentarios eliminados.");
+
             await _context.SaveChangesAsync();
             var ArchivosLimpiados = await mediaService.LimpiarMediasHuerfanos();
             var AudiosLimpiados = await audioService.LimpiarAudiosHuerfanos();
@@ -514,6 +545,7 @@ namespace Servicios
                 Historico = h.Flags.Contains("h"),
                 Serio = h.Flags.Contains("s"),
                 Concentracion = h.Flags.Contains("c"),
+                Maximo = h.Flags.Contains("x"),
                 Encuesta = h.Encuesta != null,
                 CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                 TrendIndex = h.TrendIndex
@@ -536,6 +568,7 @@ namespace Servicios
                 Historico = h.Flags.Contains("h"),
                 Serio = h.Flags.Contains("s"),
                 Concentracion = h.Flags.Contains("c"),
+                Maximo = h.Flags.Contains("x"),
                 Encuesta = h.Encuesta != null,
                 CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                 UsuarioId = h.UsuarioId,

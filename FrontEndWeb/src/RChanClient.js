@@ -306,4 +306,11 @@ export default class RChanClient {
         return axios.post(`/api/Moderacion/EliminarToken/${usuarioId}`)
     }
 
+    static añadirFlag(hiloId, flag) {
+        return axios.post("/api/Administracion/AñadirFlag", {
+            hiloId,
+            flag
+        })
+    }
+
 }
