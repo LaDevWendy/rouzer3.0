@@ -227,7 +227,7 @@ namespace WebApp.Controllers
             coleccion = coleccion.ToLower();
             var query = hiloService
                 .OrdenadosPorBump()
-                .FiltrarNoActivos();
+                .FiltrarEliminados();
 
             query = coleccion switch
             {

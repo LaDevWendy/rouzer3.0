@@ -2,6 +2,7 @@
     import Media from "../Media.svelte";
     import { fade } from "svelte/transition";
     import { createEventDispatcher } from "svelte";
+    import { Button } from "svelte-mui";
     export let comentarios = [];
     export let visible = true;
 
@@ -18,14 +19,20 @@
 </script>
 
 {#if visible}
-    <div
-        transition:fade={{ duration: 150 }}
-        class="fondo"
-        style="z-index:20"
-        on:click={() => (visible = false)}
-    >
+    <div transition:fade={{ duration: 150 }} class="fondo" style="z-index:20">
         <section class="carpeta-media panel">
-            <h3>Archivos del roz</h3>
+            <div
+                style="display: flex; justify-content: space-evenly; height: 40px; line-height:40px"
+            >
+                <h3>Archivos del roz</h3>
+                <Button
+                    on:click={() => (visible = false)}
+                    class="cerrar"
+                    color="var(--color5)"
+                >
+                    Cerrar
+                </Button>
+            </div>
             <ul>
                 {#each comentarios as c}
                     {#if c.media}
@@ -61,9 +68,13 @@
 
     ul {
         display: flex;
-        gap: 10px;
+        row-gap: 30px;
+        column-gap: 10px;
         flex-wrap: wrap;
         justify-content: center;
+        max-height: 80vh;
+        max-width: 80vw;
+        overflow: scroll;
     }
     ul li {
         width: 128px;
@@ -81,12 +92,9 @@
     }
 
     section {
-        max-height: 80vh;
-        max-width: 80vw;
         align-self: center;
         box-shadow: #00000075 0 8px 10px;
         border-top: 2px solid var(--color5);
-        overflow: scroll;
     }
 
     h3 {
@@ -94,9 +102,9 @@
         margin-bottom: 10px;
     }
 
-    .carpeta-media :global(.medialink) {
+    /*.carpeta-media :global(.medialink) {
         display: none !important;
-    }
+    }*/
 
     li:hover {
         transform: translateY(-10px);

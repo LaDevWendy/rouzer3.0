@@ -79,6 +79,11 @@
                 <img src={vistaPrevia} alt="" srcset="" />
             </a>
         {/if}
+        <div class="youtube-footer">
+            <a href="/Media/{media.url}" download={media.url}
+                >Descargar <Ripple /></a
+            >
+        </div>
     {:else if media.tipo == MediaType.Video}
         {#if abierto}
             <video
@@ -103,6 +108,11 @@
                 <i class="fe fe-play" style="position: relative;left: 2px;" />
             </Button>
         {/if}
+        <div class="youtube-footer">
+            <a href="/Media/{media.url}" download={media.url}
+                >Descargar <Ripple /></a
+            >
+        </div>
     {:else if media.tipo == MediaType.Youtube}
         {#if abierto}
             <!--{#if !hackYoutubeActivo}-->
@@ -287,7 +297,7 @@
     .media {
         position: relative;
         width: 50%;
-        max-height: 80vh;
+        max-height: 85vh;
         display: flex;
         flex-direction: column;
     }
@@ -327,8 +337,8 @@
     }
 
     .youtube-footer {
-        display: flex;
-        justify-content: space-between;
+        /*display: flex;
+        justify-content: space-between;*/
         background: var(--color1);
         width: 100%;
         text-align: center;
@@ -338,6 +348,7 @@
         border-top: none;
         font-size: 12px;
         color: #ffffffe3 !important;
+        z-index: 1;
     }
 
     .youtube-footer .medialink {
