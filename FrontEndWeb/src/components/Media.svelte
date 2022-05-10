@@ -301,6 +301,11 @@
         display: flex;
         flex-direction: column;
     }
+
+    .media a {
+        margin-bottom: -7px;
+    }
+
     video,
     .abierto {
         width: 100%;

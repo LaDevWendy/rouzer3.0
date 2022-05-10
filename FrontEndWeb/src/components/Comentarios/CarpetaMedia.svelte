@@ -68,7 +68,7 @@
 
     ul {
         display: flex;
-        row-gap: 30px;
+        /*row-gap: 30px;*/
         column-gap: 10px;
         flex-wrap: wrap;
         justify-content: center;
@@ -78,7 +78,7 @@
     }
     ul li {
         width: 128px;
-        height: 128px;
+        /*height: 128px;*/
         position: relative;
         transition: 0.1s;
     }
@@ -106,9 +106,9 @@
         display: none !important;
     }*/
 
-    li:hover {
+    /*li:hover {
         transform: translateY(-10px);
-    }
+    }*/
     @media (max-width: 600px) {
         section {
             width: 100vw;
