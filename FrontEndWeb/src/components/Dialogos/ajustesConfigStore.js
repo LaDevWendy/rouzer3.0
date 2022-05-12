@@ -14,6 +14,7 @@ let configInicial = {
     mutearRisas: false,
     desactivarCuetitos: false,
     comentarioModo: "1",
+    botoncitos: false
 }
 
 // Cargo configuracion gudardada

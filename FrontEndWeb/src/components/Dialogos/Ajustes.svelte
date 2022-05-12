@@ -145,6 +145,9 @@
                     <option value="2">Carga por páginas</option>
                 </select>
             </div>
+            <Checkbox bind:checked={$ajustesConfigStore.botoncitos} right
+                >Eee dos botoncitos</Checkbox
+            >
         </ExpansionPanel>
 
         <ExpansionPanel bind:group name="Auto censura">

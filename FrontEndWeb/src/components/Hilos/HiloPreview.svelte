@@ -411,6 +411,10 @@
                 >
                     <span class="fe fe-serio" />
                 </div>{/if}
+            {#if hilo.estado == 1}
+                <div class="info" style="background: var(--color6);">
+                    <span class="fe fe-paperclip" />
+                </div>{/if}
             {#if hilo.historico}
                 <div
                     class="info svelte-12j5r62 fe fe-anchor"

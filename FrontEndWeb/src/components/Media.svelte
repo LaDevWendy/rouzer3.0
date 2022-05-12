@@ -3,10 +3,13 @@
     import { onMount } from "svelte/";
     import { Icon, Button, Ripple } from "svelte-mui";
     import RChanClient from "../RChanClient";
+    import ajustesConfigStore from "./Dialogos/ajustesConfigStore";
 
     export let media;
     export let modoCuadrado = false;
     export let spoiler = false;
+
+    let botoncitos = $ajustesConfigStore.botoncitos;
 
     $: vistaPrevia = modoCuadrado
         ? media.vistaPreviaCuadrado
@@ -68,22 +71,24 @@
                     srcset=""
                 />
             {:else}
-                <a href="/Media/{media.url}" target="_blank">
+                <a class:botoncitos href="/Media/{media.url}" target="_blank">
                     <img src="/Media/{media.url}" alt="" srcset="" />
                 </a>
             {/if}
         {:else if spoiler}
             <img src={vistaPrevia} on:click={quitarSpoiler} alt="" srcset="" />
         {:else}
-            <a href="/Media/{media.url}" target="_blank">
+            <a class:botoncitos href="/Media/{media.url}" target="_blank">
                 <img src={vistaPrevia} alt="" srcset="" />
             </a>
         {/if}
-        <div class="youtube-footer">
-            <a href="/Media/{media.url}" download={media.url}
-                >Descargar <Ripple /></a
-            >
-        </div>
+        {#if botoncitos}
+            <div class="youtube-footer">
+                <a href="/Media/{media.url}" download={media.url}
+                    >Descargar <Ripple /></a
+                >
+            </div>
+        {/if}
     {:else if media.tipo == MediaType.Video}
         {#if abierto}
             <video
@@ -92,7 +97,6 @@
                 loop
                 controls
                 src="/Media/{media.url}"
-                style="margin-bottom: 16px;"
             />
             <Button
                 on:click={() => (abierto = false)}
@@ -108,11 +112,13 @@
                 <i class="fe fe-play" style="position: relative;left: 2px;" />
             </Button>
         {/if}
-        <div class="youtube-footer">
-            <a href="/Media/{media.url}" download={media.url}
-                >Descargar <Ripple /></a
-            >
-        </div>
+        {#if botoncitos}
+            <div class="youtube-footer">
+                <a href="/Media/{media.url}" download={media.url}
+                    >Descargar <Ripple /></a
+                >
+            </div>
+        {/if}
     {:else if media.tipo == MediaType.Youtube}
         {#if abierto}
             <!--{#if !hackYoutubeActivo}-->
@@ -302,7 +308,7 @@
         flex-direction: column;
     }
 
-    .media a {
+    .media .botoncitos {
         margin-bottom: -7px;
     }
 
