@@ -344,7 +344,7 @@
                     <Button
                         icon
                         color="red"
-                        class="button-size"
+                        style="width:32px;height:16px;"
                         on:click={() =>
                             abrir.reporte(
                                 hilo.id || comentario.hiloId,
@@ -359,7 +359,7 @@
                             color={comentario.sticky
                                 ? "var(--color6)"
                                 : "var(--color-texto2)"}
-                            class="button-size"
+                            style="width:32px;height:16px;"
                             disabled={stickeando}
                             on:click={togglesticky}
                             title={comentario.sticky ? "Desanclar" : "Anclar"}
@@ -373,7 +373,7 @@
                         <Button
                             icon
                             color="var(--color-texto2)"
-                            class="button-size"
+                            style="width:32px;height:16px;"
                             disabled={ignorando}
                             on:click={toggleignorar}
                             title={comentario.ignorado
@@ -391,7 +391,7 @@
                         <Button
                             icon
                             color={"var(--color-texto2)"}
-                            class="button-size"
+                            style="width:32px;height:16px;"
                             on:click={toggle}
                             title={visible ? "Ocultar" : "Mostrar"}
                         >
@@ -431,13 +431,10 @@
 </div>
 
 <style>
-    .button-size {
-        width: 32px;
-        height: 16px;
-    }
     .comentario {
         display: grid;
-        gap: 10px;
+        row-gap: 7px;
+        column-gap: 10px;
         grid-template-columns: 50px calc(100% - 60px);
         grid-template-areas:
             "color header"

@@ -1,10 +1,10 @@
 export default [{
-    nombre: 'Classic',
-    style: ``
-},
-{
-    nombre: 'Porche',
-    style: `body {
+        nombre: 'Classic',
+        style: ``
+    },
+    {
+        nombre: 'Porche',
+        style: `body {
             --color5: orangered;
             --color2: white;
             --color-texto1: black;
@@ -56,10 +56,10 @@ export default [{
             background-color: var(--color2);
        }
        `
-},
-{
-    nombre: 'Legacy',
-    style: `body {
+    },
+    {
+        nombre: 'Legacy',
+        style: `body {
             --color2: #2c3e50;
             --color5: #256587;
         }
@@ -80,10 +80,10 @@ export default [{
         .comentario:hover {
             background: #2c3b4a !important
         }`
-},
-{
-    nombre: 'Romed',
-    style: `body {
+    },
+    {
+        nombre: 'Romed',
+        style: `body {
             --color1: #800000;
             --color2: #6c1108;
             --color3: #560e06;
@@ -156,10 +156,10 @@ export default [{
         .resaltado .contenido {
             color: white;
        }`
-},
-{
-    nombre: 'Light',
-    style: `
+    },
+    {
+        nombre: 'Light',
+        style: `
 body{
     --color1: #fefefe;
     --color2: #fefefe;
@@ -273,26 +273,34 @@ input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:foc
 .verde {
     color: #12924b;
 }
-    `
-},
-{
-    nombre: 'Skin de usuario 1',
-    style: ``
-},
-{
-    nombre: 'Skin de usuario 2',
-    style: ``
-},
-{
-    nombre: 'Skin de usuario 3',
-    style: ``
-},
-{
-    nombre: 'Skin de usuario 4',
-    style: ``
-},
-{
-    nombre: 'Skin de usuario 5',
-    style: ``
+.seccion2 ul:nth-child(2), .seccion2 ul:nth-child(3){
+    background: var(--color3) !important;
 }
+.contador-comentarios .badge, .nav-categorias > a.categoria.comunacha{
+    color: var(--color2);
+}
+.loader{
+    color: var(--color5) !important;
+}`
+    },
+    {
+        nombre: 'Skin de usuario 1',
+        style: ``
+    },
+    {
+        nombre: 'Skin de usuario 2',
+        style: ``
+    },
+    {
+        nombre: 'Skin de usuario 3',
+        style: ``
+    },
+    {
+        nombre: 'Skin de usuario 4',
+        style: ``
+    },
+    {
+        nombre: 'Skin de usuario 5',
+        style: ``
+    }
 ]

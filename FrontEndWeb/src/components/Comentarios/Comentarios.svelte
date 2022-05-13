@@ -399,7 +399,7 @@
                     class="boton-modo-vivo"
                     style={$comentariosStore.modoVivo
                         ? "background:var(--color5);"
-                        : "background:white"}
+                        : "background:var(--color)"}
                 />
             </Button>
             {#if comentarioModo == "1" && comentarios.length > bloque}

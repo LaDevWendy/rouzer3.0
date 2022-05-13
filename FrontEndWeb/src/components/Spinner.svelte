@@ -21,7 +21,7 @@
     animation: spin 2s linear infinite;
     align-self: center;
     font-family: eurofighter;
-    color: white;
+    color: var(--color-texto1);
     background: var(--color2);
 }
 
