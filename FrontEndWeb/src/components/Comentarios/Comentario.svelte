@@ -304,7 +304,7 @@
                     {#if comentario.hiloId}
                         <a
                             href="/Hilo/{comentario.hiloId}#{comentario.id}"
-                            style="color:white!important"
+                            style="color:var(--color-texto1)"
                         >
                             <Menuitem>Ir</Menuitem>
                         </a>
@@ -344,7 +344,7 @@
                     <Button
                         icon
                         color="red"
-                        style="width:32px;height:16px;"
+                        class="button-size"
                         on:click={() =>
                             abrir.reporte(
                                 hilo.id || comentario.hiloId,
@@ -359,7 +359,7 @@
                             color={comentario.sticky
                                 ? "var(--color6)"
                                 : "var(--color-texto2)"}
-                            style="width:32px;height:16px;"
+                            class="button-size"
                             disabled={stickeando}
                             on:click={togglesticky}
                             title={comentario.sticky ? "Desanclar" : "Anclar"}
@@ -373,7 +373,7 @@
                         <Button
                             icon
                             color="var(--color-texto2)"
-                            style="width:32px;height:16px;"
+                            class="button-size"
                             disabled={ignorando}
                             on:click={toggleignorar}
                             title={comentario.ignorado
@@ -391,7 +391,7 @@
                         <Button
                             icon
                             color={"var(--color-texto2)"}
-                            style="width:32px;height:16px;"
+                            class="button-size"
                             on:click={toggle}
                             title={visible ? "Ocultar" : "Mostrar"}
                         >
@@ -431,6 +431,10 @@
 </div>
 
 <style>
+    .button-size {
+        width: 32px;
+        height: 16px;
+    }
     .comentario {
         display: grid;
         gap: 10px;

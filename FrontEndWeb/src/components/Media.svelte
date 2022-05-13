@@ -138,10 +138,7 @@
         {:else}
             <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
             <Button on:click={abrirVideo} color="red" class="play" icon>
-                <i
-                    class="fe fe-youtube"
-                    style="position: relative;left: 1px;"
-                />
+                <i class="fe fe-youtube fe-youtube-position" />
             </Button>
         {/if}
         <div class="youtube-footer">
@@ -191,10 +188,7 @@
         {:else}
             <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
             <Button on:click={abrirVideo} color="red" class="play" icon>
-                <i
-                    class="fe fe-youtube"
-                    style="position: relative;left: 1px;"
-                />
+                <i class="fe fe-youtube fe-youtube-position" />
             </Button>
         {/if}
         <div class="youtube-footer">
@@ -234,10 +228,7 @@
         {:else}
             <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
             <Button on:click={abrirVideo} color="red" class="play" icon>
-                <i
-                    class="fe fe-youtube"
-                    style="position: relative;left: 1px;"
-                />
+                <i class="fe fe-youtube fe-youtube-position" />
             </Button>
         {/if}
         <div class="youtube-footer">
@@ -272,10 +263,7 @@
         {:else}
             <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
             <Button on:click={abrirVideo} color="red" class="play" icon>
-                <i
-                    class="fe fe-youtube"
-                    style="position: relative;left: 1px;"
-                />
+                <i class="fe fe-youtube fe-youtube-position" />
             </Button>
         {/if}
         <div class="youtube-footer">
@@ -295,6 +283,10 @@
 </div>
 
 <style>
+    .fe-youtube-position {
+        position: relative;
+        left: 1px;
+    }
     video,
     img {
         border-radius: 4px;

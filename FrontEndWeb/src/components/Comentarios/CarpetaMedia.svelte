@@ -21,9 +21,7 @@
 {#if visible}
     <div transition:fade={{ duration: 150 }} class="fondo" style="z-index:20">
         <section class="carpeta-media panel">
-            <div
-                style="display: flex; justify-content: space-evenly; height: 40px; line-height:40px"
-            >
+            <div class="titulo">
                 <h3>Archivos del roz</h3>
                 <Button
                     on:click={() => (visible = false)}
@@ -54,6 +52,12 @@
 <style>
     .carpeta-media {
         background: red;
+    }
+    .titulo {
+        display: flex;
+        justify-content: space-evenly;
+        height: 40px;
+        line-height: 40px;
     }
     .fondo {
         position: fixed;

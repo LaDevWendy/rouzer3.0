@@ -151,11 +151,7 @@
         >
             <icon class="fe fe-x" />
         </Button>
-        <audio
-            class="controls"
-            controls="controls"
-            style="height: 32px; border-radius: 16px;"
-        >
+        <audio class="controls" controls="controls">
             <source src={urlBlobAudio} type="audio/mp3" />
         </audio>
     {:else}
@@ -225,6 +221,10 @@
 </Dialog>
 
 <style>
+    audio {
+        height: 32px;
+        border-radius: 16px;
+    }
     .recording {
         display: flex;
         flex-direction: row-reverse;

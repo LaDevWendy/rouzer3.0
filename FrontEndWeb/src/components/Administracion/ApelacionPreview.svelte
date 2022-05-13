@@ -49,7 +49,7 @@
 
 <div class="apelacion" class:rechazada class:aceptada>
     <div class="header">
-        <span style="background:var(--color2); padding:2px; border-radius: 4px">
+        <span class="tiempo">
             <Tiempo date={apelacion.creacion} />
         </span>
         <a
@@ -79,6 +79,11 @@
     .header {
         padding: 8px;
         overflow: auto;
+    }
+    .header .tiempo {
+        background: var(--color2);
+        padding: 2px;
+        border-radius: 4px;
     }
     .header p {
         background-color: var(--color4);

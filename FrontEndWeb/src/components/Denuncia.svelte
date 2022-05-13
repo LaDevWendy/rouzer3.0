@@ -36,7 +36,7 @@
 
 <div class="denuncia" class:rechazada class:aceptada>
     <div class="header">
-        <span style="background:var(--color2); padding:2px; border-radius: 4px">
+        <span class="tiempo">
             <Tiempo date={denuncia.creacion} />
         </span>
         {#if $globalStore.usuario.esMod}
@@ -103,6 +103,11 @@
     .header {
         padding: 8px;
         overflow: auto;
+    }
+    .header .tiempo {
+        background: var(--color2);
+        padding: 2px;
+        border-radius: 4px;
     }
     .denuncia {
         position: relative;

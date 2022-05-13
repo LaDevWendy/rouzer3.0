@@ -118,7 +118,7 @@
         border-top: solid 2px var(--color5);
     }
     form {
-        color: white !important;
+        color: var(--color-texto1) !important;
         /* background: var(--color2); */
     }
 

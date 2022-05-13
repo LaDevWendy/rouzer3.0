@@ -138,9 +138,7 @@
                                     <icon class="fe fe-circle" />
                                     {c.nombre}
                                 </a>
-                                <span
-                                    style="width: fit-content;margin-left: auto;"
-                                >
+                                <span class="sep">
                                     <Checkbox
                                         bind:checked={c.activa}
                                         right
@@ -178,9 +176,7 @@
                                 <span style="margin-left:auto" />
                                 {g.nombre}
                                 <Ripple />
-                                <span
-                                    style="width: fit-content;margin-left: auto;"
-                                >
+                                <span class="sep">
                                     <Checkbox
                                         bind:checked={g.activo}
                                         true
@@ -207,9 +203,7 @@
                                                 <icon class="fe fe-circle" />
                                                 {c.nombre}
                                             </a>
-                                            <span
-                                                style="width: fit-content;margin-left: auto;"
-                                            >
+                                            <span class="sep">
                                                 <Checkbox
                                                     bind:checked={c.activa}
                                                     right
@@ -331,5 +325,9 @@
     .menu-principal :global(.icon) {
         opacity: 0.7;
         padding-right: 17px;
+    }
+    .sep {
+        width: fit-content;
+        margin-left: auto;
     }
 </style>

@@ -73,8 +73,7 @@
     <Dialog width="600" bind:visible>
         <div slot="title">Categorias favoritas</div>
         <slot name="body">
-            <span style="color:var(--color5)"
-                >Favoritas ({favoritas.length}):</span
+            <span class="titulo-categoria">Favoritas ({favoritas.length}):</span
             >
             <div class="favoritas container-categorias cpt">
                 {#each config.categorias.filter( (c) => favoritas.includes(c.id) ) as c (c.id)}
@@ -91,7 +90,7 @@
                 {/each}
             </div>
 
-            <span style="color:var(--color5)"
+            <span class="titulo-categoria"
                 >Comunachas ({config.categorias.length -
                     favoritas.length}):</span
             >
@@ -122,6 +121,9 @@
 {/if}
 
 <style>
+    .titulo-categoria {
+        color: var(--color5);
+    }
     .nav-categorias {
         display: flex;
         flex-wrap: wrap;

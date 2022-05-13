@@ -136,11 +136,9 @@
                         <h3>{n.hiloTitulo}</h3>
 
                         {#if n.tipo == 0}
-                            <span style="color: var(--color5)">
-                                Han comentado
-                            </span>
+                            <span class="han-hecho"> Han comentado </span>
                         {:else}
-                            <span style="color: var(--color5)">
+                            <span class="han-hecho">
                                 Han respondido tu comentario</span
                             >
                         {/if}
@@ -153,6 +151,9 @@
 </ul>
 
 <style>
+    .han-hecho {
+        color: var(--color5);
+    }
     .nuevas-notificaciones {
         position: fixed;
         bottom: 16px;

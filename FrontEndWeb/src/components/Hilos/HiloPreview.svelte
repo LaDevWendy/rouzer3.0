@@ -254,15 +254,7 @@
     on:contextmenu={onContextMenu}
 >
     {#if $globalStore.usuario.esAuxiliar}
-        <div
-            class=""
-            style="top: 0;
-    right: 0;
-    z-index: 232;
-    display: flex;
-    flex-direction: column;
-    position: absolute;"
-        >
+        <div class="menu-position">
             <Menu style="top: 100%;">
                 <span slot="activador">
                     <Button
@@ -297,15 +289,7 @@
             </Menu>
         </div>
     {:else}
-        <div
-            class=""
-            style="top: 0;
-        right: 0;
-        z-index: 232;
-        display: flex;
-        flex-direction: column;
-        position: absolute;"
-        >
+        <div class="menu-position">
             <Button icon color="var(--color-texto2)" on:click={toggle}>
                 <icon class="fe fe-eye-off" />
             </Button>
@@ -338,14 +322,14 @@
         <!-- <img src={media.vistaPreviaCuadrado} alt="{hilo.titulo}" class="imghilo"> -->
         <div class="infos">
             {#if hilo.sticky > 0}
-                <div class="info sticky-info">
+                <div class="info sticky-info special">
                     <Icon
                         size="17"
                         path="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12M8.8,14L10,12.8V4H14V12.8L15.2,14H8.8Z"
                     />
                 </div>{/if}
             {#if hilo.nuevo}
-                <div class="info" style="background:#18222D">NUEVO</div>{/if}
+                <div class="info nuevo">NUEVO</div>{/if}
             <div class="info" style="">
                 {(
                     config.categoriaPorId(hilo.categoriaId) || {
@@ -355,71 +339,51 @@
             </div>
             <!--//??quitado-->
             {#if media.tipo == MediaType.Video}
-                <div class="info" style="background:#18222D">
+                <div class="info video">
                     <span class="fe fe-play" />
                 </div>{/if}
             {#if media.tipo == MediaType.Youtube}
-                <div class="info" style="background:#F10002">
+                <div class="info youtube">
                     <span class="fe fe-play" />
                 </div>{/if}
             {#if media.tipo == MediaType.Bitchute}
-                <div class="info" style="background:#E33E34">
+                <div class="info bitchute">
                     <span class="fe fe-play" />
                 </div>{/if}
             {#if media.tipo == MediaType.DailyMotion}
-                <div class="info" style="background:#0062D2">
+                <div class="info dailymotion">
                     <span class="fe fe-play" />
                 </div>{/if}
             {#if media.tipo == MediaType.PornHub}
-                <div class="info" style="background:#EA8F1C">
+                <div class="info pornhub">
                     <span class="fe fe-play" />
                 </div>{/if}
             {#if hilo.encuesta}
-                <div class="info encuesta">
+                <div class="info encuesta special2">
                     <span class="fe fe-bar-chart-2" />
                 </div>{/if}
             {#if hilo.dados}<Dado />{/if}
             {#if hilo.concentracion}
-                <div
-                    class="info"
-                    style="padding: 0px 0 !important;
-                border-radius: 4px !important;
-                margin: 0 2px;
-                background: var(--color3);"
-                >
+                <div class="info special" style="padding: 0px 0 !important;">
                     <span class="fe fe-puas" />
                 </div>{/if}
             {#if hilo.maximo}
-                <div
-                    class="info"
-                    style="border-radius: 4px !important; margin: 0 2px; background: var(--color3);"
-                >
-                    1K
-                </div>{/if}
+                <div class="info special">1K</div>{/if}
             {#if hilo.spoiler}
                 <div
-                    class="info svelte-12j5r62 fe fe-alert-triangle"
-                    style="background: var(--color5);"
+                    class="info fe fe-alert-triangle"
+                    style="background: red;"
                 />{/if}
             {#if hilo.serio}
-                <div
-                    class="info"
-                    style="padding: 0px 0 !important;
-                border-radius: 4px !important;
-                margin: 0 2px;
-                background: var(--color3);"
-                >
+                <div class="info special" style="padding: 0px 0 !important;">
                     <span class="fe fe-serio" />
                 </div>{/if}
             {#if hilo.estado == 1}
-                <div class="info" style="background: var(--color6);">
+                <div class="info special2">
                     <span class="fe fe-paperclip" />
                 </div>{/if}
             {#if hilo.historico}
-                <div
-                    class="info svelte-12j5r62 fe fe-anchor"
-                    style="background: var(--color6);"
-                />
+                <div class="info fe fe-anchor special2" />
             {/if}
 
             <div class="info">{hilo.cantidadComentarios}</div>
@@ -434,6 +398,33 @@
         border-radius: 0 !important;
         margin: 0;
         height: 18px !important;
+    }
+    .info.nuevo {
+        background: #18222d;
+    }
+    .info.video {
+        background: #18222d;
+    }
+    .info.youtube {
+        background: #f10002;
+    }
+    .info.bitchute {
+        background: #e33e34;
+    }
+    .info.dailymotion {
+        background: #0062d2;
+    }
+    .info.pornhub {
+        background: #ea8f1c;
+    }
+
+    .special {
+        border-radius: 4px !important;
+        margin: 0 2px;
+        background: var(--color3);
+    }
+    .special2 {
+        background: var(--color6);
     }
 
     .info:first-child {
@@ -454,17 +445,16 @@
         border-radius: 50% 0% 0% 50%;
         opacity: 0.33;
     }
-    .hilo:hover :global(button:first-child) {
+    .hilo :global(button:first-child) {
         border-radius: 50% 0% 0% 0%;
     }
-    .hilo:hover :global(button:last-child) {
+    .hilo :global(button:last-child) {
         border-radius: 0% 0% 0% 50%;
     }
     .hilo-oculto {
         display: none;
     }
     .encuesta {
-        background: var(--color6);
         padding: 0 !important;
         margin: 0 2px;
         width: 18px;
@@ -517,5 +507,13 @@
         background: inherit;
         border-radius: inherit;
         filter: blur(10px);
+    }
+    .menu-position {
+        top: 0;
+        right: 0;
+        z-index: 232;
+        display: flex;
+        flex-direction: column;
+        position: absolute;
     }
 </style>

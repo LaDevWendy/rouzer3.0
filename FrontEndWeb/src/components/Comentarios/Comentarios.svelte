@@ -379,7 +379,7 @@
         {#if nuevosComentarios.length != 0}
             <div
                 class="badge"
-                style="    font-size: 18px;height: auto;cursor: pointer;"
+                style="font-size:18px;height:auto;cursor:pointer;"
             >
                 <span on:click={cargarNuevosComentarios}
                     >+ {nuevosComentarios.length}</span

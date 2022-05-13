@@ -197,29 +197,29 @@
 
             <ErrorValidacion {error} />
             <div style=" flex-direction:row; display:flex; flex-wrap:wrap">
-                <span style="width: fit-content;margin-right: auto;"
-                    ><Checkbox bind:checked={banderitas_flag} right
+                <span class="checkbox-position">
+                    <Checkbox bind:checked={banderitas_flag} right
                         >Banderitas</Checkbox
                     ></span
                 >
 
-                <span style="width: fit-content;margin-right: auto;"
-                    ><Checkbox bind:checked={dados_flag} right>Dados</Checkbox
+                <span class="checkbox-position">
+                    <Checkbox bind:checked={dados_flag} right>Dados</Checkbox
                     ></span
                 >
 
-                <span style="width: fit-content;margin-right: auto;"
-                    ><Checkbox bind:checked={idunico_flag} right
+                <span class="checkbox-position">
+                    <Checkbox bind:checked={idunico_flag} right
                         >Id único</Checkbox
                     ></span
                 >
 
-                <span style="width: fit-content;margin-right: auto;"
-                    ><Checkbox bind:checked={serio_flag} right>Serio</Checkbox
+                <span class="checkbox-position">
+                    <Checkbox bind:checked={serio_flag} right>Serio</Checkbox
                     ></span
                 >
 
-                <!--<span style="width: fit-content;margin-right: auto;"
+                <!--<span class="checkbox-position">
                     ><Checkbox bind:checked={audio_flag} right>Audios</Checkbox
                     ></span
                 >-->
@@ -227,35 +227,35 @@
 
             {#if $globalStore.usuario.esMod}
                 <div style=" flex-direction:row; display:flex; flex-wrap:wrap">
-                    <span style="width: fit-content;margin-right: auto;"
-                        ><Checkbox bind:checked={concentracion_flag} right
+                    <span class="checkbox-position">
+                        <Checkbox bind:checked={concentracion_flag} right
                             >Concentración</Checkbox
                         ></span
                     >
-                    <!--<span style="width: fit-content;margin-right: auto;"
+                    <!--<span class="checkbox-position">
                         ><Checkbox bind:checked={md_flag} right
                             >Markdown</Checkbox
                         ></span
                     >-->
-                    <span style="width: fit-content;margin-right: auto;"
+                    <span class="checkbox-position"
                         ><Checkbox bind:checked={mostrarRango} right
                             >Tag_Mod</Checkbox
                         ></span
                     >
                     {#if $globalStore.usuario.esAdmin}
-                        <span style="width: fit-content;margin-right: auto;"
+                        <span class="checkbox-position"
                             ><Checkbox bind:checked={mostrarRangoAdmin} right
                                 >Tag_Admin</Checkbox
                             ></span
                         >
                         {#if $globalStore.usuario.esDev}
-                            <span style="width: fit-content;margin-right: auto;"
+                            <span class="checkbox-position"
                                 ><Checkbox bind:checked={mostrarRangoDev} right
                                     >Tag_Dev</Checkbox
                                 ></span
                             >
                         {/if}
-                        <span style="width: fit-content;margin-right: auto;"
+                        <span class="checkbox-position"
                             ><Checkbox bind:checked={mostrarNombre} right
                                 >Nombre</Checkbox
                             ></span
@@ -332,5 +332,9 @@
         z-index: 1;
         width: calc(100% - 20px);
         height: calc(100% - 70px);
+    }
+    .checkbox-position {
+        width: fit-content;
+        margin-right: auto;
     }
 </style>

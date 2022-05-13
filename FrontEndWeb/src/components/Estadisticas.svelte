@@ -31,9 +31,8 @@
 
 {#if $estadisticasStore.visible}
     <div
-        class="container"
+        class="container stats"
         transition:fly={{ opacity: 1, y: -48, duration: 300 }}
-        style="position:absolute; width:100vw;z-index: 2;height: 100%; pointer-events: none !important;"
     >
         <div
             class="estadisticas "
@@ -70,6 +69,13 @@
 </div>
 
 <style>
+    .stats {
+        position: absolute;
+        width: 100vw;
+        z-index: 2;
+        height: 100%;
+        pointer-events: none !important;
+    }
     .estadisticas {
         background: url(/imagenes/estadisticas.png);
         background-size: 100%;

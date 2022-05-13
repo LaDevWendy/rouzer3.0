@@ -356,6 +356,7 @@ button:focus {
     color: white;
     margin: 0;
     font-weight: 500;
+    border-radius: 4px;
     /* align-self: flex-end; */
 }
 
@@ -580,10 +581,12 @@ h3 {
         opacity: 0;
         background-position: 0% 50%;
     }
+
     50% {
         opacity: 0.4;
         background-position: 100% 50%;
     }
+
     100% {
         opacity: 0;
         background-position: 0% 50%;
@@ -981,7 +984,7 @@ input:-webkit-autofill:active {
 }
 
 input:-webkit-autofill {
-    -webkit-text-fill-color: white !important;
+    -webkit-text-fill-color: var(--color-texto1) !important;
 }
 
 ::placeholder {
