@@ -10,6 +10,7 @@
     import { HiloEstado } from "../../enums";
     import { EstadoDenuncia } from "../../enums";
     import { ComentarioEstado } from "../../enums";
+    import { Button } from "svelte-mui";
 
     let innerWidth = window.innerWidth;
     let current = 2;
@@ -88,22 +89,41 @@
             comentarios = comentarios;
         }
     });
+
+    let minimizado = false;
 </script>
 
 <svelte:window bind:innerWidth />
 
 <main>
     <BarraModeracion />
-    <div class="ultimos-medias">
-        <ul>
-            {#each comentariosMedia as c (c.id)}
-                <li>
-                    <a href="/Hilo/{c.hiloId}#{c.id}">
-                        <img src={c.media.vistaPreviaCuadrado} alt="" />
-                    </a>
-                </li>
-            {/each}
-        </ul>
+    <div class="ultimos-medias-block">
+        <Button
+            dense
+            shaped
+            style="margin-left:auto;margin-right:4px;margin-bottom:4px"
+            color={"var(--color-texto2)"}
+            on:click={() => (minimizado = !minimizado)}
+            ><i
+                class="fe"
+                class:fe-minimize={!minimizado}
+                class:fe-maximize={minimizado}
+            /></Button
+        >
+        <div
+            class="ultimos-medias"
+            class:ultimos-medias-minimizado={minimizado}
+        >
+            <ul>
+                {#each comentariosMedia as c (c.id)}
+                    <li>
+                        <a href="/Hilo/{c.hiloId}#{c.id}">
+                            <img src={c.media.vistaPreviaCuadrado} alt="" />
+                        </a>
+                    </li>
+                {/each}
+            </ul>
+        </div>
     </div>
     {#if innerWidth < 956}
         <div id="botones" class="tab">
@@ -238,5 +258,13 @@
     }
     .tab button.active {
         background-color: #322029;
+    }
+    .ultimos-medias-minimizado {
+        max-height: 204px;
+        overflow-y: scroll;
+    }
+    .ultimos-medias-block {
+        display: flex;
+        flex-direction: column;
     }
 </style>
