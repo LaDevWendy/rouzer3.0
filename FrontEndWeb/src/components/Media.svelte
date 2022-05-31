@@ -90,7 +90,9 @@
             </div>
         {/if}
     {:else if media.tipo == MediaType.Video}
-        {#if abierto}
+        {#if spoiler}
+            <img src={vistaPrevia} on:click={quitarSpoiler} alt="" srcset="" />
+        {:else if abierto}
             <video
                 muted
                 bind:this={vid}
@@ -120,7 +122,9 @@
             </div>
         {/if}
     {:else if media.tipo == MediaType.Youtube}
-        {#if abierto}
+        {#if spoiler}
+            <img src={vistaPrevia} on:click={quitarSpoiler} alt="" srcset="" />
+        {:else if abierto}
             <!--{#if !hackYoutubeActivo}-->
             <div class="youtube-container">
                 <iframe
@@ -168,7 +172,9 @@
             </a>
         </div>
     {:else if media.tipo == MediaType.Bitchute}
-        {#if abierto}
+        {#if spoiler}
+            <img src={vistaPrevia} on:click={quitarSpoiler} alt="" srcset="" />
+        {:else if abierto}
             <div class="youtube-container">
                 <iframe
                     title="bitchute"
@@ -205,7 +211,9 @@
             </a>
         </div>
     {:else if media.tipo == MediaType.DailyMotion}
-        {#if abierto}
+        {#if spoiler}
+            <img src={vistaPrevia} on:click={quitarSpoiler} alt="" srcset="" />
+        {:else if abierto}
             <div class="youtube-container">
                 <iframe
                     title="DailyMotion"
@@ -242,7 +250,9 @@
             </a>
         </div>
     {:else if media.tipo == MediaType.PornHub}
-        {#if abierto}
+        {#if spoiler}
+            <img src={vistaPrevia} on:click={quitarSpoiler} alt="" srcset="" />
+        {:else if abierto}
             <div class="youtube-container">
                 <iframe
                     title="PornHub"

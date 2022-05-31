@@ -29,7 +29,13 @@
     .hilo-preview-mod :global(.hilo a.es-gif) {
         background-size: contain !important;
     }
-
+    .hilo-preview-mod :global(.spoiler) {
+        box-shadow: initial;
+        overflow: initial;
+    }
+    .hilo-preview-mod :global(.spoiler::before) {
+        content: none;
+    }
     .eliminado {
         border-left: solid 2px red;
     }

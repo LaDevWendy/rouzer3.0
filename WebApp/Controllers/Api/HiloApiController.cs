@@ -169,6 +169,10 @@ namespace WebApp.Controllers
 
             hilo.Media = media;
             hilo.MediaId = media.Id;
+            if (vm.Spoiler)
+            {
+                hilo.Flags += "p";
+            }
 
             AudioModel audio = null;
             try
