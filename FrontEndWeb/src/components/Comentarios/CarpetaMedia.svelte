@@ -16,18 +16,23 @@
     function irAComentario(id) {
         dispatch("irAComentario", id);
     }
+
+    function cerrar() {
+        visible = false;
+    }
 </script>
 
 {#if visible}
-    <div transition:fade={{ duration: 150 }} class="fondo" style="z-index:20">
-        <section class="carpeta-media panel">
+    <div
+        transition:fade={{ duration: 150 }}
+        class="fondo"
+        on:click={cerrar}
+        style="z-index:20"
+    >
+        <section class="carpeta-media panel" on:click|stopPropagation>
             <div class="titulo">
                 <h3>Archivos del roz</h3>
-                <Button
-                    on:click={() => (visible = false)}
-                    class="cerrar"
-                    color="var(--color5)"
-                >
+                <Button on:click={cerrar} class="cerrar" color="var(--color5)">
                     Cerrar
                 </Button>
             </div>

@@ -8,18 +8,27 @@
 </head>
 
 <body>
-    <h1 class="mantenimiento">Bancá un toque, padre, que pateé el cable sin querer... (apretá F5 F5 F5 F5...)</h1>
+    <h1 class="mantenimiento">Mantenimiento. Cada tanto actualizá la página para ver si ya volvió.</h1>
     <img src="imagenes/chocamo.jpg" alt="">
-    <audio src="audio/chocamo.mp3" autoplay></audio>
+
+    <div class="youtube">
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/7rUj_ywWw2I" title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen autoplay></iframe>
+    </div>
+
+
+    <!--<audio src="audio/chocamo.mp3" autoplay></audio>
 
     <div class="audioPrompt" style="display: none;">
         <h1>Rouzed quiere reproducir sonido</h1>
         <button onclick="playAudio()">Permitir</button>
-    </div>
+    </div>-->
 </body>
 
 <script>
-    async function inicio() {
+    /*async function inicio() {
         console.log("uuf");
         try {
             await playAudio()
@@ -46,7 +55,7 @@
             audioElement.play()
         }
         return document.querySelector('audio').play()
-    }
+    }*/
 </script>
 
 <style>
@@ -54,7 +63,7 @@
         display: block;
         background: #cc1d24;
     }
-    
+
     img {
         position: fixed;
         bottom: 0;
@@ -66,17 +75,17 @@
         max-width: 100%;
         animation: ani 0.1s infinite;
     }
-    
+
     h1 {
         color: white;
-        font-family: Helvetica;
+        font-family: Helvetica, sans-serif;
     }
-    
+
     .mantenimiento {
         position: fixed;
         z-index: 1;
     }
-    
+
     .audioPrompt {
         position: absolute;
         display: flex;
@@ -88,17 +97,31 @@
         height: 100vh;
         color: white;
     }
-    
+
     @keyframes ani {
         0% {
             transform: translateX(10px);
         }
+
         50% {
             transform: translateX(-10px);
         }
+
         100% {
             transform: translateX(10px);
         }
+    }
+
+    .youtube {
+        max-width: 100%;
+        max-height: 50%;
+        z-index: 1;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 960px;
+        height: 540px;
     }
 </style>
 

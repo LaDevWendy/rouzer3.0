@@ -70,7 +70,7 @@ namespace Modelos
                     {
                         this.Banderita = "cl";
                     }
-                    if(comentario.UsuarioId == "b16d173f-16e4-49c8-992e-5f7e03711f52")
+                    if (comentario.UsuarioId == "b16d173f-16e4-49c8-992e-5f7e03711f52")
                     {
                         this.Banderita = "ar";
                     }
@@ -158,24 +158,24 @@ namespace Modelos
             );
 
             //Tactico
-                var n = 100000;
-                if (hilo != null && hilo.Flags.Contains("t"))
-                {
-                    n /= 10;
-                    if (hilo.Flags.ToCharArray().Count(c => c == 't') > 1)
-                    {
-                        n /= 10;
-                    }
-                }
-                if (this.Tactico)
+            var n = 100000;
+            if (hilo != null && hilo.Flags.Contains("t"))
+            {
+                n /= 10;
+                if (hilo.Flags.ToCharArray().Count(c => c == 't') > 1)
                 {
                     n /= 10;
                 }
-                if (r.Next(n) == 7)
-                {
+            }
+            if (this.Tactico)
+            {
+                n /= 10;
+            }
+            if (r.Next(n) == 7)
+            {
 
-                    return "tactico";
-                }
+                return "tactico";
+            }
 
             //Serio
             if (hilo != null && hilo.Flags.Contains("s"))

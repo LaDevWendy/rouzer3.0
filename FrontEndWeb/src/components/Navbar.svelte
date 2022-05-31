@@ -16,7 +16,7 @@
     // import AlertaPortenho from "./Especiales/AlertaPortenho.svelte";
     // import AlertaNenazo from "./Especiales/AlertaNenazo.svelte";
     // import AlertaProvinciano from "./Especiales/AlertaProvinciano.svelte";
-    // import Halloween from "./Especiales/Halloween.svelte";
+    import Halloween from "./Especiales/Halloween.svelte";
     // import GeneracionZoe from "./Especiales/GeneracionZoe.svelte";
     // import Corte from "./Especiales/Corte.svelte";
     // import Lucesitas from "./Lucesitas.svelte";
@@ -87,9 +87,9 @@
 
 <svelte:window on:scroll={onScroll} bind:scrollY />
 
+<Halloween />
 <!--<NadieLoSabra />
 <AlertaPortenho />
-<Halloween />
 <AlertaNenazo />
 <AlertaProvinciano />
 <GeneracionZoe />
