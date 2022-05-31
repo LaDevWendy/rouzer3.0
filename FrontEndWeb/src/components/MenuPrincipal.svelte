@@ -253,6 +253,12 @@
                 <a href="/Mis/Creados">
                     <li><icon class="fe fe-target" /> Creados <Ripple /></li>
                 </a>
+                <a href="/MisComentarios">
+                    <li>
+                        <icon class="fe fe-message-square" /> Comentarios <Ripple
+                        />
+                    </li>
+                </a>
                 <a href="/Mis/Favoritos">
                     <li><icon class="fe fe-star" /> Favoritos <Ripple /></li>
                 </a>

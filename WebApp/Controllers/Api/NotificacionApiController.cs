@@ -40,6 +40,7 @@ namespace WebApp.Controllers
                 .ToListAsync();
 
             _context.RemoveRange(notisABorrar);
+
             await _context.SaveChangesAsync();
             await rchanHub.Clients.Users(User.GetId())
                 .SendAsync("notificacionesLimpeadas");

@@ -37,6 +37,28 @@
             rango = "dev";
         }
     }
+
+    let tic = new Audio("/audio/tic.mp3");
+    let toc = new Audio("/audio/toc.mp3");
+    tic.loop = false;
+    toc.loop = false;
+
+    let conmutador = false;
+
+    function playTicToc() {
+        try {
+            if (conmutador) {
+                toc.load();
+                toc.play();
+            } else {
+                tic.load();
+                tic.play();
+            }
+            conmutador = !conmutador;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 </script>
 
 <div class="panel acciones">
@@ -67,7 +89,9 @@
         shaped
         disabled
         style="text-transform: inherit"
-        ><i class="fe fe-clock" /><Tiempo date={hilo.creacion} /></Button
+        ><i on:click={playTicToc} class="fe fe-clock" /><Tiempo
+            date={hilo.creacion}
+        /></Button
     >
 
     {#if hilo.rango > CreacionRango.Anon || hilo.nombre}

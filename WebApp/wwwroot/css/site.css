@@ -125,7 +125,7 @@ body {
     padding: 0;
     /* background: url("/imagenes/rosed.png"); */
     background-color: #101923;
-    font-family: Helvetica;
+    font-family: Helvetica, sans-serif;
     font-weight: 200;
     color: var(--color-texto1);
     /* background-size: 130%; */
@@ -272,7 +272,7 @@ option {
     color: var(--color-texto1);
     font-size: 16px;
     box-sizing: border-box;
-    font-family: helvetica;
+    font-family: Helvetica, sans-serif;
     border: none;
     padding: 8px;
 }
@@ -581,12 +581,10 @@ h3 {
         opacity: 0;
         background-position: 0% 50%;
     }
-
     50% {
         opacity: 0.4;
         background-position: 100% 50%;
     }
-
     100% {
         opacity: 0;
         background-position: 0% 50%;
