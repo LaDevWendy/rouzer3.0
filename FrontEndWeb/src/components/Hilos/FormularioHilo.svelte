@@ -73,6 +73,7 @@
                     media.link,
                     audio,
                     captcha,
+                    spoiler,
                     [...encuesta]
                 );
             } else {
@@ -85,6 +86,7 @@
                     media.link,
                     audio,
                     captcha,
+                    spoiler,
                     [...encuesta],
                     mostrarNombre && $globalStore.usuario.esAdmin,
                     mostrarRango,
@@ -110,6 +112,8 @@
         await tick();
         textarea2.focus();
     }
+
+    let spoiler = false;
 </script>
 
 {#if mostrar}
@@ -123,7 +127,7 @@
             class="formulario crear-hilo panel"
             on:submit|preventDefault
         >
-            <MediaInput bind:media />
+            <MediaInput bind:media bind:spoiler />
             <!--<AudioInput bind:blobAudio={audio} />-->
 
             <!-- svelte-ignore a11y-autofocus -->
