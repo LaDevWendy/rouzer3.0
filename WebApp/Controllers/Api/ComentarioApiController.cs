@@ -29,6 +29,7 @@ namespace WebApp.Controllers
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly NotificacioensService notificacioensService;
         private readonly AntiFloodService antiFlood;
+        private readonly IOptionsSnapshot<List<Categoria>> categoriasOpt;
         private readonly IOptionsSnapshot<GeneralOptions> gnrlOpts;
         private readonly EstadisticasService estadisticasService;
         private readonly IMediaService mediaService;
@@ -47,7 +48,8 @@ namespace WebApp.Controllers
             EstadisticasService estadisticasService,
             CensorService censorService,
             HashService hashService,
-            IAudioService audioService
+            IAudioService audioService,
+            IOptionsSnapshot<List<Categoria>> categoriasOpt
         )
         {
             this.comentarioService = comentarioService;
@@ -61,6 +63,7 @@ namespace WebApp.Controllers
             this.censorService = censorService;
             this.hashService = hashService;
             this.audioService = audioService;
+            this.categoriasOpt = categoriasOpt;
         }
 
         [HttpPost, Authorize, ValidateAntiForgeryToken]
@@ -244,14 +247,20 @@ namespace WebApp.Controllers
 
             await notificacioensService.Notificar(hilo, comentario);
 
+            var categoria = categoriasOpt.Value.FirstOrDefault(c => c.Id == hilo.CategoriaId);
+
             // Checkear si es historico
-            if (!hilo.Flags.Contains("h"))
+            if (!categoria.Limit && !hilo.Flags.Contains("h"))
             {
                 var cantidadComentarios = await context.Comentarios
                     .Where(c => c.Estado == ComentarioEstado.Normal)
                     .Where(c => c.HiloId == hilo.Id)
                     .CountAsync();
                 if (cantidadComentarios >= 1000) hilo.Flags += "h";
+            }
+            if (categoria.Limit && hilo.Flags.Contains("h"))
+            {
+                hilo.Flags = hilo.Flags.Replace("h", "");
             }
             //Roz de concentracion
             if (hilo.Flags.Contains("c"))
@@ -290,7 +299,7 @@ namespace WebApp.Controllers
             }
 
             // Roz con maximo
-            if (hilo.Flags.Contains("x"))
+            if (hilo.Flags.Contains("x") || categoria.Limit)
             {
                 var cantidadComentarios = await context.Comentarios
                     .Where(c => c.HiloId == hilo.Id)

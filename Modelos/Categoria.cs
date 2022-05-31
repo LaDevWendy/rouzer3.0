@@ -11,6 +11,7 @@ namespace Modelos
         public string NombreCorto { get; set; }
         public bool Nsfw { get; set; }
         public bool Public { get; set; }
+        public bool Limit { get; set; }
     }
 
     public static class CategoriaExtensiones

@@ -1013,6 +1013,12 @@ namespace WebApp.Controllers
 
             hilo.CategoriaId = vc.CategoriaId;
 
+            var categoria = categoriasOpt.Value.FirstOrDefault(c => c.Id == hilo.CategoriaId);
+            if (categoria.Limit && hilo.Flags.Contains("h"))
+            {
+                hilo.Flags = hilo.Flags.Replace("h", "");
+            }
+
             var denunciasPorCategoriaIncorrecta = await context.Denuncias
                 .Where(d => d.HiloId == vc.HiloId)
                 .Where(d => d.Motivo == MotivoDenuncia.CategoriaIncorrecta)
