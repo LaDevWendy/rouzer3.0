@@ -18,6 +18,7 @@
     export let comentarioStore;
 
     let cargando = false;
+    let captcha = "";
 
     // $comentarioStore;
     let media;
@@ -68,6 +69,7 @@
                     media.link,
                     audio,
                     "",
+                    spoiler,
                     mostrarNombre && $globalStore.usuario.esAdmin,
                     mostrarRango,
                     mostrarRangoAdmin,
@@ -80,7 +82,9 @@
                     result.visitorId,
                     media.archivo,
                     media.link,
-                    audio
+                    audio,
+                    captcha,
+                    spoiler
                 );
             }
             /*if (!$ajustesConfigStore.mutearRisas) {
@@ -105,6 +109,7 @@
         comentarioStore = "";
         media.archivo = null;
         error = null;
+        spoiler = false;
     }
 
     function onFocus() {
@@ -113,6 +118,8 @@
             window.location = "/Inicio";
         }
     }
+
+    let spoiler = false;
 </script>
 
 <form
@@ -122,7 +129,12 @@
     on:blur={() => (focus = false)}
 >
     <ErrorValidacion {error} />
-    <MediaInput bind:this={mediaInput} bind:media compacto={true} />
+    <MediaInput
+        bind:this={mediaInput}
+        bind:spoiler
+        bind:media
+        compacto={true}
+    />
     <!--{#if hilo.audios}
         <AudioInput bind:this={audioInput} bind:blobAudio={audio} />
     {/if}-->

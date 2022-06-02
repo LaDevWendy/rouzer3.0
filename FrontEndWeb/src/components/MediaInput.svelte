@@ -137,6 +137,8 @@
             actualizarArchivo();
         });
     });
+
+    export let spoiler = false;
 </script>
 
 <input
@@ -194,6 +196,17 @@
                     <icon class="fe fe-upload" />
                 </Button>
                 <Button
+                    on:click={() => (spoiler = !spoiler)}
+                    icon
+                    outlined={!spoiler}
+                    raised={spoiler}
+                    shaped={true}
+                    color=""
+                    on:click={() => true}
+                >
+                    <icon class="fe fe-alert-triangle" />
+                </Button>
+                <Button
                     icon
                     outlined
                     shaped={true}
@@ -205,16 +218,30 @@
         </span>
     {/if}
     {#if media.archivo || media.link}
-        <Button
-            class="cancelar"
-            on:click={removerArchivo}
-            icon
-            outlined
-            shaped={true}
-            on:click={() => true}
-        >
-            <icon class="fe fe-x" />
-        </Button>
+        <div class="cancelar">
+            <ButtonGroup>
+                <Button
+                    on:click={() => (spoiler = !spoiler)}
+                    icon
+                    outlined={!spoiler}
+                    raised={spoiler}
+                    shaped={true}
+                    color=""
+                    on:click={() => true}
+                >
+                    <icon class="fe fe-alert-triangle" />
+                </Button>
+                <Button
+                    on:click={removerArchivo}
+                    icon
+                    outlined
+                    shaped={true}
+                    on:click={() => true}
+                >
+                    <icon class="fe fe-x" />
+                </Button>
+            </ButtonGroup>
+        </div>
     {/if}
 </div>
 
@@ -230,6 +257,9 @@
     .media-input :global(.cancelar) {
         margin-left: auto;
         align-self: baseline;
+        position: absolute;
+        right: 16px;
+        top: 16px;
     }
 
     .media-input {
@@ -255,11 +285,6 @@
         max-width: 600px;
     }
 
-    .media-input :global(.cancelar) {
-        position: absolute;
-        right: 16px;
-        top: 16px;
-    }
     .media-input :global(.button-group) {
         flex-wrap: nowrap !important;
     }

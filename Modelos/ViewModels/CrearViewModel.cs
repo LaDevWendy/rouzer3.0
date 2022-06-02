@@ -18,5 +18,7 @@ namespace Modelos
         public bool MostrarRangoDev { get; set; } = false;
         public bool MostrarNombre { get; set; } = false;
         public string FingerPrint { get; set; }
+        public string Captcha { get; set; }
+        public bool Spoiler { get; set; }
     }
 }

@@ -410,7 +410,11 @@
     {#if visible}
         <div class="contenido" class:mediaExpandido>
             {#if comentario.media}
-                <Media media={comentario.media} bind:abierto={mediaExpandido} />
+                <Media
+                    media={comentario.media}
+                    spoiler={comentario.spoiler}
+                    bind:abierto={mediaExpandido}
+                />
             {/if}
             <!--{#if comentario.audio}
                 <Audio urlBlobAudio={comentario.audio.url} />
