@@ -24,6 +24,7 @@ export class MotivoDenuncia extends Enum {
     static Doxxeo = 2
     static ContenidoIlegal = 3
     static Gore = 4
+    static MaltratoAnimal = 5
 }
 
 export class EstadoDenuncia {
