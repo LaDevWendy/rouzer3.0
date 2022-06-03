@@ -169,6 +169,18 @@
         }
         ignorando = false;
     }
+
+    let spoilering = false;
+    async function toggleSpoiler() {
+        spoilering = true;
+        try {
+            let res = await RChanClient.toggleSpoiler(comentario.id);
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+        spoilering = false;
+    }
 </script>
 
 <div
@@ -338,6 +350,9 @@
                             >Eliminar media</Menuitem
                         >
                     {/if}
+                    <Spinner cargando={spoilering}>
+                        <Menuitem on:click={toggleSpoiler}>Spoiler</Menuitem>
+                    </Spinner>
                 </Menu>
             {:else}
                 <div class="acciones-comentario">
@@ -412,7 +427,7 @@
             {#if comentario.media}
                 <Media
                     media={comentario.media}
-                    spoiler={comentario.spoiler}
+                    bind:spoiler={comentario.spoiler}
                     bind:abierto={mediaExpandido}
                 />
             {/if}

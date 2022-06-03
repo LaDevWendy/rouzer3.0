@@ -126,6 +126,11 @@
             stickies = stickies.filter((s) => s.id != id);
         }
     });
+    Signal.coneccion.on("NuevoSpoiler", (id, spoiler) => {
+        console.log(spoiler);
+        diccionarioComentarios[id].spoiler = spoiler;
+        comentarios = comentarios;
+    });
 
     Signal.subscribirseAHilo(hilo.id);
     Signal.coneccion.on("ComentariosEliminados", (ids) => {

@@ -293,6 +293,10 @@ export default class RChanClient {
         return axios.post(`/api/Comentario/Ignorar/${id}`)
     }
 
+    static toggleSpoiler(id) {
+        return axios.post(`/api/Moderacion/Spoilear/${id}`)
+    }
+
     //Apelaciones
     static aceptarApelacion(apelacionId) {
         return axios.post(`/api/Administracion/AceptarApelacion/${apelacionId}`)

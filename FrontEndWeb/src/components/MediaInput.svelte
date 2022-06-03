@@ -202,6 +202,7 @@
                     raised={spoiler}
                     shaped={true}
                     color=""
+                    title="Spoiler"
                     on:click={() => true}
                 >
                     <icon class="fe fe-alert-triangle" />
