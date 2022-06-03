@@ -156,6 +156,10 @@ namespace WebApp.Controllers
             {
                 return Redirect("/Error/404");
             }
+            if ((User.GetId() != "168ed417-0555-4302-9049-26096cc01837") && (id == "954c1d80-0a87-4e1a-9784-1ffc667c598f"))
+            {
+                return Redirect("/Error/404");
+            }
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
             if (usuario is null)
                 return Redirect("/Error/404");

@@ -38,8 +38,8 @@
         }
     }
 
-    let tic = new Audio("/audio/tic.mp3");
-    let toc = new Audio("/audio/toc.mp3");
+    let tic = new Audio("/audio/tic.ogg");
+    let toc = new Audio("/audio/toc.ogg");
     tic.loop = false;
     toc.loop = false;
 
@@ -48,10 +48,8 @@
     function playTicToc() {
         try {
             if (conmutador) {
-                toc.load();
                 toc.play();
             } else {
-                tic.load();
                 tic.play();
             }
             conmutador = !conmutador;
