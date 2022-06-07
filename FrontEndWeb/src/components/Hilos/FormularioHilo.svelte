@@ -135,18 +135,14 @@
             />
             {#if $ajustesConfigStore.catClasicas}
                 <select bind:value={categoria} name="categoria">
-                    <option value="-1" selected="selected" disabled="disabled"
-                        >Categoría</option
-                    >
+                    <option value="-1" selected disabled>Categoría</option>
                     {#each config.categorias as c}
                         <option value={c.id}>{c.nombre}</option>
                     {/each}
                 </select>
             {:else}
                 <select bind:value={categoria} name="categoria">
-                    <option value="-1" selected="selected" disabled="disabled"
-                        >Categoría</option
-                    >
+                    <option value="-1" selected disabled>Categoría</option>
                     {#each config.grupos as g}
                         <optgroup
                             id="grupo_{g.id}"

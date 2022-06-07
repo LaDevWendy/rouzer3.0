@@ -48,9 +48,7 @@
             {/if}
         </div>
         <select bind:value={motivo} name="motivo">
-            <option value="-1" selected="selected" disabled="disabled"
-                >Motivo</option
-            >
+            <option value="-1" selected disabled>Motivo</option>
             {#each Object.keys(MotivoDenuncia) as k, i}
                 <option value={MotivoDenuncia[k]}>{k}</option>
             {/each}
@@ -59,9 +57,7 @@
         <textarea placeholder="Aclaracion, mensaje" bind:value={aclaracion} />
 
         <select bind:value={duracion} name="duracion">
-            <option value="-1" selected="selected" disabled="disabled"
-                >Duracion</option
-            >
+            <option value="-1" selected disabled>Duracion</option>
             <option value="0">0 min (Advertencia)</option>
             <option value="5">5 min</option>
             <option value="10">10 min</option>

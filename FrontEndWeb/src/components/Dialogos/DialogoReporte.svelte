@@ -71,9 +71,7 @@
             {tipoString == "hilo" ? hiloId : comentarioId}
         </p>
         <select bind:value={motivo} name="motivo">
-            <option value="-1" selected="selected" disabled="disabled"
-                >Motivo</option
-            >
+            <option value="-1" selected disabled>Motivo</option>
             <!-- {#if tipoString == "hilo"}
                 <option value="0">1) Categoria incorrecta</option>
             {/if} -->
@@ -84,18 +82,14 @@
         {#if motivo === 0}
             {#if $ajustesConfigStore.catClasicas}
                 <select bind:value={categoria} name="categoria">
-                    <option value="-1" selected="selected" disabled="disabled"
-                        >Categoría</option
-                    >
+                    <option value="-1" selected disabled>Categoría</option>
                     {#each config.categorias as c}
                         <option value={c.id}>{c.nombre}</option>
                     {/each}
                 </select>
             {:else}
                 <select bind:value={categoria} name="categoria">
-                    <option value="-1" selected="selected" disabled="disabled"
-                        >Categoría</option
-                    >
+                    <option value="-1" selected disabled>Categoría</option>
                     {#each config.grupos as g}
                         <optgroup
                             id="grupo_{g.id}"

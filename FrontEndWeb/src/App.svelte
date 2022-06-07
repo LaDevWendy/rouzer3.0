@@ -73,10 +73,8 @@
 						<div slot="body">
 							<p>Agregar o quitar flag</p>
 							<select bind:value={dialogs.flag.flag} name="flag">
-								<option
-									value="-1"
-									selected="selected"
-									disabled="disabled">Flag</option
+								<option value="-1" selected disabled
+									>Flag</option
 								>
 								{#each Object.keys(Flag) as k}
 									<option value={Flag[k]}>{k}</option>

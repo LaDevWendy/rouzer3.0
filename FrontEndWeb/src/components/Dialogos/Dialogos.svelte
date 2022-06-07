@@ -265,18 +265,14 @@
         <span asp-validation-for="CategoriaId" />
         {#if $ajustesConfigStore.catClasicas}
             <select bind:value={$dialogosStore.categoriaId} name="categoria">
-                <option value="-1" selected="selected" disabled="disabled"
-                    >Categoría</option
-                >
+                <option value="-1" selected disabled>Categoría</option>
                 {#each config.categorias as c}
                     <option value={c.id}>{c.nombre}</option>
                 {/each}
             </select>
         {:else}
             <select bind:value={$dialogosStore.categoriaId} name="categoria">
-                <option value="-1" selected="selected" disabled="disabled"
-                    >Categoría</option
-                >
+                <option value="-1" selected disabled>Categoría</option>
                 {#each config.grupos as g}
                     <optgroup label={g.nombre} class="grupo-categorias">
                         {#each g.categorias as cid}

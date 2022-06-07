@@ -52,9 +52,7 @@
         <input bind:value={urlImagen} placeholder="Link imagen" type="text" />
         <input bind:value={link} placeholder="Link" type="text" />
         <select bind:value={duracion} name="duracion">
-            <option value="-1" selected="selected" disabled="disabled"
-                >Duracion</option
-            >
+            <option value="-1" selected disabled>Duracion</option>
             <option value="5">5 min</option>
             <option value="10">10 min</option>
             <option value="30">30 min</option>
