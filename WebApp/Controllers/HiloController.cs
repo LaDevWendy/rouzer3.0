@@ -178,6 +178,18 @@ namespace WebApp.Controllers
                 hilo = await hiloService.GetHiloFull(id, User.GetId());
             }
             if (hilo is null) return Redirect("/Error/404");
+            hilo.Contadores = new Dictionary<string, int>();
+            hilo.Contadores.Add("fav", 0);
+            hilo.Contadores.Add("seg", 0);
+            hilo.Contadores.Add("ocu", 0);
+
+            if ((await context.Hilos.FirstOrDefaultAsync(h => h.Id == id)).UsuarioId == User.GetId())
+            {
+                hilo.Contadores["fav"] = await context.HiloAcciones.Where(a => a.HiloId == id && a.Favorito).CountAsync();
+                hilo.Contadores["seg"] = await context.HiloAcciones.Where(a => a.HiloId == id && a.Seguido).CountAsync();
+                hilo.Contadores["ocu"] = await context.HiloAcciones.Where(a => a.HiloId == id && a.Hideado).CountAsync();
+            }
+
             // return Json(new {
             //     hilo.Hilo,
             //     hilo.Comentarios,

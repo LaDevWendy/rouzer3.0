@@ -9,7 +9,7 @@ namespace Modelos
         List<ComentarioViewModel> Comentarios { get; set; }
         HiloAccionModel Acciones { get; set; }
         List<SpamModel> Spams { get; set; }
-
+        Dictionary<string, int> Contadores { get; set; }
     }
 
     public class HiloFullViewModel : IHiloFullView
@@ -19,6 +19,7 @@ namespace Modelos
         public HiloAccionModel Acciones { get; set; }
         public CreacionRango Rango { get; set; }
         public List<SpamModel> Spams { get; set; }
+        public Dictionary<string, int> Contadores { get; set; }
         public string Nombre { get; set; }
     }
     public class HiloFullViewModelMod : HiloFullViewModel

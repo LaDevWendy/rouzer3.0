@@ -7,6 +7,7 @@
 
     export let hilo;
     export let acciones;
+    export let contadores;
     let mostrarReporte = false;
 
     async function seguir() {
@@ -64,19 +65,28 @@
         bind:active={acciones.seguido}
         on:click={seguir}
         color={acciones.seguido ? "var(--color5)" : "var(--color-texto2)"}
-        shaped><i class="fe fe-eye" />Seg</Button
+        shaped
+        ><i class="fe fe-eye" />Seg {contadores.seg
+            ? "(" + contadores.seg + ")"
+            : ""}</Button
     >
     <Button
         bind:active={acciones.favorito}
         on:click={favoritear}
         color={acciones.favorito ? "var(--color5)" : "var(--color-texto2)"}
-        shaped><i class="fe fe-star" />Fav</Button
+        shaped
+        ><i class="fe fe-star" />Fav {contadores.fav
+            ? "(" + contadores.fav + ")"
+            : ""}</Button
     >
     <Button
         bind:active={acciones.hideado}
         on:click={ocultar}
         color={acciones.hideado ? "var(--color5)" : "var(--color-texto2)"}
-        shaped><i class="fe fe-eye-off" />Hide</Button
+        shaped
+        ><i class="fe fe-eye-off" />Hide {contadores.ocu
+            ? "(" + contadores.ocu + ")"
+            : ""}</Button
     >
 
     <Button on:click={() => (mostrarReporte = true)} shaped color="red"
