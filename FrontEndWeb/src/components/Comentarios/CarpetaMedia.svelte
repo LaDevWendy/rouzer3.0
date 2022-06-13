@@ -40,7 +40,11 @@
                 {#each comentarios as c}
                     {#if c.media}
                         <li r-id={c.id}>
-                            <Media media={c.media} modoCuadrado={true} />
+                            <Media
+                                media={c.media}
+                                spoiler={c.spoiler}
+                                modoCuadrado={true}
+                            />
                             <a
                                 on:click={onMediaClick(c.id)}
                                 href="#{c.id}"

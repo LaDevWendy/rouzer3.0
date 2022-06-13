@@ -24,6 +24,7 @@ namespace Modelos
             this.Ignorado = comentario.Ignorado;
             this.Millon = comentario.Flags.Contains("m") ? comentario.Flags.ToCharArray().Count(c => c == 'm') : 0;
             this.Tactico = comentario.Flags.Contains("t");
+            this.Spoiler = comentario.Flags.Contains("p");
         }
 
         public ComentarioViewModel(
@@ -44,6 +45,7 @@ namespace Modelos
             this.Ignorado = comentario.Ignorado;
             this.Millon = comentario.Flags.Contains("m") ? comentario.Flags.ToCharArray().Count(c => c == 'm') : 0;
             this.Tactico = comentario.Flags.Contains("t");
+            this.Spoiler = comentario.Flags.Contains("p");
 
             if (hilo != null)
             {
@@ -145,6 +147,7 @@ namespace Modelos
         public bool Ignorado { get; set; } = false;
         public int Millon { get; set; } = 0;
         public bool Tactico { get; set; } = false;
+        public bool Spoiler { get; set; } = false;
 
         private string CalcularColor(HiloModel hilo = null)
         {

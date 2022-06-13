@@ -64,19 +64,25 @@
     {:else if media.tipo == MediaType.Imagen}
         {#if media.esGif}
             {#if spoiler}
-                <img
-                    src={vistaPrevia}
+                <img src={vistaPrevia} alt="" srcset="" />
+                <Button
+                    color="red"
+                    class="alerta"
+                    icon
                     on:click={quitarSpoiler}
-                    alt=""
-                    srcset=""
-                />
+                >
+                    <i class="fe fe-alert-triangle" />
+                </Button>
             {:else}
                 <a class:botoncitos href="/Media/{media.url}" target="_blank">
                     <img src="/Media/{media.url}" alt="" srcset="" />
                 </a>
             {/if}
         {:else if spoiler}
-            <img src={vistaPrevia} on:click={quitarSpoiler} alt="" srcset="" />
+            <img src={vistaPrevia} alt="" srcset="" />
+            <Button color="red" class="alerta" icon on:click={quitarSpoiler}>
+                <i class="fe fe-alert-triangle" />
+            </Button>
         {:else}
             <a class:botoncitos href="/Media/{media.url}" target="_blank">
                 <img src={vistaPrevia} alt="" srcset="" />
@@ -98,13 +104,13 @@
                 controls
                 src="/Media/{media.url}"
             />
-            <Button
-                on:click={() => (abierto = false)}
-                on:click={quitarSpoiler}
-                class="cerrar"
-                icon
-            >
+            <Button on:click={() => (abierto = false)} class="cerrar" icon>
                 <i class="fe fe-x" />
+            </Button>
+        {:else if spoiler}
+            <img src={vistaPrevia} alt="" srcset="" />
+            <Button color="red" class="alerta" icon on:click={quitarSpoiler}>
+                <i class="fe fe-alert-triangle" />
             </Button>
         {:else}
             <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
@@ -134,6 +140,11 @@
             {/if}-->
             <Button on:click={() => (abierto = false)} class="cerrar" icon>
                 <i class="fe fe-x" />
+            </Button>
+        {:else if spoiler}
+            <img src={vistaPrevia} alt="" srcset="" />
+            <Button color="red" class="alerta" icon on:click={quitarSpoiler}>
+                <i class="fe fe-alert-triangle" />
             </Button>
         {:else}
             <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
@@ -185,6 +196,11 @@
             <Button on:click={() => (abierto = false)} class="cerrar" icon>
                 <i class="fe fe-x" />
             </Button>
+        {:else if spoiler}
+            <img src={vistaPrevia} alt="" srcset="" />
+            <Button color="red" class="alerta" icon on:click={quitarSpoiler}>
+                <i class="fe fe-alert-triangle" />
+            </Button>
         {:else}
             <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
             <Button on:click={abrirVideo} color="red" class="play" icon>
@@ -225,6 +241,11 @@
             <Button on:click={() => (abierto = false)} class="cerrar" icon>
                 <i class="fe fe-x" />
             </Button>
+        {:else if spoiler}
+            <img src={vistaPrevia} alt="" srcset="" />
+            <Button color="red" class="alerta" icon on:click={quitarSpoiler}>
+                <i class="fe fe-alert-triangle" />
+            </Button>
         {:else}
             <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
             <Button on:click={abrirVideo} color="red" class="play" icon>
@@ -259,6 +280,11 @@
             </div>
             <Button on:click={() => (abierto = false)} class="cerrar" icon>
                 <i class="fe fe-x" />
+            </Button>
+        {:else if spoiler}
+            <img src={vistaPrevia} alt="" srcset="" />
+            <Button color="red" class="alerta" icon on:click={quitarSpoiler}>
+                <i class="fe fe-alert-triangle" />
             </Button>
         {:else}
             <img on:click={abrirVideo} src={vistaPrevia} alt="" srcset="" />
@@ -319,6 +345,12 @@
         position: absolute;
         top: 50%;
         transform: translateX(50%) translateY(-50%) scale(2);
+        right: 50%;
+    }
+    .media :global(.alerta) {
+        position: absolute;
+        top: 50%;
+        transform: translateX(50%) translateY(-50%) scale(5);
         right: 50%;
     }
 

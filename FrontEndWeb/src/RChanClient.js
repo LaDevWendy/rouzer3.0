@@ -41,7 +41,7 @@ axios.interceptors.request.use(function (config) {
 
 export default class RChanClient {
     // Acciones
-    static crearHilo(titulo, categoria, contenido, fingerPrint, archivo, link = "", audio = null, captcha = "", encuesta = [], mostrarNombre = false, mostrarRango = false, mostrarRangoAdmin = false, mostrarRangoDev = false) {
+    static crearHilo(titulo, categoria, contenido, fingerPrint, archivo, link = "", audio = null, captcha = "", spoiler = false, encuesta = [], mostrarNombre = false, mostrarRango = false, mostrarRangoAdmin = false, mostrarRangoDev = false) {
         let form = new FormData()
         form.append("Titulo", titulo)
         form.append("CategoriaId", categoria)
@@ -49,6 +49,7 @@ export default class RChanClient {
         form.append("Archivo", archivo)
         form.append("Link", link)
         form.append("captcha", captcha)
+        form.append("Spoiler", spoiler)
         form.append("encuesta", JSON.stringify(encuesta))
         if (mostrarNombre || mostrarRango || mostrarRangoAdmin || mostrarRangoDev) {
             form.append('MostrarNombre', mostrarNombre)
@@ -61,13 +62,14 @@ export default class RChanClient {
         return axios.post("/api/Hilo/Crear", form)
     }
 
-    static crearComentario(hiloId, contenido, fingerPrint, archivo = null, link = "", audio = null, captcha = "", mostrarNombre = false, mostrarRango = false, mostrarRangoAdmin = false, mostrarRangoDev = false) {
+    static crearComentario(hiloId, contenido, fingerPrint, archivo = null, link = "", audio = null, captcha = "", spoiler = false, mostrarNombre = false, mostrarRango = false, mostrarRangoAdmin = false, mostrarRangoDev = false) {
         let form = new FormData();
         form.append('HiloId', hiloId)
         form.append('Contenido', contenido)
         form.append('Archivo', archivo)
         form.append("Link", link)
-        form.append('captcha', captcha)
+        form.append('Captcha', captcha)
+        form.append('Spoiler', spoiler)
         if (mostrarNombre || mostrarRango || mostrarRangoAdmin || mostrarRangoDev) {
             form.append('MostrarNombre', mostrarNombre)
             form.append('MostrarRango', mostrarRango)
@@ -289,6 +291,10 @@ export default class RChanClient {
 
     static toggleIgnorar(id) {
         return axios.post(`/api/Comentario/Ignorar/${id}`)
+    }
+
+    static toggleSpoiler(id) {
+        return axios.post(`/api/Moderacion/Spoilear/${id}`)
     }
 
     //Apelaciones

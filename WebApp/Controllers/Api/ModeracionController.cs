@@ -1135,6 +1135,36 @@ namespace WebApp.Controllers
 
             return Json(new ApiResponse("Archivos Eliminados"));
         }
+
+        [HttpPost]
+        async public Task<ActionResult<ApiResponse>> Spoilear(string id = "")
+        {
+            var comentario = await context.Comentarios.Include(c => c.Hilo).FirstOrDefaultAsync(c => c.Id == id);
+            if (comentario == null)
+            {
+                ModelState.AddModelError("Error", "No existe ese comentario.");
+                return BadRequest(ModelState);
+            }
+
+            var spoiler = false;
+            if (comentario.Flags.Contains("p"))
+            {
+                comentario.Flags = comentario.Flags.Replace("p", "");
+            }
+            else
+            {
+                comentario.Flags += "p";
+                spoiler = true;
+            }
+
+            await context.SaveChangesAsync();
+            await rchanHub.Clients.Group(comentario.HiloId).SendAsync("NuevoSpoiler", id, spoiler);
+            if (spoiler)
+            {
+                return Ok("Comentario blurreado");
+            }
+            return Ok("Comentario deblurreado");
+        }
     }
 
     public class ModeracionIndexVm
