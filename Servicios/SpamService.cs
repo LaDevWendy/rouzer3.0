@@ -1,10 +1,10 @@
+using Data;
+using Microsoft.EntityFrameworkCore;
+using Modelos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Data;
-using Microsoft.EntityFrameworkCore;
-using Modelos;
 
 namespace Servicios
 {
@@ -23,20 +23,20 @@ namespace Servicios
             this.hashService = hashService;
         }
 
-        public async Task<List<SpamModel>> GetSpams() 
+        public async Task<List<SpamModel>> GetSpams()
         {
-            if(spams is null) spams = await rChanContext.Spams.ToListAsync();
+            if (spams is null) spams = await rChanContext.Spams.ToListAsync();
             return spams;
         }
 
-        public async Task<List<SpamModel>> GetSpamsActivos() 
+        public async Task<List<SpamModel>> GetSpamsActivos()
         {
             return (await GetSpams())
                 .Where(s => (s.Creacion + s.Duracion) > DateTimeOffset.Now)
                 .ToList();
         }
 
-        public async Task Agregar(SpamModel spam) 
+        public async Task Agregar(SpamModel spam)
         {
             spam.Id = hashService.Random(8);
             spam.Creacion = DateTime.Now;
@@ -44,7 +44,7 @@ namespace Servicios
             rChanContext.Add(spam);
 
             var expirados = await rChanContext.Spams
-                .Where(s =>(s.Creacion + s.Duracion) < DateTime.Now)
+                .Where(s => (s.Creacion + s.Duracion) < DateTime.Now)
                 .ToListAsync();
 
             rChanContext.RemoveRange(expirados);
@@ -52,7 +52,7 @@ namespace Servicios
             spams = await rChanContext.Spams.ToListAsync();
         }
 
-        public async Task Remover(string id) 
+        public async Task Remover(string id)
         {
             var expirados = await rChanContext.Spams
                 .Where(s => s.Id == id)
@@ -60,7 +60,7 @@ namespace Servicios
 
             rChanContext.RemoveRange(expirados);
             await rChanContext.SaveChangesAsync();
-            
+
             spams = await rChanContext.Spams.ToListAsync();
         }
     }

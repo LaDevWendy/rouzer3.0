@@ -1,19 +1,17 @@
+using Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Servicios;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Modelos;
-using System.Threading.Tasks;
-using System.Net;
+using Servicios;
 using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
-using Data;
-using WebApp.Otros;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using WebApp.Otros;
 
 namespace WebApp.Controllers
 {
@@ -366,7 +364,7 @@ namespace WebApp.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpGet, Route("/MisComentarios")]
+        [HttpGet, Route("/Mis/Comentarios")]
         public async Task<ActionResult> MisComentarios()
         {
             var id = User.GetId();
@@ -379,7 +377,7 @@ namespace WebApp.Controllers
                         .AViewModel()
                         .Take(150)
                         .ToListAsync();
-            Comentarios.ForEach(c => c.Propio = true);
+            Comentarios.ForEach(c => { c.Propio = true; c.Color = "serio"; });
             return View(new { Comentarios = Comentarios });
         }
     }

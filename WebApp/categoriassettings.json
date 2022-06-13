@@ -6,7 +6,8 @@
             "NombreCorto": "GNRL",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 2,
@@ -14,7 +15,8 @@
             "NombreCorto": "AYNS",
             "Nsfw": false,
             "Public": false,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 3,
@@ -22,7 +24,8 @@
             "NombreCorto": "ART",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 4,
@@ -30,7 +33,8 @@
             "NombreCorto": "TV",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 5,
@@ -38,7 +42,8 @@
             "NombreCorto": "CON",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 6,
@@ -46,7 +51,8 @@
             "NombreCorto": "((()))",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 7,
@@ -54,7 +60,8 @@
             "NombreCorto": "GYM",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 8,
@@ -62,7 +69,8 @@
             "NombreCorto": "DIY",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 9,
@@ -70,7 +78,8 @@
             "NombreCorto": "NAT",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 10,
@@ -78,7 +87,8 @@
             "NombreCorto": "JUE",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 11,
@@ -86,7 +96,8 @@
             "NombreCorto": "JIJO",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 12,
@@ -94,7 +105,8 @@
             "NombreCorto": "LIT",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 13,
@@ -102,7 +114,8 @@
             "NombreCorto": "MUS",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 14,
@@ -110,7 +123,8 @@
             "NombreCorto": "O3P",
             "Nsfw": false,
             "Public": false,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 15,
@@ -118,7 +132,8 @@
             "NombreCorto": "PAR",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 16,
@@ -126,7 +141,8 @@
             "NombreCorto": "DEP",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 17,
@@ -134,7 +150,8 @@
             "NombreCorto": "POL",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 18,
@@ -142,7 +159,8 @@
             "NombreCorto": "PRGS",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 19,
@@ -150,7 +168,8 @@
             "NombreCorto": "PTKU",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 20,
@@ -158,7 +177,8 @@
             "NombreCorto": "RS",
             "Nsfw": false,
             "Public": false,
-            "Limit": true
+            "Limit": true,
+            "Premium": false
         },
         {
             "Id": 21,
@@ -166,7 +186,8 @@
             "NombreCorto": "NPC",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 22,
@@ -174,7 +195,8 @@
             "NombreCorto": "RZD",
             "Nsfw": false,
             "Public": false,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 23,
@@ -182,7 +204,8 @@
             "NombreCorto": "TEC",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 24,
@@ -190,7 +213,8 @@
             "NombreCorto": "VID",
             "Nsfw": false,
             "Public": true,
-            "Limit": true
+            "Limit": true,
+            "Premium": false
         },
         {
             "Id": 25,
@@ -198,7 +222,8 @@
             "NombreCorto": "VHIS",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 26,
@@ -206,7 +231,8 @@
             "NombreCorto": "UMA",
             "Nsfw": false,
             "Public": false,
-            "Limit": true
+            "Limit": true,
+            "Premium": false
         },
         {
             "Id": 27,
@@ -214,7 +240,8 @@
             "NombreCorto": "BAJA",
             "Nsfw": true,
             "Public": false,
-            "Limit": true
+            "Limit": true,
+            "Premium": false
         },
         {
             "Id": 28,
@@ -222,7 +249,8 @@
             "NombreCorto": "HEN",
             "Nsfw": true,
             "Public": false,
-            "Limit": true
+            "Limit": true,
+            "Premium": false
         },
         {
             "Id": 29,
@@ -230,7 +258,8 @@
             "NombreCorto": "ECO",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 30,
@@ -238,7 +267,8 @@
             "NombreCorto": "HUMA",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 31,
@@ -246,7 +276,8 @@
             "NombreCorto": "MRFI",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 32,
@@ -254,7 +285,8 @@
             "NombreCorto": "NOTI",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 33,
@@ -262,7 +294,8 @@
             "NombreCorto": "DESC",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 34,
@@ -270,7 +303,8 @@
             "NombreCorto": "HOMO",
             "Nsfw": true,
             "Public": false,
-            "Limit": true
+            "Limit": true,
+            "Premium": false
         },
         {
             "Id": 35,
@@ -278,7 +312,8 @@
             "NombreCorto": "CIEN",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 36,
@@ -286,7 +321,8 @@
             "NombreCorto": "AUTO",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 37,
@@ -294,7 +330,8 @@
             "NombreCorto": "SLD",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 38,
@@ -302,7 +339,8 @@
             "NombreCorto": "PROG",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 39,
@@ -310,7 +348,8 @@
             "NombreCorto": "GORE",
             "Nsfw": true,
             "Public": false,
-            "Limit": true
+            "Limit": true,
+            "Premium": false
         },
         {
             "Id": 40,
@@ -318,7 +357,8 @@
             "NombreCorto": "BAT",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 41,
@@ -326,7 +366,8 @@
             "NombreCorto": "PITO",
             "Nsfw": true,
             "Public": false,
-            "Limit": true
+            "Limit": true,
+            "Premium": false
         },
         {
             "Id": 43,
@@ -334,7 +375,8 @@
             "NombreCorto": "ESP",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 42,
@@ -342,7 +384,8 @@
             "NombreCorto": "LEI",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 44,
@@ -350,7 +393,8 @@
             "NombreCorto": "JTB",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 45,
@@ -358,7 +402,8 @@
             "NombreCorto": "MODA",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
         },
         {
             "Id": 46,
@@ -366,7 +411,17 @@
             "NombreCorto": "WAR",
             "Nsfw": false,
             "Public": true,
-            "Limit": false
+            "Limit": false,
+            "Premium": false
+        },
+        {
+            "Id": 47,
+            "Nombre": "Premium",
+            "NombreCorto": "GOLD",
+            "Nsfw": false,
+            "Public": false,
+            "Limit": false,
+            "Premium": true
         }
     ]
 }

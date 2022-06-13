@@ -34,7 +34,7 @@ namespace WebApp.Controllers
         private readonly SignInManager<UsuarioModel> signInManager;
         private readonly IOptions<GeneralOptions> config;
         private readonly IOptionsSnapshot<List<Categoria>> categoriasOpt;
-        private readonly SpamService spamService;
+
 
 
         public Administracion(
@@ -46,8 +46,7 @@ namespace WebApp.Controllers
             UserManager<UsuarioModel> userManager,
             SignInManager<UsuarioModel> signInManager,
             IOptionsSnapshot<GeneralOptions> config,
-            IOptionsSnapshot<List<Categoria>> categoriasOpt,
-            SpamService spamService
+            IOptionsSnapshot<List<Categoria>> categoriasOpt
         )
         {
             this.hiloService = hiloService;
@@ -59,7 +58,6 @@ namespace WebApp.Controllers
             this.signInManager = signInManager;
             this.config = config;
             this.categoriasOpt = categoriasOpt;
-            this.spamService = spamService;
         }
         [Route("/Administracion")]
         public async Task<ActionResult> Index()
@@ -132,9 +130,18 @@ namespace WebApp.Controllers
             var role = model.Role;
             var username = model.Username;
 
-            if (!new[] { "dev", "admin", "mod", "auxiliar" }.Contains(role))
-                ModelState.AddModelError("Rol", "Rol invalido");
-
+            if (User.EsDirector())
+            {
+                if (!new[] { "dev", "director", "admin", "mod", "auxiliar" }.Contains(role))
+                    ModelState.AddModelError("Rol", "Rol invalido");
+            }
+            else
+            {
+                if (!new[] { "admin", "mod", "auxiliar" }.Contains(role))
+                    ModelState.AddModelError("Rol", "Rol invalido");
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var user = await userManager.Users.FirstOrDefaultAsync(u => u.UserName == username || u.Id == username);
             if (user is null)
@@ -143,6 +150,7 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
 
             bool yaTieneElRol = (await userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == "Role") != null;
+
 
             if (yaTieneElRol)
             {
@@ -159,14 +167,46 @@ namespace WebApp.Controllers
                 return BadRequest(result.Errors);
         }
 
+        public async Task<ActionResult> RemoverRol(RolUserVM model)
+        {
+            var role = model.Role;
+            var username = model.Username;
+
+            if (User.EsDirector())
+            {
+                if (!new[] { "dev", "director", "admin", "mod", "auxiliar" }.Contains(role))
+                    ModelState.AddModelError("Rol", "Rol invalido");
+            }
+            else
+            {
+                if (!new[] { "admin", "mod", "auxiliar" }.Contains(role))
+                    ModelState.AddModelError("Rol", "Rol invalido");
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await userManager.Users.FirstOrDefaultAsync(u => u.UserName == username || u.Id == username);
+            if (user is null)
+                ModelState.AddModelError("userName", "No se encontre al usuario");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await userManager.RemoveClaimAsync(user, new Claim("Role", role));
+            if (result.Succeeded)
+            {
+                // await signInManager.RefreshSignInAsync(user);
+                return Json(new ApiResponse($"{user.UserName} ya no es {role}"));
+            }
+            else
+                return BadRequest(result.Errors);
+        }
+
         public async Task<ActionResult> RefrescarOnlines()
         {
-            var devs = await userManager.GetUsersForClaimAsync(new Claim("Role", "dev"));
             var admins = await userManager.GetUsersForClaimAsync(new Claim("Role", "admin"));
             var mods = await userManager.GetUsersForClaimAsync(new Claim("Role", "mod"));
             var auxiliares = await userManager.GetUsersForClaimAsync(new Claim("Role", "auxiliar"));
-            List<UsuarioVM> staff = devs.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToList();
-            staff.AddRange(admins.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToList());
+            List<UsuarioVM> staff = admins.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToList();
             staff.AddRange(mods.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToList());
             staff.AddRange(auxiliares.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToList());
 
@@ -199,32 +239,6 @@ namespace WebApp.Controllers
 
             }
             return Json(onlines);
-        }
-
-        public async Task<ActionResult> RemoverRol(RolUserVM model)
-        {
-            var role = model.Role;
-            var username = model.Username;
-
-            if (!new[] { "dev", "admin", "mod", "auxiliar" }.Contains(role))
-                ModelState.AddModelError("Rol", "Rol invalido");
-
-
-            var user = await userManager.Users.FirstOrDefaultAsync(u => u.UserName == username || u.Id == username);
-            if (user is null)
-                ModelState.AddModelError("userName", "No se encontre al usuario");
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-
-            var result = await userManager.RemoveClaimAsync(user, new Claim("Role", role));
-            if (result.Succeeded)
-            {
-                // await signInManager.RefreshSignInAsync(user);
-                return Json(new ApiResponse($"{user.UserName} ya no es {role}"));
-            }
-            else
-                return BadRequest(result.Errors);
         }
 
         [Route("/Administracion/CambiarContraseña")]
@@ -267,37 +281,6 @@ namespace WebApp.Controllers
 
             return Json(new ApiResponse($"{hilosALimpiar.Count()} hilos limpiados y {ArchivosLimpiados} archivos limpiados"));
 
-        }
-
-        [Route("/Administracion/Spams")]
-        public async Task<ActionResult> Spams()
-        {
-            return View(new
-            {
-                Spams = await spamService.GetSpamsActivos()
-            });
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> CrearSpam(CrearSpamVM model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            await spamService.Agregar(new SpamModel
-            {
-                Link = model.Link,
-                UrlImagen = model.UrlImagen,
-                Duracion = TimeSpan.FromMinutes(model.Duracion),
-            });
-            return Ok(new ApiResponse("RozPam reado"));
-        }
-
-        public async Task<ActionResult> EliminarSpam(SpamModel spam)
-        {
-            await spamService.Remover(spam.Id);
-            return Ok(new ApiResponse("RozPam Removido"));
         }
 
         [Route("/Administracion/Apelaciones")]
@@ -499,3 +482,4 @@ public enum FlagCodigo
     Serio,
     Spoiler
 }
+

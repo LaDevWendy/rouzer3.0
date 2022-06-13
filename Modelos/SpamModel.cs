@@ -1,6 +1,7 @@
 using System;
 
-namespace Modelos {
+namespace Modelos
+{
     public class SpamModel
     {
         public string Id { get; set; }

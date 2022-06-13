@@ -22,6 +22,7 @@ namespace WebApp.Controllers
         private readonly RChanContext context;
         private readonly IOptionsSnapshot<List<Categoria>> categoriasOpts;
         private readonly RChanCacheService rchanCacheService;
+        private readonly PremiumService premiumService;
         private static Cache<List<HiloViewModel>> hilosCache;
 
         public IMediaService MediaService { get; }
@@ -32,7 +33,8 @@ namespace WebApp.Controllers
             RChanContext context,
             IOptionsSnapshot<List<Categoria>> categoriasOpts,
             RChanCacheService rchanCacheService,
-            IMediaService mediaService)
+            IMediaService mediaService,
+            PremiumService premiumService)
         {
             _logger = logger;
             this.hiloService = hiloService;
@@ -40,6 +42,7 @@ namespace WebApp.Controllers
             this.categoriasOpts = categoriasOpts;
             this.rchanCacheService = rchanCacheService;
             MediaService = mediaService;
+            this.premiumService = premiumService;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -50,6 +53,7 @@ namespace WebApp.Controllers
                 categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
                 HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
                 if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+                categorias = premiumService.CheckearListaCategoriasPremium(categorias, User.EsPremium());
             }
             else
             {
@@ -79,6 +83,7 @@ namespace WebApp.Controllers
             HttpContext.Request.Cookies.TryGetValue("categoriasFavoritas", out string categoriasActivas);
 
             if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+            categorias = premiumService.CheckearListaCategoriasPremium(categorias, User.EsPremium());
 
             var vm = new HiloListViewModel
             {
@@ -101,6 +106,7 @@ namespace WebApp.Controllers
                 categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
                 HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
                 if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+                categorias = premiumService.CheckearListaCategoriasPremium(categorias, User.EsPremium());
             }
             else
             {
@@ -137,6 +143,7 @@ namespace WebApp.Controllers
                 categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
                 HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
                 if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+                categorias = premiumService.CheckearListaCategoriasPremium(categorias, User.EsPremium());
             }
             else
             {
@@ -171,11 +178,11 @@ namespace WebApp.Controllers
             IHiloFullView hilo;
             if (User.EsMod())
             {
-                hilo = await hiloService.GetHiloFullMod(id, User.GetId(), true);
+                hilo = await hiloService.GetHiloFullMod(id, User, true);
             }
             else
             {
-                hilo = await hiloService.GetHiloFull(id, User.GetId());
+                hilo = await hiloService.GetHiloFull(id, User);
             }
             if (hilo is null) return Redirect("/Error/404");
             hilo.Contadores = new Dictionary<string, int>();
@@ -183,7 +190,7 @@ namespace WebApp.Controllers
             hilo.Contadores.Add("seg", 0);
             hilo.Contadores.Add("ocu", 0);
 
-            if ((await context.Hilos.FirstOrDefaultAsync(h => h.Id == id)).UsuarioId == User.GetId())
+            if ((await context.Hilos.FirstOrDefaultAsync(h => h.Id == id)).UsuarioId == User.GetId() && User.EsPremium())
             {
                 hilo.Contadores["fav"] = await context.HiloAcciones.Where(a => a.HiloId == id && a.Favorito).CountAsync();
                 hilo.Contadores["seg"] = await context.HiloAcciones.Where(a => a.HiloId == id && a.Seguido).CountAsync();
@@ -207,7 +214,12 @@ namespace WebApp.Controllers
             if (cate == null)
             {
                 return Redirect("/Error/404");
-            };
+            }
+
+            if (!premiumService.CheckearCategoriaPremium(categoria, User.EsPremium()))
+            {
+                return Redirect("/");
+            }
 
             var vm = new HiloListViewModel
             {
@@ -236,10 +248,15 @@ namespace WebApp.Controllers
             {
                 return Redirect("/Error/404");
             }
+
             coleccion = coleccion.ToLower();
+
+            var categoriasPremium = categoriasOpts.Value.Premium().Ids().ToArray();
+
             var query = hiloService
                 .OrdenadosPorBump()
-                .FiltrarEliminados();
+                .FiltrarEliminados()
+                .Where(h => !categoriasPremium.Contains(h.CategoriaId) || (categoriasPremium.Contains(h.CategoriaId) && User.EsPremium()));
 
             query = coleccion switch
             {
@@ -267,8 +284,11 @@ namespace WebApp.Controllers
         [HttpGet("/Archivo")]
         public async Task<IActionResult> ArchivoAsync()
         {
+            var categoriasPremium = categoriasOpts.Value.Premium().Ids().ToArray();
+
             var archivados = await context.Hilos
                 .Where(h => h.Estado == HiloEstado.Archivado)
+                .Where(h => !categoriasPremium.Contains(h.CategoriaId) || (categoriasPremium.Contains(h.CategoriaId) && User.EsPremium()))
                 .OrderByDescending(h => h.Bump)
                 .Select(h => new { h.Titulo, h.Id, h.Estado, h.Bump, Historico = h.Flags.Contains("h") })
                 .Take(3000)
@@ -284,6 +304,7 @@ namespace WebApp.Controllers
                 categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
                 HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
                 if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+                categorias = premiumService.CheckearListaCategoriasPremium(categorias, User.EsPremium());
             }
             else
             {
@@ -312,6 +333,7 @@ namespace WebApp.Controllers
                 categorias = categoriasOpts.Value.Sfw().Ids().ToArray();
                 HttpContext.Request.Cookies.TryGetValue("categoriasActivas", out string categoriasActivas);
                 if (categoriasActivas != null) categorias = JsonSerializer.Deserialize<int[]>(categoriasActivas);
+                categorias = premiumService.CheckearListaCategoriasPremium(categorias, User.EsPremium());
             }
             else
             {

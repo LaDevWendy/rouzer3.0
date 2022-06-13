@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -12,9 +6,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Modelos;
 using Servicios;
+using System;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace WebApp
 {
@@ -61,7 +59,7 @@ namespace WebApp
                     scope.ServiceProvider.GetService<SignInManager<UsuarioModel>>().UserManager;
 
                 var admin = (
-                    await um.GetUsersForClaimAsync(new Claim("Role", "admin"))
+                    await um.GetUsersForClaimAsync(new Claim("Role", "dev"))
                 ).FirstOrDefault();
 
                 if (admin is null)
@@ -75,7 +73,7 @@ namespace WebApp
                         );
                     }
                     pepe = um.Users.FirstOrDefault(u => u.UserName == "pepe");
-                    await um.AddClaimAsync(pepe, new Claim("Role", "admin"));
+                    await um.AddClaimAsync(pepe, new Claim("Role", "dev"));
                 }
 
                 // Inicializar estadisticas

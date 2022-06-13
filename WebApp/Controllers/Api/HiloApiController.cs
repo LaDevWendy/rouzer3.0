@@ -1,24 +1,19 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore;
-using Microsoft.Extensions.Logging;
-using Servicios;
-using System.Collections.Generic;
-using Modelos;
-using System.Threading.Tasks;
-using System.Net;
-using System;
-using WebApp;
-using Microsoft.AspNetCore.Authorization;
 using Data;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.ComponentModel.DataAnnotations;
+using Modelos;
 using Newtonsoft.Json;
-using WebApp.Otros;
+using Servicios;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using WebApp;
 
 namespace WebApp.Controllers
 {
@@ -30,7 +25,7 @@ namespace WebApp.Controllers
         private readonly HashService hashService;
         private readonly IHubContext<RChanHub> rchanHub;
         private readonly RChanContext context;
-        private readonly IOptionsSnapshot<List<Categoria>> categoriasOpt;
+        private readonly IOptionsSnapshot<List<Categoria>> categoriasOpts;
         private readonly IOptionsSnapshot<GeneralOptions> generalOptions;
         private readonly CaptchaService captcha;
         private readonly AntiFloodService antiFlood;
@@ -39,6 +34,7 @@ namespace WebApp.Controllers
         private readonly CensorService censorService;
         private static readonly HashSet<string> denunciasIp = new HashSet<string>();
         private readonly IAudioService audioService;
+        private readonly PremiumService premiumService;
 
         #region constructor
         public HiloApiController(
@@ -47,14 +43,15 @@ namespace WebApp.Controllers
             HashService hashService,
             IHubContext<RChanHub> rchanHub,
             RChanContext context,
-            IOptionsSnapshot<List<Categoria>> categoriasOpt,
+            IOptionsSnapshot<List<Categoria>> categoriasOpts,
             IOptionsSnapshot<GeneralOptions> generalOptions,
             CaptchaService captcha,
             AntiFloodService antiFlood,
             EstadisticasService estadisticasService,
             RChanCacheService rchanCacheService,
             CensorService censorService,
-            IAudioService audioService
+            IAudioService audioService,
+            PremiumService premiumService
         )
         {
             this.hiloService = hiloService;
@@ -62,7 +59,7 @@ namespace WebApp.Controllers
             this.hashService = hashService;
             this.rchanHub = rchanHub;
             this.context = context;
-            this.categoriasOpt = categoriasOpt;
+            this.categoriasOpts = categoriasOpts;
             this.generalOptions = generalOptions;
             this.captcha = captcha;
             this.antiFlood = antiFlood;
@@ -70,6 +67,7 @@ namespace WebApp.Controllers
             this.rchanCacheService = rchanCacheService;
             this.censorService = censorService;
             this.audioService = audioService;
+            this.premiumService = premiumService;
         }
         #endregion
 
@@ -85,18 +83,32 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            bool existeLaCategoria = categoriasOpt.Value.Any(c => c.Id == vm.CategoriaId);
+            bool existeLaCategoria = categoriasOpts.Value.Any(c => c.Id == vm.CategoriaId);
+            if (!existeLaCategoria)
+            {
+                ModelState.AddModelError("Categoria", "Ay no existe la categoria");
+                return BadRequest(ModelState);
+            }
 
-            if (!existeLaCategoria) ModelState.AddModelError("Categoria", "Ay no existe la categoria");
+            bool tienePermiso = premiumService.CheckearCategoriaPremium(vm.CategoriaId, User.EsPremium());
+            if (!tienePermiso)
+            {
+                ModelState.AddModelError("Premium", "Se requiere cuenta premium en esta categoría");
+                return BadRequest(ModelState);
+            }
+
             if (vm.Archivo is null && string.IsNullOrWhiteSpace(vm.Link))
+            {
                 ModelState.AddModelError("adjunto", "Para crear un roz tenes que adjuntar un archivo o un link");
+                return BadRequest(ModelState);
+            }
 
             var pasoElCaptcha = await captcha.Verificar(vm.Captcha);
             if (!pasoElCaptcha && generalOptions.Value.CaptchaHilo && !User.EsMod())
             {
                 ModelState.AddModelError("Captcha", "Incorrecto");
+                return BadRequest(ModelState);
             }
-            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             // Chequeuear si es flood
             if (antiFlood.SegundosParaHilo(User) != new TimeSpan(0))
@@ -160,7 +172,7 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            if ((media.Tipo == MediaType.PornHub) && (categoriasOpt.Value.Sfw().Any(c => c.Id == vm.CategoriaId)))
+            if ((media.Tipo == MediaType.PornHub) && (categoriasOpts.Value.Sfw().Any(c => c.Id == vm.CategoriaId)))
             {
                 ModelState.AddModelError("Chocamo", "Categoría incorrecta");
                 antiFlood.ResetearSegundosParaHilo(User.GetId());
@@ -318,7 +330,7 @@ namespace WebApp.Controllers
         [Produces("application/json")]
         public async Task<ActionResult<ApiResponse>> Get(string id)
         {
-            var hilo = await hiloService.GetHiloFull(id, User.GetId());
+            var hilo = await hiloService.GetHiloFull(id, User);
             if (hilo is null) return NotFound();
             return new ApiResponse(value: hilo);
         }
@@ -502,7 +514,8 @@ namespace WebApp.Controllers
             [FromQuery] bool categoria = false,
             [FromQuery] bool historicos = false)
         {
-            var categoriasActivas = categorias.Split(",").Select(c => Convert.ToInt32(c)).ToHashSet();
+            var categoriasActivas = categorias.Split(",").Select(c => Convert.ToInt32(c)).ToArray();
+            categoriasActivas = premiumService.CheckearListaCategoriasPremium(categoriasActivas, User.EsPremium());
 
             IEnumerable<HiloViewModel> hilos = new List<HiloViewModel>(); ;
 
@@ -579,12 +592,15 @@ namespace WebApp.Controllers
         [AllowAnonymous]
         async public Task<ActionResult> Buscar(string busqueda = "")
         {
+            var categoriasPremium = categoriasOpts.Value.Premium().Ids().ToArray();
+
             if (string.IsNullOrWhiteSpace(busqueda)) busqueda = "";
             busqueda = string.Join("", busqueda.Take(15));
             var resultados = await context.Hilos
                 .AsNoTracking()
                 .FiltrarNoActivos()
                 .Where(h => EF.Functions.ILike(h.Titulo, $"%{busqueda}%"))
+                .Where(h => !categoriasPremium.Contains(h.CategoriaId) || (categoriasPremium.Contains(h.CategoriaId) && User.EsPremium()))
                 .OrdenadosPorBump()
                 .Take(32)
                 .AViewModel(context)
@@ -712,7 +728,6 @@ namespace WebApp.Controllers
             this.Success = success;
             this.Mensaje = mensaje;
             this.Value = value;
-
         }
 
     }

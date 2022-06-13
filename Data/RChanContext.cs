@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore;
 using Modelos;
-using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 
 namespace Data
@@ -35,6 +33,11 @@ namespace Data
         public DbSet<SpamModel> Spams { get; set; }
         public DbSet<AudioModel> Audios { get; set; }
         public DbSet<ApelacionModel> Apelaciones { get; set; }
+        public DbSet<TransaccionModel> Transacciones { get; set; }
+        public DbSet<MensajeGlobalModel> MensajesGlobales { get; set; }
+        public DbSet<AutoBumpModel> AutoBumps { get; set; }
+        public DbSet<BalanceModel> Balances { get; set; }
+        public DbSet<CodigoPremiumModel> CodigosPremium { get; set; }
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -88,6 +91,11 @@ namespace Data
                 .WithMany()
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<BalanceModel>()
+                .HasOne(b => b.Usuario)
+                .WithOne()
+                .IsRequired(true);
 
             modelBuilder.Entity<BaneoModel>().HasIndex(b => b.Expiracion);
             modelBuilder.Entity<BaneoModel>().HasIndex(b => b.Ip);

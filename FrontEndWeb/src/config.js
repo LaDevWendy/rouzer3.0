@@ -3,11 +3,9 @@ import Signal from './signal'
 
 let gruposOrdenados = window.config.grupos.sort((g1, g2) => g1.id - g2.id)
 
-let sfw = window.config.categorias
-    .filter(c => !c.nsfw).sort((c1, c2) => c1.nombre.localeCompare(c2.nombre))
+let sfw = window.config.categorias.filter(c => !c.nsfw).sort((c1, c2) => c1.nombre.localeCompare(c2.nombre))
 
-let nsfw = window.config.categorias
-    .filter(c => c.nsfw).sort((c1, c2) => c1.nombre.localeCompare(c2.nombre))
+let nsfw = window.config.categorias.filter(c => c.nsfw).sort((c1, c2) => c1.nombre.localeCompare(c2.nombre))
 
 let categoriasOrdenadas = [...sfw, ...nsfw]
 

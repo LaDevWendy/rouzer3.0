@@ -129,8 +129,8 @@
     <textarea
         on:focus={onFocus}
         bind:value={comentarioStore}
-        cols="15"
-        rows="10"
+        cols="30"
+        rows="3"
         placeholder="Que dificil discutir con pibes..."
     />
 

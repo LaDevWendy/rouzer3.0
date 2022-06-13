@@ -7,9 +7,8 @@
     import Dialogo from "./Dialogo.svelte";
     import Ajustes from "./Dialogos/Ajustes.svelte";
     import ajustesConfigStore from "./Dialogos/ajustesConfigStore";
-
-    import more from "../icons/more-vertical.svg";
     import serio from "../icons/serio.svg";
+    import Premium from "./Premium/Premium.svelte";
 
     export let mostrar = true;
 
@@ -19,11 +18,15 @@
 
     $: if (mostrarAjustes) mostrar = false;
 
-    let categorias = config.categorias.map((c) => {
-        c.activa = $globalStore.categoriasActivas.includes(c.id);
-        c = c;
-        return c;
-    });
+    let categorias = config.categorias
+        .filter(
+            (c) => !c.premium || (c.premium && $globalStore.usuario.esPremium)
+        )
+        .map((c) => {
+            c.activa = $globalStore.categoriasActivas.includes(c.id);
+            c = c;
+            return c;
+        });
 
     let grupos = config.grupos.map((g) => {
         let activo = g.categorias.reduce(
@@ -253,7 +256,7 @@
                 <a href="/Mis/Creados">
                     <li><icon class="fe fe-target" /> Creados <Ripple /></li>
                 </a>
-                <a href="/MisComentarios">
+                <a href="/Mis/Comentarios">
                     <li>
                         <icon class="fe fe-message-square" /> Comentarios <Ripple
                         />
@@ -294,20 +297,27 @@
             {#if $globalStore.usuario.esMod}
                 <a href="/Moderacion">
                     <li>
-                        <icon class="fe fe-triangle" /> Moderacion <Ripple />
+                        <icon class="fe fe-triangle" /> Moderación <Ripple />
                     </li>
                 </a>
             {/if}
             {#if $globalStore.usuario.esAdmin}
                 <a href="/Administracion">
                     <li>
-                        <icon class="fe fe-triangle" /> Administracion <Ripple
+                        <icon class="fe fe-triangle" /> Administración <Ripple
                         />
                     </li>
                 </a>
                 <a href="/Administracion/Apelaciones">
                     <li>
                         <icon class="fe fe-triangle" /> Apelaciones <Ripple />
+                    </li>
+                </a>
+            {/if}
+            {#if $globalStore.usuario.esDirector}
+                <a href="/Direccion">
+                    <li>
+                        <icon class="fe fe-triangle" /> Dirección <Ripple />
                     </li>
                 </a>
             {/if}

@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Modelos;
-using Data;
-using SqlKata.Execution;
-using SqlKata.Compilers;
-using System.Linq;
-using Dapper;
-using Microsoft.Extensions.Options;
-using WebApp;
+﻿using Data;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Modelos;
+using SqlKata.Execution;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using WebApp;
 
 namespace Servicios
 {
@@ -22,8 +21,8 @@ namespace Servicios
         Task<string> GuardarHilo(HiloModel Hilo);
         Task ActualizarHilo(HiloModel Hilo);
         Task<HiloViewModel> GetHilo(string id, bool mostrarOcultos);
-        Task<HiloFullViewModel> GetHiloFull(string id, string userId = null, bool mostrarOcultos = false);
-        Task<HiloFullViewModelMod> GetHiloFullMod(string id, string userId = null, bool mostrarOcultos = false);
+        Task<HiloFullViewModel> GetHiloFull(string id, ClaimsPrincipal user, bool mostrarOcultos = false);
+        Task<HiloFullViewModelMod> GetHiloFullMod(string id, ClaimsPrincipal user, bool mostrarOcultos = false);
         IQueryable<HiloModel> OrdenadosPorBump();
         Task<List<HiloViewModel>> GetCategoria(int categoria, string usuarioId = "", int cantidad = 16);
         Task EliminarHilos(params string[] ids);
@@ -46,6 +45,7 @@ namespace Servicios
         private readonly ILogger<HiloService> logger;
         private readonly SpamService spamService;
         private readonly IAudioService audioService;
+        private readonly PremiumService premiumService;
 
         public HiloService(RChanContext context,
             HashService hashService,
@@ -57,7 +57,8 @@ namespace Servicios
             AccionesDeModeracionService historial,
             ILogger<HiloService> logger,
             SpamService spamService,
-            IAudioService audioService
+            IAudioService audioService,
+            PremiumService premiumService
             )
         : base(context, hashService)
         {
@@ -70,6 +71,7 @@ namespace Servicios
             this.logger = logger;
             this.spamService = spamService;
             this.audioService = audioService;
+            this.premiumService = premiumService;
         }
 
         public async Task ActualizarHilo(HiloModel Hilo)
@@ -89,7 +91,7 @@ namespace Servicios
             return new HiloViewModel(hilo);
 
         }
-        public async Task<HiloFullViewModel> GetHiloFull(string id, string userId = null, bool mostrarOcultos = false)
+        public async Task<HiloFullViewModel> GetHiloFull(string id, ClaimsPrincipal user = null, bool mostrarOcultos = false)
         {
             var hiloFullView = new HiloFullViewModel();
 
@@ -103,9 +105,15 @@ namespace Servicios
             else
                 hilo = await query.PorId(id);
 
-
             if (hilo is null) return null;
 
+            bool tienePermiso = premiumService.CheckearCategoriaPremium(hilo.CategoriaId, user.EsPremium());
+            if (!tienePermiso)
+            {
+                return null;
+            }
+
+            var userId = user.GetId();
             hiloFullView.Hilo = new HiloViewModel(hilo);
 
             if (hilo.Encuesta != null)
@@ -132,9 +140,8 @@ namespace Servicios
 
             hiloFullView.Spams = await spamService.GetSpamsActivos();
             return hiloFullView;
-
         }
-        public async Task<HiloFullViewModelMod> GetHiloFullMod(string id, string userId = null, bool mostrarOcultos = false)
+        public async Task<HiloFullViewModelMod> GetHiloFullMod(string id, ClaimsPrincipal user, bool mostrarOcultos = false)
         {
             var hiloFullView = new HiloFullViewModelMod();
 
@@ -155,6 +162,7 @@ namespace Servicios
             hiloFullView.Usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == hilo.UsuarioId);
             hiloFullView.Hilo = new HiloViewModel(hilo);
 
+            var userId = user.GetId();
             if (hilo.Encuesta != null)
             {
                 hiloFullView.Hilo.EncuestaData = new EncuestaViewModel(hilo.Encuesta, userId);

@@ -5,6 +5,7 @@
 
     comentarios = comentarios.map((c) => {
         c.respuestas = [];
+        c.serio = true;
         return c;
     });
 </script>

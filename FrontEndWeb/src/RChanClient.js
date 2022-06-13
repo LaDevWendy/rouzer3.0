@@ -271,14 +271,14 @@ export default class RChanClient {
     }
 
     static crearSpam(urlImagen, link, duracion) {
-        return axios.post('/api/Administracion/CrearSpam', {
+        return axios.post('/api/Direccion/CrearSpam', {
             urlImagen,
             link,
             duracion
         })
     }
     static eliminarSpam(id) {
-        return axios.post('/api/Administracion/EliminarSpam', {
+        return axios.post('/api/Direccion/EliminarSpam', {
             id
         })
     }
@@ -312,6 +312,23 @@ export default class RChanClient {
             hiloId,
             flag
         })
+    }
+
+    static crearCodigoPremium(tipocp, cantidad, usos, expiracion) {
+        return axios.post("/api/Direccion/CrearCodigoPremium", {
+            tipo: tipocp,
+            cantidad,
+            usos,
+            expiracion
+        })
+    }
+
+    static checkearCodigoPremium(id) {
+        return axios.post(`/api/Direccion/CheckearCodigoPremium/${id}`)
+    }
+
+    static ingresarCodigoPremium(id) {
+        return axios.post(`/api/Premium/IngresarCodigoPremium/${id}`)
     }
 
 }

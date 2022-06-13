@@ -3,6 +3,7 @@
     import { Ripple, Dialog, Button } from "svelte-mui";
     import { localStore } from "../localStore";
     import Cookie from "js-cookie";
+    import globalStore from "../globalStore";
     export let visible = true;
 
     let localConfig = localStore("NavCategorias", {
@@ -21,6 +22,10 @@
         Cookie.set("categoriasFavoritas", favoritas, { expires: 696969 });
 
     let configurando = false;
+
+    let categorias = config.categorias.filter(
+        (c) => !c.premium || (c.premium && $globalStore.usuario.esPremium)
+    );
 </script>
 
 <nav class="nav-categorias" class:visible class:oculta>
@@ -41,7 +46,7 @@
         on:click={() => (configurando = true)}
     />
 
-    {#each config.categorias.filter( (c) => favoritas.includes(c.id) ) as c (c.id)}
+    {#each categorias.filter((c) => favoritas.includes(c.id)) as c (c.id)}
         <a class="categoria favorita" href="/{c.nombreCorto}" title={c.nombre}
             >{c.nombreCorto}</a
         >
@@ -58,7 +63,7 @@
         class="categoria sep"
         style="border-radius: 20px 0 0 20px;color:transparent">.</span
     >
-    {#each config.categorias.filter((c) => !favoritas.includes(c.id)) as c (c.id)}
+    {#each categorias.filter((c) => !favoritas.includes(c.id)) as c (c.id)}
         <a class="categoria comunacha" href="/{c.nombreCorto}" title={c.nombre}
             >{c.nombreCorto}
         </a>
@@ -76,7 +81,7 @@
             <span class="titulo-categoria">Favoritas ({favoritas.length}):</span
             >
             <div class="favoritas container-categorias cpt">
-                {#each config.categorias.filter( (c) => favoritas.includes(c.id) ) as c (c.id)}
+                {#each categorias.filter( (c) => favoritas.includes(c.id) ) as c (c.id)}
                     <span
                         class="categoria favorita"
                         href="/{c.nombreCorto}"
@@ -91,14 +96,13 @@
             </div>
 
             <span class="titulo-categoria"
-                >Comunachas ({config.categorias.length -
-                    favoritas.length}):</span
+                >Comunachas ({categorias.length - favoritas.length}):</span
             >
             <div
                 class="no-favoritas container-categorias cpt"
                 style="margin-top:10px"
             >
-                {#each config.categorias.filter((c) => !favoritas.includes(c.id)) as c (c.id)}
+                {#each categorias.filter((c) => !favoritas.includes(c.id)) as c (c.id)}
                     <span
                         class="categoria"
                         on:click={() =>

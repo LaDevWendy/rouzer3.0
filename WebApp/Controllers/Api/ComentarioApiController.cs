@@ -1,23 +1,17 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore;
-using Microsoft.Extensions.Logging;
-using Servicios;
-using System.Collections.Generic;
-using Modelos;
-using System.Threading.Tasks;
-using System.Net;
-using System;
-using System.Text.RegularExpressions;
-using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authorization;
 using Data;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using WebApp.Otros;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Modelos;
+using Servicios;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace WebApp.Controllers
 {
@@ -36,6 +30,7 @@ namespace WebApp.Controllers
         private readonly CensorService censorService;
         private readonly HashService hashService;
         private readonly IAudioService audioService;
+        private readonly PremiumService premiumService;
 
         public ComentarioApiControlelr(
             IComentarioService comentarioService,
@@ -49,7 +44,8 @@ namespace WebApp.Controllers
             CensorService censorService,
             HashService hashService,
             IAudioService audioService,
-            IOptionsSnapshot<List<Categoria>> categoriasOpt
+            IOptionsSnapshot<List<Categoria>> categoriasOpt,
+            PremiumService premiumService
         )
         {
             this.comentarioService = comentarioService;
@@ -64,6 +60,7 @@ namespace WebApp.Controllers
             this.hashService = hashService;
             this.audioService = audioService;
             this.categoriasOpt = categoriasOpt;
+            this.premiumService = premiumService;
         }
 
         [HttpPost, Authorize, ValidateAntiForgeryToken]
@@ -91,6 +88,13 @@ namespace WebApp.Controllers
             if (hilo.Estado != HiloEstado.Normal)
             {
                 ModelState.AddModelError("Jeje", hilo.Estado == HiloEstado.Archivado ? "Este roz esta archivado" : "El roz fue domado");
+                return BadRequest(ModelState);
+            }
+
+            bool tienePermiso = premiumService.CheckearCategoriaPremium(hilo.CategoriaId, User.EsPremium());
+            if (!tienePermiso)
+            {
+                ModelState.AddModelError("Premium", "Se requiere cuenta premium en esta categoría");
                 return BadRequest(ModelState);
             }
 

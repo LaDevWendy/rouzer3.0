@@ -12,6 +12,7 @@
     import globalStore from "../../globalStore";
     import ErrorValidacion from "../ErrorValidacion.svelte";
     import RChanClient from "../../RChanClient";
+    import { Textfield } from "svelte-mui";
 
     let innerWidth = window.innerWidth;
     let current = 3;
@@ -78,8 +79,6 @@
             respuesta = (await RChanClient.eliminarToken(usuario.id)).data;
             exito = true;
         } catch (e) {
-            console.log(e);
-            console.log(e.response.data);
             exito = false;
             error = e.response.data;
         }
@@ -102,6 +101,8 @@
             setTimeout(() => (touch = false), 500);
         }
     }
+
+    let password;
 </script>
 
 <svelte:window bind:innerWidth />
@@ -122,14 +123,16 @@
         <p>Numero de rozs(en db): {usuario.rozs}</p>
         <p>Numero de comentarios(en db): {usuario.comentarios}</p>
     </div>
-    {#if $globalStore.usuario.esAdmin && hilos.length == 0 && comentarios.length == 0}
+    {#if $globalStore.usuario.esAdmin}
         <ErrorValidacion {error} />
         {#if exito}
             <p class="exito">{respuesta.mensaje}</p>
         {/if}
-        <Button raised color="var(--color5)" on:click={eliminarToken}
-            >Eliminar token</Button
-        >
+        {#if hilos.length == 0 && comentarios.length == 0}
+            <Button raised color="var(--color5)" on:click={eliminarToken}
+                >Eliminar token</Button
+            >
+        {/if}
     {/if}
     {#if innerWidth < 956}
         <div id="botones" class="tab">

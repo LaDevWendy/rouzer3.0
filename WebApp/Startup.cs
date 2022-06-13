@@ -1,31 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Data;
-using Servicios;
-using System.IO;
 using Microsoft.Extensions.FileProviders;
-using Modelos;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.StaticFiles;
-using System.Security.Claims;
-using Westwind.AspNetCore.LiveReload;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.SignalR;
-using WebApp.Otros;
+using Modelos;
+using Servicios;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
 
 namespace WebApp
 {
@@ -51,6 +45,7 @@ namespace WebApp
             services.AddSingleton<CaptchaService>();
             services.AddScoped<AntiFloodService>();
             services.AddScoped<CensorService>();
+            services.AddScoped<PremiumService>();
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
             services.Configure<List<Categoria>>(Configuration.GetSection("Categorias"));
             services.Configure<List<Grupo>>(Configuration.GetSection("Grupos"));
@@ -106,21 +101,31 @@ namespace WebApp
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("Role", "dev");
                 });
+                options.AddPolicy("esDirector", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("Role", "dev director".Split(" "));
+                });
                 options.AddPolicy("esAdmin", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("Role", "dev admin".Split(" "));
+                    policy.RequireClaim("Role", "dev director admin".Split(" "));
                 });
                 options.AddPolicy("esMod", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("Role", "dev admin mod".Split(" "));
+                    policy.RequireClaim("Role", "dev director admin mod".Split(" "));
                 });
                 options.AddPolicy("esAuxiliar", policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.AddRequirements(new AuxiliarAuthorizationRequirement());
-                    policy.RequireClaim("Role", "dev admin mod auxiliar".Split(" "));
+                    policy.RequireClaim("Role", "dev director admin mod auxiliar".Split(" "));
+                });
+                options.AddPolicy("esPremium", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("Premium", "gold");
                 });
             });
             services.AddRazorPages();
@@ -303,26 +308,35 @@ namespace WebApp
         {
             return user.HasClaim("Role", "dev");
         }
+        public static bool EsDirector(this ClaimsPrincipal user)
+        {
+            return user.HasClaim("Role", "director")
+                || user.EsDev();
+        }
         public static bool EsAdmin(this ClaimsPrincipal user)
         {
-            return user.HasClaim("Role", "admin") || user.HasClaim("Role", "dev");
+            return user.HasClaim("Role", "admin")
+                || user.EsDirector();
         }
         public static bool EsMod(this ClaimsPrincipal user)
         {
             return user.HasClaim("Role", "mod")
-                || user.HasClaim("Role", "admin") || user.HasClaim("Role", "dev");
+                || user.EsAdmin();
         }
         public static bool EsAuxiliar(this ClaimsPrincipal user, bool modoSerenito = false)
         {
             if (!modoSerenito && user.HasClaim("Role", "auxiliar")) return false;
-            return user.HasClaim("Role", "mod")
-                || user.HasClaim("Role", "admin")
-                || user.HasClaim("Role", "auxiliar") || user.HasClaim("Role", "dev");
+            return user.HasClaim("Role", "auxiliar")
+                || user.EsMod();
         }
         public static string GetId(this ClaimsPrincipal user)
         {
             return user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? null;
         }
-
+        public static bool EsPremium(this ClaimsPrincipal user)
+        {
+            return user.HasClaim("Premium", "gold")
+                || user.EsMod();
+        }
     }
 }

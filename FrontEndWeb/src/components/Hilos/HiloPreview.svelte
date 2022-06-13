@@ -19,7 +19,9 @@
     let dispatch = createEventDispatcher();
     if (!hilo.cantidadComentarios) hilo.cantidadComentarios = 0;
 
-    let categorias = config.categorias;
+    let categorias = config.categorias.filter(
+        (c) => !c.premium || (c.premium && $globalStore.usuario.esPremium)
+    );
     let media = hilo.media;
     let destellando = false;
     let visible = true;

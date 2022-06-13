@@ -36,6 +36,7 @@
             return;
         }
     }
+
     async function actualizarConfig() {
         try {
             let res = await RChanClient.ActualizarConfiguracion(model.config);
@@ -99,26 +100,6 @@
                     <li>
                         {a.userName} <span class="sep" /><Button
                             on:click={() => eliminar(a.id, "admin")}
-                            >Eliminar</Button
-                        >
-                    </li>
-                {/each}
-                <hr />
-                <li class="header">Developers</li>
-                <li class="noback">
-                    <input
-                        bind:value={nickDev}
-                        type="text"
-                        placeholder="Id o nick del usuario"
-                    />
-                    <Button on:click={() => añadir(nickDev, "dev")}
-                        >Añadir</Button
-                    >
-                </li>
-                {#each model.devs as d (d.id)}
-                    <li>
-                        {d.userName} <span class="sep" /><Button
-                            on:click={() => eliminar(d.id, "dev")}
                             >Eliminar</Button
                         >
                     </li>
@@ -352,16 +333,6 @@
                     <span style="margin-right: auto" />
                     <Button on:click={actualizarConfig}>Guardar</Button>
                 </li>
-            </ul>
-        </div>
-    </section>
-    <section>
-        <h3>Otros</h3>
-        <div class="menu">
-            <ul>
-                <a href="/Administracion/Spams">
-                    <li>RozPams</li>
-                </a>
             </ul>
         </div>
     </section>

@@ -1,24 +1,18 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore;
-using Microsoft.Extensions.Logging;
-using Servicios;
-using System.Collections.Generic;
-using Modelos;
-using System.Threading.Tasks;
-using System.Net;
-using System;
-using WebApp;
-using Microsoft.AspNetCore.Authorization;
 using Data;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using System.IO;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Hosting;
+using Modelos;
+using Servicios;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using WebApp;
 
 namespace WebApp.Controllers
 {
@@ -163,6 +157,8 @@ namespace WebApp.Controllers
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
             if (usuario is null)
                 return Redirect("/Error/404");
+
+            bool esPremium = (await userManager.GetClaimsAsync(usuario)).FirstOrDefault(c => c.Type == "Premium") != null;
             return View(
                 new
                 {
@@ -176,6 +172,7 @@ namespace WebApp.Controllers
                                     u.UserName,
                                     Rozs = context.Hilos.DeUsuario(id).Count(),
                                     Comentarios = context.Comentarios.DeUsuario(id).Count(),
+                                    EsPremium = esPremium
                                 }
                         )
                         .FirstOrDefaultAsync(u => u.Id == id),

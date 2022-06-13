@@ -3,15 +3,17 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(RChanContext))]
-    partial class RChanContextModelSnapshot : ModelSnapshot
+    [Migration("20220608225348_Balances")]
+    partial class Balances
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,37 +361,6 @@ namespace Data.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Bans");
-                });
-
-            modelBuilder.Entity("Modelos.CodigoPremiumModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<float>("Cantidad")
-                        .HasColumnType("real");
-
-                    b.Property<DateTimeOffset>("Creacion")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreadorId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTimeOffset>("Expiracion")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Tipo")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Usos")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreadorId");
-
-                    b.ToTable("CodigosPremium");
                 });
 
             modelBuilder.Entity("Modelos.ComentarioModel", b =>
@@ -1014,17 +985,6 @@ namespace Data.Migrations
                     b.Navigation("Hilo");
 
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("Modelos.CodigoPremiumModel", b =>
-                {
-                    b.HasOne("Modelos.UsuarioModel", "Creador")
-                        .WithMany()
-                        .HasForeignKey("CreadorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Creador");
                 });
 
             modelBuilder.Entity("Modelos.ComentarioModel", b =>

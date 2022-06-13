@@ -26,6 +26,10 @@
     function ExceptionReporte(mensaje) {
         this.response = { data: { Motivo: mensaje } };
     }
+
+    let categorias = config.categorias.filter(
+        (c) => !c.premium || (c.premium && $globalStore.usuario.esPremium)
+    );
 </script>
 
 <Dialogo
@@ -83,7 +87,7 @@
             {#if $ajustesConfigStore.catClasicas}
                 <select bind:value={categoria} name="categoria">
                     <option value="-1" selected disabled>Categoría</option>
-                    {#each config.categorias as c}
+                    {#each categorias as c}
                         <option value={c.id}>{c.nombre}</option>
                     {/each}
                 </select>
@@ -96,7 +100,7 @@
                             label={g.nombre}
                             class="grupo-categorias"
                         >
-                            {#each g.categorias as cid}
+                            {#each g.categorias.filter( (cid) => categorias.some((c) => c.id == cid) ) as cid}
                                 <option value={cid}
                                     >{config.categoriaPorId(cid).nombre}</option
                                 >

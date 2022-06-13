@@ -1,6 +1,6 @@
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
 
 namespace Modelos
 {
@@ -32,7 +32,7 @@ namespace Modelos
         public string Ip { get; set; }
 
         public UsuarioModel Usuario { get; set; }
-        
+
         public string FingerPrint { get; set; }
     }
 

@@ -100,7 +100,9 @@
                 EsMod = User.EsMod(),
                 EsAuxiliar = User.EsAuxiliar(generalOptions.Value.ModoSerenito),
                 TieneToken = !string.IsNullOrWhiteSpace(user?.Token),
-                EsDev = User.EsDev()
+                EsDev = User.EsDev(),
+                EsPremium = User.EsPremium(),
+                EsDirector = User.EsDirector()
             }
         };
 

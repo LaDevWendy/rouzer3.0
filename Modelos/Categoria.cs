@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +11,7 @@ namespace Modelos
         public bool Nsfw { get; set; }
         public bool Public { get; set; }
         public bool Limit { get; set; }
+        public bool Premium { get; set; }
     }
 
     public static class CategoriaExtensiones
@@ -27,6 +27,10 @@ namespace Modelos
         public static List<Categoria> Public(this List<Categoria> categorias)
         {
             return categorias.Where(c => c.Public).ToList();
+        }
+        public static List<Categoria> Premium(this List<Categoria> categorias)
+        {
+            return categorias.Where(c => c.Premium).ToList();
         }
 
     }

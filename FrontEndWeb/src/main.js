@@ -19,6 +19,8 @@ import Spams from './components/Paginas/Spams.svelte';
 import HistorialUsuario2 from './components/Paginas/HistorialUsuario2.svelte';
 import MisComentarios from './components/Paginas/MisComentarios.svelte';
 import Apelaciones from './components/Administracion/Apelaciones.svelte';
+import Premium from './components/Premium/Premium.svelte';
+import Direccion from './components/Direccion/Direccion.svelte';
 
 import skinStore from './components/Personalizacion/skinsStore'
 
@@ -53,6 +55,8 @@ let componentes = [
 	["#svelte-historialDeUsuario2", HistorialUsuario2, {}],
 	["#svelte-miscomentarios", MisComentarios, {}],
 	["#svelte-apelaciones", Apelaciones, {}],
+	["#svelte-premium", Premium, {}],
+	["#svelte-direccion", Direccion, {}],
 ]
 
 for (const c of componentes) {
