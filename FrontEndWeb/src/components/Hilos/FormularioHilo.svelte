@@ -73,6 +73,7 @@
                     media.link,
                     audio,
                     captcha,
+                    spoiler,
                     [...encuesta]
                 );
             } else {
@@ -85,6 +86,7 @@
                     media.link,
                     audio,
                     captcha,
+                    spoiler,
                     [...encuesta],
                     mostrarNombre && $globalStore.usuario.esAdmin,
                     mostrarRango,
@@ -111,9 +113,13 @@
         textarea2.focus();
     }
 
+<<<<<<< HEAD
     let categorias = config.categorias.filter(
         (c) => !c.premium || (c.premium && $globalStore.usuario.esPremium)
     );
+=======
+    let spoiler = false;
+>>>>>>> main2
 </script>
 
 {#if mostrar}
@@ -127,7 +133,7 @@
             class="formulario crear-hilo panel"
             on:submit|preventDefault
         >
-            <MediaInput bind:media />
+            <MediaInput bind:media bind:spoiler />
             <!--<AudioInput bind:blobAudio={audio} />-->
 
             <!-- svelte-ignore a11y-autofocus -->

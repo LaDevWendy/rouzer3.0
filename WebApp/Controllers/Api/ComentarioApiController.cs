@@ -158,6 +158,10 @@ namespace WebApp.Controllers
             {
                 comentario.Media = media;
                 comentario.MediaId = media.Id;
+                if (vm.Spoiler)
+                {
+                    comentario.Flags += "p";
+                }
             }
 
             if (hilo.Flags.Contains("a"))

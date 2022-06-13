@@ -15,6 +15,5 @@ namespace Modelos
         [Required(ErrorMessage = "Debes elegir una categoria para su hilo anon")]
         public int CategoriaId { get; set; }
         public string Encuesta { get; set; }
-        public string Captcha { get; set; }
     }
 }
