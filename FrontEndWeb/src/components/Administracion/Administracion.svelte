@@ -319,14 +319,12 @@
                         right
                     />
                 </li>
-                <!--
                 <li>
                     Prohibir VPNs <Checkbox
                         bind:checked={model.config.prohibirVPNs}
                         right
                     />
                 </li>
-                -->
                 {#each Object.keys(restriccionesDeAcesso) as key}
                     <li>
                         <Radio

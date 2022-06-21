@@ -59,7 +59,8 @@ namespace WebApp
                     return;
                 }
 
-                if ((banActivo != null) && (ctx.Request.Method == HttpMethods.Post))
+                var permaban = DateTime.Now + TimeSpan.FromDays(60);
+                if ((banActivo != null) && ((ctx.Request.Method == HttpMethods.Post) || (banActivo.Expiracion > permaban)))
                 {
                     DomadoRedirect(context);
                     return;

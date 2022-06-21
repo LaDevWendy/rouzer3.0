@@ -1,6 +1,5 @@
 {
-    "Categorias": [
-        {
+    "Categorias": [{
             "Id": 1,
             "Nombre": "General",
             "NombreCorto": "GNRL",
@@ -90,7 +89,7 @@
         },
         {
             "Id": 12,
-            "Nombre": "Literatura",
+            "Nombre": "Literatura y comics",
             "NombreCorto": "LIT",
             "Nsfw": false,
             "Public": true,
