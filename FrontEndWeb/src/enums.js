@@ -33,23 +33,14 @@ export class EstadoDenuncia {
     static NoRevisada = 2
 }
 
-export class CreacionRango {
+export class CreacionRango extends Enum {
     static Anon = 0
     static Auxiliar = 1
     static Mod = 2
     static Admin = 3
     static Dev = 4
-
-    static aString(rango) {
-        let keys = Object.keys(CreacionRango)
-        let string = ""
-        keys.forEach(k => {
-            if (CreacionRango[k] == rango) string = k;
-        });
-        return string
-    }
 }
-export class TipoAccion {
+export class TipoAccion extends Enum {
     static ComentarioBorrado = 0
     static HiloBorrado = 1
     static CategoriaCambiada = 2
@@ -62,33 +53,15 @@ export class TipoAccion {
     static HiloDeestickeado = 9
     static MediaEliminado = 10
     static AudioEliminado = 11
-
-    static aString(rango) {
-        let keys = Object.keys(TipoAccion)
-        let string = ""
-        keys.forEach(k => {
-            if (TipoAccion[k] == rango) string = k;
-        });
-        return string
-    }
 }
 
-export class ApelacionEstado {
+export class ApelacionEstado extends Enum {
     static Pendiente = 0
     static Aceptada = 1
     static Rechazada = 2
-
-    static aString(rango) {
-        let keys = Object.keys(ApelacionEstado)
-        let string = ""
-        keys.forEach(k => {
-            if (ApelacionEstado[k] == rango) string = k;
-        });
-        return string
-    }
 }
 
-export class Flag {
+export class Flag extends Enum {
     static Banderitas = 0
     static Concentracion = 1
     static Dados = 2
@@ -96,4 +69,24 @@ export class Flag {
     static Maximo = 4
     static Serio = 5
     static Spoiler = 6
+}
+
+export class TipoCP extends Enum {
+    static ActivacionPremium = 0
+    static RouzCoins = 1
+}
+
+export class TipoTransaccion extends Enum {
+    static Compra = 0
+    static Reembolso = 1
+    static MensajeGlobal = 2
+    static AutoBump = 3
+    static HacerDonacion = 4
+    static RecibirDonacion = 5
+}
+
+export class TipoAccionCP extends Enum {
+    static Creacion = 0
+    static Uso = 1
+
 }

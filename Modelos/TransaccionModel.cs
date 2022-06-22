@@ -21,7 +21,9 @@ namespace Modelos
         Compra,
         Reembolso,
         MensajeGlobal,
-        AutoBump
+        AutoBump,
+        HacerDonacion,
+        RecibirDonacion
     }
 
 }

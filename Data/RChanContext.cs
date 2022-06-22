@@ -38,6 +38,7 @@ namespace Data
         public DbSet<AutoBumpModel> AutoBumps { get; set; }
         public DbSet<BalanceModel> Balances { get; set; }
         public DbSet<CodigoPremiumModel> CodigosPremium { get; set; }
+        public DbSet<AccionCodigoPremiumModel> AccionesCodigosPremium { get; set; }
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

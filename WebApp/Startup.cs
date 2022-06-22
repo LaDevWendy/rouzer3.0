@@ -49,6 +49,7 @@ namespace WebApp
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
             services.Configure<List<Categoria>>(Configuration.GetSection("Categorias"));
             services.Configure<List<Grupo>>(Configuration.GetSection("Grupos"));
+            services.Configure<List<Ware>>(Configuration.GetSection("Wares"));
             // services.AddLiveReload(config =>
             // {
             //     // config.FolderToMonitor = env.ContentRootPath + "\\Views";
@@ -125,7 +126,10 @@ namespace WebApp
                 options.AddPolicy("esPremium", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("Premium", "gold");
+                    policy.RequireAssertion(context =>
+                        context.User.HasClaim(c => ((c.Type == "Premium" && c.Value == "gold") ||
+                        (c.Type == "Role" &&
+                        (c.Value == "dev" || c.Value == "director" || c.Value == "admin" || c.Value == "mod")))));
                 });
             });
             services.AddRazorPages();
@@ -212,6 +216,9 @@ namespace WebApp
 
             services.AddSingleton<RChanCacheService>();
             services.AddHostedService<RChanCacheService>(provider => provider.GetService<RChanCacheService>());
+
+            services.AddSingleton<RChanPremiumService>();
+            services.AddHostedService<RChanPremiumService>(provider => provider.GetService<RChanPremiumService>());
 
             // services.AddMiniProfiler(opts => {
 

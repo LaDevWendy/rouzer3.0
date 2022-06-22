@@ -7,14 +7,20 @@ using System.Threading.Tasks;
 
 namespace Modelos
 {
-    public class BalanceModel : BaseModel
+    public class AccionCodigoPremiumModel : BaseModel
     {
         [Required]
         public string UsuarioId { get; set; }
         public UsuarioModel Usuario { get; set; }
         [Required]
-        public float Balance { get; set; } = 0.0f;
+        public string CodigoPremiumId { get; set; }
+        public CodigoPremiumModel CodigoPremium { get; set; }
         [Required]
-        public DateTime Expiracion { get; set; } = DateTime.MinValue;
+        public TipoAccionCP Tipo { get; set; }
+    }
+    public enum TipoAccionCP
+    {
+        Creacion,
+        Uso
     }
 }

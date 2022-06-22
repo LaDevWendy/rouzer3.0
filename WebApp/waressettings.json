@@ -1,0 +1,8 @@
+{
+    "Wares": {
+        "Id": 0,
+        "Nombre": "AutoBump",
+        "Valor": 100,
+        "Duracion": 40
+    }
+}

@@ -7,6 +7,7 @@
 @inject RChanContext _context;
 @inject IOptionsSnapshot<List<Categoria>> categoriasOpt;
 @inject IOptionsSnapshot<List<Grupo>> gruposOpt;
+@inject IOptionsSnapshot<List<Ware>> waresOpt;
 @inject IConfiguration config;
 @inject IOptionsSnapshot<GeneralOptions> generalOptions
 @inject IWebHostEnvironment env
@@ -112,6 +113,7 @@
         {
             Categorias = categoriasOpt.Value,
             Grupos = gruposOpt.Value,
+            Wares = waresOpt.Value,
             HCaptchaSiteKey = config.GetValue<string>("HCaptcha:SiteKey"),
             General = new
             {

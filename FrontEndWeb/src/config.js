@@ -17,6 +17,8 @@ export default class config {
 
     static nombre = window.config.general.nombre
 
+    static wares = window.config.wares
+
     static categoriaPorId(id) {
         return config.categorias.filter(c => c.id == id)[0]
     }

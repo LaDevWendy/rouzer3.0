@@ -104,6 +104,7 @@ namespace WebApp
                                     cb.AddJsonFile("categoriassettings.json", false, true);
                                     cb.AddJsonFile("grupossettings.json", false, true);
                                     cb.AddJsonFile("generalsettings.json", false, true);
+                                    cb.AddJsonFile("waressettings.json", false, true);
                                     cb.AddCommandLine(args);
                                     cb.AddEnvironmentVariables();
                                 }
