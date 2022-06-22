@@ -37,7 +37,7 @@ namespace WebApp.Controllers
         {
             var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
 
-            var transacciones = await context.Transacciones.Where(t => t.UsuarioId == User.GetId()).Select(t => new
+            var transacciones = await context.Transacciones.Where(t => t.UsuarioId == User.GetId()).OrderByDescending(t => t.Creacion).Select(t => new
             {
                 t.Creacion,
                 t.OrigenCantidad,
@@ -48,7 +48,7 @@ namespace WebApp.Controllers
                 t.Balance
             }).ToListAsync();
 
-            return View(new { balance = balance.Balance, transacciones });
+            return View(new { balance = new { balance.Balance, balance.Expiracion }, transacciones });
         }
 
         [HttpPost]
@@ -98,8 +98,13 @@ namespace WebApp.Controllers
                 var result = await userManager.AddClaimAsync(user, new Claim("Premium", "gold"));
                 if (result.Succeeded)
                 {
+                    var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
+                    balance.Expiracion = DateTime.Now + TimeSpan.FromDays(cp.Cantidad);
                     cp.Usos -= 1;
                     await context.SaveChangesAsync();
+
+                    await premiumService.RegistrarAccionCP(User.GetId(), cp.Id, TipoAccionCP.Uso);
+                    await premiumService.RegistrarActivacionAsync(User.GetId(), cp.Cantidad);
                     return Json(new { tipo = cp.Tipo, cantidad = cp.Cantidad, usos = cp.Usos, expiracion = cp.Expiracion });
                 }
                 else
@@ -123,6 +128,9 @@ namespace WebApp.Controllers
                 balance.Balance += cp.Cantidad;
                 cp.Usos -= 1;
                 await context.SaveChangesAsync();
+
+                await premiumService.RegistrarAccionCP(User.GetId(), cp.Id, TipoAccionCP.Uso);
+                await premiumService.RegistrarAgregarRouzCoinsAsync(User.GetId(), cp.Cantidad, balance.Balance);
                 return Json(new { tipo = cp.Tipo, cantidad = cp.Cantidad, usos = cp.Usos, expiracion = cp.Expiracion });
             }
 
@@ -130,5 +138,131 @@ namespace WebApp.Controllers
             return BadRequest(ModelState);
         }
 
+        [HttpPost, Authorize("esPremium")]
+        public async Task<ActionResult<ApiResponse>> HacerDonacion(DonacionVM donacionVM)
+        {
+            if (!(donacionVM.Cantidad > 0))
+            {
+                ModelState.AddModelError("Cantidad", "La cantidad tiene que ser mayor a cero");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == donacionVM.HiloId);
+            if (hilo is null)
+            {
+                ModelState.AddModelError("Hilo", "El hilo no existe");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (User.GetId() == hilo.UsuarioId)
+            {
+                ModelState.AddModelError("Receptor", "El receptor no puede ser el mismo que el donante");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var receptorPremium = await premiumService.CheckearPremium(hilo.UsuarioId);
+            if (!receptorPremium)
+            {
+                ModelState.AddModelError("Premium", "Para poder donar RouzCoins el receptor debe ser usuario premium");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var balanceDonante = await premiumService.ObtenerBalanceAsync(User.GetId());
+            if (balanceDonante.Balance < donacionVM.Cantidad)
+            {
+                ModelState.AddModelError("Balance", "No tiene la cantidad necesaria en su balance");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var balanceReceptor = await premiumService.ObtenerBalanceAsync(hilo.UsuarioId);
+            balanceDonante.Balance -= donacionVM.Cantidad;
+            balanceReceptor.Balance += donacionVM.Cantidad;
+
+            await context.SaveChangesAsync();
+            await premiumService.RegistrarDonacionAsync(User.GetId(), hilo.UsuarioId, donacionVM.Cantidad, balanceDonante.Balance, balanceReceptor.Balance);
+            return new ApiResponse("Donación exitosa");
+        }
+
+        [HttpPost, Authorize("esPremium")]
+        public async Task<ActionResult<ApiResponse>> AutoBumpear(string hiloId)
+        {
+            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == hiloId);
+            if (hilo is null)
+            {
+                ModelState.AddModelError("Hilo", "El hilo no existe");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (hilo.UsuarioId != User.GetId())
+            {
+                ModelState.AddModelError("Hilo", "No sos el OP");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (hilo.Estado == HiloEstado.Archivado)
+            {
+                ModelState.AddModelError("Hilo", "El hilo está archivado");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (hilo.Estado == HiloEstado.Eliminado)
+            {
+                ModelState.AddModelError("Hilo", "El hilo fue domado");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var precioAutobump = 100f;
+            var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
+            if (balance.Balance < precioAutobump)
+            {
+                ModelState.AddModelError("Balance", "No tiene la cantidad necesaria en su balance");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var creado = await premiumService.CrearAutoBumpsAsync(User.GetId(), hiloId);
+            if (!creado)
+            {
+                ModelState.AddModelError("AutoBumps", "No pudo crearse");
+                return BadRequest(ModelState);
+            }
+            return new ApiResponse("AutoBump creado.");
+        }
     }
+
+    public class DonacionVM
+    {
+        public string HiloId { get; set; }
+        public float Cantidad { get; set; }
+    }
+
 }

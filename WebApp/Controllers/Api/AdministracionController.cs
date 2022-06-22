@@ -62,19 +62,16 @@ namespace WebApp.Controllers
         [Route("/Administracion")]
         public async Task<ActionResult> Index()
         {
-            var deveps = await userManager.GetUsersForClaimAsync(new Claim("Role", "dev"));
             var admins = await userManager.GetUsersForClaimAsync(new Claim("Role", "admin"));
             var mods = await userManager.GetUsersForClaimAsync(new Claim("Role", "mod"));
             var auxiliares = await userManager.GetUsersForClaimAsync(new Claim("Role", "auxiliar"));
 
-            var devs = deveps.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
             var adms = admins.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
             var meds = mods.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
             var auxs = auxiliares.Select(u => new UsuarioVM { Id = u.Id, UserName = u.UserName }).ToArray();
 
             var vm = new AdministracionVM
             {
-                Devs = devs,
                 Admins = adms,
                 Mods = meds,
                 Auxiliares = auxs,
@@ -446,7 +443,6 @@ namespace WebApp.Controllers
 
 public class AdministracionVM
 {
-    public UsuarioVM[] Devs { get; set; }
     public UsuarioVM[] Admins { get; set; }
     public UsuarioVM[] Mods { get; set; }
     public UsuarioVM[] Auxiliares { get; set; }

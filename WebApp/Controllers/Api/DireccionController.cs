@@ -100,6 +100,8 @@ namespace WebApp.Controllers
             cp.Usos = codigoPremiumVM.Usos;
             context.CodigosPremium.Add(cp);
             await context.SaveChangesAsync();
+
+            await premiumService.RegistrarAccionCP(User.GetId(), cp.Id, TipoAccionCP.Creacion);
             return Json(new { cp = cp.Id });
         }
 
@@ -115,7 +117,9 @@ namespace WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            return Json(codigoPremium);
+
+            var historial = await context.AccionesCodigosPremium.Where(a => a.CodigoPremiumId == id).Include(a => a.Usuario).OrderByDescending(a => a.Creacion).ToListAsync();
+            return Json(new { cp = codigoPremium, historial });
         }
 
     }

@@ -115,6 +115,8 @@ namespace Servicios
 
             var userId = user.GetId();
             hiloFullView.Hilo = new HiloViewModel(hilo);
+            hiloFullView.Op = hilo.UsuarioId == userId;
+            hiloFullView.Premium = await premiumService.CheckearPremium(hilo.UsuarioId);
 
             if (hilo.Encuesta != null)
             {
@@ -163,6 +165,9 @@ namespace Servicios
             hiloFullView.Hilo = new HiloViewModel(hilo);
 
             var userId = user.GetId();
+            hiloFullView.Op = hilo.UsuarioId == userId;
+            hiloFullView.Premium = await premiumService.CheckearPremium(hilo.UsuarioId);
+
             if (hilo.Encuesta != null)
             {
                 hiloFullView.Hilo.EncuestaData = new EncuestaViewModel(hilo.Encuesta, userId);

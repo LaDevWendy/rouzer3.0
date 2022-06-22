@@ -190,7 +190,10 @@ namespace WebApp.Controllers
             hilo.Contadores.Add("seg", 0);
             hilo.Contadores.Add("ocu", 0);
 
-            if ((await context.Hilos.FirstOrDefaultAsync(h => h.Id == id)).UsuarioId == User.GetId() && User.EsPremium())
+            var op = (await context.Hilos.FirstOrDefaultAsync(h => h.Id == id)).UsuarioId == User.GetId();
+            var premium = User.EsPremium();
+
+            if (op && premium)
             {
                 hilo.Contadores["fav"] = await context.HiloAcciones.Where(a => a.HiloId == id && a.Favorito).CountAsync();
                 hilo.Contadores["seg"] = await context.HiloAcciones.Where(a => a.HiloId == id && a.Seguido).CountAsync();
