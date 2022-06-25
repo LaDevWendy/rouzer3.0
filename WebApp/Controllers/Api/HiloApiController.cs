@@ -104,7 +104,7 @@ namespace WebApp.Controllers
             }
 
             var pasoElCaptcha = await captcha.Verificar(vm.Captcha);
-            if (!pasoElCaptcha && generalOptions.Value.CaptchaHilo && !User.EsMod())
+            if (!pasoElCaptcha && generalOptions.Value.CaptchaHilo && !User.EsPremium())
             {
                 ModelState.AddModelError("Captcha", "Incorrecto");
                 return BadRequest(ModelState);

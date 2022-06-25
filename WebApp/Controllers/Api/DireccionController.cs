@@ -82,7 +82,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> CrearCodigoPremium(CodigoPremiumViewModel codigoPremiumVM)
         {
-            if (codigoPremiumVM.Expiracion < DateTime.Now)
+            if (codigoPremiumVM.Expiracion < DateTimeOffset.Now)
             {
                 ModelState.AddModelError("Expiración", "Tiene que ser en el futuro padre");
             }
@@ -93,7 +93,6 @@ namespace WebApp.Controllers
 
             var cp = new CodigoPremiumModel();
             cp.Id = hashService.Random(40);
-            cp.CreadorId = User.GetId();
             cp.Tipo = codigoPremiumVM.Tipo;
             cp.Cantidad = codigoPremiumVM.Cantidad;
             cp.Expiracion = codigoPremiumVM.Expiracion;

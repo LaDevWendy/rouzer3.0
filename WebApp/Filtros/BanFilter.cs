@@ -46,7 +46,7 @@ namespace WebApp
                     .Where(b => !b.Visto)
                     .FirstOrDefaultAsync(b => b.UsuarioId == userId || b.Ip == ip);
 
-                var ahora = DateTime.Now;
+                var ahora = DateTimeOffset.Now;
                 var banActivo = await dbContext.Bans
                     .OrderByDescending(b => b.Expiracion)
                     .Where(b => b.Visto)
@@ -59,7 +59,7 @@ namespace WebApp
                     return;
                 }
 
-                var permaban = DateTime.Now + TimeSpan.FromDays(60);
+                var permaban = DateTimeOffset.Now + TimeSpan.FromDays(60);
                 if ((banActivo != null) && ((ctx.Request.Method == HttpMethods.Post) || (banActivo.Expiracion > permaban)))
                 {
                     DomadoRedirect(context);

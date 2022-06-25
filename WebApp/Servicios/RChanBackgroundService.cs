@@ -21,7 +21,11 @@ namespace Servicios
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            timer = new Timer(async (state) => await LimpearHilosViejos(), null, 0, (int)TimeSpan.FromMinutes(60).TotalMilliseconds);
+            timer = new Timer(async (state) =>
+            {
+                await LimpearHilosViejos();
+                await LimpearMensajesGlobalesViejos();
+            }, null, 0, (int)TimeSpan.FromMinutes(60).TotalMilliseconds);
             return Task.CompletedTask;
         }
 
@@ -35,7 +39,7 @@ namespace Servicios
         {
             try
             {
-                logger.LogInformation("[RBS] Comenazondo limpieza de hilos viejos...");
+                logger.LogInformation("[RBS] Comenzando limpieza de hilos viejos...");
                 using var scope = services.CreateScope();
                 var hiloService = scope.ServiceProvider.GetService<IHiloService>();
                 await hiloService.LimpiarHilosViejos();
@@ -46,6 +50,15 @@ namespace Servicios
                 logger.LogError("Error al limpiar los hilos viejos");
                 logger.LogError(e.Message, e);
             }
+        }
+
+        public async Task LimpearMensajesGlobalesViejos()
+        {
+            logger.LogInformation("[RBS] Comenzando limpieza de mensajes globales viejos...");
+            using var scope = services.CreateScope();
+            var premiumService = scope.ServiceProvider.GetService<PremiumService>();
+            await premiumService.LimpiarMensajesGlobalesViejos();
+            logger.LogInformation("[RBS] Limpieza terminada");
         }
 
         public void Dispose()

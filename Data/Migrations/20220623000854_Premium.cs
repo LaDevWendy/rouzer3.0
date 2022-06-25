@@ -3,10 +3,47 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class Transacciones : Migration
+    public partial class Premium : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Balances",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    UsuarioId = table.Column<string>(type: "text", nullable: false),
+                    Balance = table.Column<float>(type: "real", nullable: false),
+                    Expiracion = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Creacion = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Balances", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Balances_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CodigosPremium",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Expiracion = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Tipo = table.Column<int>(type: "integer", nullable: false),
+                    Cantidad = table.Column<float>(type: "real", nullable: false),
+                    Usos = table.Column<int>(type: "integer", nullable: false),
+                    Creacion = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CodigosPremium", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Transacciones",
                 columns: table => new
@@ -14,11 +51,11 @@ namespace Data.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     UsuarioId = table.Column<string>(type: "text", nullable: false),
                     Tipo = table.Column<int>(type: "integer", nullable: false),
-                    WareId = table.Column<string>(type: "text", nullable: true),
                     OrigenCantidad = table.Column<float>(type: "real", nullable: false),
                     DestinoCantidad = table.Column<float>(type: "real", nullable: false),
                     OrigenUnidad = table.Column<string>(type: "text", nullable: true),
                     DestinoUnidad = table.Column<string>(type: "text", nullable: true),
+                    Balance = table.Column<float>(type: "real", nullable: false),
                     Creacion = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -33,11 +70,38 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AccionesCodigosPremium",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    UsuarioId = table.Column<string>(type: "text", nullable: false),
+                    CodigoPremiumId = table.Column<string>(type: "text", nullable: false),
+                    Tipo = table.Column<int>(type: "integer", nullable: false),
+                    Creacion = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccionesCodigosPremium", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AccionesCodigosPremium_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccionesCodigosPremium_CodigosPremium_CodigoPremiumId",
+                        column: x => x.CodigoPremiumId,
+                        principalTable: "CodigosPremium",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AutoBumps",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    HiloId = table.Column<string>(type: "text", nullable: false),
+                    HiloId = table.Column<string>(type: "text", nullable: true),
                     Creacion = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UsuarioId = table.Column<string>(type: "text", nullable: false),
                     TransaccionId = table.Column<string>(type: "text", nullable: false),
@@ -57,7 +121,7 @@ namespace Data.Migrations
                         column: x => x.HiloId,
                         principalTable: "Hilos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_AutoBumps_Transacciones_TransaccionId",
                         column: x => x.TransaccionId,
@@ -96,6 +160,16 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AccionesCodigosPremium_CodigoPremiumId",
+                table: "AccionesCodigosPremium",
+                column: "CodigoPremiumId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccionesCodigosPremium_UsuarioId",
+                table: "AccionesCodigosPremium",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AutoBumps_HiloId",
                 table: "AutoBumps",
                 column: "HiloId");
@@ -109,6 +183,12 @@ namespace Data.Migrations
                 name: "IX_AutoBumps_UsuarioId",
                 table: "AutoBumps",
                 column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Balances_UsuarioId",
+                table: "Balances",
+                column: "UsuarioId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_MensajesGlobales_TransaccionId",
@@ -129,10 +209,19 @@ namespace Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AccionesCodigosPremium");
+
+            migrationBuilder.DropTable(
                 name: "AutoBumps");
 
             migrationBuilder.DropTable(
+                name: "Balances");
+
+            migrationBuilder.DropTable(
                 name: "MensajesGlobales");
+
+            migrationBuilder.DropTable(
+                name: "CodigosPremium");
 
             migrationBuilder.DropTable(
                 name: "Transacciones");

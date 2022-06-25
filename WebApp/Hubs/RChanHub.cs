@@ -69,7 +69,7 @@ namespace WebApp
                     {
                         onlineUser = new OnlineUser();
                         onlineUser.NConexiones = 1;
-                        onlineUser.UltimaConexion = DateTime.Now;
+                        onlineUser.UltimaConexion = DateTimeOffset.Now;
                         nombreUsuariosConectados.TryAdd(nombre, onlineUser);
                     }
                     else
@@ -77,7 +77,7 @@ namespace WebApp
                         nombreUsuariosConectados.TryGetValue(nombre, out onlineUser);
                         OnlineUser newOnlineUser = new OnlineUser();
                         newOnlineUser.NConexiones = onlineUser.NConexiones + 1;
-                        newOnlineUser.UltimaConexion = DateTime.Now;
+                        newOnlineUser.UltimaConexion = DateTimeOffset.Now;
                         nombreUsuariosConectados.TryUpdate(nombre, newOnlineUser, onlineUser);
                     }
                 }
@@ -109,7 +109,7 @@ namespace WebApp
                         newOnlineUser.NConexiones = onlineUser.NConexiones - 1;
                         if (newOnlineUser.NConexiones <= 0)
                         {
-                            newOnlineUser.UltimaConexion = DateTime.Now;
+                            newOnlineUser.UltimaConexion = DateTimeOffset.Now;
                         }
                         else
                         {
@@ -130,7 +130,7 @@ namespace WebApp
 
         {
             public int NConexiones { get; set; }
-            public DateTime UltimaConexion { get; set; }
+            public DateTimeOffset UltimaConexion { get; set; }
         }
 
     }

@@ -12,6 +12,7 @@
 @inject IOptionsSnapshot<GeneralOptions> generalOptions
 @inject IWebHostEnvironment env
 @inject EstadisticasService estadisticasService
+@inject PremiumService premiumService
 
 @{
     var version = generalOptions.Value.Version;
@@ -137,6 +138,12 @@
         {
             computadorasConectadas = RChanHub.NumeroDeUsuariosConectados
         };
+
+        var balance = -1f;
+        if (User.Identity.IsAuthenticated)
+        {
+            balance = (await premiumService.ObtenerBalanceAsync(User?.GetId())).Balance;
+        }
     }
 
     @{
@@ -162,7 +169,8 @@
             window.globalState = @Json.Serialize(globalState)
 
                 window.denuncias = @Json.Serialize(denuncias);
-        window.estadisticas = @Json.Serialize(await estadisticasService.GetEstadisticasAsync());        
+        window.estadisticas = @Json.Serialize(await estadisticasService.GetEstadisticasAsync());
+        window.balance = @Json.Serialize(balance);
     </script>
 
 </head>

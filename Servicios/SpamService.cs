@@ -31,20 +31,22 @@ namespace Servicios
 
         public async Task<List<SpamModel>> GetSpamsActivos()
         {
+            var ahora = DateTimeOffset.Now;
             return (await GetSpams())
-                .Where(s => (s.Creacion + s.Duracion) > DateTimeOffset.Now)
+                .Where(s => (s.Creacion + s.Duracion) > ahora)
                 .ToList();
         }
 
         public async Task Agregar(SpamModel spam)
         {
             spam.Id = hashService.Random(8);
-            spam.Creacion = DateTime.Now;
+            spam.Creacion = DateTimeOffset.Now;
 
             rChanContext.Add(spam);
 
+            var ahora = DateTimeOffset.Now;
             var expirados = await rChanContext.Spams
-                .Where(s => (s.Creacion + s.Duracion) < DateTime.Now)
+                .Where(s => (s.Creacion + s.Duracion) < ahora)
                 .ToListAsync();
 
             rChanContext.RemoveRange(expirados);

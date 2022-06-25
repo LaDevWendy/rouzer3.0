@@ -7,15 +7,22 @@ namespace Modelos
         [Required]
         public Tiers Tier { get; set; }
         public string Mensaje { get; set; }
+        public EstadoMensajeGlobal Estado { get; set; } = EstadoMensajeGlobal.Normal;
     }
 
     public enum Tiers
     {
-        Hierro,
-        Bronce,
-        Plata,
-        Oro,
-        Platino,
-        Diamante
+        Rojo,
+        Naranja,
+        Amarillo,
+        Verde,
+        Azul,
+        Blanco
+    }
+
+    public enum EstadoMensajeGlobal
+    {
+        Normal,
+        Eliminado
     }
 }

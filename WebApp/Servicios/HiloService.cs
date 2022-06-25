@@ -46,6 +46,7 @@ namespace Servicios
         private readonly SpamService spamService;
         private readonly IAudioService audioService;
         private readonly PremiumService premiumService;
+        private readonly RChanCacheService rchanCacheService;
 
         public HiloService(RChanContext context,
             HashService hashService,
@@ -58,7 +59,8 @@ namespace Servicios
             ILogger<HiloService> logger,
             SpamService spamService,
             IAudioService audioService,
-            PremiumService premiumService
+            PremiumService premiumService,
+            RChanCacheService rchanCacheService
             )
         : base(context, hashService)
         {
@@ -72,6 +74,7 @@ namespace Servicios
             this.spamService = spamService;
             this.audioService = audioService;
             this.premiumService = premiumService;
+            this.rchanCacheService = rchanCacheService;
         }
 
         public async Task ActualizarHilo(HiloModel Hilo)
@@ -141,6 +144,8 @@ namespace Servicios
             hiloFullView.Acciones ??= new HiloAccionModel();
 
             hiloFullView.Spams = await spamService.GetSpamsActivos();
+            hiloFullView.MensajesGlobales = rchanCacheService.mensajeGlobales;
+            hiloFullView.Donaciones = await _context.Donaciones.Where(d => d.HiloId == hilo.Id).SumAsync(d => d.Cantidad);
             return hiloFullView;
         }
         public async Task<HiloFullViewModelMod> GetHiloFullMod(string id, ClaimsPrincipal user, bool mostrarOcultos = false)
@@ -194,6 +199,8 @@ namespace Servicios
             hiloFullView.Acciones ??= new HiloAccionModel();
 
             hiloFullView.Spams = await spamService.GetSpamsActivos();
+            hiloFullView.MensajesGlobales = rchanCacheService.mensajeGlobales;
+            hiloFullView.Donaciones = await _context.Donaciones.Where(d => d.HiloId == hilo.Id).SumAsync(d => d.Cantidad);
             return hiloFullView;
         }
 
@@ -397,6 +404,9 @@ namespace Servicios
             var notis = await _context.Notificaciones.Where(n => n.HiloId == hilo.Id).ToListAsync();
             var denuncias = await _context.Denuncias.Where(d => d.HiloId == hilo.Id).ToListAsync();
             var accionesDeModeracion = await _context.AccionesDeModeracion.Where(d => d.HiloId == hilo.Id).ToListAsync();
+            // Cosas premium del hilo
+            var autobumps = await _context.AutoBumps.Where(ab => ab.HiloId == hilo.Id).ToListAsync();
+            var donaciones = await _context.Donaciones.Where(ab => ab.HiloId == hilo.Id).ToListAsync();
 
             var baneosBugeados = await _context.Bans.Where(b => b.HiloId == null).ToListAsync();
             _context.RemoveRange(baneosBugeados);
@@ -405,6 +415,8 @@ namespace Servicios
             _context.RemoveRange(notis);
             _context.RemoveRange(denuncias);
             _context.RemoveRange(accionesDeModeracion);
+            _context.RemoveRange(autobumps);
+            _context.RemoveRange(donaciones);
 
             if (baneos.Count == 0)
             {
@@ -521,7 +533,7 @@ namespace Servicios
 
         public async Task ActualizarTendencias()
         {
-            var haceDiezMinutos = DateTime.Now.AddMinutes(-10);
+            var haceDiezMinutos = DateTimeOffset.Now.AddMinutes(-10);
             foreach (var h in _context.Hilos.FiltrarNoActivos().ToList())
             {
                 h.TrendIndex = _context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal && c.Creacion > haceDiezMinutos).Count() + 0.7 * h.TrendIndex;

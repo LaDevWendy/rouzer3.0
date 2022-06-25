@@ -215,20 +215,20 @@ namespace WebApp.Controllers
             {
                 OnlineUser onlineUser = new OnlineUser();
                 onlineUser.NConexiones = 0;
-                onlineUser.UltimaConexion = DateTime.MinValue;
+                onlineUser.UltimaConexion = DateTimeOffset.MinValue;
                 onlineUser = usuariosConectados.GetOrAdd(a.UserName, onlineUser);
                 onlines.Add(a.UserName, onlineUser);
                 keys.Remove(a.UserName);
             }
 
-            var now = DateTime.Now;
+            var now = DateTimeOffset.Now;
             var timespan = TimeSpan.FromMinutes(10);
             foreach (string k in keys)
             {
                 OnlineUser onlineUser;
                 if (usuariosConectados.TryGetValue(k, out onlineUser))
                 {
-                    if ((onlineUser.NConexiones <= 0) && ((DateTime.Now - onlineUser.UltimaConexion) > timespan))
+                    if ((onlineUser.NConexiones <= 0) && ((DateTimeOffset.Now - onlineUser.UltimaConexion) > timespan))
                     {
                         usuariosConectados.TryRemove(k, out var jijo);
                     }

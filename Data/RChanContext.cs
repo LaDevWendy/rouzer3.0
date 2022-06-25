@@ -39,6 +39,7 @@ namespace Data
         public DbSet<BalanceModel> Balances { get; set; }
         public DbSet<CodigoPremiumModel> CodigosPremium { get; set; }
         public DbSet<AccionCodigoPremiumModel> AccionesCodigosPremium { get; set; }
+        public DbSet<DonacionModel> Donaciones { get; set; }
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -81,6 +82,7 @@ namespace Data
                 .WithMany()
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<AccionDeModeracion>()
                 .HasOne(a => a.Denuncia)
                 .WithMany()
@@ -100,6 +102,12 @@ namespace Data
 
             modelBuilder.Entity<BaneoModel>().HasIndex(b => b.Expiracion);
             modelBuilder.Entity<BaneoModel>().HasIndex(b => b.Ip);
+
+            modelBuilder.Entity<AutoBumpModel>()
+                .HasOne(a => a.Hilo)
+                .WithMany()
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

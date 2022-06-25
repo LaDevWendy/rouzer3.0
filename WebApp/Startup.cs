@@ -148,7 +148,7 @@ namespace WebApp
                 );
 
             services.AddScoped<IHiloService, HiloService>();
-            services.AddScoped<NotificacioensService>();
+            services.AddScoped<NotificacionesService>();
             services.AddScoped<IComentarioService, ComentarioService>();
             // services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<HashService>();

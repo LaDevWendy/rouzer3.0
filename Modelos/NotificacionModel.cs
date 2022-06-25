@@ -19,8 +19,9 @@ namespace Modelos
             Actualizacion = DateTimeOffset.Now;
             Id = id;
         }
-        public NotificacionModel(string id, string usuarioId, ComentarioModel comentario, NotificacionType tipo = NotificacionType.Comentario):
-            this(id, usuarioId, comentario.HiloId, comentario.Id, tipo){}
+        public NotificacionModel(string id, string usuarioId, ComentarioModel comentario, NotificacionType tipo = NotificacionType.Comentario) :
+            this(id, usuarioId, comentario.HiloId, comentario.Id, tipo)
+        { }
 
         [Required]
         public string Id { get; set; }
@@ -30,14 +31,16 @@ namespace Modelos
         public NotificacionType Tipo { get; set; }
         public DateTimeOffset Actualizacion { get; set; }
         public int Conteo { get; set; } = 1;
-        
+
         public ComentarioModel Comentario { get; set; }
 
         public HiloModel Hilo { get; set; }
     }
 
-    public enum NotificacionType {
+    public enum NotificacionType
+    {
         Comentario,
-        Respuesta
+        Respuesta,
+        Donacion
     }
 }

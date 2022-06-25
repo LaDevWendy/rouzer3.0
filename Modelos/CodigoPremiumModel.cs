@@ -9,9 +9,6 @@ namespace Modelos
 {
     public class CodigoPremiumModel : BaseModel
     {
-        [Required]
-        public string CreadorId { get; set; }
-        public UsuarioModel Creador { get; set; }
         public DateTimeOffset Expiracion { get; set; }
         public TipoCP Tipo { get; set; }
         public float Cantidad { get; set; }

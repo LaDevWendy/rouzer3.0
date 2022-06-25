@@ -9,6 +9,7 @@ using Modelos;
 using Servicios;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -23,13 +24,17 @@ namespace WebApp.Controllers
         private readonly RChanContext context;
         private readonly PremiumService premiumService;
         private readonly UserManager<UsuarioModel> userManager;
+        private readonly IOptionsSnapshot<List<Ware>> wareOpts;
+        private readonly NotificacionesService notificacionesService;
 
-        public PremiumController(HashService hashService, RChanContext context, PremiumService premiumService, UserManager<UsuarioModel> userManager)
+        public PremiumController(HashService hashService, RChanContext context, PremiumService premiumService, UserManager<UsuarioModel> userManager, IOptionsSnapshot<List<Ware>> wareOpts, NotificacionesService notificacionesService)
         {
             this.hashService = hashService;
             this.context = context;
             this.premiumService = premiumService;
             this.userManager = userManager;
+            this.wareOpts = wareOpts;
+            this.notificacionesService = notificacionesService;
         }
 
         [Route("/Premium")]
@@ -37,7 +42,7 @@ namespace WebApp.Controllers
         {
             var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
 
-            var transacciones = await context.Transacciones.Where(t => t.UsuarioId == User.GetId()).OrderByDescending(t => t.Creacion).Select(t => new
+            var transacciones = await context.Transacciones.Where(t => t.UsuarioId == User.GetId()).OrderByDescending(t => t.Creacion).Take(25).Select(t => new
             {
                 t.Creacion,
                 t.OrigenCantidad,
@@ -65,7 +70,7 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (cp.Expiracion < DateTime.Now)
+            if (cp.Expiracion < DateTimeOffset.Now)
             {
                 ModelState.AddModelError("Expiración", "El código ha expirado");
             }
@@ -83,6 +88,17 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
+            var acp = await context.AccionesCodigosPremium.FirstOrDefaultAsync(acp => acp.CodigoPremiumId == cp.Id && acp.Tipo == TipoAccionCP.Uso && acp.UsuarioId == User.GetId());
+            if (!(acp is null))
+            {
+                ModelState.AddModelError("Error", "Ya usaste este código");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
             if (cp.Tipo == TipoCP.ActivacionPremium)
             {
                 if (User.EsPremium())
@@ -99,7 +115,7 @@ namespace WebApp.Controllers
                 if (result.Succeeded)
                 {
                     var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
-                    balance.Expiracion = DateTime.Now + TimeSpan.FromDays(cp.Cantidad);
+                    balance.Expiracion = DateTimeOffset.Now + TimeSpan.FromDays(cp.Cantidad);
                     cp.Usos -= 1;
                     await context.SaveChangesAsync();
 
@@ -150,7 +166,7 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == donacionVM.HiloId);
+            var hilo = await context.Hilos.Include(h => h.Media).FirstOrDefaultAsync(h => h.Id == donacionVM.HiloId);
             if (hilo is null)
             {
                 ModelState.AddModelError("Hilo", "El hilo no existe");
@@ -193,15 +209,24 @@ namespace WebApp.Controllers
             balanceDonante.Balance -= donacionVM.Cantidad;
             balanceReceptor.Balance += donacionVM.Cantidad;
 
+            var donacion = new DonacionModel
+            {
+                Id = hashService.Random(),
+                HiloId = hilo.Id,
+                Cantidad = donacionVM.Cantidad
+            };
+            context.Donaciones.Add(donacion);
+
             await context.SaveChangesAsync();
             await premiumService.RegistrarDonacionAsync(User.GetId(), hilo.UsuarioId, donacionVM.Cantidad, balanceDonante.Balance, balanceReceptor.Balance);
+            await notificacionesService.NotificarDonacion(hilo);
             return new ApiResponse("Donación exitosa");
         }
 
         [HttpPost, Authorize("esPremium")]
-        public async Task<ActionResult<ApiResponse>> AutoBumpear(string hiloId)
+        public async Task<ActionResult<ApiResponse>> AutoBumpear(string id)
         {
-            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == hiloId);
+            var hilo = await context.Hilos.FirstOrDefaultAsync(h => h.Id == id);
             if (hilo is null)
             {
                 ModelState.AddModelError("Hilo", "El hilo no existe");
@@ -238,7 +263,7 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var precioAutobump = 100f;
+            var precioAutobump = wareOpts.Value.Find(w => w.Id == 0).Valor;
             var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
             if (balance.Balance < precioAutobump)
             {
@@ -249,7 +274,7 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var creado = await premiumService.CrearAutoBumpsAsync(User.GetId(), hiloId);
+            var creado = await premiumService.CrearAutoBumpsAsync(User.GetId(), id);
             if (!creado)
             {
                 ModelState.AddModelError("AutoBumps", "No pudo crearse");
@@ -257,12 +282,61 @@ namespace WebApp.Controllers
             }
             return new ApiResponse("AutoBump creado.");
         }
+
+        [HttpPost, Authorize("esPremium")]
+        public async Task<ActionResult<ApiResponse>> CrearMensajeGlobal(MensajeGlobalVM vm)
+        {
+            if (string.IsNullOrWhiteSpace(vm.Mensaje))
+            {
+                ModelState.AddModelError("uy!", "El mensaje global no puede estar vacio padre");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if ((vm.Tier < 1) || (vm.Tier > 6))
+            {
+                ModelState.AddModelError("Duracion", "La duración elegida es inválida");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var precioMg = wareOpts.Value.Find(w => w.Id == vm.Tier).Valor;
+            var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
+            if (balance.Balance < precioMg)
+            {
+                ModelState.AddModelError("Balance", "No tiene la cantidad necesaria en su balance");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var creado = await premiumService.CrearMensajeGlobalAsync(User.GetId(), vm.Mensaje, vm.Tier);
+            if (!creado)
+            {
+                ModelState.AddModelError("MensajeGlobal", "No pudo crearse");
+                return BadRequest(ModelState);
+            }
+            return new ApiResponse("Mensaje Global creado.");
+        }
+
     }
 
     public class DonacionVM
     {
         public string HiloId { get; set; }
         public float Cantidad { get; set; }
+    }
+
+    public class MensajeGlobalVM
+    {
+        [MaxLength(144, ErrorMessage = "Muy largo padre")]
+        public string Mensaje { get; set; }
+        public int Tier { get; set; }
     }
 
 }

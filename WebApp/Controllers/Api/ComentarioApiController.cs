@@ -21,7 +21,7 @@ namespace WebApp.Controllers
         private readonly IComentarioService comentarioService;
         private readonly RChanContext context;
         private readonly IHubContext<RChanHub> rchanHub;
-        private readonly NotificacioensService notificacioensService;
+        private readonly NotificacionesService notificacionesService;
         private readonly AntiFloodService antiFlood;
         private readonly IOptionsSnapshot<List<Categoria>> categoriasOpt;
         private readonly IOptionsSnapshot<GeneralOptions> gnrlOpts;
@@ -37,7 +37,7 @@ namespace WebApp.Controllers
             IMediaService mediaService,
             RChanContext chanContext,
             IHubContext<RChanHub> rchanHub,
-            NotificacioensService notificacioensService,
+            NotificacionesService notificacionesService,
             AntiFloodService antiFlood,
             IOptionsSnapshot<GeneralOptions> gnrlOpts,
             EstadisticasService estadisticasService,
@@ -51,7 +51,7 @@ namespace WebApp.Controllers
             this.comentarioService = comentarioService;
             this.context = chanContext;
             this.rchanHub = rchanHub;
-            this.notificacioensService = notificacioensService;
+            this.notificacionesService = notificacionesService;
             this.antiFlood = antiFlood;
             this.gnrlOpts = gnrlOpts;
             this.estadisticasService = estadisticasService;
@@ -253,7 +253,7 @@ namespace WebApp.Controllers
             var comentarioMod = new ComentarioViewModelMod(comentario) { HiloId = hilo.Id };
             await rchanHub.Clients.Group("moderacion").SendAsync("NuevoComentarioMod", comentarioMod);
 
-            await notificacioensService.Notificar(hilo, comentario);
+            await notificacionesService.Notificar(hilo, comentario);
 
             var categoria = categoriasOpt.Value.FirstOrDefault(c => c.Id == hilo.CategoriaId);
 

@@ -15,6 +15,6 @@ namespace Modelos
         [Required]
         public float Balance { get; set; } = 0.0f;
         [Required]
-        public DateTime Expiracion { get; set; } = DateTime.MinValue;
+        public DateTimeOffset Expiracion { get; set; } = DateTimeOffset.MinValue;
     }
 }

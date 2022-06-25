@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(RChanContext))]
-    [Migration("20220608221446_Transacciones")]
-    partial class Transacciones
+    [Migration("20220623000854_Premium")]
+    partial class Premium
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -155,6 +155,34 @@ namespace Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Modelos.AccionCodigoPremiumModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CodigoPremiumId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Creacion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CodigoPremiumId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("AccionesCodigosPremium");
+                });
+
             modelBuilder.Entity("Modelos.AccionDeModeracion", b =>
                 {
                     b.Property<string>("Id")
@@ -259,7 +287,6 @@ namespace Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("HiloId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Restante")
@@ -282,6 +309,32 @@ namespace Data.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("AutoBumps");
+                });
+
+            modelBuilder.Entity("Modelos.BalanceModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<float>("Balance")
+                        .HasColumnType("real");
+
+                    b.Property<DateTimeOffset>("Creacion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Expiracion")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId")
+                        .IsUnique();
+
+                    b.ToTable("Balances");
                 });
 
             modelBuilder.Entity("Modelos.BaneoModel", b =>
@@ -338,6 +391,31 @@ namespace Data.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Bans");
+                });
+
+            modelBuilder.Entity("Modelos.CodigoPremiumModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<float>("Cantidad")
+                        .HasColumnType("real");
+
+                    b.Property<DateTimeOffset>("Creacion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("Expiracion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Usos")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CodigosPremium");
                 });
 
             modelBuilder.Entity("Modelos.ComentarioModel", b =>
@@ -687,6 +765,9 @@ namespace Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<float>("Balance")
+                        .HasColumnType("real");
+
                     b.Property<DateTimeOffset>("Creacion")
                         .HasColumnType("timestamp with time zone");
 
@@ -707,9 +788,6 @@ namespace Data.Migrations
 
                     b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("WareId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -846,6 +924,25 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Modelos.AccionCodigoPremiumModel", b =>
+                {
+                    b.HasOne("Modelos.CodigoPremiumModel", "CodigoPremium")
+                        .WithMany()
+                        .HasForeignKey("CodigoPremiumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Modelos.UsuarioModel", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CodigoPremium");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("Modelos.AccionDeModeracion", b =>
                 {
                     b.HasOne("Modelos.BaneoModel", "Ban")
@@ -907,8 +1004,7 @@ namespace Data.Migrations
                     b.HasOne("Modelos.HiloModel", "Hilo")
                         .WithMany()
                         .HasForeignKey("HiloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Modelos.TransaccionModel", "Transaccion")
                         .WithMany()
@@ -925,6 +1021,17 @@ namespace Data.Migrations
                     b.Navigation("Hilo");
 
                     b.Navigation("Transaccion");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Modelos.BalanceModel", b =>
+                {
+                    b.HasOne("Modelos.UsuarioModel", "Usuario")
+                        .WithOne()
+                        .HasForeignKey("Modelos.BalanceModel", "UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Usuario");
                 });

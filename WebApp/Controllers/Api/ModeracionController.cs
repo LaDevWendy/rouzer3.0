@@ -32,6 +32,7 @@ namespace WebApp.Controllers
         private readonly IOptionsSnapshot<List<Categoria>> categoriasOpt;
         private readonly AccionesDeModeracionService historial;
         private readonly IAudioService audioService;
+        private readonly PremiumService premiumService;
 
         public Moderacion(
             IHiloService hiloService,
@@ -45,7 +46,8 @@ namespace WebApp.Controllers
             IOptionsSnapshot<GeneralOptions> config,
             IOptionsSnapshot<List<Categoria>> categoriasOpt,
             AccionesDeModeracionService historial,
-            IAudioService audioService
+            IAudioService audioService,
+            PremiumService premiumService
         )
         {
             this.hiloService = hiloService;
@@ -60,6 +62,7 @@ namespace WebApp.Controllers
             this.categoriasOpt = categoriasOpt;
             this.historial = historial;
             this.audioService = audioService;
+            this.premiumService = premiumService;
         }
 
         [Route("/Moderacion")]
@@ -80,6 +83,7 @@ namespace WebApp.Controllers
                 .AViewModelMod()
                 .ToListAsync();
 
+            var fecha = DateTimeOffset.Now - TimeSpan.FromDays(1.5);
             var denuncias = await context.Denuncias
                 .AsNoTracking()
                 .OrderByDescending(d => d.Creacion)
@@ -93,7 +97,7 @@ namespace WebApp.Controllers
                 .Include(d => d.Hilo.Audio)
                 .Include(d => d.Hilo.Usuario)
                 .Include(d => d.Comentario.Usuario)
-                .Where(d => d.Creacion > DateTime.Now - TimeSpan.FromDays(1.5))
+                .Where(d => d.Creacion > fecha)
                 .ToListAsync();
 
             var medias = await context.Comentarios
@@ -130,6 +134,7 @@ namespace WebApp.Controllers
 
             var cantidadDeUsuarios = await context.Users.CountAsync();
 
+            var ahora = DateTimeOffset.Now;
             var ultimosBaneos = await context.Bans
                 .OrderByDescending(u => u.Creacion)
                 .Include(b => b.Usuario)
@@ -137,7 +142,7 @@ namespace WebApp.Controllers
                 .Include(b => b.Comentario)
                 .Include(b => b.Comentario.Media)
                 .Include(b => b.Hilo.Media)
-                .Where(b => b.Expiracion > DateTime.Now)
+                .Where(b => b.Expiracion > ahora)
                 .ToListAsync();
             return View(new { ultimosRegistros, ultimosBaneos, cantidadDeUsuarios });
         }
@@ -746,7 +751,7 @@ namespace WebApp.Controllers
             var ban = context.Bans.FirstOrDefault(b => b.Id == id);
             if (ban != null)
             {
-                ban.Expiracion = DateTime.Now;
+                ban.Expiracion = DateTimeOffset.Now;
                 await context.SaveChangesAsync();
             }
             await historial.RegistrarBanRemovido(User.GetId(), ban);
@@ -906,6 +911,15 @@ namespace WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var tieneTrasacciones = await context.Transacciones.AsNoTracking().AnyAsync(c => c.UsuarioId == id);
+            if (tieneTrasacciones)
+            {
+                ModelState.AddModelError("Transacciones", "El usuario es o fue premium no puede eliminarse el token");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var acciones = await context.HiloAcciones.Where(a => a.UsuarioId == id).ToListAsync();
             var notis = await context.Notificaciones.Where(n => n.UsuarioId == id).ToListAsync();
@@ -923,6 +937,12 @@ namespace WebApp.Controllers
             await context.SaveChangesAsync();
 
             return Json(new ApiResponse("Token eliminado"));
+        }
+
+        public async Task<ActionResult> EliminarMensajeGlobal(string id)
+        {
+            await premiumService.EliminarMensajeGlobal(id);
+            return Json(new ApiResponse("Mensaje global eliminado."));
         }
 
         public class BorrarCreacionesVm

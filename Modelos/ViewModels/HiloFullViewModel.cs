@@ -12,6 +12,8 @@ namespace Modelos
         Dictionary<string, int> Contadores { get; set; }
         public bool Op { get; set; }
         public bool Premium { get; set; }
+        public List<MensajeGlobalViewModel> MensajesGlobales { get; set; }
+        public float Donaciones { get; set; }
     }
 
     public class HiloFullViewModel : IHiloFullView
@@ -25,6 +27,8 @@ namespace Modelos
         public string Nombre { get; set; }
         public bool Op { get; set; }
         public bool Premium { get; set; }
+        public List<MensajeGlobalViewModel> MensajesGlobales { get; set; }
+        public float Donaciones { get; set; }
     }
     public class HiloFullViewModelMod : HiloFullViewModel
     {

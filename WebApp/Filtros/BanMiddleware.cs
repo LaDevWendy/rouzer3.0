@@ -39,7 +39,7 @@ namespace WebApp
                     .Where(b => !b.Visto)
                     .FirstOrDefaultAsync(b => b.UsuarioId == ctx.User.GetId() || b.Ip == ip);
 
-                var ahora = DateTime.Now;
+                var ahora = DateTimeOffset.Now;
                 var banActivo = await context.Bans
                     .OrderByDescending(b => b.Expiracion)
                     .Where(b => b.Visto)

@@ -238,6 +238,20 @@ namespace Modelos
             if (r.Next(20) == 10)
                 return "multi";
 
+            const int categoriaGold = 47;
+            if (hilo != null && hilo.CategoriaId == categoriaGold)
+            {
+                return r.Next(5) switch
+                {
+                    0 => "amarillo",
+                    1 => "azul",
+                    2 => "rojo",
+                    3 => "verde",
+                    4 => "naranja",
+                    _ => "",
+                };
+            }
+
             return r.Next(4) switch
             {
                 0 => "amarillo",
@@ -246,6 +260,7 @@ namespace Modelos
                 3 => "verde",
                 _ => "",
             };
+
         }
 
         public int Dados { get; set; } = -1;

@@ -15,9 +15,9 @@ namespace Servicios
     {
         private readonly IServiceProvider services;
         private readonly ILogger<RChanTrendService> logger;
-        private Timer timer;
-
-        public List<HiloViewModel> hilosIndex { get; private set; } = new List<HiloViewModel>();
+        private Timer timer1;
+        private Timer timer2;
+        private const int interval = 10;
 
         public RChanPremiumService(IServiceProvider services, ILogger<RChanTrendService> logger)
         {
@@ -27,16 +27,15 @@ namespace Servicios
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            timer = new Timer(async (state) =>
-            {
-                await ActualizarPremiums();
-            }, null, 0, (int)TimeSpan.FromHours(12).TotalMilliseconds);
+            timer1 = new Timer(async (state) => { await ActualizarPremiums(); }, null, 0, (int)TimeSpan.FromHours(12).TotalMilliseconds);
+            timer2 = new Timer(async (state) => { await ActualizarWares(); }, null, (int)TimeSpan.FromSeconds(interval).TotalMilliseconds, (int)TimeSpan.FromSeconds(interval).TotalMilliseconds);
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            timer.Change(Timeout.Infinite, 0);
+            timer1.Change(Timeout.Infinite, 0);
+            timer2.Change(Timeout.Infinite, 0);
             return Task.CompletedTask;
         }
 
@@ -48,9 +47,17 @@ namespace Servicios
             await premiumService.ActualizarPremiums();
         }
 
+        public async Task ActualizarWares()
+        {
+            using var scope = services.CreateScope();
+            var premiumService = scope.ServiceProvider.GetService<PremiumService>();
+            await premiumService.ActualizarWares(interval);
+        }
+
         public void Dispose()
         {
-            timer?.Dispose();
+            timer1?.Dispose();
+            timer2?.Dispose();
         }
     }
 }

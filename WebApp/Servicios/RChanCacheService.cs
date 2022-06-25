@@ -36,6 +36,7 @@ namespace Servicios
         private HttpClient client = new HttpClient();
         public List<string> listaVPNs { get; private set; } = new List<string>();
         public ConcurrentDictionary<string, bool> ipsSeguras { get; private set; } = new ConcurrentDictionary<string, bool>();
+        public List<MensajeGlobalViewModel> mensajeGlobales { get; private set; } = new List<MensajeGlobalViewModel>();
 
         public RChanCacheService(IServiceProvider services, ILogger<RChanCacheService> logger)
         {
@@ -52,6 +53,7 @@ namespace Servicios
                 await ActualizarHilos();
                 // Console.WriteLine("Cache actualizado en " + (DateTimeOffset.Now - t1).TotalMilliseconds);
                 await ActualizarBaneos();
+                await ActualizarMensajesGlobales();
             }, null, 0, (int)TimeSpan.FromSeconds(4).TotalMilliseconds);
             timer2 = new Timer(async (state) =>
             {
@@ -121,6 +123,13 @@ namespace Servicios
 
             banCache.IpsBaneadas = banCache.BaneosActivos.Select(b => b.Ip).ToHashSet();
             banCache.IdsBaneadas = banCache.BaneosActivos.Select(b => b.UsuarioId).ToHashSet();
+        }
+
+        public async Task ActualizarMensajesGlobales()
+        {
+            using var scope = services.CreateScope();
+            var premiumService = scope.ServiceProvider.GetService<PremiumService>();
+            mensajeGlobales = await premiumService.GetMensajesGlobalesActivosOrdenados();
         }
 
         public async Task ActualizarListaVPNs()

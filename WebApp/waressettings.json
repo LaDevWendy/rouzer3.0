@@ -1,8 +1,46 @@
 {
-    "Wares": {
-        "Id": 0,
-        "Nombre": "AutoBump",
-        "Valor": 100,
-        "Duracion": 40
-    }
+    "Wares": [
+        {
+            "Id": 0,
+            "Nombre": "AutoBump",
+            "Valor": 100,
+            "Duracion": 40
+        },
+        {
+            "Id": 1,
+            "Nombre": "MensajeGlobalRojo",
+            "Valor": 10,
+            "Duracion": 5
+        },
+        {
+            "Id": 2,
+            "Nombre": "MensajeGlobalNaranja",
+            "Valor": 35,
+            "Duracion": 20
+        },
+        {
+            "Id": 3,
+            "Nombre": "MensajeGlobalAmarillo",
+            "Valor": 100,
+            "Duracion": 60
+        },
+        {
+            "Id": 4,
+            "Nombre": "MensajeGlobalVerde",
+            "Valor": 500,
+            "Duracion": 360
+        },
+        {
+            "Id": 5,
+            "Nombre": "MensajeGlobalAzul",
+            "Valor": 1700,
+            "Duracion": 1440
+        },
+        {
+            "Id": 6,
+            "Nombre": "MensajeGlobalBlanco",
+            "Valor": 4300,
+            "Duracion": 4320
+        }
+    ]
 }

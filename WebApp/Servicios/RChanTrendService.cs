@@ -42,7 +42,6 @@ namespace Servicios
 
         public async Task ActualizarTendencias()
         {
-            logger.LogInformation("Actualizando tendencias...");
             using var scope = services.CreateScope();
             var hiloService = scope.ServiceProvider.GetService<IHiloService>();
             await hiloService.ActualizarTendencias();

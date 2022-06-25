@@ -1,5 +1,6 @@
 ﻿using Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using WebApp;
 
 namespace Servicios
 {
@@ -18,21 +20,32 @@ namespace Servicios
         private readonly IOptionsSnapshot<List<Categoria>> categoriasOpts;
         private readonly IOptionsSnapshot<List<Ware>> wareOpts;
         private readonly ILogger<PremiumService> logger;
-        public PremiumService(RChanContext context, HashService hashService, UserManager<UsuarioModel> userManager, IOptionsSnapshot<List<Categoria>> categoriasOpts, IOptionsSnapshot<List<Ware>> wareOpts, ILogger<PremiumService> logger) : base(context, hashService)
+        private readonly FormateadorService formateador;
+        private readonly IHubContext<RChanHub> rchanHub;
+        public PremiumService(RChanContext context,
+            HashService hashService,
+            UserManager<UsuarioModel> userManager,
+            IOptionsSnapshot<List<Categoria>> categoriasOpts,
+            IOptionsSnapshot<List<Ware>> wareOpts,
+            ILogger<PremiumService> logger,
+            FormateadorService formateador,
+            IHubContext<RChanHub> rchanHub) : base(context, hashService)
         {
             this.categoriasOpts = categoriasOpts;
             this.userManager = userManager;
             this.logger = logger;
             this.wareOpts = wareOpts;
+            this.formateador = formateador;
+            this.rchanHub = rchanHub;
         }
         public async Task<BalanceModel> ObtenerBalanceAsync(string id)
         {
-            var balance = await _context.Balances.FirstOrDefaultAsync(b => b.UsuarioId == id);
+            var balance = await _context.Balances.FirstOrDefaultAsync(b => b.Id == id);
             if (balance is null)
             {
                 balance = new BalanceModel();
                 balance.Id = id;
-                balance.Usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+                balance.UsuarioId = id;
                 _context.Balances.Add(balance);
                 await _context.SaveChangesAsync();
             }
@@ -73,7 +86,7 @@ namespace Servicios
             regalo.DestinoUnidad = "Días Premium";
             regalo.Tipo = TipoTransaccion.Compra;
             regalo.Usuario = usuario;
-            regalo.Balance = 0;
+            regalo.Balance = -1;
             _context.Transacciones.Add(regalo);
             await _context.SaveChangesAsync();
         }
@@ -134,17 +147,33 @@ namespace Servicios
         {
             if (await CheckearAutobumpsHilo(hiloId))
             {
-                return false;
+                var ware = wareOpts.Value.FirstOrDefault(w => w.Id == 0);
+                var autobump = new AutoBumpModel();
+                autobump.Id = hashService.Random();
+                autobump.UsuarioId = usuarioId;
+                autobump.HiloId = hiloId;
+                autobump.Restante = ware.Duracion * 60;
+                var balance = await ActualizarBalanceAsync(usuarioId, -ware.Valor);
+                autobump.TransaccionId = await RegistrarAutoBumpsAsync(usuarioId, balance.Balance);
+                _context.AutoBumps.Add(autobump);
+                await _context.SaveChangesAsync();
+                return true;
             }
-            var ware = wareOpts.Value.FirstOrDefault(w => w.Id == 0);
-            var autobump = new AutoBumpModel();
-            autobump.Id = hashService.Random();
-            autobump.UsuarioId = usuarioId;
-            autobump.HiloId = hiloId;
-            autobump.Restante = ware.Duracion * 60;
+            return false;
+        }
+
+        public async Task<bool> CrearMensajeGlobalAsync(string usuarioId, string mensaje, int tier)
+        {
+            var ware = wareOpts.Value.FirstOrDefault(w => w.Id == tier);
+            var mg = new MensajeGlobalModel();
+            mg.Id = hashService.Random();
+            mg.UsuarioId = usuarioId;
+            mg.Mensaje = formateador.Parsear(mensaje);
+            mg.Tier = (Tiers)(tier - 1);
+            mg.Restante = ware.Duracion * 60;
             var balance = await ActualizarBalanceAsync(usuarioId, -ware.Valor);
-            autobump.TransaccionId = await RegistrarAutoBumpsAsync(usuarioId, balance.Balance);
-            _context.AutoBumps.Add(autobump);
+            mg.TransaccionId = await RegistrarMensajeGlobalAsync(usuarioId, balance.Balance, (Tiers)(tier - 1));
+            _context.MensajesGlobales.Add(mg);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -169,10 +198,30 @@ namespace Servicios
             return autobump.Id;
         }
 
+        public async Task<string> RegistrarMensajeGlobalAsync(string usuarioId, float balance, Tiers tier)
+        {
+            var ware = wareOpts.Value.FirstOrDefault(w => w.Id == ((int)tier + 1));
+            var autobump = new TransaccionModel
+            {
+                Id = hashService.Random(),
+                OrigenCantidad = ware.Valor,
+                OrigenUnidad = "RouzCoins",
+                DestinoCantidad = 1,
+                DestinoUnidad = ware.Nombre,
+                Tipo = TipoTransaccion.MensajeGlobal,
+                UsuarioId = usuarioId,
+                Balance = balance
+            };
+
+            _context.Transacciones.Add(autobump);
+            await _context.SaveChangesAsync();
+            return autobump.Id;
+        }
+
         public async Task ActualizarPremiums()
         {
             var golds = (await userManager.GetUsersForClaimAsync(new Claim("Premium", "gold"))).Select(g => g.Id);
-            var ahora = DateTime.Now;
+            var ahora = DateTimeOffset.Now;
             var balances = await _context.Balances.AsNoTracking().Where(b => golds.Contains(b.UsuarioId)).Where(b => b.Expiracion < ahora).Select(b => b.UsuarioId).ToListAsync();
 
             foreach (var id in balances)
@@ -184,6 +233,34 @@ namespace Servicios
                 if (exito)
                     logger.LogInformation($"{user.UserName} ya no es premium");
             };
+        }
+
+        public async Task ActualizarWares(int interval)
+        {
+            var autoQuery = _context.AutoBumps.Where(a => a.Restante >= 0);
+            var listaHilosAutobump = await autoQuery.Where(a => a.Restante % 300 == 0).Include(a => a.Hilo).Select(a => a.Hilo).ToListAsync();
+
+            var ahora = DateTimeOffset.Now;
+            foreach (var h in listaHilosAutobump)
+            {
+                h.Bump = ahora;
+            }
+
+            var listaAutoBumps = await autoQuery.ToListAsync();
+
+            foreach (var a in listaAutoBumps)
+            {
+                a.Restante -= interval;
+            }
+
+            var listaMensajesGlobales = await _context.MensajesGlobales.Where(mg => mg.Estado == EstadoMensajeGlobal.Normal).Where(mg => mg.Restante >= 0).ToListAsync();
+
+            foreach (var mg in listaMensajesGlobales)
+            {
+                mg.Restante -= interval;
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         public bool CheckearCategoriaPremium(int id, bool esPremium)
@@ -225,6 +302,58 @@ namespace Servicios
             var userClaims = await userManager.GetClaimsAsync(user);
             return userClaims.Any(c => (c.Type == "Premium" && c.Value == "gold") ||
             (c.Type == "Role" && (c.Value == "mod" || c.Value == "admin" || c.Value == "dev" || c.Value == "director")));
+        }
+
+        public async Task<List<MensajeGlobalViewModel>> GetMensajesGlobalesActivosOrdenados()
+        {
+            var mgs = await _context.MensajesGlobales
+                .AsNoTracking()
+                .Where(mg => mg.Restante >= 0)
+                .Where(mg => mg.Estado == EstadoMensajeGlobal.Normal)
+                .OrderByDescending(mg => mg.Tier)
+                .ThenBy(mg => mg.Creacion)
+                .Select(mg => new MensajeGlobalViewModel(mg, wareOpts.Value)).ToListAsync();
+            return mgs;
+        }
+
+        public async Task EliminarMensajeGlobal(string id)
+        {
+            var mg = await _context.MensajesGlobales.FirstOrDefaultAsync(mg => mg.Id == id);
+            mg.Estado = EstadoMensajeGlobal.Eliminado;
+            var ware = wareOpts.Value.FirstOrDefault(w => w.Id == ((int)mg.Tier + 1));
+            var balance = await ObtenerBalanceAsync(mg.UsuarioId);
+            balance.Balance += ware.Valor;
+            await _context.SaveChangesAsync();
+
+            await RegistrarReembolsoAsync(mg.UsuarioId, balance.Balance, ware.Valor, "RouzCoins", 1, ware.Nombre);
+            await rchanHub.Clients.All.SendAsync("MensajeGlobalEliminados", id);
+        }
+
+        public async Task<string> RegistrarReembolsoAsync(string usuarioId, float balance, float origen, string origenUnidad, float destino, string destinoUnidad)
+        {
+
+            var reembolso = new TransaccionModel
+            {
+                Id = hashService.Random(),
+                OrigenCantidad = origen,
+                OrigenUnidad = origenUnidad,
+                DestinoCantidad = destino,
+                DestinoUnidad = destinoUnidad,
+                Tipo = TipoTransaccion.Reembolso,
+                UsuarioId = usuarioId,
+                Balance = balance
+            };
+
+            _context.Transacciones.Add(reembolso);
+            await _context.SaveChangesAsync();
+            return reembolso.Id;
+        }
+
+        public async Task LimpiarMensajesGlobalesViejos()
+        {
+            var mgs = await _context.MensajesGlobales.Where(mg => mg.Restante < 0 || mg.Estado == EstadoMensajeGlobal.Eliminado).ToListAsync();
+            _context.RemoveRange(mgs);
+            await _context.SaveChangesAsync();
         }
 
     }

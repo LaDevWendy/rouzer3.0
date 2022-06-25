@@ -8,7 +8,6 @@ namespace Modelos
         public string UsuarioId { get; set; }
         public UsuarioModel Usuario { get; set; }
         public TipoTransaccion Tipo { get; set; }
-        public string WareId { get; set; }
         public float OrigenCantidad { get; set; }
         public float DestinoCantidad { get; set; }
         public string OrigenUnidad { get; set; }

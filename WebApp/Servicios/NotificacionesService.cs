@@ -12,13 +12,13 @@ using WebApp;
 namespace Servicios
 {
 
-    public class NotificacioensService
+    public class NotificacionesService
     {
         private readonly RChanContext context;
         private readonly HashService hashService;
         private readonly IHubContext<RChanHub> rchanHub;
 
-        public NotificacioensService(
+        public NotificacionesService(
             RChanContext context,
             HashService hashService,
             IHubContext<RChanHub> rchanHub
@@ -62,6 +62,39 @@ namespace Servicios
             await EnviarNotificacionTiempoReal(hilo, comentario, ids, NotificacionType.Comentario);
 
             await context.SaveChangesAsync();
+        }
+
+        public async Task NotificarDonacion(HiloModel hilo)
+        {
+            var noti = await context.Notificaciones.FirstOrDefaultAsync(n => n.UsuarioId == hilo.UsuarioId && n.HiloId == hilo.Id && n.Tipo == NotificacionType.Donacion);
+            if (noti is null)
+            {
+                noti = new NotificacionModel
+                {
+                    Id = hashService.Random(),
+                    UsuarioId = hilo.UsuarioId,
+                    HiloId = hilo.Id,
+                    Tipo = NotificacionType.Donacion,
+                    Actualizacion = DateTimeOffset.Now
+                };
+                context.Notificaciones.Add(noti);
+            }
+            else
+            {
+                noti.Conteo++;
+                noti.Actualizacion = DateTimeOffset.Now;
+            }
+            await context.SaveChangesAsync();
+            await rchanHub.Clients.User(hilo.UsuarioId).SendAsync("NuevaNotificacion",
+                new
+                {
+                    HiloId = noti.HiloId,
+                    ComentarioId = "",
+                    Tipo = noti.Tipo,
+                    Contenido = "",
+                    HiloTitulo = hilo.Titulo,
+                    HiloImagen = hilo.Media.VistaPreviaCuadrado
+                });
         }
 
         private async Task EnviarNotificacionTiempoReal(HiloModel hilo, ComentarioModel comentario, List<string> ids, NotificacionType tipo)

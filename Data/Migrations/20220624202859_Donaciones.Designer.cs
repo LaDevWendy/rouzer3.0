@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(RChanContext))]
-    [Migration("20220621173809_AccionesCodigosPremium")]
-    partial class AccionesCodigosPremium
+    [Migration("20220624202859_Donaciones")]
+    partial class Donaciones
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -287,7 +287,6 @@ namespace Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("HiloId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Restante")
@@ -405,10 +404,6 @@ namespace Data.Migrations
                     b.Property<DateTimeOffset>("Creacion")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CreadorId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTimeOffset>("Expiracion")
                         .HasColumnType("timestamp with time zone");
 
@@ -419,8 +414,6 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreadorId");
 
                     b.ToTable("CodigosPremium");
                 });
@@ -529,6 +522,27 @@ namespace Data.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Denuncias");
+                });
+
+            modelBuilder.Entity("Modelos.DonacionModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<float>("Cantidad")
+                        .HasColumnType("real");
+
+                    b.Property<DateTimeOffset>("Creacion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("HiloId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HiloId");
+
+                    b.ToTable("Donaciones");
                 });
 
             modelBuilder.Entity("Modelos.HiloAccionModel", b =>
@@ -663,6 +677,9 @@ namespace Data.Migrations
                     b.Property<DateTimeOffset>("Creacion")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Estado")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Mensaje")
                         .HasColumnType("text");
 
@@ -795,9 +812,6 @@ namespace Data.Migrations
 
                     b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("WareId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -1014,8 +1028,7 @@ namespace Data.Migrations
                     b.HasOne("Modelos.HiloModel", "Hilo")
                         .WithMany()
                         .HasForeignKey("HiloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Modelos.TransaccionModel", "Transaccion")
                         .WithMany()
@@ -1066,17 +1079,6 @@ namespace Data.Migrations
                     b.Navigation("Hilo");
 
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("Modelos.CodigoPremiumModel", b =>
-                {
-                    b.HasOne("Modelos.UsuarioModel", "Creador")
-                        .WithMany()
-                        .HasForeignKey("CreadorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Creador");
                 });
 
             modelBuilder.Entity("Modelos.ComentarioModel", b =>
@@ -1131,6 +1133,15 @@ namespace Data.Migrations
                     b.Navigation("Hilo");
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Modelos.DonacionModel", b =>
+                {
+                    b.HasOne("Modelos.HiloModel", "Hilo")
+                        .WithMany()
+                        .HasForeignKey("HiloId");
+
+                    b.Navigation("Hilo");
                 });
 
             modelBuilder.Entity("Modelos.HiloAccionModel", b =>

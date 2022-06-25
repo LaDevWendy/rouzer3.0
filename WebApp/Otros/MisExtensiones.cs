@@ -16,7 +16,7 @@ namespace WebApp.Otros
             var d = dateTimeOffset.DateTime;
             // 1.
             // Get time span elapsed since the date.
-            TimeSpan s = DateTime.Now.Subtract(d);
+            TimeSpan s = DateTimeOffset.Now.Subtract(d);
 
             // 2.
             // Get total number of days elapsed.
