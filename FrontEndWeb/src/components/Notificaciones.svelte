@@ -34,7 +34,11 @@
         let yaExisteUnaNotiDeEseTipo = false;
         let notiVieja = null;
         for (const n of notificaciones) {
-            if (n.hiloId == noti.hiloId && n.tipo == noti.tipo && n.tipo == 0) {
+            if (
+                n.hiloId == noti.hiloId &&
+                n.tipo == noti.tipo &&
+                (n.tipo == 0 || n.tipo == 2)
+            ) {
                 n.conteo++;
                 yaExisteUnaNotiDeEseTipo = true;
                 notiVieja = n;
@@ -105,10 +109,12 @@
                             <span
                                 >{n.conteo} Nuevos Comentarios en : {n.hiloTitulo}</span
                             >
-                        {:else}
+                        {:else if n.tipo == 1}
                             <span
                                 >{n.conteo} Respondieron a tu comentario : {n.comentarioId}</span
                             >
+                        {:else if n.tipo == 2}
+                            <span>{n.conteo} Han donado: {n.hiloTitulo}</span>
                         {/if}
                     </li>
                 </a>
@@ -137,10 +143,12 @@
 
                         {#if n.tipo == 0}
                             <span class="han-hecho"> Han comentado </span>
-                        {:else}
+                        {:else if n.tipo == 1}
                             <span class="han-hecho">
                                 Han respondido tu comentario</span
                             >
+                        {:else if n.tipo == 2}
+                            <span class="han-hecho"> Han donado</span>
                         {/if}
                         <span>{@html n.contenido}</span>
                     </div>

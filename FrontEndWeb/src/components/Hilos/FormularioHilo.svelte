@@ -113,13 +113,10 @@
         textarea2.focus();
     }
 
-<<<<<<< HEAD
     let categorias = config.categorias.filter(
         (c) => !c.premium || (c.premium && $globalStore.usuario.esPremium)
     );
-=======
     let spoiler = false;
->>>>>>> main2
 </script>
 
 {#if mostrar}

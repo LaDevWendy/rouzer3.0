@@ -1,13 +1,19 @@
 <script>
     import Tiempo from "./Tiempo.svelte";
     import RChanClient from "../RChanClient";
-    import DialogoReporte from "../components/Dialogos/DialogoReporte.svelte";
-    import { Button, ButtonGroup } from "svelte-mui";
+    //import DialogoReporte from "../components/Dialogos/DialogoReporte.svelte";
+    import { Button } from "svelte-mui";
     import { CreacionRango } from "../enums";
+    import globalStore from "../globalStore";
+    import AccionesPremium from "./Premium/AccionesPremium.svelte";
+    import { abrir } from "./Dialogos/Dialogos.svelte";
 
     export let hilo;
     export let acciones;
     export let contadores;
+    export let op;
+    export let premium;
+    export let donaciones;
     let mostrarReporte = false;
 
     async function seguir() {
@@ -89,7 +95,7 @@
             : ""}</Button
     >
 
-    <Button on:click={() => (mostrarReporte = true)} shaped color="red"
+    <Button on:click={() => abrir.reporte(hilo.id)} shaped color="red"
         ><i class="fe fe-flag" />Denunciar</Button
     >
     <Button
@@ -101,6 +107,10 @@
             date={hilo.creacion}
         /></Button
     >
+
+    {#if $globalStore.usuario.esPremium}
+        <AccionesPremium {hilo} {op} {premium} {donaciones} />
+    {/if}
 
     {#if hilo.rango > CreacionRango.Anon || hilo.nombre}
         <span class={rango}>
@@ -115,8 +125,7 @@
     {/if}
 </div>
 
-<DialogoReporte bind:visible={mostrarReporte} hiloId={hilo.id} />
-
+<!--<DialogoReporte bind:visible={mostrarReporte} hiloId={hilo.id} />-->
 <style>
     .acciones {
         display: flex;

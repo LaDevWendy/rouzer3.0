@@ -18,7 +18,18 @@
 	import { Flag } from "./enums";
 
 	let data = window.data || dataEjemplo;
-	let { hilo, comentarios, acciones, usuario, spams, contadores } = data;
+	let {
+		hilo,
+		comentarios,
+		acciones,
+		usuario,
+		spams,
+		contadores,
+		op,
+		premium,
+		mensajesGlobales,
+		donaciones,
+	} = data;
 	let comentarioStore = "";
 
 	let dialogs = {
@@ -140,7 +151,7 @@
 			</div>
 		{/if}
 
-		<Acciones {hilo} bind:acciones {contadores} />
+		<Acciones {hilo} bind:acciones {contadores} {op} {premium} {donaciones} />
 		{#if hilo.encuestaData}
 			<Encuesta
 				bind:encuesta={hilo.encuestaData}
@@ -151,12 +162,14 @@
 
 		<HiloCuerpo {hilo} />
 	</div>
+
 	<Comentarios
 		{comentarios}
 		{hilo}
 		{spams}
 		bind:hide={acciones.hideado}
 		bind:comentarioStore
+		{mensajesGlobales}
 	/>
 </div>
 

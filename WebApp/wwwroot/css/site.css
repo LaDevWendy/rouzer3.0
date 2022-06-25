@@ -581,10 +581,12 @@ h3 {
         opacity: 0;
         background-position: 0% 50%;
     }
+
     50% {
         opacity: 0.4;
         background-position: 100% 50%;
     }
+
     100% {
         opacity: 0;
         background-position: 0% 50%;
@@ -1095,3 +1097,15 @@ h3 {
 .rozed>span {
     -webkit-text-fill-color: var(--color-texto1) !important;
 }*/
+
+.userlink {
+    background: var(--color6);
+    color: black;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.userlink:hover {
+    text-decoration: underline;
+    filter: brightness(1.4);
+}

@@ -4,9 +4,11 @@
     import ErrorValidacion from "../ErrorValidacion.svelte";
     import Spinner from "../Spinner.svelte";
     import globalStore from "../../globalStore";
+    import { TipoTransaccion } from "../../enums";
+    import FormularioMensajeGlobal from "./FormularioMensajeGlobal.svelte";
+    import RouzCoins from "./RouzCoins.svelte";
 
     let { balance, transacciones } = window.model;
-    console.log(transacciones);
 
     let cargando = false;
     let cp = "";
@@ -31,31 +33,10 @@
 
 <main>
     <section>
-        <h3>
-            Cuenta: {$globalStore.usuario.esPremium ? "Premium" : "Regular"}
-        </h3>
-        <h3>Balance: {balance} RouzCoins</h3>
-        <h3>Transacciones</h3>
-        <ul>
-            {#each transacciones as t}
-                <li>
-                    {t.creacion}
-                    {t.tipo}
-                    {t.origenCantidad}
-                    {t.origenUnidad}
-                    {t.destinoCantidad}
-                    {t.destinoUnidad}
-                    {t.balance}
-                </li>
-            {/each}
-        </ul>
-    </section>
-
-    <section>
         <ErrorValidacion {error} />
         <form class="formulario panel" on:submit|preventDefault>
-            <label for="cp">Ingresar Código Premium</label>
-            <input id="cp" type="text" bind:value={cp} />
+            <h3>Ingresar Código Premium</h3>
+            <input id="cp" placeholder="XXXXXXXX" type="text" bind:value={cp} />
             <Button
                 color="primary"
                 disabled={cargando}
@@ -68,17 +49,53 @@
                     <p>Ahora sos un usuario Premium.</p>
                     <p>Info del código utilizado:</p>
                     <p>Vale por activación de Premium</p>
-                    <p>Usos restantes: {exito.usos}</p>
-                    <p>El código expira en {exito.expiracion}</p>
                 {:else}
-                    <p>Se agregaron {exito.cantidad} RouzCoins a tu cuenta.</p>
+                    <p>
+                        Se agregaron <RouzCoins cantidad={exito.cantidad} /> a tu
+                        cuenta.
+                    </p>
                     <p>Info del código utilizado:</p>
-                    <p>Vale por {exito.cantidad} RouzCoins</p>
-                    <p>Usos restantes: {exito.usos}</p>
-                    <p>El código expira en {exito.expiracion}</p>
+                    <p>Vale por <RouzCoins cantidad={exito.cantidad} /></p>
                 {/if}
+                <p>Usos restantes: {exito.usos}</p>
+                <p>El código expira en {new Date(exito.expiracion)}</p>
             {/if}
         </form>
+    </section>
+
+    {#if $globalStore.usuario.esPremium}
+        <section>
+            <FormularioMensajeGlobal />
+        </section>
+    {/if}
+
+    <section class="panel">
+        <div class="cuenta-info">
+            <p>
+                Cuenta: {$globalStore.usuario.esPremium ? "Premium" : "Regular"}
+            </p>
+            {#if $globalStore.usuario.esPremium}
+                <p>Expiracion: {new Date(balance.expiracion)}</p>
+            {/if}
+            <p>Balance: <RouzCoins cantidad={balance.balance} /></p>
+        </div>
+        <ul>
+            <h4>Últimas transacciones</h4>
+            {#each transacciones as t}
+                <li class="transaccion">
+                    <p>Fecha: {new Date(t.creacion)}</p>
+                    <p>Tipo: {TipoTransaccion.aString(t.tipo)}</p>
+                    <p>Origen cantidad: {t.origenCantidad} {t.origenUnidad}</p>
+                    <p>
+                        Destino cantidad: {t.destinoCantidad}
+                        {t.destinoUnidad}
+                    </p>
+                    {#if t.balance > -1}
+                        <p>Balance: {t.balance}</p>
+                    {/if}
+                </li>
+            {/each}
+        </ul>
     </section>
 </main>
 
@@ -98,5 +115,18 @@
         max-width: 400px;
         width: max-content;
         min-width: 270px !important;
+    }
+
+    .cuenta-info {
+        background-color: var(--color3);
+    }
+    .transaccion {
+        background-color: var(--color7);
+    }
+    .transaccion,
+    .cuenta-info {
+        border-radius: 4px;
+        padding-left: 4px;
+        padding-right: 4px;
     }
 </style>

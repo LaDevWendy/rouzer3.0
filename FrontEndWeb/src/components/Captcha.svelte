@@ -4,7 +4,7 @@
     export let token;
     export let visible = true;
 
-    if ($globalStore.usuario.estaAutenticado && $globalStore.usuario.esMod)
+    if ($globalStore.usuario.estaAutenticado && $globalStore.usuario.esPremium)
         visible = false;
     onMount(() => {
         if (window.hcaptcha) cargarCaptcha();

@@ -6,12 +6,9 @@
 
     let model = window.model;
     let error = null;
-    let nickDev = "";
     let nickAdmin = "";
     let nickMod = "";
     let nickAux = "";
-
-    let restAcc = 0;
 
     async function eliminar(nick, rol) {
         try {
@@ -71,7 +68,6 @@
     setInterval(refrescar, 10000);
     setTimeout(refrescar, 1000);
 
-    let restriccionDeAcesso = 2;
     let restriccionesDeAcesso = {
         Libre: 0,
         Registrados: 1,

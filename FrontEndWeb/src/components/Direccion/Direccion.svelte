@@ -3,6 +3,7 @@
     import RChanClient from "../../RChanClient";
     import ErrorValidacion from "../ErrorValidacion.svelte";
     import Spinner from "../Spinner.svelte";
+    import { TipoAccionCP, TipoCP } from "../../enums";
 
     let model = window.model;
     let error1 = null;
@@ -69,13 +70,15 @@
     let error3 = null;
     let cargando2 = false;
     let codigoPremiumCheckeado;
+    let historialcp;
     async function checkear() {
         cargando2 = true;
         error3 = null;
         try {
             const res = await RChanClient.checkearCodigoPremium(ccp);
             cargando2 = false;
-            codigoPremiumCheckeado = res.data;
+            codigoPremiumCheckeado = res.data.cp;
+            historialcp = res.data.historial;
         } catch (e) {
             cargando2 = false;
             error3 = e.response.data;
@@ -139,8 +142,9 @@
             <label for="tipocp"> Tipo: </label>
             <select id="tipocp" bind:value={tipocp}>
                 <option value="-1" selected disabled>Tipo</option>
-                <option value="0">ActivacionPremium</option>
-                <option value="1">RouzCoins</option>
+                {#each Object.keys(TipoCP) as tcp}
+                    <option value={TipoCP[tcp]}>{tcp}</option>
+                {/each}
             </select>
             <label for="cantidad"> Cantidad: </label>
             <input
@@ -167,15 +171,41 @@
         <h3>Checkear Código Premium</h3>
         <ErrorValidacion error={error3} />
         <form class="formulario panel" on:submit|preventDefault>
-            <input type="text" bind:value={ccp} />
+            <input type="text" placeholder="XXXXXXXX" bind:value={ccp} />
             <Button color="primary" disabled={cargando} on:click={checkear}>
                 <Spinner {cargando2}>Checkear</Spinner>
             </Button>
             {#if codigoPremiumCheckeado}
-                <p>Tipo: {codigoPremiumCheckeado.tipo}</p>
-                <p>Cantidad: {codigoPremiumCheckeado.cantidad}</p>
-                <p>Usos: {codigoPremiumCheckeado.usos}</p>
-                <p>Expiración: {codigoPremiumCheckeado.expiracion}</p>
+                <div class="codigo-info">
+                    <p>
+                        Tipo: {TipoCP.aString(codigoPremiumCheckeado.tipo)}
+                    </p>
+                    <p>Cantidad: {codigoPremiumCheckeado.cantidad}</p>
+                    <p>Usos: {codigoPremiumCheckeado.usos}</p>
+                    <p>
+                        Expiración: {new Date(
+                            codigoPremiumCheckeado.expiracion
+                        )}
+                    </p>
+                </div>
+            {/if}
+            {#if historialcp}
+                <ul>
+                    <h4>Historial del código</h4>
+                    {#each historialcp as acp}
+                        <li class="accion">
+                            <p>Fecha: {new Date(acp.creacion)}</p>
+                            <p>
+                                Usuario: <a
+                                    class="userlink"
+                                    href="/Moderacion/HistorialDeUsuario/{acp
+                                        .usuario.id}">{acp.usuario.userName}</a
+                                >
+                            </p>
+                            <p>Tipo: {TipoAccionCP.aString(acp.tipo)}</p>
+                        </li>
+                    {/each}
+                </ul>
             {/if}
         </form>
     </section>
@@ -224,5 +254,18 @@
         margin-left: auto;
         opacity: 0.5;
         font-size: 12px;
+    }
+
+    .codigo-info {
+        background-color: var(--color3);
+    }
+    .accion {
+        background-color: var(--color7);
+    }
+    .accion,
+    .codigo-info {
+        border-radius: 4px;
+        padding-left: 4px;
+        padding-right: 4px;
     }
 </style>

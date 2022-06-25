@@ -4,11 +4,10 @@
     import config from "../config";
     import globalStore from "../globalStore";
     import RChanClient from "../RChanClient";
-    import Dialogo from "./Dialogo.svelte";
     import Ajustes from "./Dialogos/Ajustes.svelte";
     import ajustesConfigStore from "./Dialogos/ajustesConfigStore";
     import serio from "../icons/serio.svg";
-    import Premium from "./Premium/Premium.svelte";
+    import RouzCoins from "./Premium/RouzCoins.svelte";
 
     export let mostrar = true;
 
@@ -99,9 +98,11 @@
                 </h1>
             </a>
             {#if usuario.estaAutenticado}
-                <span style="display: block;text-align: center;"
-                    >Hola {usuario.userName}!</span
-                >
+                <div>
+                    <span style="display: block;text-align: center;"
+                        >Hola {usuario.userName}!</span
+                    >
+                </div>
             {/if}
         </div>
         <ul>
@@ -273,6 +274,11 @@
                 </a>
             {/if}
             <hr />
+            <a href="/Premium">
+                <li style="color: goldenrod">
+                    <RouzCoins cantidad="" /> Premium <Ripple />
+                </li>
+            </a>
             <li on:click={() => (mostrarAjustes = true)}>
                 <icon class="fe fe-settings" /> Ajustes <Ripple />
             </li>
@@ -345,5 +351,11 @@
     .sep {
         width: fit-content;
         margin-left: auto;
+    }
+    .menu-principal :global(.rouzcoin-contenido) {
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-left: 16px;
+        padding-right: 32px;
     }
 </style>

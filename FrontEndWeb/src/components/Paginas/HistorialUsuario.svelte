@@ -13,6 +13,7 @@
     import ErrorValidacion from "../ErrorValidacion.svelte";
     import RChanClient from "../../RChanClient";
     import { Textfield } from "svelte-mui";
+    import RouzCoins from "../Premium/RouzCoins.svelte";
 
     let innerWidth = window.innerWidth;
     let current = 3;
@@ -109,13 +110,20 @@
 
 <BarraModeracion />
 <main>
-    <div
-        class="panel"
-        style="background:var(--color6) !important;color:black; padding:8px 16px;"
-    >
-        <h1 on:dblclick={onDblClick} on:touchstart={onTouchStart}>
-            {usuario.userName}
-        </h1>
+    <div class="panel" style="display: flex">
+        <div
+            class="panel"
+            style="background:var(--color6) !important;color:black; padding:8px 16px;"
+        >
+            <h1 on:dblclick={onDblClick} on:touchstart={onTouchStart}>
+                {usuario.userName}
+            </h1>
+        </div>
+        {#if usuario.esPremium}
+            <div class="panel">
+                <h1><RouzCoins cantidad="" /></h1>
+            </div>
+        {/if}
     </div>
     <div class="panel">
         <p>Id: {usuario.id}</p>

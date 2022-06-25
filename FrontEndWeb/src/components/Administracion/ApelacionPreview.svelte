@@ -97,17 +97,6 @@
         margin-bottom: 16px;
         border-radius: 4px;
     }
-    .userlink {
-        background: var(--color6);
-        color: black;
-        padding: 2px 8px;
-        border-radius: 4px;
-    }
-    .userlink:hover {
-        text-decoration: underline;
-        filter: brightness(1.4);
-    }
-
     .rechazada {
         background: grey;
     }

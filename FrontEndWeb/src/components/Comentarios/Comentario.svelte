@@ -802,6 +802,10 @@
         color: black;
     }
 
+    .color-naranja {
+        background: #e58f00;
+    }
+
     @keyframes navideño {
         33.3% {
             background: linear-gradient(

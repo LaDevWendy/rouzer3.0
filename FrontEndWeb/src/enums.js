@@ -88,5 +88,4 @@ export class TipoTransaccion extends Enum {
 export class TipoAccionCP extends Enum {
     static Creacion = 0
     static Uso = 1
-
 }

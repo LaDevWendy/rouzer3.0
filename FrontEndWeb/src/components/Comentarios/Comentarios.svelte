@@ -18,10 +18,12 @@
     import { ComentarioEstado } from "../../enums";
     import InfiniteLoading from "svelte-infinite-loading";
     import NavegadorPaginas from "./NavegadorPaginas.svelte";
+    import MensajesGlobales from "../Premium/MensajesGlobales.svelte";
 
     export let hilo;
     export let comentarios;
     export let spams;
+    export let mensajesGlobales;
 
     let modoTelefono = $globalStore.esCelular;
     let comentarioModo = $ajustesConfigStore.comentarioModo || "1";
@@ -367,6 +369,9 @@
         bind:historial={historialRespuestas}
         on:tagear={tagear}
     />
+
+    <MensajesGlobales {mensajesGlobales} />
+
     {#if !$configStore.general.modoMessi || $globalStore.usuario.esMod}
         <Formulario
             {hilo}

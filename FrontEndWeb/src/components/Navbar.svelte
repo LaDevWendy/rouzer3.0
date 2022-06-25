@@ -1,6 +1,6 @@
 <script>
     import { Ripple, Button } from "svelte-mui";
-    import { configStore } from "../config";
+    import config, { configStore } from "../config";
     import FormularioHilo from "./Hilos/FormularioHilo.svelte";
     import Notificaciones from "./Notificaciones.svelte";
     import MenuPrincipal from "./MenuPrincipal.svelte";
@@ -17,6 +17,8 @@
     // import AlertaNenazo from "./Especiales/AlertaNenazo.svelte";
     // import AlertaProvinciano from "./Especiales/AlertaProvinciano.svelte";
     import Halloween from "./Especiales/Halloween.svelte";
+    import DialogosPremium from "./Premium/DialogosPremium.svelte";
+    import RouzCoins from "./Premium/RouzCoins.svelte";
     // import GeneracionZoe from "./Especiales/GeneracionZoe.svelte";
     // import Corte from "./Especiales/Corte.svelte";
     // import Lucesitas from "./Lucesitas.svelte";
@@ -25,6 +27,7 @@
     // import ajustesConfigStore from "./Dialogos/ajustesConfigStore";
 
     export let notificaciones = window.notificaciones || [];
+    let balance = window.balance || -1;
 
     let mostrarMenu = false;
     let mostrarFormularioHilo = false;
@@ -143,6 +146,11 @@
             {/if}
 
             <div class="nav-botones" style="position: relative;">
+                {#if $globalStore.usuario.esPremium}
+                    <a href="/Premium" class="nav-premium">
+                        <RouzCoins cantidad={balance} />
+                    </a>
+                {/if}
                 {#if $globalStore.usuario.esMod || $globalStore.usuario.esAuxiliar}
                     <a href="/Moderacion">
                         <!-- <span style="height: 48px;display: flex;align-items: center;"> -->
@@ -180,6 +188,7 @@
                     </a>
                 {/if}
             </div>
+
             {#if !protocoloMessi || $globalStore.usuario.esMod}
                 <span
                     class="nav-boton crear-hilo-boton"
@@ -205,6 +214,7 @@
 <MenuPrincipal bind:mostrar={mostrarMenu} />
 
 <Dialogos />
+<DialogosPremium />
 
 {#if $globalStore.usuario.estaAutenticado && $globalStore.usuario.esAuxiliar}
     <SelectorDeComentarios />
@@ -426,7 +436,9 @@
     }
     .modoSticky .fondo {
         height: 36px;
-    } /*
+    }
+    
+    /*
     .rozed::after {
         content: "";
         background: url(/imagenes/luto.png);

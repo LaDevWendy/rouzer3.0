@@ -337,4 +337,26 @@ export default class RChanClient {
         return axios.post(`/api/Premium/IngresarCodigoPremium/${id}`)
     }
 
+    static hacerDonacion(hiloId, cantidad) {
+        return axios.post("/api/Premium/HacerDonacion", {
+            hiloId,
+            cantidad
+        })
+    }
+
+    static autoBumpear(hiloId) {
+        return axios.post(`/api/Premium/AutoBumpear/${hiloId}`)
+    }
+
+    static crearMensajeGlobal(mensaje, tier) {
+        return axios.post(`/api/Premium/CrearMensajeGlobal`, {
+            mensaje,
+            tier
+        })
+    }
+
+    static eliminarMensajeGlobal(id) {
+        return axios.post(`/api/Moderacion/EliminarMensajeGlobal/${id}`)
+    }
+
 }
