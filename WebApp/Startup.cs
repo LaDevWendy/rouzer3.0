@@ -49,7 +49,11 @@ namespace WebApp
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
             services.Configure<List<Categoria>>(Configuration.GetSection("Categorias"));
             services.Configure<List<Grupo>>(Configuration.GetSection("Grupos"));
-            services.Configure<List<Ware>>(Configuration.GetSection("Wares"));
+            services.Configure<List<AutoBump>>(Configuration.GetSection("Autobumps"));
+            services.Configure<List<MensajeGlobal>>(Configuration.GetSection("MensajesGlobales"));
+            services.Configure<List<Membrecia>>(Configuration.GetSection("Membrecias"));
+            services.Configure<List<RouzCoin>>(Configuration.GetSection("Paquetes"));
+            services.Configure<List<MetodoDePago>>(Configuration.GetSection("MetodosDePago"));
             // services.AddLiveReload(config =>
             // {
             //     // config.FolderToMonitor = env.ContentRootPath + "\\Views";

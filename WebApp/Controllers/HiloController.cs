@@ -68,7 +68,6 @@ namespace WebApp.Controllers
 
             var vm = new HiloListViewModel
             {
-
                 Hilos = rchanCacheService.hilosIndex.Where(h => !ocultos.Contains(h.Id) && categorias.Contains(h.CategoriaId)).Take(16).ToList(),
                 CategoriasActivas = categorias.ToList()
             };

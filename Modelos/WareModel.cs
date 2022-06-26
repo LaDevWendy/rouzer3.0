@@ -11,5 +11,12 @@ namespace Modelos
         public string TransaccionId { get; set; }
         public TransaccionModel Transaccion { get; set; }
         public int Restante { get; set; }
+        public EstadoWare Estado { get; set; } = EstadoWare.Normal;
+    }
+
+    public enum EstadoWare
+    {
+        Normal,
+        Eliminado
     }
 }

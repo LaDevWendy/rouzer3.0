@@ -339,7 +339,7 @@ namespace WebApp.Controllers
             return new ApiResponse(value: hilo);
         }
 
-        async public Task<ActionResult<ApiResponse>> Index()
+        public async Task<ActionResult<ApiResponse>> Index()
         {
             return new ApiResponse(value: hiloService.GetHilosOrdenadosPorBump());
         }

@@ -392,6 +392,26 @@ namespace Servicios
                 }
             }
 
+            var stickies = await _context.Stickies
+                .Where(s => ids.Contains(s.HiloId))
+                .ToListAsync();
+            if (stickies.Any())
+            {
+                _context.RemoveRange(stickies);
+            }
+
+            var autobumps = await _context.AutoBumps.
+                Where(ab => ids.Contains(ab.HiloId)).
+                Where(ab => ab.Restante >= 0).
+                ToListAsync();
+            if (autobumps.Any())
+            {
+                foreach (AutoBumpModel ab in autobumps)
+                {
+                    await premiumService.EliminarAutoBump(ab.Id);
+                }
+            }
+
             await _context.SaveChangesAsync();
             await rchanHub.Clients.All.SendAsync("HilosEliminados", ids);
             await rchanHub.Clients.Group("moderacion").SendAsync("denunciasAceptadas", denuncias.Select(d => d.Id).ToArray());

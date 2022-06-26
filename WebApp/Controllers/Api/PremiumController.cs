@@ -10,6 +10,7 @@ using Servicios;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -24,23 +25,54 @@ namespace WebApp.Controllers
         private readonly RChanContext context;
         private readonly PremiumService premiumService;
         private readonly UserManager<UsuarioModel> userManager;
-        private readonly IOptionsSnapshot<List<Ware>> wareOpts;
+        private readonly IOptionsSnapshot<List<AutoBump>> abOpts;
+        private readonly IOptionsSnapshot<List<MensajeGlobal>> mgOpts;
+        private readonly IOptionsSnapshot<List<Membrecia>> memOpts;
+        private readonly IOptionsSnapshot<List<RouzCoin>> rcOpts;
+        private readonly IOptionsSnapshot<List<MetodoDePago>> mpOpts;
         private readonly NotificacionesService notificacionesService;
+        private const string comprobanteNulo = "wwwroot/imagenes/noexiste.png";
 
-        public PremiumController(HashService hashService, RChanContext context, PremiumService premiumService, UserManager<UsuarioModel> userManager, IOptionsSnapshot<List<Ware>> wareOpts, NotificacionesService notificacionesService)
+        public PremiumController(HashService hashService,
+            RChanContext context,
+            PremiumService premiumService,
+            UserManager<UsuarioModel> userManager,
+            IOptionsSnapshot<List<MensajeGlobal>> mgOpts,
+            IOptionsSnapshot<List<AutoBump>> abOpts,
+            IOptionsSnapshot<List<Membrecia>> memOpts,
+            IOptionsSnapshot<List<RouzCoin>> rcOpts,
+            IOptionsSnapshot<List<MetodoDePago>> mpOpts,
+            NotificacionesService notificacionesService)
         {
             this.hashService = hashService;
             this.context = context;
             this.premiumService = premiumService;
             this.userManager = userManager;
-            this.wareOpts = wareOpts;
+            this.mgOpts = mgOpts;
+            this.abOpts = abOpts;
             this.notificacionesService = notificacionesService;
+            this.memOpts = memOpts;
+            this.rcOpts = rcOpts;
+            this.mpOpts = mpOpts;
         }
 
         [Route("/Premium")]
         public async Task<ActionResult> Index()
         {
             var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
+
+            var pedidos = await context.Pedidos.Where(p => p.UsuarioId == User.GetId()).OrderByDescending(p => p.Creacion).Take(5).Select(p => new
+            {
+                p.Id,
+                p.Creacion,
+                p.Tipo,
+                p.Paquete,
+                p.Metodo,
+                p.Estado,
+                p.CodigoMembreciaId,
+                p.CodigoPaqueteId,
+                p.ComprobanteId
+            }).ToListAsync();
 
             var transacciones = await context.Transacciones.Where(t => t.UsuarioId == User.GetId()).OrderByDescending(t => t.Creacion).Take(25).Select(t => new
             {
@@ -53,7 +85,7 @@ namespace WebApp.Controllers
                 t.Balance
             }).ToListAsync();
 
-            return View(new { balance = new { balance.Balance, balance.Expiracion }, transacciones });
+            return View(new { balance = new { balance.Balance, balance.Expiracion }, pedidos, transacciones, propio = true });
         }
 
         [HttpPost]
@@ -103,30 +135,30 @@ namespace WebApp.Controllers
             {
                 if (User.EsPremium())
                 {
-                    ModelState.AddModelError("Premium", "Ya eres premium");
-                }
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                var user = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == User.GetId());
-                var result = await userManager.AddClaimAsync(user, new Claim("Premium", "gold"));
-                if (result.Succeeded)
-                {
                     var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
-                    balance.Expiracion = DateTimeOffset.Now + TimeSpan.FromDays(cp.Cantidad);
-                    cp.Usos -= 1;
-                    await context.SaveChangesAsync();
+                    balance.Expiracion += TimeSpan.FromDays(cp.Cantidad);
 
-                    await premiumService.RegistrarAccionCP(User.GetId(), cp.Id, TipoAccionCP.Uso);
-                    await premiumService.RegistrarActivacionAsync(User.GetId(), cp.Cantidad);
-                    return Json(new { tipo = cp.Tipo, cantidad = cp.Cantidad, usos = cp.Usos, expiracion = cp.Expiracion });
                 }
                 else
                 {
-                    return BadRequest(result.Errors);
+                    var user = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == User.GetId());
+                    var result = await userManager.AddClaimAsync(user, new Claim("Premium", "gold"));
+                    if (result.Succeeded)
+                    {
+                        var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
+                        balance.Expiracion = DateTimeOffset.Now + TimeSpan.FromDays(cp.Cantidad);
+                    }
+                    else
+                    {
+                        return BadRequest(result.Errors);
+                    }
                 }
+                cp.Usos -= 1;
+                await context.SaveChangesAsync();
+
+                await premiumService.RegistrarAccionCP(User.GetId(), cp.Id, TipoAccionCP.Uso);
+                await premiumService.RegistrarActivacionAsync(User.GetId(), cp.Cantidad);
+                return Json(new { tipo = cp.Tipo, cantidad = cp.Cantidad, usos = cp.Usos, expiracion = cp.Expiracion });
             }
 
             if (cp.Tipo == TipoCP.RouzCoins)
@@ -263,7 +295,8 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var precioAutobump = wareOpts.Value.Find(w => w.Id == 0).Valor;
+            const int tier = 0;
+            var precioAutobump = abOpts.Value.FirstOrDefault(w => w.Id == tier).Valor;
             var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
             if (balance.Balance < precioAutobump)
             {
@@ -274,7 +307,7 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var creado = await premiumService.CrearAutoBumpsAsync(User.GetId(), id);
+            var creado = await premiumService.CrearAutoBumpsAsync(User.GetId(), id, tier);
             if (!creado)
             {
                 ModelState.AddModelError("AutoBumps", "No pudo crearse");
@@ -295,16 +328,17 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            if ((vm.Tier < 1) || (vm.Tier > 6))
+            var mgOpt = mgOpts.Value.FirstOrDefault(w => w.Id == vm.Tier);
+            if (mgOpt is null)
             {
-                ModelState.AddModelError("Duracion", "La duración elegida es inválida");
+                ModelState.AddModelError("Tier", "Ese tier no existe");
             }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var precioMg = wareOpts.Value.Find(w => w.Id == vm.Tier).Valor;
+            var precioMg = mgOpt.Valor;
             var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
             if (balance.Balance < precioMg)
             {
@@ -324,6 +358,163 @@ namespace WebApp.Controllers
             return new ApiResponse("Mensaje Global creado.");
         }
 
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse>> PedirCodigoPremium([FromForm] PedidoCodigoPremiumViewModel vm)
+        {
+            var tienePedidos = await context.Pedidos.Where(p => p.UsuarioId == User.GetId()).Where(p => p.Estado == PedidoEstado.Pendiente).AnyAsync();
+            if (tienePedidos)
+            {
+                ModelState.AddModelError("Pendientes", "Todavía tiene pedidos pendientes");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var paquete = memOpts.Value.FirstOrDefault(mem => mem.Id == vm.Paquete);
+            if (paquete is null)
+            {
+                ModelState.AddModelError("Paquete", "No es válido");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var metodo = mpOpts.Value.FirstOrDefault(mp => mp.Id == vm.Metodo);
+            if (metodo is null)
+            {
+                ModelState.AddModelError("Metodo de pago", "No aceptado");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (vm.Archivo is null)
+            {
+                ModelState.AddModelError("Comprobante", "Falta el comprobante");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            string id = hashService.Random();
+            var pedido = new PedidoCodigoPremiumModel
+            {
+                Id = id,
+                UsuarioId = User.GetId(),
+                Tipo = vm.Tipo,
+                Paquete = vm.Paquete,
+                Metodo = vm.Metodo
+            };
+            context.Pedidos.Add(pedido);
+            var comprobante = await premiumService.GuardarComprobante(vm.Archivo);
+            pedido.Comprobante = comprobante;
+            await context.SaveChangesAsync();
+
+            return new ApiResponse("Pedido registrado");
+        }
+
+        [Route("/Mis/Transacciones")]
+        public async Task<ActionResult> Transacciones()
+        {
+            var transacciones = await context.Transacciones.Where(t => t.UsuarioId == User.GetId()).OrderByDescending(t => t.Creacion).Select(t => new
+            {
+                t.Creacion,
+                t.OrigenCantidad,
+                t.OrigenUnidad,
+                t.DestinoCantidad,
+                t.DestinoUnidad,
+                t.Tipo,
+                t.Balance
+            }).ToListAsync();
+            return View(new { transacciones });
+        }
+
+        [Route("/Mis/Pedidos")]
+        public async Task<ActionResult> Pedidos()
+        {
+            var pedidos = await context.Pedidos.Where(p => p.UsuarioId == User.GetId()).OrderByDescending(p => p.Creacion).Select(p => new
+            {
+                p.Id,
+                p.Creacion,
+                p.Tipo,
+                p.Paquete,
+                p.Metodo,
+                p.Estado,
+                p.CodigoMembreciaId,
+                p.CodigoPaqueteId,
+                p.ComprobanteId
+            }).ToListAsync();
+            return View(new { pedidos, propio = true });
+        }
+
+        public async Task<FileStreamResult> ObtenerComprobante(string id)
+        {
+            var pedido = await context.Pedidos.Include(p => p.Comprobante).FirstOrDefaultAsync(p => p.Id == id);
+            if (pedido is null)
+            {
+                return new FileStreamResult(new FileStream($"{comprobanteNulo}", FileMode.Open), $"image/png");
+            }
+
+            if (pedido.UsuarioId != User.GetId() && !User.EsDirector())
+            {
+                return new FileStreamResult(new FileStream($"{comprobanteNulo}", FileMode.Open), $"image/png");
+            }
+
+            var comprobante = pedido.Comprobante;
+            if (comprobante is null)
+            {
+                return new FileStreamResult(new FileStream($"{comprobanteNulo}", FileMode.Open), $"image/png");
+            }
+
+            return new FileStreamResult(new FileStream($"{comprobante.Path}", FileMode.Open), $"image/{comprobante.Format}");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse>> RetirarPedido(string id)
+        {
+            var pedido = await context.Pedidos.Include(p => p.Comprobante).FirstOrDefaultAsync(p => p.Id == id);
+            if (pedido is null)
+            {
+                ModelState.AddModelError("Pedido", "No existe");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (pedido.Estado != PedidoEstado.Pendiente)
+            {
+                ModelState.AddModelError("Pedido", "Ya fue resuelto");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (pedido.UsuarioId != User.GetId())
+            {
+                ModelState.AddModelError("Pedido", "No es tuyo");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            pedido.Estado = PedidoEstado.RechazadoPorUsuario;
+            if (!(pedido.Comprobante is null))
+            {
+                var eliminado = await premiumService.EliminarComprobante(pedido.Comprobante);
+                if (eliminado)
+                {
+                    context.Remove(pedido.Comprobante);
+                }
+            }
+            await context.SaveChangesAsync();
+            return new ApiResponse("Pedido retirado");
+        }
+
     }
 
     public class DonacionVM
@@ -334,7 +525,7 @@ namespace WebApp.Controllers
 
     public class MensajeGlobalVM
     {
-        [MaxLength(144, ErrorMessage = "Muy largo padre")]
+        [MinLength(1, ErrorMessage = "Escribí algo padre"), MaxLength(144, ErrorMessage = "Muy largo padre")]
         public string Mensaje { get; set; }
         public int Tier { get; set; }
     }

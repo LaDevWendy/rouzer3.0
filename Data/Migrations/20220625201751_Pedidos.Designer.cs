@@ -3,15 +3,17 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(RChanContext))]
-    partial class RChanContextModelSnapshot : ModelSnapshot
+    [Migration("20220625201751_Pedidos")]
+    partial class Pedidos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,9 +286,6 @@ namespace Data.Migrations
                     b.Property<DateTimeOffset>("Creacion")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Estado")
-                        .HasColumnType("integer");
-
                     b.Property<string>("HiloId")
                         .HasColumnType("text");
 
@@ -482,25 +481,6 @@ namespace Data.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Comentarios");
-                });
-
-            modelBuilder.Entity("Modelos.ComprobanteModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<DateTimeOffset>("Creacion")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Format")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Comprobantes");
                 });
 
             modelBuilder.Entity("Modelos.DenunciaModel", b =>
@@ -771,9 +751,6 @@ namespace Data.Migrations
                     b.Property<string>("CodigoPaqueteId")
                         .HasColumnType("text");
 
-                    b.Property<string>("ComprobanteId")
-                        .HasColumnType("text");
-
                     b.Property<DateTimeOffset>("Creacion")
                         .HasColumnType("timestamp with time zone");
 
@@ -797,8 +774,6 @@ namespace Data.Migrations
                     b.HasIndex("CodigoMembreciaId");
 
                     b.HasIndex("CodigoPaqueteId");
-
-                    b.HasIndex("ComprobanteId");
 
                     b.HasIndex("UsuarioId");
 
@@ -1322,10 +1297,6 @@ namespace Data.Migrations
                         .WithMany()
                         .HasForeignKey("CodigoPaqueteId");
 
-                    b.HasOne("Modelos.ComprobanteModel", "Comprobante")
-                        .WithMany()
-                        .HasForeignKey("ComprobanteId");
-
                     b.HasOne("Modelos.UsuarioModel", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId");
@@ -1333,8 +1304,6 @@ namespace Data.Migrations
                     b.Navigation("CodigoMembrecia");
 
                     b.Navigation("CodigoPaquete");
-
-                    b.Navigation("Comprobante");
 
                     b.Navigation("Usuario");
                 });

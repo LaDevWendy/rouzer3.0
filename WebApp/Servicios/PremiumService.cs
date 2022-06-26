@@ -1,12 +1,15 @@
 ﻿using Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Modelos;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -18,15 +21,19 @@ namespace Servicios
     {
         private readonly UserManager<UsuarioModel> userManager;
         private readonly IOptionsSnapshot<List<Categoria>> categoriasOpts;
-        private readonly IOptionsSnapshot<List<Ware>> wareOpts;
+        private readonly IOptionsSnapshot<List<AutoBump>> autoBumpOpts;
+        private readonly IOptionsSnapshot<List<MensajeGlobal>> mensajeGlobalOpts;
         private readonly ILogger<PremiumService> logger;
         private readonly FormateadorService formateador;
         private readonly IHubContext<RChanHub> rchanHub;
-        public PremiumService(RChanContext context,
+        private string CarpetaDeComprobantes { get; } = "Comprobantes";
+        public PremiumService(
+            RChanContext context,
             HashService hashService,
             UserManager<UsuarioModel> userManager,
             IOptionsSnapshot<List<Categoria>> categoriasOpts,
-            IOptionsSnapshot<List<Ware>> wareOpts,
+            IOptionsSnapshot<List<AutoBump>> autoBumpOpts,
+            IOptionsSnapshot<List<MensajeGlobal>> mensajeGlobalOpts,
             ILogger<PremiumService> logger,
             FormateadorService formateador,
             IHubContext<RChanHub> rchanHub) : base(context, hashService)
@@ -34,9 +41,11 @@ namespace Servicios
             this.categoriasOpts = categoriasOpts;
             this.userManager = userManager;
             this.logger = logger;
-            this.wareOpts = wareOpts;
+            this.autoBumpOpts = autoBumpOpts;
+            this.mensajeGlobalOpts = mensajeGlobalOpts;
             this.formateador = formateador;
             this.rchanHub = rchanHub;
+
         }
         public async Task<BalanceModel> ObtenerBalanceAsync(string id)
         {
@@ -66,11 +75,13 @@ namespace Servicios
 
         public async Task RegistrarAccionCP(string userId, string cpId, TipoAccionCP tipo)
         {
-            var accionCP = new AccionCodigoPremiumModel();
-            accionCP.Id = hashService.Random();
-            accionCP.UsuarioId = userId;
-            accionCP.CodigoPremiumId = cpId;
-            accionCP.Tipo = tipo;
+            var accionCP = new AccionCodigoPremiumModel
+            {
+                Id = hashService.Random(),
+                UsuarioId = userId,
+                CodigoPremiumId = cpId,
+                Tipo = tipo
+            };
             _context.AccionesCodigosPremium.Add(accionCP);
             await _context.SaveChangesAsync();
         }
@@ -78,30 +89,34 @@ namespace Servicios
         public async Task RegistrarActivacionAsync(string userId, float cantidad)
         {
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == userId);
-            var regalo = new TransaccionModel();
-            regalo.Id = hashService.Random();
-            regalo.OrigenCantidad = 1f;
-            regalo.OrigenUnidad = "Código Premium";
-            regalo.DestinoCantidad = cantidad;
-            regalo.DestinoUnidad = "Días Premium";
-            regalo.Tipo = TipoTransaccion.Compra;
-            regalo.Usuario = usuario;
-            regalo.Balance = -1;
+            var regalo = new TransaccionModel
+            {
+                Id = hashService.Random(),
+                OrigenCantidad = 1f,
+                OrigenUnidad = "Código Premium",
+                DestinoCantidad = cantidad,
+                DestinoUnidad = "Días Premium",
+                Tipo = TipoTransaccion.Compra,
+                Usuario = usuario,
+                Balance = -1
+            };
             _context.Transacciones.Add(regalo);
             await _context.SaveChangesAsync();
         }
 
         public async Task RegistrarAgregarRouzCoinsAsync(string userId, float cantidad, float balance)
         {
-            var regalo = new TransaccionModel();
-            regalo.Id = hashService.Random();
-            regalo.OrigenCantidad = 1f;
-            regalo.OrigenUnidad = "Código Premium";
-            regalo.DestinoCantidad = cantidad;
-            regalo.DestinoUnidad = "RouzCoins";
-            regalo.Tipo = TipoTransaccion.Compra;
-            regalo.UsuarioId = userId;
-            regalo.Balance = balance;
+            var regalo = new TransaccionModel
+            {
+                Id = hashService.Random(),
+                OrigenCantidad = 1f,
+                OrigenUnidad = "Código Premium",
+                DestinoCantidad = cantidad,
+                DestinoUnidad = "RouzCoins",
+                Tipo = TipoTransaccion.Compra,
+                UsuarioId = userId,
+                Balance = balance
+            };
             _context.Transacciones.Add(regalo);
             await _context.SaveChangesAsync();
         }
@@ -143,18 +158,20 @@ namespace Servicios
             var autobump = await _context.AutoBumps.FirstOrDefaultAsync(a => a.HiloId == hiloId && a.Restante > 0);
             return (autobump is null);
         }
-        public async Task<bool> CrearAutoBumpsAsync(string usuarioId, string hiloId)
+        public async Task<bool> CrearAutoBumpsAsync(string usuarioId, string hiloId, int tier)
         {
             if (await CheckearAutobumpsHilo(hiloId))
             {
-                var ware = wareOpts.Value.FirstOrDefault(w => w.Id == 0);
-                var autobump = new AutoBumpModel();
-                autobump.Id = hashService.Random();
-                autobump.UsuarioId = usuarioId;
-                autobump.HiloId = hiloId;
-                autobump.Restante = ware.Duracion * 60;
+                var ware = autoBumpOpts.Value.FirstOrDefault(w => w.Id == tier);
+                var autobump = new AutoBumpModel
+                {
+                    Id = hashService.Random(),
+                    UsuarioId = usuarioId,
+                    HiloId = hiloId,
+                    Restante = ware.Duracion * 60
+                };
                 var balance = await ActualizarBalanceAsync(usuarioId, -ware.Valor);
-                autobump.TransaccionId = await RegistrarAutoBumpsAsync(usuarioId, balance.Balance);
+                autobump.TransaccionId = await RegistrarAutoBumpsAsync(usuarioId, balance.Balance, tier);
                 _context.AutoBumps.Add(autobump);
                 await _context.SaveChangesAsync();
                 return true;
@@ -164,24 +181,26 @@ namespace Servicios
 
         public async Task<bool> CrearMensajeGlobalAsync(string usuarioId, string mensaje, int tier)
         {
-            var ware = wareOpts.Value.FirstOrDefault(w => w.Id == tier);
-            var mg = new MensajeGlobalModel();
-            mg.Id = hashService.Random();
-            mg.UsuarioId = usuarioId;
-            mg.Mensaje = formateador.Parsear(mensaje);
-            mg.Tier = (Tiers)(tier - 1);
-            mg.Restante = ware.Duracion * 60;
+            var ware = mensajeGlobalOpts.Value.FirstOrDefault(w => w.Id == ((int)tier));
+            var mg = new MensajeGlobalModel
+            {
+                Id = hashService.Random(),
+                UsuarioId = usuarioId,
+                Mensaje = formateador.Parsear(mensaje),
+                Tier = tier,
+                Restante = ware.Duracion * 60
+            };
             var balance = await ActualizarBalanceAsync(usuarioId, -ware.Valor);
-            mg.TransaccionId = await RegistrarMensajeGlobalAsync(usuarioId, balance.Balance, (Tiers)(tier - 1));
+            mg.TransaccionId = await RegistrarMensajeGlobalAsync(usuarioId, balance.Balance, tier);
             _context.MensajesGlobales.Add(mg);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<string> RegistrarAutoBumpsAsync(string usuarioId, float balance)
+        public async Task<string> RegistrarAutoBumpsAsync(string usuarioId, float balance, int tier)
         {
-            var ware = wareOpts.Value.FirstOrDefault(w => w.Id == 0);
-            var autobump = new TransaccionModel
+            var ware = autoBumpOpts.Value.FirstOrDefault(w => w.Id == tier);
+            var trac = new TransaccionModel
             {
                 Id = hashService.Random(),
                 OrigenCantidad = ware.Valor,
@@ -193,15 +212,15 @@ namespace Servicios
                 Balance = balance
             };
 
-            _context.Transacciones.Add(autobump);
+            _context.Transacciones.Add(trac);
             await _context.SaveChangesAsync();
-            return autobump.Id;
+            return trac.Id;
         }
 
-        public async Task<string> RegistrarMensajeGlobalAsync(string usuarioId, float balance, Tiers tier)
+        public async Task<string> RegistrarMensajeGlobalAsync(string usuarioId, float balance, int tier)
         {
-            var ware = wareOpts.Value.FirstOrDefault(w => w.Id == ((int)tier + 1));
-            var autobump = new TransaccionModel
+            var ware = mensajeGlobalOpts.Value.FirstOrDefault(w => w.Id == tier);
+            var trac = new TransaccionModel
             {
                 Id = hashService.Random(),
                 OrigenCantidad = ware.Valor,
@@ -213,9 +232,9 @@ namespace Servicios
                 Balance = balance
             };
 
-            _context.Transacciones.Add(autobump);
+            _context.Transacciones.Add(trac);
             await _context.SaveChangesAsync();
-            return autobump.Id;
+            return trac.Id;
         }
 
         public async Task ActualizarPremiums()
@@ -237,7 +256,7 @@ namespace Servicios
 
         public async Task ActualizarWares(int interval)
         {
-            var autoQuery = _context.AutoBumps.Where(a => a.Restante >= 0);
+            var autoQuery = _context.AutoBumps.Where(a => a.Estado == EstadoWare.Normal).Where(a => a.Restante >= 0);
             var listaHilosAutobump = await autoQuery.Where(a => a.Restante % 300 == 0).Include(a => a.Hilo).Select(a => a.Hilo).ToListAsync();
 
             var ahora = DateTimeOffset.Now;
@@ -253,7 +272,7 @@ namespace Servicios
                 a.Restante -= interval;
             }
 
-            var listaMensajesGlobales = await _context.MensajesGlobales.Where(mg => mg.Estado == EstadoMensajeGlobal.Normal).Where(mg => mg.Restante >= 0).ToListAsync();
+            var listaMensajesGlobales = await _context.MensajesGlobales.Where(mg => mg.Estado == EstadoWare.Normal).Where(mg => mg.Restante >= 0).ToListAsync();
 
             foreach (var mg in listaMensajesGlobales)
             {
@@ -309,18 +328,30 @@ namespace Servicios
             var mgs = await _context.MensajesGlobales
                 .AsNoTracking()
                 .Where(mg => mg.Restante >= 0)
-                .Where(mg => mg.Estado == EstadoMensajeGlobal.Normal)
+                .Where(mg => mg.Estado == EstadoWare.Normal)
                 .OrderByDescending(mg => mg.Tier)
                 .ThenBy(mg => mg.Creacion)
-                .Select(mg => new MensajeGlobalViewModel(mg, wareOpts.Value)).ToListAsync();
+                .Select(mg => new MensajeGlobalViewModel(mg, mensajeGlobalOpts.Value)).ToListAsync();
             return mgs;
+        }
+
+        public async Task EliminarAutoBump(string id)
+        {
+            var ab = await _context.AutoBumps.FirstOrDefaultAsync(ab => ab.Id == id);
+            ab.Estado = EstadoWare.Eliminado;
+            var ware = autoBumpOpts.Value.FirstOrDefault(w => w.Id == 0);
+            var balance = await ObtenerBalanceAsync(ab.UsuarioId);
+            balance.Balance += ware.Valor;
+            await _context.SaveChangesAsync();
+
+            await RegistrarReembolsoAsync(ab.UsuarioId, balance.Balance, ware.Valor, "RouzCoins", 1, ware.Nombre);
         }
 
         public async Task EliminarMensajeGlobal(string id)
         {
             var mg = await _context.MensajesGlobales.FirstOrDefaultAsync(mg => mg.Id == id);
-            mg.Estado = EstadoMensajeGlobal.Eliminado;
-            var ware = wareOpts.Value.FirstOrDefault(w => w.Id == ((int)mg.Tier + 1));
+            mg.Estado = EstadoWare.Eliminado;
+            var ware = mensajeGlobalOpts.Value.FirstOrDefault(w => w.Id == mg.Tier);
             var balance = await ObtenerBalanceAsync(mg.UsuarioId);
             balance.Balance += ware.Valor;
             await _context.SaveChangesAsync();
@@ -351,10 +382,50 @@ namespace Servicios
 
         public async Task LimpiarMensajesGlobalesViejos()
         {
-            var mgs = await _context.MensajesGlobales.Where(mg => mg.Restante < 0 || mg.Estado == EstadoMensajeGlobal.Eliminado).ToListAsync();
+            var mgs = await _context.MensajesGlobales.Where(mg => mg.Restante < 0 || mg.Estado == EstadoWare.Eliminado).ToListAsync();
             _context.RemoveRange(mgs);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<ComprobanteModel> GuardarComprobante(IFormFile archivo)
+        {
+            using var archivoStream = archivo.OpenReadStream();
+            string type = archivo.ContentType;
+            string fmt = type.Split("/")[1];
+
+            var comprobante = new ComprobanteModel
+            {
+                Id = hashService.Random(),
+                Format = fmt
+            };
+            comprobante.Path = $"{CarpetaDeComprobantes}/{comprobante.Id}.{fmt}";
+
+            using var imagen = await Image.LoadAsync(archivoStream);
+            await imagen.SaveAsync(comprobante.Path);
+            await archivoStream.DisposeAsync();
+            return comprobante;
+        }
+
+        public async Task<bool> EliminarComprobante(ComprobanteModel comprobante)
+        {
+            var intentos = 25;
+            while (intentos > 0)
+            {
+                try
+                {
+                    File.Delete(comprobante.Path);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e.ToString());
+                    intentos--;
+                    await Task.Delay(100);
+                }
+            }
+            return false;
+        }
+
 
     }
 }

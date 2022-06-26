@@ -11,4 +11,14 @@ namespace Modelos
         public int Duracion { get; set; }
     }
 
+    public class AutoBump : Ware
+    {
+
+    }
+
+    public class MensajeGlobal : Ware
+    {
+        public string Color { get; set; }
+    }
+
 }

@@ -40,6 +40,8 @@ namespace Data
         public DbSet<CodigoPremiumModel> CodigosPremium { get; set; }
         public DbSet<AccionCodigoPremiumModel> AccionesCodigosPremium { get; set; }
         public DbSet<DonacionModel> Donaciones { get; set; }
+        public DbSet<PedidoCodigoPremiumModel> Pedidos { get; set; }
+        public DbSet<ComprobanteModel> Comprobantes { get; set; }
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

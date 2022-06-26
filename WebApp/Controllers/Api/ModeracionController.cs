@@ -921,6 +921,16 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
+            var tienePedidos = await context.Pedidos.AsNoTracking().AnyAsync(c => c.UsuarioId == id);
+            if (tieneTrasacciones)
+            {
+                ModelState.AddModelError("Pedidos", "El usuario tiene pedidos y no puede eliminarse el token");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var acciones = await context.HiloAcciones.Where(a => a.UsuarioId == id).ToListAsync();
             var notis = await context.Notificaciones.Where(n => n.UsuarioId == id).ToListAsync();
             var denuncias = await context.Denuncias.Where(d => d.UsuarioId == id).ToListAsync();
@@ -992,17 +1002,6 @@ namespace WebApp.Controllers
                 vc.BorrarAudio && User.EsMod()
             );
 
-            var stickies = await context.Stickies
-                .Where(s => vc.Ids.Contains(s.HiloId))
-                .ToListAsync();
-            if (stickies.Any())
-            {
-                foreach (Sticky s in stickies)
-                {
-                    s.Importancia = 0;
-                    await AñadirSticky(s);
-                }
-            }
             return Json(new ApiResponse("Hilo borrado"));
         }
 

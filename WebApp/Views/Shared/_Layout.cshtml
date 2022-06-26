@@ -7,7 +7,11 @@
 @inject RChanContext _context;
 @inject IOptionsSnapshot<List<Categoria>> categoriasOpt;
 @inject IOptionsSnapshot<List<Grupo>> gruposOpt;
-@inject IOptionsSnapshot<List<Ware>> waresOpt;
+@inject IOptionsSnapshot<List<AutoBump>> autoBumpsOpt;
+@inject IOptionsSnapshot<List<MensajeGlobal>> mensajesGlobalesOpt;
+@inject IOptionsSnapshot<List<Membrecia>> membreciasOpt;
+@inject IOptionsSnapshot<List<RouzCoin>> rouzCoinsOpt;
+@inject IOptionsSnapshot<List<MetodoDePago>> mpOpt;
 @inject IConfiguration config;
 @inject IOptionsSnapshot<GeneralOptions> generalOptions
 @inject IWebHostEnvironment env
@@ -114,7 +118,11 @@
         {
             Categorias = categoriasOpt.Value,
             Grupos = gruposOpt.Value,
-            Wares = waresOpt.Value,
+            AutoBumps = autoBumpsOpt.Value,
+            MensajesGlobales = mensajesGlobalesOpt.Value,
+            Membrecias = membreciasOpt.Value,
+            RouzCoins = rouzCoinsOpt.Value,
+            MetodosDePago = mpOpt.Value,
             HCaptchaSiteKey = config.GetValue<string>("HCaptcha:SiteKey"),
             General = new
             {

@@ -26,6 +26,7 @@ namespace WebApp
             //Creo la carpeta almacenamiento si no existe
             Directory.CreateDirectory("Almacenamiento");
             Directory.CreateDirectory("Audios");
+            Directory.CreateDirectory("Comprobantes");
             // //Agrego Un administrador si no existe
             using (var scope = host.Services.CreateScope())
             {

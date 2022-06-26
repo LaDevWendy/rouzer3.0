@@ -1,46 +1,116 @@
 {
-    "Wares": [
+    "Autobumps": [
         {
             "Id": 0,
             "Nombre": "AutoBump",
             "Valor": 100,
             "Duracion": 40
-        },
+        }
+    ],
+    "MensajesGlobales": [
         {
             "Id": 1,
             "Nombre": "MensajeGlobalRojo",
             "Valor": 10,
-            "Duracion": 5
+            "Duracion": 5,
+            "Color": "rojo"
         },
         {
             "Id": 2,
             "Nombre": "MensajeGlobalNaranja",
             "Valor": 35,
-            "Duracion": 20
+            "Duracion": 20,
+            "Color": "naranja"
         },
         {
             "Id": 3,
             "Nombre": "MensajeGlobalAmarillo",
             "Valor": 100,
-            "Duracion": 60
+            "Duracion": 60,
+            "Color": "amarillo"
         },
         {
             "Id": 4,
             "Nombre": "MensajeGlobalVerde",
             "Valor": 500,
-            "Duracion": 360
+            "Duracion": 360,
+            "Color": "verde"
         },
         {
             "Id": 5,
             "Nombre": "MensajeGlobalAzul",
             "Valor": 1700,
-            "Duracion": 1440
+            "Duracion": 1440,
+            "Color": "azul"
         },
         {
             "Id": 6,
             "Nombre": "MensajeGlobalBlanco",
             "Valor": 4300,
-            "Duracion": 4320
+            "Duracion": 4320,
+            "Color": "blanco"
+        }
+    ],
+    "Membrecias": [
+        {
+            "Id": 0,
+            "Nombre": "Corta",
+            "Cantidad": 30,
+            "Valor": "AR$ 400 (U$D 2)"
+        },
+        {
+            "Id": 1,
+            "Nombre": "Media",
+            "Cantidad": 90,
+            "Valor": "AR$ 1000 (U$D 5)"
+        },
+        {
+            "Id": 2,
+            "Cantidad": 180,
+            "Nombre": "Larga",
+            "Valor": "AR$ 1700 (U$D 8)"
+        },
+        {
+            "Id": 3,
+            "Cantidad": 365,
+            "Nombre": "Ultralarga",
+            "Valor": "AR$ 2600 (U$D 12)"
+        }
+    ],
+    "Paquetes": [
+        {
+            "Id": 0,
+            "Nombre": "Chico",
+            "Cantidad": 1000,
+            "Valor": "AR$ 200 (U$D 1)"
+        },
+        {
+            "Id": 1,
+            "Nombre": "Mediano",
+            "Cantidad": 4500,
+            "Valor": "AR$ 500 (U$D 3)"
+        },
+        {
+            "Id": 2,
+            "Cantidad": 10000,
+            "Nombre": "Grande",
+            "Valor": "AR$ 900 (U$D 5)"
+        },
+        {
+            "Id": 3,
+            "Cantidad": 25000,
+            "Nombre": "Ultragrande",
+            "Valor": "AR$ 1300 (U$D 7)"
+        }
+    ],
+    "MetodosDePago": [
+        {
+            "Id": 0,
+            "Nombre": "Mercado Pago"
+        },
+        {
+            "Id": 1,
+            "Nombre": "Paypal"
         }
     ]
 }

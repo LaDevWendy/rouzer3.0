@@ -14,33 +14,13 @@ namespace Modelos
         public float Completado { get; set; }
 
 
-        public MensajeGlobalViewModel(MensajeGlobalModel mensajeGlobalModel, List<Ware> wares)
+        public MensajeGlobalViewModel(MensajeGlobalModel mensajeGlobalModel, List<MensajeGlobal> mensajesGlobalesOpts)
         {
+            var mgOpt = mensajesGlobalesOpts.FirstOrDefault(w => w.Id == mensajeGlobalModel.Tier);
             this.Id = mensajeGlobalModel.Id;
             this.Mensaje = mensajeGlobalModel.Mensaje;
-            this.Completado = 100f - 10f * (float)mensajeGlobalModel.Restante / ((float)wares.FirstOrDefault(w => w.Id == ((int)mensajeGlobalModel.Tier + 1)).Duracion * 6f);
-            this.Color = Tier2Color(mensajeGlobalModel.Tier);
-        }
-
-        private string Tier2Color(Tiers tier)
-        {
-            switch (tier)
-            {
-                case Tiers.Rojo:
-                    return "rojo";
-                case Tiers.Naranja:
-                    return "naranja";
-                case Tiers.Amarillo:
-                    return "amarillo";
-                case Tiers.Verde:
-                    return "verde";
-                case Tiers.Azul:
-                    return "azul";
-                case Tiers.Blanco:
-                    return "blanco";
-                default:
-                    return "";
-            }
+            this.Completado = 100f - 10f * (float)mensajeGlobalModel.Restante / (mgOpt.Duracion * 6f);
+            this.Color = mgOpt.Color;
         }
     }
 }
