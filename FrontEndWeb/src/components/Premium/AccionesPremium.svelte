@@ -1,5 +1,4 @@
 <script>
-    import config from "../../config";
     import { Button } from "svelte-mui";
     import RouzCoins from "./RouzCoins.svelte";
     export let hilo;
@@ -7,9 +6,6 @@
     export let premium;
     export let donaciones;
     import { abrir } from "../Premium/DialogosPremium.svelte";
-
-    let cantidad;
-    let ab = config.wares.find((w) => w.id == 0);
 </script>
 
 {#if op}

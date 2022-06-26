@@ -27,7 +27,7 @@
     // import ajustesConfigStore from "./Dialogos/ajustesConfigStore";
 
     export let notificaciones = window.notificaciones || [];
-    let balance = window.balance || -1;
+    let balance = window.balance;
 
     let mostrarMenu = false;
     let mostrarFormularioHilo = false;
@@ -437,7 +437,7 @@
     .modoSticky .fondo {
         height: 36px;
     }
-    
+
     /*
     .rozed::after {
         content: "";

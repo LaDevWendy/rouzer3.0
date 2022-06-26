@@ -21,6 +21,8 @@ import MisComentarios from './components/Paginas/MisComentarios.svelte';
 import Apelaciones from './components/Administracion/Apelaciones.svelte';
 import Premium from './components/Premium/Premium.svelte';
 import Direccion from './components/Direccion/Direccion.svelte';
+import Pedidos from './components/Premium/Pedidos.svelte';
+import Transacciones from './components/Premium/Transacciones.svelte';
 
 import skinStore from './components/Personalizacion/skinsStore'
 
@@ -57,6 +59,8 @@ let componentes = [
 	["#svelte-apelaciones", Apelaciones, {}],
 	["#svelte-premium", Premium, {}],
 	["#svelte-direccion", Direccion, {}],
+	["#svelte-pedidos", Pedidos, {}],
+	["#svelte-transacciones", Transacciones, {}],
 ]
 
 for (const c of componentes) {

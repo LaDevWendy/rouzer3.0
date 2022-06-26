@@ -26,7 +26,7 @@
         }
     }
 
-    let wares = config.wares.filter((w) => w.id > 0 && w.id < 7);
+    let wares = config.mensajesGlobales;
 
     function parsearDuracion(duracion) {
         if (duracion < 60) {

@@ -17,7 +17,15 @@ export default class config {
 
     static nombre = window.config.general.nombre
 
-    static wares = window.config.wares
+    static autoBumps = window.config.autoBumps
+
+    static mensajesGlobales = window.config.mensajesGlobales
+
+    static membrecias = window.config.membrecias
+
+    static rouzcoins = window.config.rouzCoins
+
+    static metodosdepago = window.config.metodosDePago
 
     static categoriaPorId(id) {
         return config.categorias.filter(c => c.id == id)[0]

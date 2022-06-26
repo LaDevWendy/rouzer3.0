@@ -17,15 +17,11 @@
 
     $: if (mostrarAjustes) mostrar = false;
 
-    let categorias = config.categorias
-        .filter(
-            (c) => !c.premium || (c.premium && $globalStore.usuario.esPremium)
-        )
-        .map((c) => {
-            c.activa = $globalStore.categoriasActivas.includes(c.id);
-            c = c;
-            return c;
-        });
+    let categorias = config.categorias.map((c) => {
+        c.activa = $globalStore.categoriasActivas.includes(c.id);
+        c = c;
+        return c;
+    });
 
     let grupos = config.grupos.map((g) => {
         let activo = g.categorias.reduce(
@@ -137,20 +133,22 @@
                 <div transition:fly={{ y: -50, duration: 150 }}>
                     {#if $ajustesConfigStore.catClasicas}
                         {#each categorias as c (c.id)}
-                            <li class="categoria-link">
-                                <a href="/{c.nombreCorto}">
-                                    <icon class="fe fe-circle" />
-                                    {c.nombre}
-                                </a>
-                                <span class="sep">
-                                    <Checkbox
-                                        bind:checked={c.activa}
-                                        right
-                                        on:change={(e) => updateGrupo(c.id)}
-                                    /></span
-                                >
-                                <Ripple />
-                            </li>
+                            {#if !c.premium || (c.premium && $globalStore.usuario.esPremium)}
+                                <li class="categoria-link">
+                                    <a href="/{c.nombreCorto}">
+                                        <icon class="fe fe-circle" />
+                                        {c.nombre}
+                                    </a>
+                                    <span class="sep">
+                                        <Checkbox
+                                            bind:checked={c.activa}
+                                            right
+                                            on:change={(e) => updateGrupo(c.id)}
+                                        /></span
+                                    >
+                                    <Ripple />
+                                </li>
+                            {/if}
                         {/each}
                     {:else}
                         {#each grupos as g, i (g.id)}
@@ -202,21 +200,25 @@
                             {#if mostrarLista.find((g1) => g1.id == g.id).activo}
                                 <div transition:fly={{ y: -50, duration: 150 }}>
                                     {#each categorias.filter( (c) => g.categorias.includes(c.id) ) as c (c.id)}
-                                        <li class="categoria-link">
-                                            <a href="/{c.nombreCorto}">
-                                                <icon class="fe fe-circle" />
-                                                {c.nombre}
-                                            </a>
-                                            <span class="sep">
-                                                <Checkbox
-                                                    bind:checked={c.activa}
-                                                    right
-                                                    on:change={(e) =>
-                                                        updateGrupo(c.id)}
-                                                /></span
-                                            >
-                                            <Ripple />
-                                        </li>
+                                        {#if !c.premium || (c.premium && $globalStore.usuario.esPremium)}
+                                            <li class="categoria-link">
+                                                <a href="/{c.nombreCorto}">
+                                                    <icon
+                                                        class="fe fe-circle"
+                                                    />
+                                                    {c.nombre}
+                                                </a>
+                                                <span class="sep">
+                                                    <Checkbox
+                                                        bind:checked={c.activa}
+                                                        right
+                                                        on:change={(e) =>
+                                                            updateGrupo(c.id)}
+                                                    /></span
+                                                >
+                                                <Ripple />
+                                            </li>
+                                        {/if}
                                     {/each}
                                 </div>
                             {/if}
@@ -272,13 +274,13 @@
                 <a href="/Mis/Ocultos">
                     <li><icon class="fe fe-eye-off" /> Ocultos <Ripple /></li>
                 </a>
+                <hr />
+                <a href="/Premium">
+                    <li style="color: goldenrod">
+                        <RouzCoins cantidad="" /> Premium <Ripple />
+                    </li>
+                </a>
             {/if}
-            <hr />
-            <a href="/Premium">
-                <li style="color: goldenrod">
-                    <RouzCoins cantidad="" /> Premium <Ripple />
-                </li>
-            </a>
             <li on:click={() => (mostrarAjustes = true)}>
                 <icon class="fe fe-settings" /> Ajustes <Ripple />
             </li>

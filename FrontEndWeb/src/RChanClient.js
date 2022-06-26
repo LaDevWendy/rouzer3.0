@@ -330,7 +330,7 @@ export default class RChanClient {
     }
 
     static checkearCodigoPremium(id) {
-        return axios.post(`/api/Direccion/CheckearCodigoPremium/${id}`)
+        return axios.get(`/api/Direccion/CheckearCodigoPremium/${id}`)
     }
 
     static ingresarCodigoPremium(id) {
@@ -357,6 +357,32 @@ export default class RChanClient {
 
     static eliminarMensajeGlobal(id) {
         return axios.post(`/api/Moderacion/EliminarMensajeGlobal/${id}`)
+    }
+
+    static pedirCodigoPremium(
+        tipocp,
+        paquete,
+        metodo,
+        archivo
+    ) {
+        let form = new FormData()
+        form.append("Tipo", tipocp)
+        form.append("Paquete", paquete)
+        form.append("Metodo", metodo)
+        form.append("Archivo", archivo)
+        return axios.post("/api/Premium/PedirCodigoPremium", form)
+    }
+
+    static retirarPedido(id) {
+        return axios.post(`/api/Premium/RetirarPedido/${id}`)
+    }
+
+    static aceptarPedido(id) {
+        return axios.post(`/api/Direccion/AceptarPedido/${id}`)
+    }
+
+    static rechazarPedido(id) {
+        return axios.post(`/api/Direccion/RechazarPedido/${id}`)
     }
 
 }

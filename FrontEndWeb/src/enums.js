@@ -8,6 +8,18 @@ class Enum {
         return string
     }
 }
+
+class EnumWithFields {
+    static getField(id) {
+        let keys = Object.keys(this)
+        let field = null;
+        keys.forEach(k => {
+            if (this[k].id == id) field = this[k];
+        });
+        return field
+    }
+}
+
 export class HiloEstado {
     static normal = 0
     static archivado = 1
@@ -88,4 +100,10 @@ export class TipoTransaccion extends Enum {
 export class TipoAccionCP extends Enum {
     static Creacion = 0
     static Uso = 1
+}
+export class EstadoPedido extends EnumWithFields {
+    static Pendiente = { id: 0, nombre: "Pendiente" }
+    static RechazadoPorUsuario = { id: 1, nombre: "Rechazado por el usuario" }
+    static Rechazado = { id: 2, nombre: "Rechazado" }
+    static Aceptado = { id: 3, nombre: "Aceptado" }
 }

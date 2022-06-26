@@ -12,23 +12,24 @@ let data = Object.assign({
 
 // Categorias 
 data.categoriasActivas = config.categorias.filter(c => !c.nsfw).map(c => c.id)
+console.log(data.categoriasActivas)
 if (Cookie.getJSON('categoriasActivas')) {
     if (Cookie.getJSON('version')) {
         let version = Cookie.getJSON('version')[0]
-        if (version === "guedita2") {
+        if (version === "premium") {
             data.categoriasActivas = Cookie.getJSON('categoriasActivas')
-            data.version = ["guedita2"]
+            data.version = ["premium"]
         } else {
             data.categoriasActivas = Cookie.getJSON('categoriasActivas')
-            data.categoriasActivas = [...data.categoriasActivas, 46]
-            data.version = ["guedita2"]
+            data.categoriasActivas = [...data.categoriasActivas, 47]
+            data.version = ["premium"]
             Cookie.set('categoriasActivas', data.categoriasActivas)
             Cookie.set('version', data.version)
         }
     } else {
         data.categoriasActivas = Cookie.getJSON('categoriasActivas')
-        data.categoriasActivas = [...data.categoriasActivas, 46]
-        data.version = ["guedita2"]
+        data.categoriasActivas = [...data.categoriasActivas, 47]
+        data.version = ["premium"]
         Cookie.set('categoriasActivas', data.categoriasActivas)
         Cookie.set('version', data.version)
     }
@@ -38,7 +39,7 @@ if (Cookie.getJSON('categoriasActivas')) {
         data.categoriasActivas = [...data.categoriasActivas, 46]*/
 } else {
     Cookie.set('categoriasActivas', data.categoriasActivas)
-    Cookie.set('version', ["guedita2"])
+    Cookie.set('version', ["premium"])
 }
 
 

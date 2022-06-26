@@ -34,13 +34,40 @@
         });
     }
 
+    function abrirRetirarPedido(id) {
+        dialogosPremiumStore.update((s) => {
+            s.dialogoAbierto = "abrirRetirarPedido";
+            s.hiloId = id;
+            return s;
+        });
+    }
+
+    function abrirAceptarPedido(id) {
+        dialogosPremiumStore.update((s) => {
+            s.dialogoAbierto = "abrirAceptarPedido";
+            s.hiloId = id;
+            return s;
+        });
+    }
+
+    function abrirRechazarPedido(id) {
+        dialogosPremiumStore.update((s) => {
+            s.dialogoAbierto = "abrirRechazarPedido";
+            s.hiloId = id;
+            return s;
+        });
+    }
+
     export const abrir = {
         destacar: abrirDestacar,
         donar: abrirDonar,
         eliminarMensajeGlobal: abrirEliminarMensajeGlobal,
+        retirarPedido: abrirRetirarPedido,
+        aceptarPedido: abrirAceptarPedido,
+        rechazarPedido: abrirRechazarPedido,
     };
 
-    let ab = config.wares.find((w) => w.id == 0);
+    let ab = config.autoBumps.find((w) => w.id == 0);
 </script>
 
 <Dialogo
@@ -99,5 +126,56 @@
         <p style="color: red">
             <i class="fe fe-alert-triangle" /> ESTA ACCIÓN ES IRREVERSIBLE
         </p>
+    </div>
+</Dialogo>
+
+<Dialogo
+    visible={$dialogosPremiumStore.dialogoAbierto == "abrirRetirarPedido"}
+    titulo="Retirar"
+    accion={() => {
+        return RChanClient.retirarPedido($dialogosPremiumStore.hiloId);
+    }}
+>
+    <span slot="activador" />
+    <div slot="body">
+        <p>Retirar pedido</p>
+        <p style="color: red">
+            <i class="fe fe-alert-triangle" /> ESTA ACCIÓN ES IRREVERSIBLE
+        </p>
+        <p>El comprobante será eliminado</p>
+    </div>
+</Dialogo>
+
+<Dialogo
+    visible={$dialogosPremiumStore.dialogoAbierto == "abrirAceptarPedido"}
+    titulo="Aceptar"
+    accion={() => {
+        return RChanClient.aceptarPedido($dialogosPremiumStore.hiloId);
+    }}
+>
+    <span slot="activador" />
+    <div slot="body">
+        <p>Aceptar pedido</p>
+        <p style="color: red">
+            <i class="fe fe-alert-triangle" /> ESTA ACCIÓN ES IRREVERSIBLE
+        </p>
+        <p>El comprobante será eliminado</p>
+    </div>
+</Dialogo>
+
+<Dialogo
+    visible={$dialogosPremiumStore.dialogoAbierto == "abrirRechazarPedido"}
+    titulo="Rechazar"
+    accion={() => {
+        return RChanClient.rechazarPedido($dialogosPremiumStore.hiloId);
+    }}
+>
+    <span slot="activador" />
+    <div slot="body">
+        <p>Rechazar pedido</p>
+        <p style="color: red">
+            <i class="fe fe-alert-triangle" /> ESTA ACCIÓN ES IRREVERSIBLE
+        </p>
+        <p>El comprobante será eliminado</p>
     </div>
 </Dialogo>
