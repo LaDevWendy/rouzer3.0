@@ -94,5 +94,52 @@ export let linksDePago = [
         "PaqueteId": 3,
         "MetodoId": 1,
         "Link": "https://www.paypal.com/paypalme/rouzedcencosud"
+    }, {
+        "TipoId": 0,
+        "PaqueteId": 0,
+        "MetodoId": 2,
+        "Link": "1C2to7hgb54d7g4UGXo8zgC3kJijRaztj2"
+    },
+    {
+        "TipoId": 0,
+        "PaqueteId": 1,
+        "MetodoId": 2,
+        "Link": "1C2to7hgb54d7g4UGXo8zgC3kJijRaztj2"
+    },
+    {
+        "TipoId": 0,
+        "PaqueteId": 2,
+        "MetodoId": 2,
+        "Link": "1C2to7hgb54d7g4UGXo8zgC3kJijRaztj2"
+    },
+    {
+        "TipoId": 0,
+        "PaqueteId": 3,
+        "MetodoId": 2,
+        "Link": "1C2to7hgb54d7g4UGXo8zgC3kJijRaztj2"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 0,
+        "MetodoId": 2,
+        "Link": "1C2to7hgb54d7g4UGXo8zgC3kJijRaztj2"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 1,
+        "MetodoId": 2,
+        "Link": "1C2to7hgb54d7g4UGXo8zgC3kJijRaztj2"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 2,
+        "MetodoId": 2,
+        "Link": "1C2to7hgb54d7g4UGXo8zgC3kJijRaztj2"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 3,
+        "MetodoId": 2,
+        "Link": "1C2to7hgb54d7g4UGXo8zgC3kJijRaztj2"
     }
 ]

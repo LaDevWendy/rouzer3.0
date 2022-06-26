@@ -115,16 +115,27 @@
     {/if}
 
     {#if tipocp != -1 && paquete != -1 && metodo != -1}
-        <a
-            class="link-de-pago"
-            href={linksDePago.find(
-                (l) =>
-                    l.TipoId == tipocp &&
-                    l.PaqueteId == paquete &&
-                    l.MetodoId == metodo
-            ).Link}
-            target="_blank">Link de pago</a
-        >
+        {#if metodo != 2}
+            <a
+                class="link-de-pago"
+                href={linksDePago.find(
+                    (l) =>
+                        l.TipoId == tipocp &&
+                        l.PaqueteId == paquete &&
+                        l.MetodoId == metodo
+                ).Link}
+                target="_blank">Link de pago</a
+            >
+        {:else}
+            <div class="contenedor-direccion">
+                {linksDePago.find(
+                    (l) =>
+                        l.TipoId == tipocp &&
+                        l.PaqueteId == paquete &&
+                        l.MetodoId == metodo
+                ).Link}
+            </div>
+        {/if}
         <div class="contenedor-comprobante">
             <label for="archivo"
                 >Adjuntar captura de comprobante de pago (jpg, png)</label
@@ -168,9 +179,15 @@
         margin-right: auto;
         font-size: 1.5rem;
     }
-    .contenedor-comprobante {
+    .contenedor-direccion {
+        font-size: 0.85em;
+    }
+    .contenedor-comprobante,
+    .contenedor-direccion {
         padding: 4px;
         background-color: var(--color7);
         border-radius: 4px;
+        margin-top: 4px;
+        margin-bottom: 4px;
     }
 </style>

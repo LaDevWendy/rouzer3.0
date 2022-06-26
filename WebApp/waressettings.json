@@ -111,6 +111,10 @@
         {
             "Id": 1,
             "Nombre": "Paypal"
+        },
+        {
+            "Id": 2,
+            "Nombre": "BTC Red Bitcoin"
         }
     ]
 }

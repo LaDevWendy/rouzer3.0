@@ -73,6 +73,15 @@
             >
         </p>
     {/if}
+    {#if p.estado == EstadoPedido.Rechazado.id}
+        <p>
+            Contacte por Telegram <a href="tg://resolve?domain=M0rdrake"
+                >@M0rdrake</a
+            >
+            o por e-mail a
+            <a href="mailto:rzmp978@gmail.com">rzmp978@gmail.com</a>
+        </p>
+    {/if}
 
     <ButtonGroup>
         {#if p.comprobanteId}<Button color="primary" on:click={verComprobante}
@@ -80,7 +89,7 @@
             >{/if}
         {#if p.estado == EstadoPedido.Pendiente.id && propio}
             <Button color="primary" on:click={retirarPedido}
-                >Retirar pedido</Button
+                >Arrepentimiento</Button
             >{/if}
         {#if p.estado == EstadoPedido.Pendiente.id && $globalStore.usuario.esDirector && !propio}
             <Button color="primary" on:click={aceptarPedido}>Aceptar</Button>
@@ -104,5 +113,8 @@
         border-radius: 4px;
         padding-left: 4px;
         padding-right: 4px;
+    }
+    .pedido a {
+        color: var(--color5);
     }
 </style>

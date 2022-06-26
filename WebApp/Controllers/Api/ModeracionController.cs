@@ -922,7 +922,7 @@ namespace WebApp.Controllers
             }
 
             var tienePedidos = await context.Pedidos.AsNoTracking().AnyAsync(c => c.UsuarioId == id);
-            if (tieneTrasacciones)
+            if (tienePedidos)
             {
                 ModelState.AddModelError("Pedidos", "El usuario tiene pedidos y no puede eliminarse el token");
             }
