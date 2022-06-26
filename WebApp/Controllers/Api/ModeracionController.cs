@@ -949,6 +949,7 @@ namespace WebApp.Controllers
             return Json(new ApiResponse("Token eliminado"));
         }
 
+        [HttpPost, Authorize("esAdmin")]
         public async Task<ActionResult> EliminarMensajeGlobal(string id)
         {
             await premiumService.EliminarMensajeGlobal(id);

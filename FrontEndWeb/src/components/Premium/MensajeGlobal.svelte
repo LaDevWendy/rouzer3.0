@@ -10,7 +10,7 @@
         class="contenedor"
         style="background: linear-gradient(90deg, rgba(0,0,0,0.1) {mg.completado}%, rgba(0,0,0,0.0) {mg.completado}%);"
     >
-        {#if $globalStore.usuario.esMod}
+        {#if $globalStore.usuario.esAdmin}
             <div class="mg-mods">
                 <Button
                     icon
