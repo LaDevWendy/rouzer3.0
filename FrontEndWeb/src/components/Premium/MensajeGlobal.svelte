@@ -58,6 +58,7 @@
         white-space: pre-wrap;
         word-break: break-word;
         overflow: hidden;
+        color: white;
     }
     .contenido :global(a) {
         color: var(--color6) !important;
