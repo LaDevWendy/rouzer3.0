@@ -1,5 +1,4 @@
-export let linksDePago = [
-    {
+export let linksDePago = [{
         "TipoId": 0,
         "PaqueteId": 0,
         "MetodoId": 0,
@@ -141,5 +140,99 @@ export let linksDePago = [
         "PaqueteId": 3,
         "MetodoId": 2,
         "Link": "1C2to7hgb54d7g4UGXo8zgC3kJijRaztj2"
+    }, {
+        "TipoId": 0,
+        "PaqueteId": 0,
+        "MetodoId": 3,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 0,
+        "PaqueteId": 1,
+        "MetodoId": 3,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 0,
+        "PaqueteId": 2,
+        "MetodoId": 3,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 0,
+        "PaqueteId": 3,
+        "MetodoId": 3,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 0,
+        "MetodoId": 3,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 1,
+        "MetodoId": 3,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 2,
+        "MetodoId": 3,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 3,
+        "MetodoId": 3,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    }, {
+        "TipoId": 0,
+        "PaqueteId": 0,
+        "MetodoId": 4,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 0,
+        "PaqueteId": 1,
+        "MetodoId": 4,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 0,
+        "PaqueteId": 2,
+        "MetodoId": 4,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 0,
+        "PaqueteId": 3,
+        "MetodoId": 4,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 0,
+        "MetodoId": 4,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 1,
+        "MetodoId": 4,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 2,
+        "MetodoId": 4,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
+    },
+    {
+        "TipoId": 1,
+        "PaqueteId": 3,
+        "MetodoId": 4,
+        "Link": "0x579949066ee25780cdbc1caee2ddf258ed4b5b7a"
     }
 ]

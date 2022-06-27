@@ -1,14 +1,11 @@
 {
-    "Autobumps": [
-        {
-            "Id": 0,
-            "Nombre": "AutoBump",
-            "Valor": 100,
-            "Duracion": 40
-        }
-    ],
-    "MensajesGlobales": [
-        {
+    "Autobumps": [{
+        "Id": 0,
+        "Nombre": "AutoBump",
+        "Valor": 400,
+        "Duracion": 40
+    }],
+    "MensajesGlobales": [{
             "Id": 1,
             "Nombre": "MensajeGlobalRojo",
             "Valor": 10,
@@ -51,8 +48,7 @@
             "Color": "blanco"
         }
     ],
-    "Membrecias": [
-        {
+    "Membrecias": [{
             "Id": 0,
             "Nombre": "Corta",
             "Cantidad": 30,
@@ -77,8 +73,7 @@
             "Valor": "AR$ 2600 (U$D 12)"
         }
     ],
-    "Paquetes": [
-        {
+    "Paquetes": [{
             "Id": 0,
             "Nombre": "Chico",
             "Cantidad": 1000,
@@ -103,8 +98,7 @@
             "Valor": "AR$ 1300 (U$D 7)"
         }
     ],
-    "MetodosDePago": [
-        {
+    "MetodosDePago": [{
             "Id": 0,
             "Nombre": "Mercado Pago"
         },
@@ -115,6 +109,13 @@
         {
             "Id": 2,
             "Nombre": "BTC Red Bitcoin"
+        }, {
+            "Id": 3,
+            "Nombre": "USDT Red ERC20"
+        }, {
+            "Id": 4,
+            "Nombre": "BNB Red BEP20"
+
         }
     ]
 }

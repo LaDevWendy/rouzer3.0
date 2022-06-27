@@ -82,7 +82,7 @@
     </select>
     {#if tipocp == TipoCP.ActivacionPremium}
         <select id="tipo-membrecia" bind:value={paquete}>
-            <option value="-1" selected disabled>Membrecia</option>
+            <option value="-1" selected disabled>Membrecía</option>
             {#each config.membrecias as mem}
                 <option value={mem.id}
                     >{`${mem.cantidad} días +${
@@ -103,6 +103,10 @@
                 >
             {/each}
         </select>
+        <p style="color: red">
+            <i class="fe fe-alert-triangle" /> Recuerda que para cargar RouzCoins
+            debes ser miembro Premium
+        </p>
     {/if}
 
     {#if tipocp != -1 && paquete != -1}
@@ -115,7 +119,7 @@
     {/if}
 
     {#if tipocp != -1 && paquete != -1 && metodo != -1}
-        {#if metodo != 2}
+        {#if metodo != 2 && metodo != 3 && metodo != 4}
             <a
                 class="link-de-pago"
                 href={linksDePago.find(
