@@ -16,8 +16,6 @@
     let cargando = false;
     let exito;
 
-    console.log(linksDePago.find((l) => l.TipoId == 0));
-
     async function getBlobFromInput(input) {
         return new Promise((resolve, reject) => {
             if (!(input.files && input.files[0])) return null;
@@ -161,7 +159,7 @@
         </div>
     {/if}
 
-    <Button color="primary" disabled={cargando} on:click={pedirCodigoPremium}>
+    <Button color="goldenrod" disabled={cargando} on:click={pedirCodigoPremium}>
         <Spinner {cargando}>Pedir</Spinner>
     </Button>
 

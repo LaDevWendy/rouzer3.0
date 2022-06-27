@@ -6,6 +6,8 @@
     import FormularioIngresoCodigoPremium from "./FormularioIngresoCodigoPremium.svelte";
     import ListaDeTransacciones from "./ListaDeTransacciones.svelte";
     import ListaDePedidos from "./ListaDePedidos.svelte";
+    import { Button } from "svelte-mui";
+    import { abrir } from "./DialogosPremium.svelte";
 
     let { balance, pedidos, transacciones, propio } = window.model;
 </script>
@@ -13,11 +15,22 @@
 <div class="row">
     <section>
         <div class="panel cuenta-info">
-            <p>
-                Cuenta: {$globalStore.usuario.esPremium ? "Premium" : "Regular"}
-            </p>
             {#if $globalStore.usuario.esPremium}
+                <p>Cuenta: Premium</p>
                 <p>Expiracion: {new Date(balance.expiracion)}</p>
+                <Button
+                    color="goldenrod"
+                    on:click={() => abrir.canjearRouzCoins()}
+                >
+                    <icon class="fe fe-repeat" /> Extender
+                </Button>
+            {:else}
+                <p>Cuenta: Regular</p>
+                <Button
+                    color="goldenrod"
+                    on:click={() => abrir.canjearRouzCoins()}
+                    ><icon class="fe fe-unlock" />Activar
+                </Button>
             {/if}
             <p>
                 Balance: <RouzCoins cantidad={balance.balance} />
@@ -41,11 +54,9 @@
 
     <section><FormularioIngresoCodigoPremium /></section>
 
-    {#if $globalStore.usuario.esPremium}
-        <section>
-            <FormularioMensajeGlobal />
-        </section>
-    {/if}
+    <section>
+        <FormularioMensajeGlobal />
+    </section>
 </div>
 <div class="row">
     <section>
@@ -96,5 +107,11 @@
         border-radius: 4px;
         padding-left: 4px;
         padding-right: 4px;
+        display: flex;
+        flex-direction: column;
+    }
+    .cuenta-info p {
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 </style>

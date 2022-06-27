@@ -30,6 +30,7 @@ namespace WebApp.Controllers
         private readonly IOptionsSnapshot<List<Membrecia>> memOpts;
         private readonly IOptionsSnapshot<List<RouzCoin>> rcOpts;
         private readonly IOptionsSnapshot<List<MetodoDePago>> mpOpts;
+        private readonly IOptionsSnapshot<List<Canje>> canjesOpts;
         private readonly NotificacionesService notificacionesService;
         private const string comprobanteNulo = "wwwroot/imagenes/noexiste.png";
 
@@ -42,7 +43,8 @@ namespace WebApp.Controllers
             IOptionsSnapshot<List<Membrecia>> memOpts,
             IOptionsSnapshot<List<RouzCoin>> rcOpts,
             IOptionsSnapshot<List<MetodoDePago>> mpOpts,
-            NotificacionesService notificacionesService)
+            NotificacionesService notificacionesService,
+            IOptionsSnapshot<List<Canje>> canjesOpts)
         {
             this.hashService = hashService;
             this.context = context;
@@ -54,6 +56,7 @@ namespace WebApp.Controllers
             this.memOpts = memOpts;
             this.rcOpts = rcOpts;
             this.mpOpts = mpOpts;
+            this.canjesOpts = canjesOpts;
         }
 
         [Route("/Premium")]
@@ -217,7 +220,16 @@ namespace WebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var receptorPremium = await premiumService.CheckearPremium(hilo.UsuarioId);
+            if (hilo.Estado == HiloEstado.Eliminado)
+            {
+                ModelState.AddModelError("Hilo", "El hilo fue domado");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            /*var receptorPremium = await premiumService.CheckearPremium(hilo.UsuarioId);
             if (!receptorPremium)
             {
                 ModelState.AddModelError("Premium", "Para poder donar RouzCoins el receptor debe ser usuario premium");
@@ -225,7 +237,7 @@ namespace WebApp.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
+            }*/
 
             var balanceDonante = await premiumService.ObtenerBalanceAsync(User.GetId());
             if (balanceDonante.Balance < donacionVM.Cantidad)
@@ -316,7 +328,7 @@ namespace WebApp.Controllers
             return new ApiResponse("AutoBump creado.");
         }
 
-        [HttpPost, Authorize("esPremium")]
+        [HttpPost]
         public async Task<ActionResult<ApiResponse>> CrearMensajeGlobal(MensajeGlobalVM vm)
         {
             if (string.IsNullOrWhiteSpace(vm.Mensaje))
@@ -513,6 +525,44 @@ namespace WebApp.Controllers
             }
             await context.SaveChangesAsync();
             return new ApiResponse("Pedido retirado");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse>> CanjearRouzCoins()
+        {
+            var canje = canjesOpts.Value.FirstOrDefault(c => c.Id == 0);
+            var balance = await premiumService.ObtenerBalanceAsync(User.GetId());
+
+            if (balance.Balance < canje.RouzCoins)
+            {
+                ModelState.AddModelError("Balance", "No tiene la cantidad necesaria en su balance");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (User.EsPremium())
+            {
+                balance.Expiracion += TimeSpan.FromDays(canje.Dias);
+            }
+            else
+            {
+                var user = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == User.GetId());
+                var result = await userManager.AddClaimAsync(user, new Claim("Premium", "gold"));
+                if (result.Succeeded)
+                {
+                    balance.Expiracion = DateTimeOffset.Now + TimeSpan.FromDays(canje.Dias);
+                }
+                else
+                {
+                    return BadRequest(result.Errors);
+                }
+            }
+            balance.Balance -= canje.RouzCoins;
+            await context.SaveChangesAsync();
+            await premiumService.RegistrarCanjeAsync(User.GetId(), canje.Dias, canje.RouzCoins, balance.Balance);
+            return new ApiResponse("RouzCoins canjeados");
         }
 
     }

@@ -12,6 +12,7 @@
 @inject IOptionsSnapshot<List<Membrecia>> membreciasOpt;
 @inject IOptionsSnapshot<List<RouzCoin>> rouzCoinsOpt;
 @inject IOptionsSnapshot<List<MetodoDePago>> mpOpt;
+@inject IOptionsSnapshot<List<Canje>> canjeOpt;
 @inject IConfiguration config;
 @inject IOptionsSnapshot<GeneralOptions> generalOptions
 @inject IWebHostEnvironment env
@@ -123,6 +124,7 @@
             Membrecias = membreciasOpt.Value,
             RouzCoins = rouzCoinsOpt.Value,
             MetodosDePago = mpOpt.Value,
+            Canjes = canjeOpt.Value,
             HCaptchaSiteKey = config.GetValue<string>("HCaptcha:SiteKey"),
             General = new
             {

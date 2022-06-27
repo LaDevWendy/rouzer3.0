@@ -4,15 +4,15 @@
     let { pedidos, propio } = window.model;
 </script>
 
-<main>
+<div class="row">
     <section>
         <h3>Pedidos</h3>
         <ListaDePedidos {pedidos} {propio} />
     </section>
-</main>
+</div>
 
 <style>
-    main {
+    .row {
         margin: auto;
         display: flex;
         flex-wrap: wrap;
@@ -20,7 +20,7 @@
         max-width: 1270px;
         margin: auto;
     }
-    main > section {
+    .row > section {
         flex: 1;
     }
     section {

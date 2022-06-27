@@ -12,7 +12,7 @@
     export let acciones;
     export let contadores;
     export let op;
-    export let premium;
+    //export let premium;
     export let donaciones;
     let mostrarReporte = false;
 
@@ -108,8 +108,8 @@
         /></Button
     >
 
-    {#if $globalStore.usuario.esPremium}
-        <AccionesPremium {hilo} {op} {premium} {donaciones} />
+    {#if $globalStore.usuario.estaAutenticado}
+        <AccionesPremium {hilo} {op} {donaciones} />
     {/if}
 
     {#if hilo.rango > CreacionRango.Anon || hilo.nombre}

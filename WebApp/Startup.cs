@@ -54,6 +54,7 @@ namespace WebApp
             services.Configure<List<Membrecia>>(Configuration.GetSection("Membrecias"));
             services.Configure<List<RouzCoin>>(Configuration.GetSection("Paquetes"));
             services.Configure<List<MetodoDePago>>(Configuration.GetSection("MetodosDePago"));
+            services.Configure<List<Canje>>(Configuration.GetSection("Canjes"));
             // services.AddLiveReload(config =>
             // {
             //     // config.FolderToMonitor = env.ContentRootPath + "\\Views";

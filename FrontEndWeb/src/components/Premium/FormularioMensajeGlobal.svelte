@@ -52,7 +52,7 @@
             >
         {/each}
     </select>
-    <Button color="primary" disabled={cargando} on:click={crearMensajeGlobal}>
+    <Button color="goldenrod" disabled={cargando} on:click={crearMensajeGlobal}>
         <Spinner {cargando}>Crear</Spinner>
     </Button>
     {#if exito}

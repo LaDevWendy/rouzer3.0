@@ -151,7 +151,7 @@
 			</div>
 		{/if}
 
-		<Acciones {hilo} bind:acciones {contadores} {op} {premium} {donaciones} />
+		<Acciones {hilo} bind:acciones {contadores} {op} {donaciones} />
 		{#if hilo.encuestaData}
 			<Encuesta
 				bind:encuesta={hilo.encuestaData}

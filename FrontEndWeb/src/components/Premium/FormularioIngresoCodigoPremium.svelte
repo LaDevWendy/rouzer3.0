@@ -1,5 +1,6 @@
 <script>
     import { Button } from "svelte-mui";
+    import globalStore from "../../globalStore";
     import RChanClient from "../../RChanClient";
     import ErrorValidacion from "../ErrorValidacion.svelte";
     import Spinner from "../Spinner.svelte";
@@ -31,7 +32,7 @@
     <h3>Ingresar Código Premium</h3>
     <input id="cp" placeholder="XXXXXXXX" type="text" bind:value={cp} />
     <Button
-        color="primary"
+        color="goldenrod"
         disabled={cargando}
         on:click={ingresarCodigoPremium}
     >
@@ -40,7 +41,11 @@
     {#if exito}
         <div class="contenedor-exito">
             {#if exito.tipo == 0}
-                <p>Ahora sos un usuario Premium.</p>
+                {#if $globalStore.usuario.esPremium}
+                    <p>Has extendido tu membrecía Premium.</p>
+                {:else}
+                    <p>Ahora sos un usuario Premium.</p>
+                {/if}
                 <p>Info del código utilizado:</p>
                 <p>Vale por activación de Premium</p>
             {:else}

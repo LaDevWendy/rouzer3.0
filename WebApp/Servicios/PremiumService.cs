@@ -88,8 +88,7 @@ namespace Servicios
 
         public async Task RegistrarActivacionAsync(string userId, float cantidad)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == userId);
-            var regalo = new TransaccionModel
+            var transaccion = new TransaccionModel
             {
                 Id = hashService.Random(),
                 OrigenCantidad = 1f,
@@ -97,10 +96,10 @@ namespace Servicios
                 DestinoCantidad = cantidad,
                 DestinoUnidad = "Días Premium",
                 Tipo = TipoTransaccion.Compra,
-                Usuario = usuario,
+                UsuarioId = userId,
                 Balance = -1
             };
-            _context.Transacciones.Add(regalo);
+            _context.Transacciones.Add(transaccion);
             await _context.SaveChangesAsync();
         }
 
@@ -150,6 +149,23 @@ namespace Servicios
             _context.Transacciones.Add(donacion);
             _context.Transacciones.Add(recepcion);
 
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RegistrarCanjeAsync(string userId, int dias, float rouzCoins, float balance)
+        {
+            var transaccion = new TransaccionModel
+            {
+                Id = hashService.Random(),
+                OrigenCantidad = rouzCoins,
+                OrigenUnidad = "RouzCoins",
+                DestinoCantidad = dias,
+                DestinoUnidad = "Días Premium",
+                Tipo = TipoTransaccion.Compra,
+                UsuarioId = userId,
+                Balance = balance
+            };
+            _context.Transacciones.Add(transaccion);
             await _context.SaveChangesAsync();
         }
 

@@ -27,6 +27,8 @@ export default class config {
 
     static metodosdepago = window.config.metodosDePago
 
+    static canjes = window.config.canjes
+
     static categoriaPorId(id) {
         return config.categorias.filter(c => c.id == id)[0]
     }

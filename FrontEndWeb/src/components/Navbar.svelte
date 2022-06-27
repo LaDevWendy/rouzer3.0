@@ -146,7 +146,7 @@
             {/if}
 
             <div class="nav-botones" style="position: relative;">
-                {#if $globalStore.usuario.esPremium}
+                {#if $globalStore.usuario.estaAutenticado}
                     <a href="/Premium" class="nav-premium">
                         <RouzCoins cantidad={balance} />
                     </a>

@@ -385,4 +385,8 @@ export default class RChanClient {
         return axios.post(`/api/Direccion/RechazarPedido/${id}`)
     }
 
+    static canjearRouzCoins() {
+        return axios.post(`/api/Premium/CanjearRouzCoins`)
+    }
+
 }

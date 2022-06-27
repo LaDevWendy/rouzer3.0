@@ -3,6 +3,7 @@
     import RChanClient from "../../RChanClient";
     import Dialogo from "../Dialogo.svelte";
     import RouzCoins from "./RouzCoins.svelte";
+    import config from "../../config";
 
     const dialogosPremiumStore = writable({
         dialogoAbierto: "ninguno",
@@ -58,6 +59,13 @@
         });
     }
 
+    function abrirCanjearRouzCoins() {
+        dialogosPremiumStore.update((s) => {
+            s.dialogoAbierto = "abrirCanjearRouzCoins";
+            return s;
+        });
+    }
+
     export const abrir = {
         destacar: abrirDestacar,
         donar: abrirDonar,
@@ -65,6 +73,7 @@
         retirarPedido: abrirRetirarPedido,
         aceptarPedido: abrirAceptarPedido,
         rechazarPedido: abrirRechazarPedido,
+        canjearRouzCoins: abrirCanjearRouzCoins,
     };
 
     let ab = config.autoBumps.find((w) => w.id == 0);
@@ -177,5 +186,26 @@
             <i class="fe fe-alert-triangle" /> ESTA ACCIÓN ES IRREVERSIBLE
         </p>
         <p>El comprobante será eliminado</p>
+    </div>
+</Dialogo>
+
+<Dialogo
+    visible={$dialogosPremiumStore.dialogoAbierto == "abrirCanjearRouzCoins"}
+    titulo="Canjear RouzCoins"
+    accion={() => {
+        return RChanClient.canjearRouzCoins();
+    }}
+>
+    <span slot="activador" />
+    <div slot="body">
+        <p>
+            Canjear <RouzCoins
+                cantidad={config.canjes.find((c) => c.id == 0).rouzCoins}
+            /> por {config.canjes.find((c) => c.id == 0).dias} días de membrecía
+            Premium
+        </p>
+        <p style="color: red">
+            <i class="fe fe-alert-triangle" /> ESTA ACCIÓN ES IRREVERSIBLE
+        </p>
     </div>
 </Dialogo>
