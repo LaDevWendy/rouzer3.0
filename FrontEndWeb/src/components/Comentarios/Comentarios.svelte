@@ -370,8 +370,6 @@
         on:tagear={tagear}
     />
 
-    <MensajesGlobales {mensajesGlobales} />
-
     {#if !$configStore.general.modoMessi || $globalStore.usuario.esMod}
         <Formulario
             {hilo}
@@ -383,6 +381,7 @@
     {/if}
 
     <SpamList {spams} />
+    <MensajesGlobales {mensajesGlobales} />
 
     <div class="contador-comentarios panel">
         <h3>Comentarios ({comentarios.length})</h3>
