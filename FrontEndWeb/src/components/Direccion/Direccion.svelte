@@ -105,6 +105,7 @@
 <div class="row">
     <section>
         <h3>Pedidos pendientes</h3>
+        <a href="/Direccion/PedidosAceptados">Ver todos los aceptados</a>
         <ListaDePedidos pedidos={model.pedidos} propio={false} />
     </section>
 </div>
@@ -126,6 +127,9 @@
         max-width: 400px;
         width: max-content;
         min-width: 270px !important;
+    }
+    section a {
+        color: var(--color5);
     }
     .header {
         background: rgba(255, 255, 255, 0.089) !important;

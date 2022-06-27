@@ -231,6 +231,13 @@ namespace WebApp.Controllers
             return new ApiResponse("Pedido rechazado");
         }
 
+        [Route("/Direccion/PedidosAceptados")]
+        public async Task<ActionResult> PedidosAceptados()
+        {
+            var pedidos = await context.Pedidos.Where(p => p.Estado == PedidoEstado.Aceptado).Include(p => p.Usuario).OrderByDescending(p => p.Creacion).ToListAsync();
+            return View(new { pedidos, propio = false });
+        }
+
     }
 }
 
