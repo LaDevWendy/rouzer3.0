@@ -55,7 +55,7 @@
         background-color: rgba(0, 0, 0, 0.3);
         border-radius: 4px;
         padding: 4px;
-        white-space: pre-wrap;
+        white-space: normal;
         word-break: break-word;
         overflow: hidden;
         color: white;

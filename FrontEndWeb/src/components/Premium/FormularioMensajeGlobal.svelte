@@ -43,7 +43,7 @@
 <ErrorValidacion {error} />
 <form class="formulario panel" on:submit|preventDefault>
     <h3>Crear Mensaje Global</h3>
-    <input id="mg" type="text" placeholder="Mensaje" bind:value={mg} />
+    <textarea id="mg" placeholder="Mensaje" bind:value={mg} />
     <select bind:value={tier}>
         <option value="-1" selected disabled>Duración</option>
         {#each wares as w}
