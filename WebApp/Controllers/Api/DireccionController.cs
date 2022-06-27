@@ -53,11 +53,23 @@ namespace WebApp.Controllers
 
             var pedidosPendientes = await context.Pedidos.Where(p => p.Estado == PedidoEstado.Pendiente).Include(p => p.Usuario).OrderBy(p => p.Creacion).ToListAsync();
 
+            var ahora = DateTimeOffset.Now;
+
+            var ultimosPremiums = await context.AccionesCodigosPremium.
+                Where(a => a.Tipo == TipoAccionCP.Uso).
+                Include(a => a.CodigoPremium).
+                Where(a => a.CodigoPremium.Tipo == TipoCP.ActivacionPremium).
+                OrderByDescending(a => a.Creacion).
+                Take(10).
+                Select(a => context.Balances.Include(b => b.Usuario).FirstOrDefault(b => b.Id == a.UsuarioId)).
+                ToListAsync();
+
             var vm = new DireccionVM
             {
                 Devs = devs,
                 Directores = dirs,
-                Pedidos = pedidosPendientes
+                Pedidos = pedidosPendientes,
+                Premiums = ultimosPremiums
             };
             return View(vm);
         }
@@ -237,6 +249,13 @@ namespace WebApp.Controllers
             var pedidos = await context.Pedidos.Where(p => p.Estado == PedidoEstado.Aceptado).Include(p => p.Usuario).OrderByDescending(p => p.Creacion).ToListAsync();
             return View(new { pedidos, propio = false });
         }
+        [Route("/Direccion/ListaDePremiums")]
+        public async Task<ActionResult> ListaDePremiums()
+        {
+            var ahora = DateTimeOffset.Now;
+            var premiums = await context.Balances.Include(b => b.Usuario).Where(b => b.Expiracion > ahora).OrderBy(b => b.Expiracion).ToListAsync();
+            return View(new { premiums });
+        }
 
     }
 }
@@ -246,4 +265,5 @@ public class DireccionVM
     public UsuarioVM[] Devs { get; set; }
     public UsuarioVM[] Directores { get; set; }
     public List<PedidoCodigoPremiumModel> Pedidos { get; set; }
+    public List<BalanceModel> Premiums { get; set; }
 }

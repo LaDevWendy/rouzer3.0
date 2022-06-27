@@ -5,6 +5,7 @@
     import ListaDePedidos from "../Premium/ListaDePedidos.svelte";
     import FormularioCheckearCodigoPremium from "./FormularioCheckearCodigoPremium.svelte";
     import FormularioCrearCodigoPremium from "./FormularioCrearCodigoPremium.svelte";
+    import ListaDePremiums from "./ListaDePremiums.svelte";
 
     let model = window.model;
     let error1 = null;
@@ -107,6 +108,11 @@
         <h3>Pedidos pendientes</h3>
         <a href="/Direccion/PedidosAceptados">Ver todos los aceptados</a>
         <ListaDePedidos pedidos={model.pedidos} propio={false} />
+    </section>
+    <section>
+        <h3>Últimos premiums</h3>
+        <a href="/Direccion/ListaDePremiums">Ver todos los premiums</a>
+        <ListaDePremiums premiums={model.premiums} />
     </section>
 </div>
 

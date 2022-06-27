@@ -12,7 +12,6 @@ let data = Object.assign({
 
 // Categorias 
 data.categoriasActivas = config.categorias.filter(c => !c.nsfw).map(c => c.id)
-console.log(data.categoriasActivas)
 if (Cookie.getJSON('categoriasActivas')) {
     if (Cookie.getJSON('version')) {
         let version = Cookie.getJSON('version')[0]

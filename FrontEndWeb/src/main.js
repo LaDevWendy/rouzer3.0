@@ -23,7 +23,7 @@ import Premium from './components/Premium/Premium.svelte';
 import Direccion from './components/Direccion/Direccion.svelte';
 import Pedidos from './components/Premium/Pedidos.svelte';
 import Transacciones from './components/Premium/Transacciones.svelte';
-
+import Premiums from './components/Direccion/Premiums.svelte';
 import skinStore from './components/Personalizacion/skinsStore'
 
 skinStore.applicarEstilo()
@@ -61,6 +61,7 @@ let componentes = [
 	["#svelte-direccion", Direccion, {}],
 	["#svelte-pedidos", Pedidos, {}],
 	["#svelte-transacciones", Transacciones, {}],
+	["#svelte-lista-premiums", Premiums, {}],
 ]
 
 for (const c of componentes) {
