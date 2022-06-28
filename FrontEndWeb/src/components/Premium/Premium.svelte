@@ -8,6 +8,7 @@
     import ListaDePedidos from "./ListaDePedidos.svelte";
     import { Button } from "svelte-mui";
     import { abrir } from "./DialogosPremium.svelte";
+    import config from "../../config";
 
     let { balance, pedidos, transacciones, propio } = window.model;
 </script>
@@ -22,14 +23,20 @@
                     color="goldenrod"
                     on:click={() => abrir.canjearRouzCoins()}
                 >
-                    <icon class="fe fe-repeat" /> Extender
+                    <icon class="fe fe-repeat" /> Extender (<RouzCoins
+                        cantidad={config.canjes.find((c) => c.id == 0)
+                            .rouzCoins}
+                    />)
                 </Button>
             {:else}
                 <p>Cuenta: Regular</p>
                 <Button
                     color="goldenrod"
                     on:click={() => abrir.canjearRouzCoins()}
-                    ><icon class="fe fe-unlock" />Activar
+                    ><icon class="fe fe-unlock" />Activar (<RouzCoins
+                        cantidad={config.canjes.find((c) => c.id == 0)
+                            .rouzCoins}
+                    />)
                 </Button>
             {/if}
             <p>

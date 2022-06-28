@@ -140,7 +140,7 @@ export default class RChanClient {
     }
 
     static refrescarOnlines() {
-        return axios.post("/api/Administracion/RefrescarOnlines")
+        return axios.get("/api/Administracion/RefrescarOnlines")
     }
 
     static añadirSticky(hiloId, global, importancia) {
