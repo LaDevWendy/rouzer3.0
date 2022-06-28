@@ -28,6 +28,7 @@ namespace Modelos
             this.TrendIndex = hilo.TrendIndex;
             this.Maximo = hilo.Flags.Contains("x");
             this.Spoiler = hilo.Flags.Contains("p");
+            this.Premium = hilo.Flags.Contains("g");
         }
 
         public int CantidadComentarios { get; set; }
@@ -56,6 +57,7 @@ namespace Modelos
         public double TrendIndex { get; set; }
         public bool Maximo { get; set; }
         public bool Spoiler { get; set; }
+        public bool Premium { get; set; }
     }
 
     public class HiloViewModelMod : HiloViewModel

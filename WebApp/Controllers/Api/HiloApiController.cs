@@ -263,6 +263,10 @@ namespace WebApp.Controllers
                 if (vm.MostrarNombre) hilo.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
                 if (vm.MostrarRango) hilo.Rango = CreacionRango.Mod;
             }
+            if (User.EsPremium() && vm.MostrarPremium)
+            {
+                hilo.Flags += "g";
+            }
 
             await context.SaveChangesAsync();
             var viewModel = new HiloViewModel(hilo);

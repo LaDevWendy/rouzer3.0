@@ -189,7 +189,7 @@ namespace WebApp.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpPost, Authorize("esPremium")]
+        [HttpPost]
         public async Task<ActionResult<ApiResponse>> HacerDonacion(DonacionVM donacionVM)
         {
             if (!(donacionVM.Cantidad > 0))

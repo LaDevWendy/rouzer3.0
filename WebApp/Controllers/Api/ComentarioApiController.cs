@@ -213,8 +213,9 @@ namespace WebApp.Controllers
                 if (vm.MostrarNombre) comentario.Nombre = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? "";
                 if (vm.MostrarRango) comentario.Rango = CreacionRango.Auxiliar;
             }
-            if (User.EsPremium()){
-                if (vm.MostrarPremium) comentario.Flags += "g";
+            if (User.EsPremium() && vm.MostrarPremium)
+            {
+                comentario.Flags += "g";
             }
 
             // Agrego el pais del uusario

@@ -96,9 +96,8 @@
             if (!$globalStore.usuario.esMod) {
                 espera = config.general.tiempoEntreComentarios;
             }
-            if (hide_flag) {
-                hide_flag = false;
-            }
+            hide_flag = false;
+            mostrarPremium = false;
             mediaInput.removerArchivo();
             //if (hilo.audios) audioInput.removerArchivo();
             dispatch("comentarioCreado");

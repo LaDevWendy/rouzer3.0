@@ -119,7 +119,6 @@ namespace Servicios
             var userId = user.GetId();
             hiloFullView.Hilo = new HiloViewModel(hilo);
             hiloFullView.Op = hilo.UsuarioId == userId;
-            hiloFullView.Premium = await premiumService.CheckearPremium(hilo.UsuarioId);
 
             if (hilo.Encuesta != null)
             {
@@ -152,7 +151,6 @@ namespace Servicios
         {
             var hiloFullView = new HiloFullViewModelMod();
 
-
             HiloModel hilo;
             var query = _context.Hilos
                 .Include(h => h.Media)
@@ -171,7 +169,6 @@ namespace Servicios
 
             var userId = user.GetId();
             hiloFullView.Op = hilo.UsuarioId == userId;
-            hiloFullView.Premium = await premiumService.CheckearPremium(hilo.UsuarioId);
 
             if (hilo.Encuesta != null)
             {
@@ -592,6 +589,7 @@ namespace Servicios
                 Concentracion = h.Flags.Contains("c"),
                 Maximo = h.Flags.Contains("x"),
                 Spoiler = h.Flags.Contains("p"),
+                Premium = h.Flags.Contains("g"),
                 Encuesta = h.Encuesta != null,
                 CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                 TrendIndex = h.TrendIndex
@@ -616,6 +614,7 @@ namespace Servicios
                 Concentracion = h.Flags.Contains("c"),
                 Maximo = h.Flags.Contains("x"),
                 Spoiler = h.Flags.Contains("p"),
+                Premium = h.Flags.Contains("g"),
                 Encuesta = h.Encuesta != null,
                 CantidadComentarios = context.Comentarios.Where(c => c.HiloId == h.Id && c.Estado == ComentarioEstado.Normal).Count(),
                 UsuarioId = h.UsuarioId,

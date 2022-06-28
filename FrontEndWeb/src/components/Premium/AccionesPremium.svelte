@@ -9,19 +9,20 @@
     import { abrir } from "../Premium/DialogosPremium.svelte";
 </script>
 
-{#if $globalStore.usuario.esPremium}
-    {#if op}
+{#if op}
+    {#if $globalStore.usuario.esPremium}
         <Button
             on:click={() => abrir.destacar(hilo.id)}
             shaped
             color="goldenrod"><i class="fe fe-zap" /> Destacar</Button
         >
-    {:else}
-        <Button on:click={() => abrir.donar(hilo.id)} shaped color="goldenrod"
-            ><i class="fe fe-heart" /> Donar</Button
-        >
     {/if}
+{:else}
+    <Button on:click={() => abrir.donar(hilo.id)} shaped color="goldenrod"
+        ><i class="fe fe-heart" /> Donar</Button
+    >
 {/if}
+
 {#if donaciones > 0}
     <Button color="goldenrod" shaped disabled style="text-transform: inherit">
         <RouzCoins cantidad={donaciones} />

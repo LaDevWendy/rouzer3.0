@@ -26,7 +26,6 @@
 		spams,
 		contadores,
 		op,
-		premium,
 		mensajesGlobales,
 		donaciones,
 	} = data;

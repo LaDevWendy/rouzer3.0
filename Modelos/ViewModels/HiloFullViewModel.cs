@@ -11,7 +11,6 @@ namespace Modelos
         List<SpamModel> Spams { get; set; }
         Dictionary<string, int> Contadores { get; set; }
         public bool Op { get; set; }
-        public bool Premium { get; set; }
         public List<MensajeGlobalViewModel> MensajesGlobales { get; set; }
         public float Donaciones { get; set; }
     }
@@ -26,7 +25,6 @@ namespace Modelos
         public Dictionary<string, int> Contadores { get; set; }
         public string Nombre { get; set; }
         public bool Op { get; set; }
-        public bool Premium { get; set; }
         public List<MensajeGlobalViewModel> MensajesGlobales { get; set; }
         public float Donaciones { get; set; }
     }

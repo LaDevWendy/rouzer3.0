@@ -248,7 +248,7 @@
             class="nick nombre cptr"
             >{comentario.millon > 0
                 ? "Especial"
-                : comentario.nombre || (comentario.premium ? "GOLDO" : "Gordo")}
+                : comentario.nombre || (comentario.premium ? "GOLDo" : "Gordo")}
         </span>
         {#if comentario.banderita}
             <span class="banderita f32"
@@ -977,9 +977,13 @@
         background-position: center;
     }
 
+    .nombrePremium,
+    .nombreResaltado {
+        font-weight: bold;
+    }
+
     .nombreResaltado {
         color: var(--color6);
-        font-weight: bold;
     }
     .nombrePremium {
         color: goldenrod;
