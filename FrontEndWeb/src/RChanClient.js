@@ -1,13 +1,13 @@
 import axios from 'axios'
 axios.maxRedirects = 0
 
-axios.interceptors.response.use(function (response) {
+axios.interceptors.response.use(function(response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     if (response && response.data && response.data.redirect) { //??quitado
         console.log(response.data.redirect);
         window.location.href = response.data.redirect
-        // throw new Error("Redirigido")
+            // throw new Error("Redirigido")
         return
     }
     // if(response?.data?.redirect || false){ //??quitado
@@ -19,7 +19,7 @@ axios.interceptors.response.use(function (response) {
     // }
     // if(response.data.redirect) window.location = response.data.redirect;
     return response
-}, function (error) {
+}, function(error) {
 
     // if(error?.response?.data.redirect){
     if (error.response && error.response.data && error.response.data.redirect) {
@@ -30,11 +30,11 @@ axios.interceptors.response.use(function (response) {
     return Promise.reject(error);
 });
 
-axios.interceptors.request.use(function (config) {
+axios.interceptors.request.use(function(config) {
     // Do something before request is sent
     config.headers["RequestVerificationToken"] = window.token
     return config;
-}, function (error) {
+}, function(error) {
     // Do something with request error
     return Promise.reject(error);
 });
@@ -62,7 +62,7 @@ export default class RChanClient {
         return axios.post("/api/Hilo/Crear", form)
     }
 
-    static crearComentario(hiloId, contenido, fingerPrint, archivo = null, link = "", audio = null, captcha = "", spoiler = false, mostrarNombre = false, mostrarRango = false, mostrarRangoAdmin = false, mostrarRangoDev = false) {
+    static crearComentario(hiloId, contenido, fingerPrint, archivo = null, link = "", audio = null, captcha = "", spoiler = false, mostrarPremium = false, mostrarNombre = false, mostrarRango = false, mostrarRangoAdmin = false, mostrarRangoDev = false) {
         let form = new FormData();
         form.append('HiloId', hiloId)
         form.append('Contenido', contenido)
@@ -70,11 +70,12 @@ export default class RChanClient {
         form.append("Link", link)
         form.append('Captcha', captcha)
         form.append('Spoiler', spoiler)
-        if (mostrarNombre || mostrarRango || mostrarRangoAdmin || mostrarRangoDev) {
+        if (mostrarNombre || mostrarRango || mostrarRangoAdmin || mostrarRangoDev || mostrarPremium) {
             form.append('MostrarNombre', mostrarNombre)
             form.append('MostrarRango', mostrarRango)
             form.append('MostrarRangoAdmin', mostrarRangoAdmin)
             form.append('MostrarRangoDev', mostrarRangoDev)
+            form.append('MostrarPremium', mostrarPremium)
         }
         form.append("Audio", audio)
         form.append("FingerPrint", fingerPrint)
@@ -198,21 +199,21 @@ export default class RChanClient {
     }
 
     static cargarMasHilos(ultimoBump, ultimoCreacion, ultimoTrend, categorias, serios = false, nuevos = false, tendencias = false, categoria = false, historicos = false) {
-        return axios.get('api/Hilo/CargarMas', {
-            params: {
-                ultimoBump,
-                ultimoCreacion,
-                ultimoTrend,
-                categorias: categorias.join(","),
-                serios,
-                nuevos,
-                tendencias,
-                categoria,
-                historicos
-            }
-        })
-    }
-    //Paginas
+            return axios.get('api/Hilo/CargarMas', {
+                params: {
+                    ultimoBump,
+                    ultimoCreacion,
+                    ultimoTrend,
+                    categorias: categorias.join(","),
+                    serios,
+                    nuevos,
+                    tendencias,
+                    categoria,
+                    historicos
+                }
+            })
+        }
+        //Paginas
     static index() {
         return axios.get("/")
     }

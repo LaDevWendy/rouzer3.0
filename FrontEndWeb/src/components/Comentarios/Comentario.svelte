@@ -244,8 +244,11 @@
         <span
             on:click={seleccionar}
             class:nombreResaltado={comentario.nombre || comentario.millon > 0}
+            class:nombrePremium={comentario.premium}
             class="nick nombre cptr"
-            >{comentario.millon > 0 ? "Especial" : comentario.nombre || "Gordo"}
+            >{comentario.millon > 0
+                ? "Especial"
+                : comentario.nombre || (comentario.premium ? "GOLDO" : "Gordo")}
         </span>
         {#if comentario.banderita}
             <span class="banderita f32"
@@ -977,6 +980,9 @@
     .nombreResaltado {
         color: var(--color6);
         font-weight: bold;
+    }
+    .nombrePremium {
+        color: goldenrod;
     }
 
     @keyframes borde-serenito {

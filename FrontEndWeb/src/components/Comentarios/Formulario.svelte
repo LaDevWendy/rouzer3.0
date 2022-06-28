@@ -30,6 +30,7 @@
     let mostrarRangoAdmin = false;
     let mostrarRangoDev = false;
     let mostrarNombre = false;
+    let mostrarPremium = false;
 
     //const risas = new Audio("/audio/risas.mp3");
 
@@ -70,6 +71,7 @@
                     audio,
                     "",
                     spoiler,
+                    mostrarPremium,
                     mostrarNombre && $globalStore.usuario.esAdmin,
                     mostrarRango,
                     mostrarRangoAdmin,
@@ -84,7 +86,8 @@
                     media.link,
                     audio,
                     captcha,
-                    spoiler
+                    spoiler,
+                    mostrarPremium
                 );
             }
             /*if (!$ajustesConfigStore.mutearRisas) {
@@ -152,6 +155,15 @@
                 ><Checkbox bind:checked={hide_flag} right>Hide</Checkbox></span
             >
         </div>
+        {#if $globalStore.usuario.esPremium}
+            <div style=" flex-direction:row; display:flex; flex-wrap: wrap;">
+                <span style="width: fit-content;margin-right: auto;"
+                    ><Checkbox bind:checked={mostrarPremium} right
+                        >Tag Premium</Checkbox
+                    ></span
+                >
+            </div>
+        {/if}
         {#if $globalStore.usuario.esMod || ($globalStore.usuario.esAuxiliar && config.general.modoSerenito)}
             <div style=" flex-direction:row; display:flex; flex-wrap: wrap;">
                 <span style="width: fit-content;margin-right: auto;"
