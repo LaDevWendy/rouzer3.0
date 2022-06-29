@@ -182,7 +182,7 @@
         font-size: 1.5rem;
     }
     .contenedor-direccion {
-        font-size: 0.85em;
+        overflow-wrap: break-word;
     }
     .contenedor-comprobante,
     .contenedor-direccion {

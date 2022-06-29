@@ -5,9 +5,9 @@
     export let mg;
 </script>
 
-<div class="super-contenedor mg-{mg.color}">
+<div class="super-container mg-{mg.color}">
     <div
-        class="contenedor"
+        class="container"
         style="background: linear-gradient(90deg, rgba(0,0,0,0.1) {mg.completado}%, rgba(0,0,0,0.0) {mg.completado}%);"
     >
         {#if $globalStore.usuario.esAdmin}
@@ -23,14 +23,14 @@
                 </Button>
             </div>
         {/if}
-        <div class="contenido">
+        <div class="content">
             {@html mg.mensaje}
         </div>
     </div>
 </div>
 
 <style>
-    .super-contenedor {
+    .super-container {
         margin-top: 4px;
         margin-left: 4px;
         margin-bottom: 4px;
@@ -40,7 +40,7 @@
         border-width: 4px;
     }
 
-    .contenedor {
+    .container {
         padding-top: 4px;
         padding-left: 4px;
         padding-bottom: 4px;
@@ -49,7 +49,7 @@
         grid-template-columns: 10% 90%;
     }
 
-    .contenido {
+    .content {
         grid-column: 2;
         grid-row: 1;
         background-color: rgba(0, 0, 0, 0.3);
@@ -60,7 +60,7 @@
         overflow: hidden;
         color: white;
     }
-    .contenido :global(a) {
+    .content :global(a) {
         color: var(--color6) !important;
     }
     .mg-mods {
