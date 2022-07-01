@@ -21,7 +21,6 @@
         } catch (e) {
             console.log(e.response);
             error1 = e.response.data;
-            return;
         }
     }
 
@@ -34,7 +33,16 @@
         } catch (e) {
             console.log(e.response);
             error1 = e.response.data;
-            return;
+        }
+    }
+
+    async function calcular() {
+        try {
+            let res = await RChanClient.calcularTamañoTotal();
+            console.log(res);
+            alert(res.data.mensaje);
+        } catch (e) {
+            console.log(e.response);
         }
     }
 </script>
@@ -100,6 +108,7 @@
                     <li>RozPams</li>
                 </a>
             </ul>
+            <Button on:click={() => calcular()}>Calcular tamaño total</Button>
         </div>
     </section>
 </div>

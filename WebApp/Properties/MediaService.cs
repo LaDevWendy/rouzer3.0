@@ -27,11 +27,16 @@ namespace Servicios
         Task<MediaModel> GenerarMediaDesdeLink(string url, bool esAdmin);
         Task<bool> Eliminar(string id);
         Task<int> LimpiarMediasHuerfanos();
+        Task<int> CalcularTotalSize();
+        string[] FormatosSoportados { get; }
     }
 
     public class MediaService : IMediaService
     {
         protected string CarpetaDeAlmacenamiento { get; }
+
+        public string[] FormatosSoportados => new[] { "jpeg", "jpg", "gif", "mp4", "webm", "png", "webp" };
+
         protected readonly RChanContext context;
         protected readonly IWebHostEnvironment env;
         protected readonly ILogger<MediaService> logger;
@@ -133,6 +138,7 @@ namespace Servicios
             }));
 
             MediaModel media = null;
+            MediaPropiedadesModel mediaProps = null;
             if (flag)
             {
                 media = mediaAntiguo;
@@ -147,6 +153,14 @@ namespace Servicios
                     Hash = hash,
                     Tipo = esVideo ? MediaType.Video : MediaType.Imagen,
                     Url = $"{hash}.{fmt}",
+                };
+                mediaProps = new MediaPropiedadesModel
+                {
+                    Id = hash,
+                    Size = archivoStream.Length,
+                    Height = original.Height,
+                    Width = original.Width,
+                    Media = media
                 };
             }
 
@@ -173,7 +187,11 @@ namespace Servicios
 
             if (!flag)
             {
-                await context.Medias.AddAsync(media);
+                context.Medias.Add(media);
+                if (mediaProps != null)
+                {
+                    context.MediasPropiedades.Add(mediaProps);
+                }
             }
             else
             {
@@ -577,7 +595,7 @@ namespace Servicios
             string type = MediaExtension.GetContentType(url);
 
             //Si no es un tipo soportado se rechaza
-            if (!new[] { "jpeg", "jpg", "gif", "mp4", "webm", "png" }.Contains(type.Split("/")[1]))
+            if (!FormatosSoportados.Contains(type.Split("/")[1]))
                 throw new Exception("El  formato del archivo no es soportado.");
 
             // Crear un nombre único para evitar concurrencias
@@ -620,7 +638,6 @@ namespace Servicios
 
         public virtual async Task<bool> Eliminar(string id)
         {
-            var intentos = 25;
             var media = await context.Medias.FirstOrDefaultAsync(m => m.Id == id);
             if (media is null)
             {
@@ -638,7 +655,7 @@ namespace Servicios
             media.Tipo = MediaType.Eliminado;
             media.Url = "";
             await context.SaveChangesAsync();
-            while (archivosAEliminar.Count() != 0 || intentos == 0)
+            while (archivosAEliminar.Count != 0)
             {
                 try
                 {
@@ -652,10 +669,9 @@ namespace Servicios
                     }
                     archivosAEliminar.Remove(archivosAEliminar.First());
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    logger.LogError(e.ToString());
-                    intentos--;
+                    logger.LogError($"No se ha podido eliminar el archivo {archivosAEliminar.First()}");
                     await Task.Delay(100);
                 }
             }
@@ -670,22 +686,15 @@ namespace Servicios
                 .Where(m => m.Tipo != MediaType.Eliminado)
                 .ToListAsync();
 
-            logger.LogInformation($"Limpiando medias viejos {mediasABorrar.Count()}");
+            logger.LogInformation($"Limpiando medias viejos {mediasABorrar.Count}");
 
             // var eliminados = 0;
             var eliminados = new List<MediaModel>();
             foreach (var m in mediasABorrar)
             {
-                try
-                {
-                    await Eliminar(m.Id);
-                    eliminados.Add(m);
-                    //eliminados++;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
+
+                await Eliminar(m.Id);
+                eliminados.Add(m);
             }
             context.RemoveRange(eliminados);
             var n = await context.SaveChangesAsync();
@@ -696,6 +705,41 @@ namespace Servicios
         protected bool EsFormatoValido(string contentType)
         {
             return Regex.IsMatch(contentType, @"(jpeg|png|gif|jpg|mp4|webm)");
+        }
+
+        public async Task<int> CalcularTotalSize()
+        {
+            var medias = await context.Medias.AsNoTracking().Where(m => m.Tipo == MediaType.Imagen || m.Tipo == MediaType.Video).ToListAsync();
+            var mediasProps = await context.MediasPropiedades.AsNoTracking().ToListAsync();
+            foreach (var m in medias)
+            {
+                if (!(mediasProps.Any(mp => mp.Id == m.Id)))
+                {
+                    using var original = File.Open($"{CarpetaDeAlmacenamiento}/{m.Url}", FileMode.Open);
+                    var mp = new MediaPropiedadesModel
+                    {
+                        Id = m.Id,
+                        Size = original.Length,
+                        MediaId = m.Id
+                    };
+
+                    if (m.Tipo == MediaType.Video)
+                    {
+                        using var thumbnail = File.Open($"{CarpetaDeAlmacenamiento}/{m.VistaPreviaLocal}", FileMode.Open);
+                        using var imagen = await Image.LoadAsync(thumbnail);
+                        mp.Height = imagen.Height;
+                        mp.Width = imagen.Width;
+                    }
+                    else
+                    {
+                        using var imagen = await Image.LoadAsync(original);
+                        mp.Height = imagen.Height;
+                        mp.Width = imagen.Width;
+                    }
+                    context.MediasPropiedades.Add(mp);
+                }
+            }
+            return await context.SaveChangesAsync();
         }
     }
 }

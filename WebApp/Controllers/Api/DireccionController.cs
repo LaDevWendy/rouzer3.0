@@ -25,6 +25,7 @@ namespace WebApp.Controllers
         private readonly RChanContext context;
         private readonly IOptionsSnapshot<List<Membrecia>> membreciaOpts;
         private readonly IOptionsSnapshot<List<RouzCoin>> rouzCoinsOpts;
+        private readonly IMediaService mediaService;
 
         public DireccionController(UserManager<UsuarioModel> userManager,
             SpamService spamService,
@@ -32,7 +33,8 @@ namespace WebApp.Controllers
             HashService hashService,
             RChanContext context,
             IOptionsSnapshot<List<Membrecia>> membreciaOpts,
-            IOptionsSnapshot<List<RouzCoin>> rouzCoinsOpts)
+            IOptionsSnapshot<List<RouzCoin>> rouzCoinsOpts,
+            IMediaService mediaService)
         {
             this.userManager = userManager;
             this.spamService = spamService;
@@ -41,6 +43,7 @@ namespace WebApp.Controllers
             this.context = context;
             this.membreciaOpts = membreciaOpts;
             this.rouzCoinsOpts = rouzCoinsOpts;
+            this.mediaService = mediaService;
         }
         [Route("/Direccion")]
         public async Task<IActionResult> IndexAsync()
@@ -255,6 +258,12 @@ namespace WebApp.Controllers
             var ahora = DateTimeOffset.Now;
             var premiums = await context.Balances.Include(b => b.Usuario).Where(b => b.Expiracion > ahora).OrderBy(b => b.Expiracion).ToListAsync();
             return View(new { premiums });
+        }
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse>> CalcularTotalSize()
+        {
+            var n = await mediaService.CalcularTotalSize();
+            return new ApiResponse($"{n}");
         }
 
     }

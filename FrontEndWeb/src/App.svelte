@@ -16,6 +16,7 @@
 	import { onMount, tick } from "svelte";
 	import MediaType from "./MediaType";
 	import { Flag } from "./enums";
+	import Size from "./components/Moderacion/Size.svelte";
 
 	let data = window.data || dataEjemplo;
 	let {
@@ -28,6 +29,7 @@
 		op,
 		mensajesGlobales,
 		donaciones,
+		size,
 	} = data;
 	let comentarioStore = "";
 
@@ -147,6 +149,11 @@
 						<Button>Op</Button>
 					</a>
 				{/if}
+				<Button disabled>
+					{#if size > 0}
+						<Size {size} />
+					{/if}
+				</Button>
 			</div>
 		{/if}
 

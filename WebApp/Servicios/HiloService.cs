@@ -198,6 +198,12 @@ namespace Servicios
             hiloFullView.Spams = await spamService.GetSpamsActivos();
             hiloFullView.MensajesGlobales = rchanCacheService.mensajeGlobales;
             hiloFullView.Donaciones = await _context.Donaciones.Where(d => d.HiloId == hilo.Id).SumAsync(d => d.Cantidad);
+
+            if (user.EsDirector())
+            {
+                hiloFullView.Size = await _context.MediasPropiedades.Where(mp => _context.Comentarios.Where(c => c.HiloId == id).Any(c => c.MediaId == mp.Id)).SumAsync(mp => mp.Size);
+            }
+
             return hiloFullView;
         }
 

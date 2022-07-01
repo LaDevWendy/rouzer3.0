@@ -32,6 +32,7 @@ namespace Modelos
     {
         public new List<ComentarioViewModelMod> Comentarios { get; set; }
         public UsuarioModel Usuario { get; set; }
+        public long Size { get; set; } = 0;
 
     }
 }

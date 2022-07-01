@@ -134,7 +134,7 @@ namespace WebApp.Controllers
             {
                 if (vm.Archivo != null)
                 {
-                    if (!new[] { "jpeg", "jpg", "gif", "mp4", "webm", "png" }.Contains(vm.Archivo.ContentType.Split("/")[1]))
+                    if (!mediaService.FormatosSoportados.Contains(vm.Archivo.ContentType.Split("/")[1]))
                     {
                         ModelState.AddModelError("El  formato del archivo no es soportado", "");
                         antiFlood.ResetearSegundosComentario(User.GetId());

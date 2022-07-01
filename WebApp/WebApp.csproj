@@ -9,7 +9,7 @@
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Flurl.Http" Version="3.2.0" />
+    <PackageReference Include="Flurl.Http" Version="3.2.4" />
     <PackageReference Include="IPAddressRange" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
@@ -21,10 +21,10 @@
     <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.22" />
     <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.2.22" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
-    <PackageReference Include="Telegram.Bot" Version="16.0.0" />
-    <PackageReference Include="WestWind.AspnetCore.LiveReload" Version="0.3.2" />
-    <PackageReference Include="Xabe.FFmpeg" Version="5.0.2" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
+    <PackageReference Include="Telegram.Bot" Version="18.0.0" />
+    <PackageReference Include="WestWind.AspnetCore.LiveReload" Version="0.3.6" />
+    <PackageReference Include="Xabe.FFmpeg" Version="5.2.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modelos\Modelos.csproj" />

@@ -42,6 +42,7 @@ namespace Data
         public DbSet<DonacionModel> Donaciones { get; set; }
         public DbSet<PedidoCodigoPremiumModel> Pedidos { get; set; }
         public DbSet<ComprobanteModel> Comprobantes { get; set; }
+        public DbSet<MediaPropiedadesModel> MediasPropiedades { get; set; }
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -110,6 +111,11 @@ namespace Data
                 .WithMany()
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<MediaPropiedadesModel>()
+                .HasOne(b => b.Media)
+                .WithOne()
+                .IsRequired(true);
         }
     }
 }
