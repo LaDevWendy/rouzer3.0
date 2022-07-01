@@ -158,10 +158,18 @@ namespace Servicios
                 {
                     Id = hash,
                     Size = archivoStream.Length,
-                    Height = original.Height,
-                    Width = original.Width,
                     Media = media
                 };
+                try
+                {
+                    mediaProps.Height = original.Height;
+                    mediaProps.Width = original.Width;
+                } catch (Exception)
+                {
+                    logger.LogError($"Faltan dimensiones del archivo {media.Url}");
+                    mediaProps.Height = -1;
+                    mediaProps.Width = -1;
+                }
             }
 
             // Si no se resetea el stream guarda correctamente -_o_-
@@ -725,16 +733,32 @@ namespace Servicios
 
                     if (m.Tipo == MediaType.Video)
                     {
-                        using var thumbnail = File.Open($"{CarpetaDeAlmacenamiento}/{m.VistaPreviaLocal}", FileMode.Open);
-                        using var imagen = await Image.LoadAsync(thumbnail);
-                        mp.Height = imagen.Height;
-                        mp.Width = imagen.Width;
+                        try
+                        {
+                            using var thumbnail = File.Open($"{CarpetaDeAlmacenamiento}/{m.VistaPreviaLocal}", FileMode.Open);
+                            using var imagen = await Image.LoadAsync(thumbnail);
+                            mp.Height = imagen.Height;
+                            mp.Width = imagen.Width;    
+                        } catch (Exception)
+                        {
+                            logger.LogError($"Faltan dimensiones del archivo {m.Url}");
+                            mp.Height = -1;
+                            mp.Width = -1;    
+                        }
                     }
                     else
                     {
-                        using var imagen = await Image.LoadAsync(original);
-                        mp.Height = imagen.Height;
-                        mp.Width = imagen.Width;
+                        try
+                        {
+                            using var imagen = await Image.LoadAsync(original);
+                            mp.Height = imagen.Height;
+                            mp.Width = imagen.Width;    
+                        } catch (Exception)
+                        {
+                            logger.LogError($"Faltan dimensiones del archivo {m.Url}");
+                            mp.Height = -1;
+                            mp.Width = -1;    
+                        }
                     }
                     context.MediasPropiedades.Add(mp);
                 }
