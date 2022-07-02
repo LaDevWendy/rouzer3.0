@@ -158,18 +158,10 @@ namespace Servicios
                 {
                     Id = hash,
                     Size = archivoStream.Length,
-                    Media = media
+                    Media = media,
+                    Height = original.Height,
+                    Width = original.Width
                 };
-                try
-                {
-                    mediaProps.Height = original.Height;
-                    mediaProps.Width = original.Width;
-                } catch (Exception)
-                {
-                    logger.LogError($"Faltan dimensiones del archivo {media.Url}");
-                    mediaProps.Height = -1;
-                    mediaProps.Width = -1;
-                }
             }
 
             // Si no se resetea el stream guarda correctamente -_o_-
@@ -738,12 +730,13 @@ namespace Servicios
                             using var thumbnail = File.Open($"{CarpetaDeAlmacenamiento}/{m.VistaPreviaLocal}", FileMode.Open);
                             using var imagen = await Image.LoadAsync(thumbnail);
                             mp.Height = imagen.Height;
-                            mp.Width = imagen.Width;    
-                        } catch (Exception)
+                            mp.Width = imagen.Width;
+                        }
+                        catch (Exception)
                         {
                             logger.LogError($"Faltan dimensiones del archivo {m.Url}");
                             mp.Height = -1;
-                            mp.Width = -1;    
+                            mp.Width = -1;
                         }
                     }
                     else
@@ -752,12 +745,13 @@ namespace Servicios
                         {
                             using var imagen = await Image.LoadAsync(original);
                             mp.Height = imagen.Height;
-                            mp.Width = imagen.Width;    
-                        } catch (Exception)
+                            mp.Width = imagen.Width;
+                        }
+                        catch (Exception)
                         {
                             logger.LogError($"Faltan dimensiones del archivo {m.Url}");
                             mp.Height = -1;
-                            mp.Width = -1;    
+                            mp.Width = -1;
                         }
                     }
                     context.MediasPropiedades.Add(mp);
