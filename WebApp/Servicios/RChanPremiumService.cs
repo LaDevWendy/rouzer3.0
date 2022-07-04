@@ -28,7 +28,11 @@ namespace Servicios
         public Task StartAsync(CancellationToken cancellationToken)
         {
             timer1 = new Timer(async (state) => { await ActualizarPremiums(); }, null, 0, (int)TimeSpan.FromHours(12).TotalMilliseconds);
-            timer2 = new Timer(async (state) => { await ActualizarWares(); }, null, (int)TimeSpan.FromSeconds(interval).TotalMilliseconds, (int)TimeSpan.FromSeconds(interval).TotalMilliseconds);
+            timer2 = new Timer(async (state) => { await ActualizarWares();
+                await ResolverJuegos(); },
+                null,
+                (int)TimeSpan.FromSeconds(interval).TotalMilliseconds,
+                (int)TimeSpan.FromSeconds(interval).TotalMilliseconds);
             return Task.CompletedTask;
         }
 
@@ -54,10 +58,18 @@ namespace Servicios
             await premiumService.ActualizarWares(interval);
         }
 
+        public async Task ResolverJuegos()
+        {
+            using var scope = services.CreateScope();
+            var lobbyService = scope.ServiceProvider.GetService<LobbyService>();
+            await lobbyService.ResolverJuegos();
+        }
+
         public void Dispose()
         {
             timer1?.Dispose();
             timer2?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

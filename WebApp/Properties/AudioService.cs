@@ -60,7 +60,7 @@ namespace Servicios
                     await context.SaveChangesAsync();
                     eliminado = true;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     intentos--;
                     await Task.Delay(100);

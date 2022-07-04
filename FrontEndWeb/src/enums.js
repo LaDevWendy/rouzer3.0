@@ -51,6 +51,7 @@ export class CreacionRango extends Enum {
     static Mod = 2
     static Admin = 3
     static Dev = 4
+    static Bot = 5
 }
 export class TipoAccion extends Enum {
     static ComentarioBorrado = 0

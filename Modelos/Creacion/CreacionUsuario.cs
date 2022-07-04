@@ -28,6 +28,7 @@ namespace Modelos
         Auxiliar,
         Mod,
         Admin,
-        Dev
+        Dev,
+        Bot
     }
 }

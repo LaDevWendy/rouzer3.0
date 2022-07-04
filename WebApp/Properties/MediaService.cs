@@ -25,10 +25,12 @@ namespace Servicios
         string GetThumbnail(string id);
         Task<MediaModel> GenerarMediaDesdeArchivo(IFormFile archivo, bool esAdmin);
         Task<MediaModel> GenerarMediaDesdeLink(string url, bool esAdmin);
+        Task<MediaModel> GenerarMediaDesdeStream(Stream archivoStream, string filename, string type, bool esAdmin);
         Task<bool> Eliminar(string id);
         Task<int> LimpiarMediasHuerfanos();
         Task<int> CalcularTotalSize();
         string[] FormatosSoportados { get; }
+        Task GenerarMediasBot();
     }
 
     public class MediaService : IMediaService
@@ -41,7 +43,7 @@ namespace Servicios
         protected readonly IWebHostEnvironment env;
         protected readonly ILogger<MediaService> logger;
         protected readonly string[] exclude = { "youtu", "bitchute", "dailymotion", "dai.ly", "pornhub" };
-        private HttpClient client = new HttpClient();
+        private readonly HttpClient client = new();
 
         public MediaService(string carpetaDeAlmacenamiento, RChanContext context, IWebHostEnvironment env, ILogger<MediaService> logger
 )
@@ -84,7 +86,7 @@ namespace Servicios
 
             // Genero un hash md5 del archivo
             archivoStream.Seek(0, SeekOrigin.Begin);
-            var hash = await archivoStream.GenerarHashAsync();
+            var hash = archivoStream.GenerarHashAsync();
             // Me fijo si el hash existe en la db
             var mediaAntiguo = await context.Medias.FirstOrDefaultAsync(e => e.Id == hash);
 
@@ -621,7 +623,7 @@ namespace Servicios
             {
                 media = await GenerarMediaDesdeStream(stream, filename, type, esAdmin);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // Borrado archivo temporal
                 await stream.DisposeAsync();
@@ -681,9 +683,9 @@ namespace Servicios
         public async Task<int> LimpiarMediasHuerfanos()
         {
             var mediasABorrar = await context.Medias
-                .Where(m => !context.Hilos.Any(h => h.MediaId == m.Id) &&
-                    !context.Comentarios.Any(c => c.MediaId == m.Id))
+                .Where(m => !context.Hilos.Any(h => h.MediaId == m.Id) && !context.Comentarios.Any(c => c.MediaId == m.Id))
                 .Where(m => m.Tipo != MediaType.Eliminado)
+                .Where(m => m.Id != "Ruleta_Media_Id")
                 .ToListAsync();
 
             logger.LogInformation($"Limpiando medias viejos {mediasABorrar.Count}");
@@ -759,17 +761,57 @@ namespace Servicios
             }
             return await context.SaveChangesAsync();
         }
+
+        public async Task GenerarMediasBot()
+        {
+            var media = await context.Medias.FirstOrDefaultAsync(m => m.Id == "Ruleta_Media_Id");
+            if (media is null)
+            {
+                using var archivoStream = File.Open($"wwwroot/imagenes/ruleta.png", FileMode.Open);
+                archivoStream.Seek(0, SeekOrigin.Begin);
+                using var original = await Image.LoadAsync(archivoStream);
+                using var thumbnail = original.Clone(e => e.Resize(300, 0));
+                using var cuadradito = thumbnail.Clone(e => e.Resize(new ResizeOptions
+                {
+                    Mode = ResizeMode.Crop,
+                    Position = AnchorPositionMode.Center,
+                    Size = new Size(300)
+                }));
+                media = new MediaModel
+                {
+                    Id = "Ruleta_Media_Id",
+                    Hash = "Ruleta_Media_Id",
+                    Tipo = MediaType.Imagen,
+                    Url = "Ruleta_Media_Id.png",
+                };
+                var mediaProps = new MediaPropiedadesModel
+                {
+                    Id = media.Id,
+                    Size = archivoStream.Length,
+                    Media = media,
+                    Height = original.Height,
+                    Width = original.Width
+                };
+
+                archivoStream.Seek(0, SeekOrigin.Begin);
+                await original.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.Url}");
+                await thumbnail.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaLocal}");
+                await cuadradito.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadradoLocal}");
+                await archivoStream.DisposeAsync();
+                context.MediasPropiedades.Add(mediaProps);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }
 
 static class MediaExtension
 {
-    public static async Task<string> GenerarHashAsync(this Stream archivo)
+    public static string GenerarHashAsync(this Stream archivo)
     {
         using var md5 = MD5.Create();
         var hash = md5.ComputeHash(archivo);
-        return string
-            .Join("", hash.Select(e => e.ToString("x2")));
+        return string.Join("", hash.Select(e => e.ToString("x2")));
     }
 
     public static string GetContentType(string url)

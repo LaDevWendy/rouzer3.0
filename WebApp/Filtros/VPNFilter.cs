@@ -39,9 +39,9 @@ namespace WebApp
             if (grlOpts.Value.ProhibirVPNs)
             {
                 string ip = ctx.Connection.RemoteIpAddress.MapToIPv4().ToString();
-                var listaVPNs = cacheService.listaVPNs;
+                var listaVPNs = cacheService.ListaVPNs;
 
-                if (!cacheService.ipsSeguras.Keys.Any(x => x == ip))
+                if (!cacheService.IpsSeguras.Keys.Any(x => x == ip))
                 {
                     var ipParsed = IPAddressRange.Parse(ip);
                     int n = 0;
@@ -61,7 +61,7 @@ namespace WebApp
                     if (n > 0)
                     {
                         //Console.WriteLine("ip segura agregada");
-                        cacheService.ipsSeguras.TryAdd(ip, true);
+                        cacheService.IpsSeguras.TryAdd(ip, true);
                     }
                     /*else
                     {

@@ -23,7 +23,6 @@ namespace WebApp.Controllers
         private readonly IOptionsSnapshot<List<Categoria>> categoriasOpts;
         private readonly RChanCacheService rchanCacheService;
         private readonly PremiumService premiumService;
-        private static Cache<List<HiloViewModel>> hilosCache;
 
         public IMediaService MediaService { get; }
 
@@ -122,7 +121,7 @@ namespace WebApp.Controllers
             {
                 Hilos = rchanCacheService.hilosIndex
                     .Select((h, index) => new { h, index })
-                    .OrderBy(a => rchanCacheService.creacionIndex[a.index])
+                    .OrderBy(a => rchanCacheService.CreacionIndex[a.index])
                     .Select(a => a.h)
                     .Where(h => !ocultos.Contains(h.Id) && categorias.Contains(h.CategoriaId))
                     .Take(16)
@@ -159,7 +158,7 @@ namespace WebApp.Controllers
             {
                 Hilos = rchanCacheService.hilosIndex
                     .Select((h, index) => new { h, index })
-                    .OrderBy(a => rchanCacheService.trendIndex[a.index])
+                    .OrderBy(a => rchanCacheService.TrendIndex[a.index])
                     .Select(a => a.h)
                     .Where(h => (h.TrendIndex > 1.0) && categorias.Contains(h.CategoriaId) && !ocultos.Contains(h.Id))
                     .Take(16)

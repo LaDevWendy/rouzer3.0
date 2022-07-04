@@ -43,6 +43,8 @@ namespace Data
         public DbSet<PedidoCodigoPremiumModel> Pedidos { get; set; }
         public DbSet<ComprobanteModel> Comprobantes { get; set; }
         public DbSet<MediaPropiedadesModel> MediasPropiedades { get; set; }
+        public DbSet<JuegoModel> Juegos { get; set; }
+        public DbSet<ApuestaModel> Apuestas { get; set; }
 
         override protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -116,6 +118,23 @@ namespace Data
                 .HasOne(b => b.Media)
                 .WithOne()
                 .IsRequired(true);
+
+            modelBuilder.Entity<JuegoModel>()
+                .HasOne(j => j.Hilo)
+                .WithMany()
+                .IsRequired(true);
+
+            modelBuilder.Entity<ApuestaModel>()
+                .HasOne(j => j.Comentario)
+                .WithOne()
+                .IsRequired(true);
+
+            modelBuilder.Entity<ApuestaModel>()
+                .HasOne(a => a.Usuario)
+                .WithMany()
+                .IsRequired(true);
+
         }
     }
 }
+

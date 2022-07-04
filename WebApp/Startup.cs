@@ -46,6 +46,11 @@ namespace WebApp
             services.AddScoped<AntiFloodService>();
             services.AddScoped<CensorService>();
             services.AddScoped<PremiumService>();
+
+            services.AddScoped<LobbyService>();
+            services.AddSingleton<IRChanBackgroundTaskQueue, RChanBackgroundTaskQueue>();
+            services.AddHostedService<RChanBackgroundQueueHostedService>();
+
             services.Configure<GeneralOptions>(Configuration.GetSection("General"));
             services.Configure<List<Categoria>>(Configuration.GetSection("Categorias"));
             services.Configure<List<Grupo>>(Configuration.GetSection("Grupos"));

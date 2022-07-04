@@ -41,7 +41,7 @@ namespace WebApp
 
                 var migs = await ctx.Database.GetPendingMigrationsAsync();
 
-                if (migs.Count() != 0)
+                if (migs.Any())
                 {
                     var migrations = ctx.Database.GetPendingMigrations();
                     logger.LogInformation("Applicando migraciones pendientes");
@@ -56,25 +56,32 @@ namespace WebApp
                     }
                 }
 
-                var um =
-                    scope.ServiceProvider.GetService<SignInManager<UsuarioModel>>().UserManager;
+                var um = scope.ServiceProvider.GetService<SignInManager<UsuarioModel>>().UserManager;
 
-                var admin = (
-                    await um.GetUsersForClaimAsync(new Claim("Role", "dev"))
-                ).FirstOrDefault();
+                var dev = (await um.GetUsersForClaimAsync(new Claim("Role", "dev"))).FirstOrDefault();
 
-                if (admin is null)
+                if (dev is null)
                 {
                     var pepe = um.Users.FirstOrDefault(u => u.UserName == "pepe");
                     if (pepe is null)
                     {
-                        var r = await um.CreateAsync(
-                            new UsuarioModel { UserName = "pepe" },
-                            "contraseña"
-                        );
+                        var r = await um.CreateAsync(new UsuarioModel { UserName = "pepe" }, "contraseña");
                     }
                     pepe = um.Users.FirstOrDefault(u => u.UserName == "pepe");
                     await um.AddClaimAsync(pepe, new Claim("Role", "dev"));
+                }
+
+                var bot = (await um.GetUsersForClaimAsync(new Claim("Role", "bot"))).FirstOrDefault();
+                if (bot is null)
+                {
+                    var RouzedBot = um.Users.FirstOrDefault(u => u.UserName == "RouzedBot");
+                    if (RouzedBot is null)
+                    {
+                        // Cambiar contraseña
+                        var r = await um.CreateAsync(new UsuarioModel { UserName = "RouzedBot" }, "contraseña");
+                    }
+                    RouzedBot = um.Users.FirstOrDefault(u => u.UserName == "RouzedBot");
+                    await um.AddClaimAsync(RouzedBot, new Claim("Role", "bot"));
                 }
 
                 // Inicializar estadisticas
@@ -87,6 +94,9 @@ namespace WebApp
                         HilosCreados = ctx.Hilos.Count(),
                     }
                 );
+
+                var mediaService = scope.ServiceProvider.GetService<IMediaService>();
+                await mediaService.GenerarMediasBot();
             }
 
             host.Run();

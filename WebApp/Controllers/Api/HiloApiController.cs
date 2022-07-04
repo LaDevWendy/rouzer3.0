@@ -214,6 +214,7 @@ namespace WebApp.Controllers
             if (hilo.Contenido.Contains(">>concentracion") && User.EsMod()) hilo.Flags += "c";
             if (hilo.Contenido.Contains(">>serio") && User.EsMod()) hilo.Flags += "si";
             if (hilo.Contenido.Contains(">>banderitas")) hilo.Flags += "b";
+            if (hilo.Contenido.Contains(">>timba")) hilo.Flags += "$";
 
             var regex = @"t(:?a|á)ctic(:?a|o)";
             var match = Regex.Match(hilo.Titulo.ToLower(), regex);
@@ -570,7 +571,7 @@ namespace WebApp.Controllers
             {
                 hilos = rchanCacheService.hilosIndex
                     .Select((h, index) => new { h, index })
-                    .OrderBy(a => rchanCacheService.creacionIndex[a.index])
+                    .OrderBy(a => rchanCacheService.CreacionIndex[a.index])
                     .Select(a => a.h)
                     .Where(h => categoriasActivas.Contains(h.CategoriaId) && !ocultos.Contains(h.Id) && h.Sticky == 0)
                     .Where(h => h.Creacion < ultimoCreacion)
@@ -582,7 +583,7 @@ namespace WebApp.Controllers
             {
                 hilos = rchanCacheService.hilosIndex
                     .Select((h, index) => new { h, index })
-                    .OrderBy(a => rchanCacheService.trendIndex[a.index])
+                    .OrderBy(a => rchanCacheService.TrendIndex[a.index])
                     .Select(a => a.h)
                     .Where(h => categoriasActivas.Contains(h.CategoriaId) && !ocultos.Contains(h.Id) && h.Sticky == 0)
                     .Where(h => (h.TrendIndex > 1.0) && (h.TrendIndex < ultimoTrend))

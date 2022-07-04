@@ -115,6 +115,7 @@ namespace Servicios
             await rchanHub.Clients.Group("moderacion").SendAsync("denunciasAceptadas", denuncias.Select(d => d.Id).ToArray());
             int eliminados = await _context.SaveChangesAsync();
         }
+
         public string[] GetIdsTageadas(string contenido) => formateador.GetIdsTageadas(contenido);
     }
 

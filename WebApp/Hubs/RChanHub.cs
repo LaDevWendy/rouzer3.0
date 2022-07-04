@@ -82,7 +82,7 @@ namespace WebApp
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }
@@ -119,7 +119,7 @@ namespace WebApp
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }

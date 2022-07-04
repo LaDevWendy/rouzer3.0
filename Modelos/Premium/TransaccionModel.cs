@@ -22,7 +22,8 @@ namespace Modelos
         MensajeGlobal,
         AutoBump,
         HacerDonacion,
-        RecibirDonacion
+        RecibirDonacion,
+        Juego
     }
 
 }

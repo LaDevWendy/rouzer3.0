@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Modelos;
 using Servicios;
@@ -16,7 +18,7 @@ using System.Threading.Tasks;
 namespace WebApp.Controllers
 {
     [ApiController, Route("api/Comentario/{action}/{id?}")]
-    public class ComentarioApiControlelr : Controller
+    public class ComentarioApiController : Controller
     {
         private readonly IComentarioService comentarioService;
         private readonly RChanContext context;
@@ -31,8 +33,10 @@ namespace WebApp.Controllers
         private readonly HashService hashService;
         private readonly IAudioService audioService;
         private readonly PremiumService premiumService;
+        private readonly LobbyService lobbyService;
+        private readonly IRChanBackgroundTaskQueue _backgroundTaskQueue;
 
-        public ComentarioApiControlelr(
+        public ComentarioApiController(
             IComentarioService comentarioService,
             IMediaService mediaService,
             RChanContext chanContext,
@@ -45,7 +49,8 @@ namespace WebApp.Controllers
             HashService hashService,
             IAudioService audioService,
             IOptionsSnapshot<List<Categoria>> categoriasOpt,
-            PremiumService premiumService
+            PremiumService premiumService,
+            IRChanBackgroundTaskQueue _backgroundTaskQueue
         )
         {
             this.comentarioService = comentarioService;
@@ -61,6 +66,7 @@ namespace WebApp.Controllers
             this.audioService = audioService;
             this.categoriasOpt = categoriasOpt;
             this.premiumService = premiumService;
+            this._backgroundTaskQueue = _backgroundTaskQueue;
         }
 
         [HttpPost, Authorize, ValidateAntiForgeryToken]
@@ -246,8 +252,10 @@ namespace WebApp.Controllers
 
             string id = await comentarioService.Guardar(comentario);
 
-            var model = new ComentarioViewModel(comentario, hilo);
-            model.EsOp = hilo.UsuarioId == User.GetId();
+            var model = new ComentarioViewModel(comentario, hilo)
+            {
+                EsOp = hilo.UsuarioId == User.GetId()
+            };
 
             await rchanHub.Clients.User(comentario.UsuarioId).SendAsync("ComentarioPropio", comentario.Id);
             await rchanHub.Clients.User(comentario.Hilo.UsuarioId).SendAsync("SoyOp", comentario.Id);
@@ -368,6 +376,32 @@ namespace WebApp.Controllers
                 denunciaAutomatica.ComentarioId = id;
                 denunciaAutomatica.Aclaracion = $"[Denuncia automática] Usuario sospechoso FP: {comentario.FingerPrint}";
                 await AutoDenunciar(denunciaAutomatica);
+            }
+
+            // Categoría juegos
+            if (hilo.Flags.Contains("$") && hilo.CategoriaId == 10)
+            {
+                match = Regex.Match(vm.Contenido, @"^!", RegexOptions.Multiline);
+                if (match.Success)
+                {
+                    _backgroundTaskQueue.EnqueueTask(async (serviceScopeFactory, cancellationToken) =>
+                    {
+                        // Get services
+                        using var scope = serviceScopeFactory.CreateScope();
+
+                        var lobbyService = scope.ServiceProvider.GetRequiredService<LobbyService>();
+                        var logger = scope.ServiceProvider.GetRequiredService<ILogger<ComentarioApiController>>();
+
+                        try
+                        {
+                            await lobbyService.EjecutarComando(vm.Contenido, hilo, comentario);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, "El comando no se pudo resolver.");
+                        }
+                    });
+                }
             }
 
             return new ApiResponse("Comentario creado!");

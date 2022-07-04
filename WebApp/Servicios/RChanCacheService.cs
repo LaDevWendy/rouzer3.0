@@ -26,17 +26,17 @@ namespace Servicios
         private Timer timer2;
 
         public List<HiloViewModel> hilosIndex { get; private set; } = new List<HiloViewModel>();
-        public int[] creacionIndex { get; private set; } = new int[10000];
-        public int[] trendIndex { get; private set; } = new int[10000];
+        public int[] CreacionIndex { get; private set; } = new int[10000];
+        public int[] TrendIndex { get; private set; } = new int[10000];
 
-        public BanCache banCache { get; private set; } = new BanCache();
+        public BanCache BanCache { get; private set; } = new BanCache();
 
-        private int[] todasLasCategorias;
+        private readonly int[] todasLasCategorias;
 
-        private HttpClient client = new HttpClient();
-        public List<string> listaVPNs { get; private set; } = new List<string>();
-        public ConcurrentDictionary<string, bool> ipsSeguras { get; private set; } = new ConcurrentDictionary<string, bool>();
-        public List<MensajeGlobalViewModel> mensajeGlobales { get; private set; } = new List<MensajeGlobalViewModel>();
+        private readonly HttpClient client = new();
+        public List<string> ListaVPNs { get; private set; } = new List<string>();
+        public ConcurrentDictionary<string, bool> IpsSeguras { get; private set; } = new ConcurrentDictionary<string, bool>();
+        public List<MensajeGlobalViewModel> MensajeGlobales { get; private set; } = new List<MensajeGlobalViewModel>();
 
         public RChanCacheService(IServiceProvider services, ILogger<RChanCacheService> logger)
         {
@@ -91,7 +91,7 @@ namespace Servicios
                     var index = 0;
                     foreach (var idx in indicesInvertidos)
                     {
-                        creacionIndex[idx] = index++;
+                        CreacionIndex[idx] = index++;
                     }
 
                     // Orden por tendencia
@@ -99,7 +99,7 @@ namespace Servicios
                     index = 0;
                     foreach (var idx in indicesInvertidos)
                     {
-                        trendIndex[idx] = index++;
+                        TrendIndex[idx] = index++;
                     }
                 }
                 catch (Exception e)
@@ -117,19 +117,19 @@ namespace Servicios
             var context = scope.ServiceProvider.GetService<RChanContext>();
 
             var ahora = DateTimeOffset.Now;
-            banCache.BaneosActivos = await context.Bans
+            BanCache.BaneosActivos = await context.Bans
                 .Where(b => b.Expiracion > ahora)
                 .ToListAsync();
 
-            banCache.IpsBaneadas = banCache.BaneosActivos.Select(b => b.Ip).ToHashSet();
-            banCache.IdsBaneadas = banCache.BaneosActivos.Select(b => b.UsuarioId).ToHashSet();
+            BanCache.IpsBaneadas = BanCache.BaneosActivos.Select(b => b.Ip).ToHashSet();
+            BanCache.IdsBaneadas = BanCache.BaneosActivos.Select(b => b.UsuarioId).ToHashSet();
         }
 
         public async Task ActualizarMensajesGlobales()
         {
             using var scope = services.CreateScope();
             var premiumService = scope.ServiceProvider.GetService<PremiumService>();
-            mensajeGlobales = await premiumService.GetMensajesGlobalesActivosOrdenados();
+            MensajeGlobales = await premiumService.GetMensajesGlobalesActivosOrdenados();
         }
 
         public async Task ActualizarListaVPNs()
@@ -142,15 +142,15 @@ namespace Servicios
                 try
                 {
                     string result = await client.GetStringAsync("https://raw.githubusercontent.com/X4BNet/lists_vpn/main/ipv4.txt");
-                    listaVPNs = Regex.Split(result, "\r\n|\r|\n").ToList();
+                    ListaVPNs = Regex.Split(result, "\r\n|\r|\n").ToList();
                     //listaVPNs = Regex.Split("\n", "\r\n|\r|\n").ToList(); // Test
                     List<string> nuevasIpsNoSeguras = new List<string>();
-                    foreach (var ip in ipsSeguras.Keys)
+                    foreach (var ip in IpsSeguras.Keys)
                     {
                         if (!String.IsNullOrEmpty(ip))
                         {
                             var ipParsed = IPAddressRange.Parse(ip);
-                            foreach (var vpn in listaVPNs)
+                            foreach (var vpn in ListaVPNs)
                             {
                                 if (!String.IsNullOrEmpty(vpn))
                                 {
@@ -166,7 +166,7 @@ namespace Servicios
 
                     foreach (var ip in nuevasIpsNoSeguras)
                     {
-                        ipsSeguras.Remove(ip, out bool jejeTaBien);
+                        IpsSeguras.Remove(ip, out bool jejeTaBien);
                     }
                     intentos = intentosMax;
                     logger.LogInformation("Lista de VPNs actualizada.");
@@ -183,6 +183,7 @@ namespace Servicios
         {
             timer?.Dispose();
             timer2?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 

@@ -17,7 +17,7 @@ namespace Servicios
         private readonly ILogger<RChanTrendService> logger;
         private Timer timer;
 
-        public List<HiloViewModel> hilosIndex { get; private set; } = new List<HiloViewModel>();
+        public List<HiloViewModel> HilosIndex { get; private set; } = new List<HiloViewModel>();
 
         public RChanTrendService(IServiceProvider services, ILogger<RChanTrendService> logger)
         {
@@ -50,6 +50,7 @@ namespace Servicios
         public void Dispose()
         {
             timer?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

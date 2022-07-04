@@ -1,9 +1,13 @@
 <script>
     export let cantidad;
+    let c = cantidad;
+    if (cantidad != "") {
+        c = Math.round(cantidad * 10) / 10;
+    }
 </script>
 
-<span class="rouzcoin-contenido">
-    {cantidad}<span title="RouzCoins" class="rouzcoin-simbolo">R</span>
+<span class="rouzcoin-contenido" title={cantidad}>
+    {c}<span title="RouzCoins" class="rouzcoin-simbolo">R</span>
 </span>
 
 <style>

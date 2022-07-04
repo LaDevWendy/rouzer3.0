@@ -143,7 +143,7 @@ namespace Servicios
             hiloFullView.Acciones ??= new HiloAccionModel();
 
             hiloFullView.Spams = await spamService.GetSpamsActivos();
-            hiloFullView.MensajesGlobales = rchanCacheService.mensajeGlobales;
+            hiloFullView.MensajesGlobales = rchanCacheService.MensajeGlobales;
             hiloFullView.Donaciones = await _context.Donaciones.Where(d => d.HiloId == hilo.Id).SumAsync(d => d.Cantidad);
             return hiloFullView;
         }
@@ -196,7 +196,7 @@ namespace Servicios
             hiloFullView.Acciones ??= new HiloAccionModel();
 
             hiloFullView.Spams = await spamService.GetSpamsActivos();
-            hiloFullView.MensajesGlobales = rchanCacheService.mensajeGlobales;
+            hiloFullView.MensajesGlobales = rchanCacheService.MensajeGlobales;
             hiloFullView.Donaciones = await _context.Donaciones.Where(d => d.HiloId == hilo.Id).SumAsync(d => d.Cantidad);
 
             if (user.EsDirector())
@@ -521,7 +521,6 @@ namespace Servicios
                 {
                     logger.LogInformation($"No se pudo limpear el hilo hilo {h.Titulo}({limpiados}/{total})");
                     logger.LogError(e.Message, e);
-                    throw e;
                 }
             }
 

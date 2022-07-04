@@ -51,7 +51,7 @@ namespace Servicios
 
             // Genero un hash md5 del archivo
             archivoStream.Seek(0, SeekOrigin.Begin);
-            var hash = await archivoStream.GenerarHashAsync();
+            var hash = archivoStream.GenerarHashAsync();
             // Me fijo si el hash existe en la db
             var mediaAntiguo = await context.Medias.FirstOrDefaultAsync(e => e.Id == hash);
 
@@ -150,7 +150,7 @@ namespace Servicios
 
             // Genero un hash md5 del archivo
             archivoStream.Seek(0, SeekOrigin.Begin);
-            var hash = await archivoStream.GenerarHashAsync();
+            var hash = archivoStream.GenerarHashAsync();
             // Me fijo si el hash existe en la db
             var mediaAntiguo = await context.Medias.FirstOrDefaultAsync(e => e.Id == hash);
 

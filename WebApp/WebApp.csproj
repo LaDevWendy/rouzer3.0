@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-WebApp-58591F3D-90BA-4770-9F41-1ADBDFECB67C</UserSecretsId>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
   <ItemGroup>

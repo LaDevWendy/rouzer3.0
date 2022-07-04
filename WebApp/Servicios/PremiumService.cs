@@ -169,6 +169,41 @@ namespace Servicios
             await _context.SaveChangesAsync();
         }
 
+        public async Task<string> RegistrarApuestaAsync(string userId, float rouzCoins, float balance)
+        {
+            var transaccion = new TransaccionModel
+            {
+                Id = hashService.Random(),
+                OrigenCantidad = rouzCoins,
+                OrigenUnidad = "RouzCoins",
+                DestinoCantidad = 1,
+                DestinoUnidad = "Apuestas",
+                Tipo = TipoTransaccion.Juego,
+                UsuarioId = userId,
+                Balance = balance
+            };
+            _context.Transacciones.Add(transaccion);
+            await _context.SaveChangesAsync();
+            return transaccion.Id;
+        }
+
+        public async Task RegistrarGananciaAsync(string userId, int cantidad, float rouzCoins, float balance)
+        {
+            var transaccion = new TransaccionModel
+            {
+                Id = hashService.Random(),
+                OrigenCantidad = cantidad,
+                OrigenUnidad = "Apuestas",
+                DestinoCantidad = rouzCoins,
+                DestinoUnidad = "RouzCoins",
+                Tipo = TipoTransaccion.Juego,
+                UsuarioId = userId,
+                Balance = balance
+            };
+            _context.Transacciones.Add(transaccion);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> CheckearAutobumpsHilo(string hiloId)
         {
             var autobump = await _context.AutoBumps.FirstOrDefaultAsync(a => a.HiloId == hiloId && a.Restante > 0);

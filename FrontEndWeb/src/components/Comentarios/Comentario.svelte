@@ -194,6 +194,8 @@
     class:comentarioAdmin={comentario.rango == CreacionRango.Admin}
     class:comentarioMod={comentario.rango == CreacionRango.Mod}
     class:comentarioAuxiliar={comentario.rango == CreacionRango.Auxiliar}
+    class:comentarioBot={comentario.rango == CreacionRango.Bot}
+    class:comentarioMillon={comentario.rango == comentario.millon}
     class:propio={comentario.propio}
     class:sticky={comentario.sticky}
     r-id={comentario.id}
@@ -932,6 +934,17 @@
         }
     }
 
+    .comentarioBot > .color {
+        background: url(/imagenes/colores/RouzedBot.png);
+        background-size: 100%;
+        color: transparent;
+        animation: none;
+        border: 2px solid #036df7;
+    }
+    .comentarioMillon .nombreResaltado,
+    .comentarioBot .nombreResaltado {
+        color: #036df7;
+    }
     .comentarioDev {
         border-top: solid 2px;
         border-color: greenyellow;

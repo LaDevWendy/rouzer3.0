@@ -39,7 +39,7 @@ namespace WebApp
 
             var userId = ctx.User != null ? ctx.User.GetId() : "UndefinedUser";
 
-            if (cacheService.banCache.IpsBaneadas.Contains(ip) || cacheService.banCache.IdsBaneadas.Contains(userId))
+            if (cacheService.BanCache.IpsBaneadas.Contains(ip) || cacheService.BanCache.IdsBaneadas.Contains(userId))
             {
                 var banNoVisto = await dbContext.Bans
                     .OrderByDescending(b => b.Expiracion)
