@@ -22,7 +22,7 @@ namespace Modelos
         public int[] ApuestasIgnoradasAlResolver => Tipo == TipoJuego.Duelo ?
             Array.Empty<int>() : Tipo == TipoJuego.Ruleta ?
             Enumerable.Range(0, 1).ToArray() : null;
-        public float Bonus => Tipo == TipoJuego.Duelo ? 0.005f : Tipo == TipoJuego.Ruleta ? (1f / 37f + 0.005f) : 0f;
+        public float Bonus => 0.005f;
     }
     public enum JuegoEstado
     {

@@ -221,7 +221,9 @@ namespace Servicios
                     var numeros = a.Apuesta.Split(",").Select(int.Parse).ToList();
                     if (numeros.Contains(ganador))
                     {
-                        var tasa = (apuestasValidas.Length - ApuestasIgnoradasAlResolver.Length - numeros.Count) / numeros.Count + 1f + juego.Bonus;
+                        float nTotal = apuestasValidas.Length;
+                        float n = numeros.Count;
+                        var tasa = (nTotal / n) * (juego.Bonus + (nTotal - n) / nTotal) + 1f;
                         var balance = await premiumService.ActualizarBalanceAsync(a.UsuarioId, tasa * a.Cantidad);
                         await premiumService.RegistrarGananciaAsync(a.UsuarioId, 1, tasa * a.Cantidad, balance.Balance);
                         respuesta.Contenido += $">>{a.ComentarioId}\nHa ganado {Math.Round(((tasa - 1) * a.Cantidad) * 10f) / 10f}\n";
@@ -291,7 +293,7 @@ namespace Servicios
                 $"de esa forma se acepta el duelo y automáticamente se resuelve.\n\n" +
                 $"Si pasan 5 minutos y nadie acepta el duelo la cantidad apostada será reembolsada\n\n" +
                 $"Bonus:\n" +
-                $"Las apuestas ganadas tienen un bonus del 0.5% del valor de la apuesta.",
+                $"Las apuestas ganadas tienen un bonus del 1% del valor de la apuesta.",
                 Nombre = rouzedBot.UserName,
                 Rango = CreacionRango.Bot,
                 Usuario = rouzedBot,
@@ -309,7 +311,7 @@ namespace Servicios
             {
                 var resp = new ComentarioModel
                 {
-                    Contenido = $">>{comentario.Id} \nLa cantidad apostada debe ser mayor a 0.",
+                    Contenido = $">>{comentario.Id} \nLa cantidad apostada debe ser mayor o igual a 1 (solo se aceptan número enteros).",
                     Nombre = rouzedBot.UserName,
                     Rango = CreacionRango.Bot,
                     Usuario = rouzedBot,
@@ -564,7 +566,7 @@ namespace Servicios
             {
                 var resp = new ComentarioModel
                 {
-                    Contenido = $">>{comentario.Id} \nLa cantidad apostada debe ser mayor a 0.",
+                    Contenido = $">>{comentario.Id} \nLa cantidad apostada debe ser mayor o igual a 1 (solo se aceptan números enteros).",
                     Nombre = rouzedBot.UserName,
                     Rango = CreacionRango.Bot,
                     Usuario = rouzedBot,
@@ -605,6 +607,21 @@ namespace Servicios
                     Tipo = TipoJuego.Ruleta
                 };
                 _context.Add(ruleta);
+            }
+
+            var apuestaVieja = await _context.Apuestas.FirstOrDefaultAsync(a => a.JuegoId == ruleta.Id && a.UsuarioId == comentario.UsuarioId);
+
+            if (!(apuestaVieja is null)){
+                var resp = new ComentarioModel
+                {
+                    Contenido = $">>{comentario.Id} \nSolo una apuesta por usuario por ruleta.",
+                    Nombre = rouzedBot.UserName,
+                    Rango = CreacionRango.Bot,
+                    Usuario = rouzedBot,
+                    HiloId = hilo.Id
+                };
+                await EnviarComentario(hilo, resp);
+                return true;
             }
 
             var apuesta = new ApuestaModel
@@ -700,26 +717,24 @@ namespace Servicios
                 $"!ruleta girar\n" +
                 $"el OP usa este comando para hacer girar la ruleta.\n\n" +
                 $">Apuestas válidas\n" +
-                $"Se pagan 1 a 1 las siguientes apuestas:\n" +
+                $"Se pagan 1 a 1 las siguientes apuestas (+6.58% de bonus):\n" +
                 $"par: números pares (excluido el 0)\n" +
                 $"impar: número impares\n" +
                 $"medio1: números del 1 al 18\n" +
                 $"medio2: números del 19 al 36\n" +
                 $"rojo: números rojos\n" +
                 $"negro: números negros\n\n" +
-                $"Se pagan 2 a 1 las siguientes apuestas:\n" +
+                $"Se pagan 2 a 1 las siguientes apuestas (+9.87% de bonus):\n" +
                 $"docena1: números del 1 al 12\n" +
                 $"docena2: números del 13 al 24\n" +
                 $"docena3: números del 25 al 36\n" +
                 $"columna1: números de la primera columna (ver imagen)\n" +
                 $"columna2: números de la segunda columna (ver imagen)\n" +
                 $"columna3: números de la tercera columna (ver imagen)\n\n" +
-                $"Se pagan 35 a 1 las siguientes apuestas:\n" +
+                $"Se pagan 36 a 1 las siguientes apuestas (+18.50% de bonus):\n" +
                 $"Cualquiera de los números, por ejemplo si quiero apostar 100 RouzCoins al número 12 será:\n" +
                 $"!ruleta 12 100\n\n" +
-                $"Cada anon puede agregar más de una apuesta a la misma ruleta.\n\n" +
-                $"Bonus:\n" +
-                $"Las apuestas ganadas tienen un bonus del 3.2% del valor de la apuesta.",
+                $"Solo una apuesta por usuario.",
                 Nombre = rouzedBot.UserName,
                 Rango = CreacionRango.Bot,
                 Usuario = rouzedBot,

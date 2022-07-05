@@ -96,6 +96,7 @@ export class TipoTransaccion extends Enum {
     static AutoBump = 3
     static HacerDonacion = 4
     static RecibirDonacion = 5
+    static Juego = 6
 }
 
 export class TipoAccionCP extends Enum {

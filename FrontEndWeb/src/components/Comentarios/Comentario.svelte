@@ -195,7 +195,7 @@
     class:comentarioMod={comentario.rango == CreacionRango.Mod}
     class:comentarioAuxiliar={comentario.rango == CreacionRango.Auxiliar}
     class:comentarioBot={comentario.rango == CreacionRango.Bot}
-    class:comentarioMillon={comentario.rango == comentario.millon}
+    class:comentarioMillon={comentario.millon > 0}
     class:propio={comentario.propio}
     class:sticky={comentario.sticky}
     r-id={comentario.id}
