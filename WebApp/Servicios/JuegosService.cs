@@ -664,7 +664,7 @@ namespace Servicios
         {
             var rouzedBot = (await userManager.GetUsersForClaimAsync(new Claim("Role", "bot"))).FirstOrDefault();
 
-            if (comentario.HiloId != hilo.Id)
+            if (comentario.UsuarioId != hilo.UsuarioId)
             {
                 var resp = new ComentarioModel
                 {
