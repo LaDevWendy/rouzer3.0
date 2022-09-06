@@ -686,6 +686,7 @@ namespace Servicios
                 .Where(m => !context.Hilos.Any(h => h.MediaId == m.Id) && !context.Comentarios.Any(c => c.MediaId == m.Id))
                 .Where(m => m.Tipo != MediaType.Eliminado)
                 .Where(m => m.Id != "Ruleta_Media_Id")
+                .Where(m => m.Id != "No_Existe_Id")
                 .ToListAsync();
 
             logger.LogInformation($"Limpiando medias viejos {mediasABorrar.Count}");
@@ -783,6 +784,44 @@ namespace Servicios
                     Hash = "Ruleta_Media_Id",
                     Tipo = MediaType.Imagen,
                     Url = "Ruleta_Media_Id.png",
+                };
+                var mediaProps = new MediaPropiedadesModel
+                {
+                    Id = media.Id,
+                    Size = archivoStream.Length,
+                    Media = media,
+                    Height = original.Height,
+                    Width = original.Width
+                };
+
+                archivoStream.Seek(0, SeekOrigin.Begin);
+                await original.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.Url}");
+                await thumbnail.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaLocal}");
+                await cuadradito.SaveAsync($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaCuadradoLocal}");
+                await archivoStream.DisposeAsync();
+                context.MediasPropiedades.Add(mediaProps);
+                await context.SaveChangesAsync();
+            }
+
+            media = await context.Medias.FirstOrDefaultAsync(m => m.Id == "No_Existe_Id");
+            if (media is null)
+            {
+                using var archivoStream = File.Open($"wwwroot/imagenes/noexiste.png", FileMode.Open);
+                archivoStream.Seek(0, SeekOrigin.Begin);
+                using var original = await Image.LoadAsync(archivoStream);
+                using var thumbnail = original.Clone(e => e.Resize(300, 0));
+                using var cuadradito = thumbnail.Clone(e => e.Resize(new ResizeOptions
+                {
+                    Mode = ResizeMode.Crop,
+                    Position = AnchorPositionMode.Center,
+                    Size = new Size(300)
+                }));
+                media = new MediaModel
+                {
+                    Id = "No_Existe_Id",
+                    Hash = "No_Existe_Id",
+                    Tipo = MediaType.Imagen,
+                    Url = "No_Existe_Id.png",
                 };
                 var mediaProps = new MediaPropiedadesModel
                 {
