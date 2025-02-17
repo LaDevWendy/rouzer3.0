@@ -4,19 +4,19 @@ ____
 ## Instalando requisitos previos
 ### Ubuntu
 Pueden instalar la version normal o la server, probablemente la server sea mejor para esto, aunque yo use la version desktop.
-Aca explican bien como hacer https://www.muylinux.com/2020/05/21/guia-instalacion-ubuntu-20-04-lts/
-### .NET Core 5.0
+Aca explican como hacer https://somebooks.es/instalar-ubuntu-24-04-lts-noble-numbat-desde-cero/
+### .NET Core 9.0
 Rouzer esta programada en C#, para compilarla y ejecutarla debemos instalar el sdk .net core.
 ```
-wget https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+wget https://packages.microsoft.com/config/ubuntu/24.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
 
 sudo apt-get update; \
   sudo apt-get install -y apt-transport-https && \
   sudo apt-get update && \
-  sudo apt-get install -y dotnet-sdk-5.0
+  sudo apt-get install -y dotnet-sdk-9.0
 ```
-En la documentacion pueden ver una guia mas detallada https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu
+En la documentacion pueden ver una guia mas detallada https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu
 
 ### PostgreSql
 Postgres es la base de datos que elegi, garpa, igual creo que leves modificaciones se pueden usar otras como MariaDb, MySQL, MogoDB, etc
@@ -39,7 +39,6 @@ Nginx se encarga de servir los archivos estaticos (imagenes, js, css, audios, et
 sudo apt update
 sudo apt -y install nginx
 sudo service nginx start
-sudo service nginx start
 ```
 
 ## Configuracion de base de datos
@@ -52,7 +51,7 @@ createdb Rozed
 ```
 psql
 # se va a abrir una consola, peguen lo de abajo.
-ALTER USER postgres  WITH PASSWORD 'jejetabien';
+ALTER USER postgres WITH PASSWORD 'jejetabien';
 \q
 ```
 ## Descargar Rozed
@@ -65,15 +64,15 @@ mv rouzer3.0 rozed
 ```
 ## Configurar Nginx
 ```
-cp rozed/Otros/nginx.conf  /etc/nginx/
+cp rozed/Otros/nginx.conf /etc/nginx/
 nginx -s reload
 ```
 ## Configurar Systemd
 Esta cosa hace se encarga de ejecutar rozed al iniciar el sistema y reiniciarla cuando choca.
 ```
-cp rozed/Otros/rozed.service  /etc/systemd/system/
+cp rozed/Otros/rozed.service /etc/systemd/system/
 systemd enable rozed
-systemctl start  rozed
+systemctl start rozed
 ```
 ## Yasta, con eso hecho Rozed ya deberia estar online... NO! Te falta compilar el FrontEnd
 Primero instalar nodejs y npm
@@ -93,7 +92,7 @@ Y ahora sí, finalmente, compilar el FrontEnd:
 ```
 npm run build
 ```
-Cuando termine pueden verla online en la ip donde esta alojada o en  http://localhost
+Cuando termine pueden verla online en la ip donde esta alojada o en http://localhost
 ![](https://i.imgur.com/phIG68M.png)
 ![](https://imgur.com/jS0Hsz3.png)
 ## Añadir Medz y admins
@@ -129,7 +128,7 @@ El FrontEnd está hecho en svelte, ok? son archivos que contienen componentes de
 ### Cambiar el nombre
 Una manera facil de cambiar el nombre es usar la herramienta "buscar y remplazar" de algun editor de texto, y cambiar rozed por otro nombre.
 ### Cambiar los colores
-Para cambiar los colores hay que  editar unas variables en el archivo /WebApp/wwwroot/css/site.css
+Para cambiar los colores hay que editar unas variables en el archivo /WebApp/wwwroot/css/site.css
 ![](https://i.imgur.com/H5VlPqD.png)
 ### Aplicar cambios sobre archivos svelte
 Para que los cambios surtan efecto deben ubicarse enn la carpeta /FrontEndWeb y ejecutar el siguiente comando
@@ -149,4 +148,3 @@ Dejo algunos recursos utiles, son la documentacion oficial, la verdad estan supe
 
 
 ### .
-

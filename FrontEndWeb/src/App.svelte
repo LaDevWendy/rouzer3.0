@@ -41,7 +41,7 @@
 				return await RChanClient.añadirSticky(
 					hilo.id,
 					dialogs.sticky.global,
-					dialogs.sticky.importancia
+					dialogs.sticky.importancia,
 				);
 			},
 		},

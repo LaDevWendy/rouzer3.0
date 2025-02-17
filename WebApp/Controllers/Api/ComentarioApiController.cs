@@ -419,7 +419,7 @@ namespace WebApp.Controllers
             };
 
             denuncia.Id = hashService.Random();
-            denuncia.UsuarioId = "6dc9e3f2-3bdb-4c0d-8370-01c926ab454a";
+            denuncia.UsuarioId = "38535689-1760-488a-b0b0-92d1de19f55e"; // Acá se tiene que poner el ID de RouzedBot (el de los juegos)
             if (!ModelState.IsValid) return BadRequest(ModelState);
             denuncia.Estado = EstadoDenuncia.NoRevisada;
             context.Denuncias.Add(denuncia);

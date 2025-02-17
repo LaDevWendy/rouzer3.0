@@ -12,15 +12,15 @@
     import Subir from "./Subir.svelte";
     import NavCategorias from "./NavCategorias.svelte";
     import Estadisticas from "./Estadisticas.svelte";
-    // import NadieLoSabra from "./Especiales/NadieLoSabra.svelte";
-    // import AlertaPortenho from "./Especiales/AlertaPortenho.svelte";
-    // import AlertaNenazo from "./Especiales/AlertaNenazo.svelte";
-    // import AlertaProvinciano from "./Especiales/AlertaProvinciano.svelte";
+    import NadieLoSabra from "./Especiales/NadieLoSabra.svelte";
+    import AlertaPortenho from "./Especiales/AlertaPortenho.svelte";
+    import AlertaNenazo from "./Especiales/AlertaNenazo.svelte";
+    import AlertaProvinciano from "./Especiales/AlertaProvinciano.svelte";
     import Halloween from "./Especiales/Halloween.svelte";
     import DialogosPremium from "./Premium/DialogosPremium.svelte";
     import RouzCoins from "./Premium/RouzCoins.svelte";
-    // import GeneracionZoe from "./Especiales/GeneracionZoe.svelte";
-    // import Corte from "./Especiales/Corte.svelte";
+    import GeneracionZoe from "./Especiales/GeneracionZoe.svelte";
+    import Corte from "./Especiales/Corte.svelte";
     // import Lucesitas from "./Lucesitas.svelte";
     // import Cuetitos from "./Especiales/Cuetitos.svelte";
     // import CuentaRegresiva from './Especiales/CuentaRegresiva.svelte';
@@ -66,12 +66,12 @@
     $: if (protocoloMessi) {
         style.insertRule(
             "body {--color5:rgb(28 185 208)!important}",
-            style.cssRules.length
+            style.cssRules.length,
         );
     } else if (protocoloSerenito) {
         style.insertRule(
             "body {--color5:rgb(255 124 36)!important}",
-            style.cssRules.length
+            style.cssRules.length,
         );
     }
 
@@ -91,12 +91,12 @@
 <svelte:window on:scroll={onScroll} bind:scrollY />
 
 <Halloween />
-<!--<NadieLoSabra />
+<NadieLoSabra />
 <AlertaPortenho />
 <AlertaNenazo />
 <AlertaProvinciano />
 <GeneracionZoe />
-<Corte />-->
+<Corte />
 <header
     class:oculta
     class:protocoloMessi

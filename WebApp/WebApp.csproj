@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <UserSecretsId>aspnet-WebApp-58591F3D-90BA-4770-9F41-1ADBDFECB67C</UserSecretsId>
     <LangVersion>9.0</LangVersion>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
