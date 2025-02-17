@@ -1,0 +1,28 @@
+{
+  "General": {
+    "LimiteBump": 500,
+    "HilosMaximosPorCategoria": 50,
+    "ModoPrivado": false,
+    "TiempoEntreComentarios": 5,
+    "TiempoEntreHilos": 300,
+    "LimiteArchivo": 1000,
+    "RegistroAbierto": true,
+    "NumeroMaximoDeCuentasPorIp": 4,
+    "LinkDeInvitacion": "",
+    "RestriccionDeAcceso": 0,
+    "MensajePaginaDeChoque": "Chocamo",
+    "ModoMessi": false,
+    "ModoSerenito": false,
+    "IgnorarDenunciasAnonimas": true,
+    "CaptchaHilo": false,
+    "CaptchaComentario": false,
+    "CaptchaRegistro": false,
+    "Flags": "",
+    "Version": "1.0.0.1",
+    "Nombre": "Rozed",
+    "Mensaje": "Union de miserables",
+    "PalabrasCensuradas": "test",
+    "ProhibirVPNs": false,
+    "TiempoDeEspera": 0
+  }
+}
