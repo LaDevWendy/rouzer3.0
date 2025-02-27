@@ -1109,3 +1109,23 @@ h3 {
     text-decoration: underline;
     filter: brightness(1.4);
 }
+
+.video-preview.media-input:not(div[style*="background-image:url(/imagenes/rose2.jpg)"]) {
+    background-size: contain !important;
+    display: flex !important;
+    background-repeat: no-repeat !important;
+    background-position: left !important;
+    min-height: 64px !important;
+}
+
+.video-preview.media-input:not(div[style*="background-image:url(/imagenes/rose2.jpg)"]):hover {
+    background-size: contain !important;
+    display: flex !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    min-height: 200px !important;
+}
+
+.video-preview.media-input {
+    width: 100% !important;
+}
